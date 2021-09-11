@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import M from 'materialize-css';
 import axios from '../axios';
+import ListSongs from './ListSongs.jsx';
+
 
 const Suggestion = () => {
+    const [ radio, setRadio ] = useState('EvDom');
     const [ gospel, setGospel ] = useState('');
-    const [ first_readings, setFirst_readings ] = useState('');
     const [ topSongs, setTopSongs ] = useState([]);
 
     // const fetchTopSongs = async() => {
@@ -13,9 +15,15 @@ const Suggestion = () => {
     //     setTopSongs([]);
     // }
 
+    useEffect(() => {
+        let elems = document.querySelectorAll('select');
+        M.FormSelect.init(elems);
+        console.log('radio: ',radio);
+    }) 
+    
     const searchSong = async(e) => {
         e.preventDefault();
-        const res = await axios.post('/api/readings', { gospel, first_readings });
+        const res = await axios.post('/api/readings', { gospel });
         console.log(res.data);
         M.toast({ html: 'Readings Updated' });
         // fetchTopSongs();
@@ -27,49 +35,44 @@ const Suggestion = () => {
                 <div className="card-content">
                     <form onSubmit={searchSong} >
                         <h5 style={{marginBottom: '40px'}}>Solicitar Recomendación</h5>
-                        <div className="row">
-                            <div className="input-field">
-                                <input id="first_readings" name="first_readings" onChange={(e)=>setFirst_readings(e.target.value)} type="text" value={first_readings} />
-                                <label htmlFor="first_readings">Primeras Lecturas</label>
-                            </div>
+                        <div className="input-field">
+                            <select value={radio} onChange={(e)=>setRadio(e.target.value)}>
+                                <option value="EvDom">Evangelio del Domingo</option>
+                                <option value="EvHoy">Evangelio de hoy</option>
+                                <option value="EvInput">Palabras clave</option>
+                            </select>
+                            <label>En base a: </label>
                         </div>
-                        <div className="row">
-                            <div className="input-field">
-                                <textarea 
-                                    id="gospel" 
-                                    name="gospel" 
-                                    className="materialize-textarea" 
-                                    onChange={(e)=>setGospel(e.target.value)} 
-                                    value={gospel}/>
-                                <label htmlFor="gospel">Evangelio</label>
-                            </div>
+                        {   (radio === 'EvInput')?(
+                                <div className="input-field">
+                                    <textarea 
+                                        id="gospel" 
+                                        name="gospel" 
+                                        className="materialize-textarea" 
+                                        onChange={(e)=>setGospel(e.target.value)} 
+                                        value={gospel}/>
+                                    <label htmlFor="gospel">Texto / Palabras clave</label>
+                                </div>
+                            ):null
+                        }
+                        <div className="input-field row">
+                            <input type="submit" className="btn light-blue darken-4 col s12" value="Buscar" />
                         </div>
-                        <input type="submit" className="btn light-blue darken-4" value="Buscar" />
                     </form>
                 </div>
             </div>
 
             {/* Suggested Songs */}
-            { topSongs[0]?
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Canciónes Recomendadas</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            topSongs.map(song => {
-                                return (
-                                    <tr key={song._id}>
-                                        <td>{song.title}</td>
-                                    </tr>
-                                )
-                            })
-                        }
-                    </tbody>
-                </table>:
-                <div></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Canciónes Recomendadas</th>
+                    </tr>
+                </thead>
+            </table>
+            {(topSongs)?
+                <ListSongs songs={topSongs} />
+                :null
             }
         </div>
     );

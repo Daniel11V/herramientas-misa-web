@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import M from 'materialize-css';
 import {
   BrowserRouter as Router,
@@ -7,16 +7,26 @@ import {
   Link,
   Redirect
 } from "react-router-dom";
+import axios from './axios';
 import ListSongs from './components/ListSongs.jsx';
 import AddSong from './components/AddSong.jsx';
 import Suggestion from './components/Suggestion.jsx';
 import Song from './components/Song.jsx';
 
 const App = () => {
+  const [songs, setSongs] = useState([]);
+
   useEffect(() => {
+    fetchSongs();
     let elems = document.querySelectorAll('.sidenav');
     M.Sidenav.init(elems);
   }, [])
+
+  const fetchSongs = async () => {
+    const res = await axios.get('/api/songs');
+    console.log(res.data);
+    if (res.data) { setSongs(res.data); }
+  }
 
   return (
     <Router>
@@ -66,7 +76,7 @@ const App = () => {
           <Route path="/songs" >
             <div className="row">
               <h3>Cancionero</h3>
-              <ListSongs />
+              <ListSongs songs={songs} />
             </div>
           </Route>
           <Route path="/add-song" >
