@@ -41,7 +41,6 @@ const Suggestion = () => {
                                     className="materialize-textarea" 
                                     onChange={(e)=>setGospel(e.target.value)} 
                                     value={gospel}/>
-                                {/* <input id="gospel" name="gospel" onChange={(e)=>setGospel(e.target.value)} type="text" value={gospel} /> */}
                                 <label htmlFor="gospel">Evangelio</label>
                             </div>
                         </div>

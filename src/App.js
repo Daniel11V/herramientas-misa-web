@@ -39,9 +39,19 @@ const App = () => {
             <div className="background">
               <img src="https://images.freecreatives.com/wp-content/uploads/2016/02/Abstract-Bright-Blue-Geometric-Background.jpg" alt="background" />
             </div>
-            <Link to="/profile"><img className="circle" src="https://pbs.twimg.com/profile_images/1395495484463239171/SL1JdI2__400x400.jpg" alt="profile" /></Link>
-            <Link to="/profile"><span className="white-text name">Daniel Vinet</span></Link>
-            <Link to="/profile"><span className="white-text email">daniel1vinet@gmail.com</span></Link>
+            <Link to="/profile"><img className="circle" src="https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png" alt="profile" /></Link>
+            {
+              (0) ? (
+                <Link to="/profile">
+                  <span className="white-text name">Daniel Vinet</span>
+                  <span className="white-text email">daniel1vinet@gmail.com</span>
+                </Link>
+              ) : (
+                <Link to="/" className="btn-small transparent">
+                  <i className="material-icons right">cloud</i>iniciar sesion
+                </Link>
+              )
+            }
           </div>
         </li>
         <li><i><a href="/" className="subheader" style={{ paddingLeft: '20px' }}>Herramientas para misa</a></i></li>
