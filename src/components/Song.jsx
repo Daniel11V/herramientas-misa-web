@@ -6,16 +6,22 @@ import '../styles/Song.css';
 
 const Song = () => {
     const { id } = useParams();
-    const [title, setTitle] = useState('');
-    const [lyric, setLyric] = useState('');
+    const emptySong = {
+        _id: id,
+        title: '',
+        lyric: '',
+        creator: '',
+        author:'',
+        rating:''
+    }
+    const [song, setSong] = useState(emptySong);
 
     useEffect(() => {
         const fetchSongs = async() => {
             const res = await axios.get(`/api/songs/${id}`);
             console.log(res.data);
             if(res.data) { 
-                setTitle(res.data.title);
-                setLyric(res.data.lyric);
+                setSong(res.data);
             } else {
                 console.error("IDs don't match");
             }
@@ -23,18 +29,24 @@ const Song = () => {
         fetchSongs();
     }, [id]);
     
-
     return (
         <div className="row">
             <div className="card">
                 <div className="card-content" style={{fontSize: '1.1em'}}>
-                    <h3>{title}</h3>
+                    <h3>{song.title}</h3>
                     <div className="lyrics">
-                        <span className="input-field">{lyric}</span>
+                        <span className="input-field">
+                            {song.lyric.replace('{\n}', '\n')}
+                        </span>
                     </div>
-                    {(1)&&(
+                    {(song.author)&&(
                         <span>
-                            Transcripción hecha por {"Usuario"}
+                            Autor: {song.author}
+                        </span>
+                    )}
+                    {(song.creator)&&(
+                        <span>
+                            Transcripción hecha por {song.creator}
                         </span>
                     )}
                 </div>

@@ -4,5 +4,6 @@ h3 {
 
 .lyrics {
     padding: 20px 0 20px 0;
+    white-space: pre-wrap;
 }
 
