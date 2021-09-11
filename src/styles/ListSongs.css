@@ -1,0 +1,14 @@
+.song-item {
+    color: #555 !important;
+    font-size: 14px;
+}
+
+.collection:first-child {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.collection:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
