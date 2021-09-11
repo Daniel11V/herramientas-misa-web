@@ -6,16 +6,17 @@ import axios from '../axios';
 const AddSong = () => {
     const { id } = useParams();
     const [ title, setTitle ] = useState('');
+    const [ author, setAuthor ] = useState('');
     const [ lyric, setLyric ] = useState('');
 
     const addSong = async(e) => {
         e.preventDefault();
         if (id) {
-            const res = await axios.put(`/api/songs/${id}`, {title, lyric, _id: id});
+            const res = await axios.put(`/api/songs/${id}`, {title, author, lyric, _id: id});
             console.log(res.data);
             M.toast({ html: 'Song Updated' });
         } else {
-            const res = await axios.post('/api/songs', {title, lyric});
+            const res = await axios.post('/api/songs', {title, author, lyric});
             console.log(res.data);
             M.toast({ html: 'Song Saved' });
         }
@@ -61,6 +62,12 @@ const AddSong = () => {
                             <div className="input-field">
                                 <input id="title" name="title" onChange={(e)=>setTitle(e.target.value)} type="text" value={title} />
                                 <label htmlFor="title">Titulo</label>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="input-field">
+                                <input id="author" name="author" onChange={(e)=>setAuthor(e.target.value)} type="text" value={author} />
+                                <label htmlFor="author">Autor</label>
                             </div>
                         </div>
                         <div className="row">
