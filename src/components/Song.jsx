@@ -7,7 +7,7 @@ import '../styles/Song.css';
 const Song = () => {
     const { id } = useParams();
     const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+    const [lyric, setLyric] = useState('');
 
     useEffect(() => {
         const fetchSongs = async() => {
@@ -15,7 +15,7 @@ const Song = () => {
             console.log(res.data);
             if(res.data) { 
                 setTitle(res.data.title);
-                setDescription(res.data.description);
+                setLyric(res.data.lyric);
             } else {
                 console.error("IDs don't match");
             }
@@ -30,7 +30,7 @@ const Song = () => {
                 <div className="card-content" style={{fontSize: '1.1em'}}>
                     <h3>{title}</h3>
                     <div className="lyrics">
-                        <span className="input-field">{description}</span>
+                        <span className="input-field">{lyric}</span>
                     </div>
                     {(1)&&(
                         <span>

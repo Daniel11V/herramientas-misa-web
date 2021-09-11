@@ -6,16 +6,16 @@ import axios from '../axios';
 const AddSong = () => {
     const { id } = useParams();
     const [ title, setTitle ] = useState('');
-    const [ description, setDescription ] = useState('');
+    const [ lyric, setLyric ] = useState('');
 
     const addSong = async(e) => {
         e.preventDefault();
         if (id) {
-            const res = await axios.put(`/api/songs/${id}`, {title, description, _id: id});
+            const res = await axios.put(`/api/songs/${id}`, {title, lyric, _id: id});
             console.log(res.data);
             M.toast({ html: 'Song Updated' });
         } else {
-            const res = await axios.post('/api/songs', {title, description});
+            const res = await axios.post('/api/songs', {title, lyric});
             console.log(res.data);
             M.toast({ html: 'Song Saved' });
         }
@@ -45,7 +45,7 @@ const AddSong = () => {
     //             console.log(data)
     //             this.setState({
     //                 title: data.title,
-    //                 description: data.description,
+    //                 lyric: data.lyric,
     //                 _id: data._id
     //             })
     //         });
@@ -66,13 +66,13 @@ const AddSong = () => {
                         <div className="row">
                             <div className="input-field">
                                 <textarea 
-                                    id="description" 
-                                    name="description" 
+                                    id="lyric" 
+                                    name="lyric" 
                                     className="materialize-textarea" 
-                                    onChange={(e)=>setDescription(e.target.value)} 
-                                    value={description}>
+                                    onChange={(e)=>setLyric(e.target.value)} 
+                                    value={lyric}>
                                     </textarea>
-                                <label htmlFor="description">Letra y acordes</label>
+                                <label htmlFor="lyric">Letra y acordes</label>
                             </div>
                         </div>
                         <button type="submit" className="btn light-blue darken-4">

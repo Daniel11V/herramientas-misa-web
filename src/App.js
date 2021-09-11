@@ -7,16 +7,10 @@ import {
   Link,
   Redirect
 } from "react-router-dom";
-// import axios from 'axios'
 import ListSongs from './components/ListSongs.jsx';
 import AddSong from './components/AddSong.jsx';
 import Suggestion from './components/Suggestion.jsx';
 import Song from './components/Song.jsx';
-
-
-// const api = axios.create({
-//   baseURL: 'http:/localhost:4000/'
-// });
 
 const App = () => {
   useEffect(() => {
