@@ -8,7 +8,7 @@ import '../styles/ListSongs.css';
 // });
 
 const AddSong = () => {
-    const [ songs, updateSongs ] = useState([]);
+    const [ songs, setSongs ] = useState([]);
 
     useEffect(() => {
         fetchSongs();
@@ -17,7 +17,7 @@ const AddSong = () => {
     const fetchSongs = async() => {
         const res = await axios.get('/api/songs');
         console.log(res.data);
-        if(res.data) { updateSongs(res.data); }
+        if(res.data) { setSongs(res.data); }
     }
 
     return (

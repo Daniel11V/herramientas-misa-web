@@ -30,10 +30,10 @@ const Song = () => {
     }, [id]);
     
     return (
-        <div className="row">
+        <div className="row song">
             <div className="card">
-                <div className="card-content" style={{fontSize: '1.1em'}}>
-                    <h3>{song.title}</h3>
+                <div className="card-content" >
+                    <h4>{song.title}</h4>
                     <div className="lyrics">
                         <span className="input-field">
                             {song.lyric.replace('{\n}', '\n')}

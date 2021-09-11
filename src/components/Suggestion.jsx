@@ -7,18 +7,18 @@ const Suggestion = () => {
     const [ first_readings, setFirst_readings ] = useState('');
     const [ topSongs, setTopSongs ] = useState([]);
 
-    const fetchTopSongs = async() => {
-        const res = await axios.get('/api/readings');
-        console.log(res.data);
-        setTopSongs([]);
-    }
+    // const fetchTopSongs = async() => {
+    //     const res = await axios.get('/api/readings');
+    //     console.log(res.data);
+    //     setTopSongs([]);
+    // }
 
     const searchSong = async(e) => {
         e.preventDefault();
         const res = await axios.post('/api/readings', { gospel, first_readings });
         console.log(res.data);
         M.toast({ html: 'Readings Updated' });
-        fetchTopSongs();
+        // fetchTopSongs();
     }
 
     return (
@@ -35,7 +35,13 @@ const Suggestion = () => {
                         </div>
                         <div className="row">
                             <div className="input-field">
-                                <input id="gospel" name="gospel" onChange={(e)=>setGospel(e.target.value)} type="text" value={gospel} />
+                                <textarea 
+                                    id="gospel" 
+                                    name="gospel" 
+                                    className="materialize-textarea" 
+                                    onChange={(e)=>setGospel(e.target.value)} 
+                                    value={gospel}/>
+                                {/* <input id="gospel" name="gospel" onChange={(e)=>setGospel(e.target.value)} type="text" value={gospel} /> */}
                                 <label htmlFor="gospel">Evangelio</label>
                             </div>
                         </div>

@@ -70,8 +70,7 @@ const AddSong = () => {
                                     name="lyric" 
                                     className="materialize-textarea" 
                                     onChange={(e)=>setLyric(e.target.value)} 
-                                    value={lyric}>
-                                    </textarea>
+                                    value={lyric} />
                                 <label htmlFor="lyric">Letra y acordes</label>
                             </div>
                         </div>
