@@ -7,7 +7,9 @@ const AddSong = ({ songs }) => (
     <div className="collection songs">
         {
             songs.map(song => (
-                <Link to={`/song/${song._id}`} key={song._id} className="collection-item">
+                <Link 
+                    to={{ pathname: `/song/${song._id}`, state: { from: 'Cancionero' } }}
+                    key={song._id} className="collection-item">
                     <span className="song-item" >{song.title}</span>
                 </Link>
             ))

@@ -5,7 +5,7 @@ import ListSongs from './ListSongs.jsx';
 
 
 const Suggestion = () => {
-    const [ radio, setRadio ] = useState('EvDom');
+    const [ base, setBase ] = useState('EvDom');
     const [ gospel, setGospel ] = useState('');
     const [ topSongs, setTopSongs ] = useState([]);
 
@@ -18,13 +18,13 @@ const Suggestion = () => {
     useEffect(() => {
         let elems = document.querySelectorAll('select');
         M.FormSelect.init(elems);
-        console.log('radio: ',radio);
     }) 
     
-    const searchSong = async(e) => {
+    const searchSongs = async(e) => {
         e.preventDefault();
-        const res = await axios.post('/api/readings', { gospel });
+        const res = await axios.post('/api/readings', { base, gospel });
         console.log(res.data);
+        setTopSongs(res.data);
         M.toast({ html: 'Readings Updated' });
         // fetchTopSongs();
     }
@@ -33,17 +33,17 @@ const Suggestion = () => {
         <div className="row">
             <div className="card">
                 <div className="card-content">
-                    <form onSubmit={searchSong} >
+                    <form onSubmit={searchSongs} >
                         <h5 style={{marginBottom: '40px'}}>Solicitar Recomendación</h5>
                         <div className="input-field">
-                            <select value={radio} onChange={(e)=>setRadio(e.target.value)}>
+                            <select value={base} onChange={(e)=>setBase(e.target.value)}>
                                 <option value="EvDom">Evangelio del Domingo</option>
                                 <option value="EvHoy">Evangelio de hoy</option>
                                 <option value="EvInput">Palabras clave</option>
                             </select>
                             <label>En base a: </label>
                         </div>
-                        {   (radio === 'EvInput')?(
+                        {   (base === 'EvInput')?(
                                 <div className="input-field">
                                     <textarea 
                                         id="gospel" 

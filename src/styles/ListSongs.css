@@ -3,6 +3,10 @@
     font-size: 14px;
 }
 
+.btn-songs {
+    margin-top: 5px;
+}
+
 .collection:first-child {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
