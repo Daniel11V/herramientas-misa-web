@@ -62,7 +62,9 @@ const App = () => {
           <Route path="/song/:id" >
             <Song songs={songs} />
           </Route>
-          {/* <Route component={NotFound} /> */}
+          <Route>
+            <h3>Error 404 - No se encontro la página</h3>
+          </Route>
         </Switch>
       </div>
     </Router>

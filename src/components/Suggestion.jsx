@@ -31,7 +31,7 @@ const Suggestion = () => {
 
     return (
         <div className="row">
-            <div className="card">
+            <div className="card" style={{marginTop: '20px'}}>
                 <div className="card-content">
                     <form onSubmit={searchSongs} >
                         <h5 style={{marginBottom: '40px'}}>Solicitar Recomendación</h5>

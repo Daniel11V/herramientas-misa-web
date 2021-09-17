@@ -16,7 +16,7 @@ const AddSong = ({ songs }) => {
     }, []);
 
     useEffect(() => {
-        if (songs.length) {
+        if (songs) {
             const song = songs.find(song => song._id === id);
 
             setTitle(song.title);
@@ -119,7 +119,7 @@ const AddSong = ({ songs }) => {
 
     return (
         <div className="row">
-            <div className="card">
+            <div className="card" style={{marginTop: '20px'}}>
                 <div className="card-content">
                     <form onSubmit={submitSong}>
                         <h4 style={{marginBottom: '40px',marginTop: 0}}>
