@@ -38,8 +38,8 @@ const ListSong = ({ searcher = false }) => {
     }, [songs, search, labels])
 
     if (isLoading) return (
-        <div className="progress">
-            <div className="indeterminate"></div>
+        <div className="progress" style={{backgroundColor: '#9cd1ff'}}>
+            <div className="indeterminate" style={{backgroundColor: '#1976d2'}}></div>
         </div>
     )
 

@@ -17,8 +17,7 @@ const Song = () => {
         creator: '',
         author: '',
         rating: [],
-        labels: [],
-        topics: []
+        labels: []
     }
     const [song, setSong] = useState(emptySong);
     const [finalLyric, setFinalLyric] = useState('');
@@ -31,8 +30,10 @@ const Song = () => {
     useEffect(() => {
         if (songs) {
             const currentSong = songs.find(song => song._id === id)
-            setSong(currentSong);
-            setFinalLyric(currentSong.lyric.replace('{\n}', '\n'));
+            if (currentSong) {
+                setSong(currentSong);
+                setFinalLyric(currentSong.lyric.replace('{\n}', '\n'));
+            }
         }
     }, [id, song, songs]);
 
@@ -46,14 +47,14 @@ const Song = () => {
     }
 
     if (isLoading) return (
-        <div className="progress">
-            <div className="indeterminate"></div>
+        <div className="progress" style={{backgroundColor: '#9cd1ff'}}>
+            <div className="indeterminate" style={{backgroundColor: '#1976d2'}}></div>
         </div>
     )
 
     return (
         <div className="song">
-            {(song.labels.length !== 0 || song.topics.length !== 0)&&
+            {(song.labels.length !== 0)&&
                 <div style={{display: 'flex', marginTop: '15px', alignItems: 'center'}}>
                     <i className="material-icons label-icon">local_offer</i>
                     {
