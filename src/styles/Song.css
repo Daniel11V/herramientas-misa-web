@@ -4,6 +4,28 @@
     max-width: 700px;
 }
 
+.song .label-icon {
+    color: #1976D2 ;
+    margin-right: 10px;
+    margin-bottom: 3px;
+    /* font-size: 20px; */
+}
+
+.song .label {
+    display: inline-block;
+    height: 29px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(0,0,0,0.6);
+    line-height: 29px;
+    padding: 0 12px;
+    border-radius: 16px;
+    background-color: #e4e4e4;
+    margin-bottom: 3px;
+    margin-right: 5px;
+    cursor: default;
+}
+
 h3 {
     margin: 20px 0 20px 0;
     /* margin: 10px 0 10px 0; */

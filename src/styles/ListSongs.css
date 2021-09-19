@@ -1,10 +1,14 @@
+.songs {
+    overflow: inherit !important;
+}
+
 .song-item {
     color: #555 !important;
     font-size: 14px;
 }
 
 .btn-songs {
-    margin-top: 5px;
+    margin-top: 12px;
 }
 
 .collection:first-child {
@@ -12,7 +16,98 @@
     border-top-right-radius: 5px;
 }
 
+.searcher {
+    border-bottom: 3px solid #1976D2 !important;
+    padding: 0 !important;
+}
+
+.search-line {
+    position: relative;
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.search-line .label-icon {
+    min-width: 4rem;
+    height: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: none;
+    color: #9e9e9e;
+    font-size: 1rem;
+    -webkit-transition: color .2s ease-out, -webkit-transform .2s ease-out;
+    transition: color .2s ease-out, -webkit-transform .2s ease-out;
+    transition: transform .2s ease-out, color .2s ease-out;
+    transition: transform .2s ease-out, color .2s ease-out, -webkit-transform .2s ease-out;
+    -webkit-transform-origin: 0% 100%;
+    transform-origin: 0% 100%;
+    text-align: initial;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.search-line i {
+    cursor: default;
+}
+
+#search {
+    font-size: 17px !important;
+    /* display: block; */
+    /* line-height: inherit; */
+    -webkit-transition: .3s background-color;
+    transition: .3s background-color;
+    height: inherit;
+    /* padding-left: 4rem; */
+    /* width: calc(100% - 8rem); */
+    flex: 1;
+    margin: 0;
+    border: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding-top: 1rem;
+    padding-bottom: 1rem;   
+}
+
+#search:focus-visible {
+    outline: none;
+}
+
+.btn-icon {
+    cursor: pointer;
+    border-left: 1px solid #e0e0e0;
+    padding-left: 15px; 
+    padding-right: 15px; 
+    font-size: 17px !important
+}
+
+.btn-icon i {
+    padding-left: 10px; 
+    cursor: pointer;
+}
+
+.labelsInput {
+    padding: 10px 20px 0 20px;
+    transition-duration: 0.5s height;
+}
+
 .collection:last-child {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+}
+
+/* De SongForm */
+
+.select-wrapper input.select-dropdown:focus {
+    border-bottom: 1px solid #1976D2 !important;
+}
+
+input:not([type]):focus:not([readonly]), input[type=text]:not(.browser-default):focus:not([readonly]), input[type=password]:not(.browser-default):focus:not([readonly]), input[type=email]:not(.browser-default):focus:not([readonly]), input[type=url]:not(.browser-default):focus:not([readonly]), input[type=time]:not(.browser-default):focus:not([readonly]), input[type=date]:not(.browser-default):focus:not([readonly]), input[type=datetime]:not(.browser-default):focus:not([readonly]), input[type=datetime-local]:not(.browser-default):focus:not([readonly]), input[type=tel]:not(.browser-default):focus:not([readonly]), input[type=number]:not(.browser-default):focus:not([readonly]), input[type=search]:not(.browser-default):focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly]) {
+    border-bottom: 1px solid #1976D2;
+    -webkit-box-shadow: 0 1px 0 0 #1976D2;
+    box-shadow: 0 1px 0 0 #1976D2;
+}
+
+input:not([type]):focus:not([readonly])+label, input[type=text]:not(.browser-default):focus:not([readonly])+label, input[type=password]:not(.browser-default):focus:not([readonly])+label, input[type=email]:not(.browser-default):focus:not([readonly])+label, input[type=url]:not(.browser-default):focus:not([readonly])+label, input[type=time]:not(.browser-default):focus:not([readonly])+label, input[type=date]:not(.browser-default):focus:not([readonly])+label, input[type=datetime]:not(.browser-default):focus:not([readonly])+label, input[type=datetime-local]:not(.browser-default):focus:not([readonly])+label, input[type=tel]:not(.browser-default):focus:not([readonly])+label, input[type=number]:not(.browser-default):focus:not([readonly])+label, input[type=search]:not(.browser-default):focus:not([readonly])+label, textarea.materialize-textarea:focus:not([readonly])+label {
+    color: #1976D2;
 }

@@ -24,10 +24,12 @@ const Navigation = () => {
             <div className="navbar-fixed">
                 <nav className="blue darken-2" style={{ marginBottom: '20px' }}>
                 <div className="nav-wrapper">
-                    <Link to="/" className="brand-logo hide-on-med-and-down" style={{ paddingLeft: '20px' }}>Herramientas para Misa</Link>
+                    {(!lastPage)&&
+                        <Link to="/" className="brand-logo hide-on-med-and-down" style={{ paddingLeft: '20px' }}>Herramientas para Misa</Link>
+                    }
                     <div data-target="mobile-demo" className="sidenav-trigger hide-on-large-only" style={{ cursor: 'pointer' }}><i className="material-icons">menu</i></div>
                     {(lastPage) &&
-                        <div onClick={history.goBack} className="brand-logo hide-on-large-only" style={{cursor: 'pointer', fontSize: '25px'}}>
+                        <div onClick={history.goBack} className="brand-logo" style={{cursor: 'pointer', fontSize: '25px', paddingLeft: '10px'}}>
                             <i className="material-icons">chevron_left</i>
                             {lastPage}
                         </div>

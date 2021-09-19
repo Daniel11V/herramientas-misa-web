@@ -6,11 +6,11 @@ import ListSongs from './ListSongs.jsx';
 
 const Suggestion = () => {
     const [ base, setBase ] = useState('EvDom');
-    const [ gospel, setGospel ] = useState('');
+    const [ input, setInput ] = useState('');
     const [ topSongs, setTopSongs ] = useState([]);
 
     // const fetchTopSongs = async() => {
-    //     const res = await axios.get('/api/readings');
+    //     const res = await axios.get('/api/suggestion');
     //     console.log(res.data);
     //     setTopSongs([]);
     // }
@@ -18,11 +18,12 @@ const Suggestion = () => {
     useEffect(() => {
         let elems = document.querySelectorAll('select');
         M.FormSelect.init(elems);
-    }) 
+    }, []) 
     
     const searchSongs = async(e) => {
         e.preventDefault();
-        const res = await axios.post('/api/readings', { base, gospel });
+        const res = await axios.post('/api/suggestion', { base, input })
+            .catch((err) => console.error(err));
         console.log(res.data);
         setTopSongs(res.data);
         M.toast({ html: 'Readings Updated' });
@@ -46,12 +47,12 @@ const Suggestion = () => {
                         {   (base === 'EvInput')?(
                                 <div className="input-field">
                                     <textarea 
-                                        id="gospel" 
-                                        name="gospel" 
+                                        id="input" 
+                                        name="input" 
                                         className="materialize-textarea" 
-                                        onChange={(e)=>setGospel(e.target.value)} 
-                                        value={gospel}/>
-                                    <label htmlFor="gospel">Texto / Palabras clave</label>
+                                        onChange={(e)=>setInput(e.target.value)} 
+                                        value={input}/>
+                                    <label htmlFor="input">Texto / Palabras clave</label>
                                 </div>
                             ):null
                         }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,6 +7,7 @@ import {
   Redirect
 } from "react-router-dom";
 import axios from './axios';
+import { useSongs } from './songs-context';
 import Navigation from './components/Navigation.jsx';
 import ListSongs from './components/ListSongs.jsx';
 import SongForm from './components/SongForm.jsx';
@@ -14,17 +15,24 @@ import Suggestion from './components/Suggestion.jsx';
 import Song from './components/Song.jsx';
 
 const App = () => {
-  const [songs, setSongs] = useState([]);
+  const { setSongs, setIsLoading, needReload, setNeedReload } = useSongs();
+
 
   useEffect(() => {
+    const fetchSongs = async (id) => {
+      setIsLoading(true);
+      try {
+        const res = await axios.get('/api/songs');
+        //console.log(res.data);
+        setSongs(res.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error de conexión: ', error);
+      }
+    }
     fetchSongs();
-  }, [])
-
-  const fetchSongs = async () => {
-    const res = await axios.get('/api/songs');
-    //console.log(res.data);
-    if (res.data) { setSongs(res.data); }
-  }
+    setNeedReload(false);
+  }, [setSongs, setIsLoading, needReload, setNeedReload])
 
   return (
     <Router>
@@ -44,23 +52,23 @@ const App = () => {
           <Route path="/songs" >
             <Link
               to={{ pathname: '/add-song', state: { from: 'Cancionero' } }}
-              className="btn btn-songs waves-effect waves-light light-blue darken-3 right">
+              className="btn btn-songs waves-effect waves-light blue darken-2 right">
               <i className="material-icons right">add</i>Añadir
             </Link>
             <h3>Cancionero</h3>
-            <ListSongs songs={songs} />
+            <ListSongs searcher={true} />
           </Route>
           <Route path="/add-song" >
             <SongForm />
           </Route>
           <Route path="/edit-song/:id" >
-            <SongForm songs={songs} />
+            <SongForm />
           </Route>
           <Route path="/suggestion" >
             <Suggestion />
           </Route>
           <Route path="/song/:id" >
-            <Song songs={songs} />
+            <Song />
           </Route>
           <Route>
             <h3>Error 404 - No se encontro la página</h3>
