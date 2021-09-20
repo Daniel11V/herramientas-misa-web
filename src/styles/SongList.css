@@ -1,3 +1,42 @@
+.user-view {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding-bottom: 16px !important;
+}
+
+.profile-side {
+    flex-direction: column;
+}
+
+.profile-side .circle {
+    padding: 0 !important;
+    width: 100px;
+    height: 100px;
+}
+
+.profile-side span {
+    margin: 10px 20px 0 !important;
+    font-size: 25px !important;
+}
+
+li.profile {
+    display: flex;
+    align-items: center;
+    padding-left: 18px;
+    margin-left: 10px;
+    font-size: 20px;
+    border-left: 4px solid #49a2ff;
+    cursor: default;
+
+}
+
+li.profile img {
+    height: 45px;
+    width: 45px;
+    margin: 0 15px;
+}
+
 .songs {
     overflow: inherit !important;
 }

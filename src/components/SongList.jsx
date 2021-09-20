@@ -18,13 +18,11 @@ const SongList = ({ searcher = false }) => {
         if(collapse.current && !instance) {
             let inst = M.Collapsible.init(collapse.current)
             setInstance(inst);
-            console.log(collapse.current, inst);
         }
     }, [showFiltros, instance])
 
     useEffect(() => {
         if(instance) {
-            console.log(2, instance)
             if (showFiltros) {
                 instance.open(0);
             } else {
@@ -35,6 +33,8 @@ const SongList = ({ searcher = false }) => {
 
     useEffect(() => {
         if(songs) {
+
+            // Filter
             let startsTitle = [];
             let includesTitle = [];
             let includesLyric = [];

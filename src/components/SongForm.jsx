@@ -8,9 +8,10 @@ import LabelsInput from './LabelsInput.jsx';
 const SongForm = () => {
     const history = useHistory();
     const { id } = useParams();
-    const { songs, setNeedReload } = useSongs();
+    const { songs, setNeedReload, user } = useSongs();
     const [ title, setTitle ] = useState('');
     const [ author, setAuthor ] = useState('');
+    const [ creator, setCreator ] = useState('');
     const [ lyric, setLyric ] = useState('');
     const [ labels, setLabels ] = useState('');
 
@@ -23,6 +24,7 @@ const SongForm = () => {
 
             setTitle(song.title);
             setAuthor(song.author);
+            setCreator(song.creator);
             setLyric(song.lyric);
             setLabels(song.labels);
     
@@ -41,7 +43,9 @@ const SongForm = () => {
     const submitSong = async(e) => {
         e.preventDefault();
 
-        const songToSend = { title, author, lyric, labels };
+        const creatorSend = (!creator && user)?user.name:creator;
+
+        const songToSend = { title, author, creatorSend, lyric, labels, rating: [] };
 
         if (id) {
             const res = await axios.put(`/api/songs/${id}`, { ...songToSend, _id: id})

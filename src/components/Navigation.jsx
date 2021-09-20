@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
+import { useSongs } from '../songs-context.jsx';
+import GoogleLogin from 'react-google-login';
 import M from 'materialize-css';
 
 
 const Navigation = () => {
     const history = useHistory();
     const [ lastPage, setLastPage ] = useState('');
+    const { user, setUser } = useSongs();
 
     useEffect(() => {
         let elems = document.querySelectorAll('.sidenav');
@@ -18,6 +21,16 @@ const Navigation = () => {
             window.scrollTo(0, 0);
         });
     }, [history, setLastPage]);
+
+    const responseGoogle = (response) => {
+        if(response.googleId && !user) {
+            setUser({
+                googleId: response.profileObj.googleId,
+                name: response.profileObj.name,
+                imageUrl: response.profileObj.imageUrl              
+            });
+        }
+    }
 
     return (
         <div>
@@ -37,7 +50,23 @@ const Navigation = () => {
                     <ul className="right hide-on-med-and-down">
                     <li><Link to="/songs">Cancionero</Link></li>
                     <li><Link to="/suggestion">Recomendación</Link></li>
-                    <li><Link to="/profile">Iniciar sesion</Link></li>
+                    {user?(
+                        <li className="profile">
+                            <span className="white-text name">{user.name}</span>
+                            <img className="circle" src={user.imageUrl} alt="profile" onError={()=>{this.onerror=null;this.src='https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png';}} />
+                        </li>
+                        ):(
+                        <li>
+                            <GoogleLogin
+                            clientId="270166148168-cu4pvav4r2s5pps6b8t8chqdratnklgs.apps.googleusercontent.com"
+                            buttonText="Iniciar Sesion"
+                            onSuccess={responseGoogle}
+                            onFailure={responseGoogle}
+                            cookiePolicy={'single_host_origin'}
+                            />
+                        </li>
+                        )
+                    }
                     </ul>
                 </div>
                 </nav>
@@ -46,24 +75,30 @@ const Navigation = () => {
 
             <ul className="sidenav sidenav-close" id="mobile-demo">
                 <li>
-                <div className="user-view">
-                    <div className="background">
-                    <img src="https://images.freecreatives.com/wp-content/uploads/2016/02/Abstract-Bright-Blue-Geometric-Background.jpg" alt="background" />
+                {(user) ? (
+                    <div className="user-view profile-side">
+                        <div className="background">
+                            <img alt="background"src="https://images.freecreatives.com/wp-content/uploads/2016/02/Abstract-Bright-Blue-Geometric-Background.jpg" />
+                        </div>
+                        <img className="circle" src={user.imageUrl} key={user.imageUrl} alt="profile" onError={()=>{this.onerror=null;this.src='https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png';}} />
+                        <span className="white-text name">{user.name}</span>
                     </div>
-                    <Link to="/profile"><img className="circle" src="https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png" alt="profile" /></Link>
-                    {
-                    (0) ? (
-                        <Link to="/profile">
-                        <span className="white-text name">Daniel Vinet</span>
-                        <span className="white-text email">daniel1vinet@gmail.com</span>
-                        </Link>
-                    ) : (
-                        <Link to="/" className="btn-small transparent">
-                        <i className="material-icons right">cloud</i>iniciar sesion
-                        </Link>
-                    )
-                    }
-                </div>
+                ) : (
+                    <div className="user-view">
+                        <div className="background">
+                            <img alt="background"src="https://images.freecreatives.com/wp-content/uploads/2016/02/Abstract-Bright-Blue-Geometric-Background.jpg" />
+                        </div>
+                        <img className="circle" src="https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png" alt="profile" />
+                        <GoogleLogin
+                        clientId="270166148168-cu4pvav4r2s5pps6b8t8chqdratnklgs.apps.googleusercontent.com"
+                        buttonText="Iniciar Sesion"
+                        onSuccess={responseGoogle}
+                        onFailure={responseGoogle}
+                        cookiePolicy={'single_host_origin'}
+                        />
+                    </div>
+                )
+                }
                 </li>
                 <li><i><a href="/" className="subheader" style={{ paddingLeft: '20px' }}>Herramientas para misa</a></i></li>
                 <li><Link to="/songs" >Cancionero</Link></li>
