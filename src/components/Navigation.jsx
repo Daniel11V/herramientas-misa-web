@@ -42,7 +42,7 @@ const Navigation = () => {
                     }
                     <div data-target="mobile-demo" className="sidenav-trigger hide-on-large-only noselect" style={{ cursor: 'pointer' }}><i className="material-icons noselect">menu</i></div>
                     {(lastPage) &&
-                        <div onClick={history.goBack} className="brand-logo" style={{cursor: 'pointer', fontSize: '25px', paddingLeft: '10px'}}>
+                        <div onClick={history.goBack} className="brand-logo noselect" style={{cursor: 'pointer', fontSize: '25px', paddingLeft: '10px'}}>
                             <i className="material-icons">chevron_left</i>
                             {lastPage}
                         </div>

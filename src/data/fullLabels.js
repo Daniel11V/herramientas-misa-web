@@ -20,7 +20,7 @@ const fullLabels = [
         }
     }, {
         name: 'Etiquetas de misa',
-        ask: 'En que momentos de la misa se podría cantar?',
+        ask: 'Para que momentos de misa?',
         lbs: {
             entrada: 'Entrada',
             gloria: 'Gloria',
