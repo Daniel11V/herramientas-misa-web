@@ -7,9 +7,15 @@
     font-size: 14px;
 }
 
-.btn-songs {
+/* .btn-songs {
     margin-top: 5px;
-}
+} */
+
+/* @media (max-width: 600px) {
+    .btn-songs {
+        margin-top: 0px;
+    }
+} */
 
 .collection:first-child {
     border-top-left-radius: 5px;
@@ -24,7 +30,6 @@
 .search-line {
     position: relative;
     display: flex;
-    border-bottom: 1px solid #e0e0e0;
 }
 
 .search-line .label-icon {
@@ -88,7 +93,7 @@
 
 .labelsInput {
     padding: 10px 20px 0 20px;
-    transition-duration: 0.5s height;
+    /* transition: visibility 2s linear; */
 }
 
 .collection:last-child {

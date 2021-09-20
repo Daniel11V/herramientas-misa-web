@@ -55,7 +55,7 @@ const Song = () => {
     return (
         <div className="song">
             {(song.labels.length !== 0)&&
-                <div style={{display: 'flex', marginTop: '15px', alignItems: 'center'}}>
+                <div style={{display: 'flex', marginTop: '15px', alignItems: 'center', flexWrap: 'wrap'}}>
                     <i className="material-icons label-icon">local_offer</i>
                     {
                         song.labels.map((label, i) => (
@@ -73,7 +73,7 @@ const Song = () => {
                     }
                 </div>
             }
-            <h3>{song.title} {song.author&&` - ${song.author}`}</h3>
+            <h3 className="header-song">{song.title} {song.author&&` - ${song.author}`}</h3>
             <div className="lyrics">
                 <span className="input-field">
                     {finalLyric}

@@ -1,15 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link  } from "react-router-dom";
-import '../styles/ListSongs.css';
+import '../styles/SongList.css';
 import { useSongs } from '../songs-context';
 import LabelsInput from './LabelsInput.jsx';
+import M from 'materialize-css';
 
-const ListSong = ({ searcher = false }) => {
+const SongList = ({ searcher = false }) => {
     const { songs, isLoading } = useSongs();
     const [ filteredSongs, setFilteredSongs ] = useState(songs);
     const [ showFiltros, setShowFiltros ] = useState(false);
     const [ labels, setLabels ] = useState([]);
     const [ search, setSearch ] = useState('');
+    const [ instance, setInstance ] = useState(null);
+    const collapse = useRef(null)
+
+    useEffect(() => {
+        if(collapse.current && !instance) {
+            let inst = M.Collapsible.init(collapse.current)
+            setInstance(inst);
+            console.log(collapse.current, inst);
+        }
+    }, [showFiltros, instance])
+
+    useEffect(() => {
+        if(instance) {
+            console.log(2, instance)
+            if (showFiltros) {
+                instance.open(0);
+            } else {
+                instance.close(0);
+            }
+        }
+    }, [showFiltros, instance])
 
     useEffect(() => {
         if(songs) {
@@ -47,7 +69,7 @@ const ListSong = ({ searcher = false }) => {
     <div className="collection songs">
         {searcher&&(
             <div className="nav-wrapper collection-item searcher">
-                <div className="search-line">
+                <div className="search-line" style={showFiltros?{borderBottom: '1px solid #e0e0e0'}:{}}>
                     <label className="label-icon" htmlFor="search"><i className="material-icons">search</i></label>
                     <input onChange={(e)=>setSearch(e.target.value)} id="search" type="search" placeholder="Buscar canción..." value={search} />
                     <div className="label-icon btn-icon" onClick={()=>setShowFiltros(!showFiltros)}>
@@ -57,13 +79,14 @@ const ListSong = ({ searcher = false }) => {
                         </i>
                     </div>
                 </div>
-                {showFiltros&&(
-                    <div className="labelsInput">
-                        <LabelsInput labels={labels} updateLabels={(lb)=>setLabels(lb)}/>
-                    </div>
-                )}
+                <ul className="collapsible" ref={collapse} style={{border:'none',boxShadow:'none',margin:'0'}}>
+                    <li>
+                        <div className="collapsible-body labelsInput">
+                            <LabelsInput labels={labels} updateLabels={(lb)=>setLabels(lb)}/>
+                        </div>
+                    </li>
+                </ul>
             </div>
-            
         )}
         {
             filteredSongs.map(song => (
@@ -89,4 +112,4 @@ const ListSong = ({ searcher = false }) => {
 );}
 
 
-export default ListSong;
+export default SongList;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import M from 'materialize-css';
 import axios from '../axios';
-import ListSongs from './ListSongs.jsx';
+import SongList from './SongList.jsx';
 
 
 const Suggestion = () => {
@@ -72,7 +72,7 @@ const Suggestion = () => {
                 </thead>
             </table>
             {(topSongs)?
-                <ListSongs songs={topSongs} />
+                <SongList songs={topSongs} />
                 :null
             }
         </div>

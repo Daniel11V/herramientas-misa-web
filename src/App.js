@@ -9,7 +9,7 @@ import {
 import axios from './axios';
 import { useSongs } from './songs-context';
 import Navigation from './components/Navigation.jsx';
-import ListSongs from './components/ListSongs.jsx';
+import SongList from './components/SongList.jsx';
 import SongForm from './components/SongForm.jsx';
 import Suggestion from './components/Suggestion.jsx';
 import Song from './components/Song.jsx';
@@ -50,13 +50,15 @@ const App = () => {
         <Switch>
           <Redirect from="/" exact to="/songs" />
           <Route path="/songs" >
-            <Link
-              to={{ pathname: '/add-song', state: { from: 'Cancionero' } }}
-              className="btn btn-songs waves-effect waves-light blue darken-2 right">
-              <i className="material-icons right">add</i>Añadir
-            </Link>
-            <h3>Cancionero</h3>
-            <ListSongs searcher={true} />
+            <div className="header">
+              <h3 className="cancionero">Cancionero</h3>
+              <Link
+                to={{ pathname: '/add-song', state: { from: 'Cancionero' } }}
+                className="btn waves-effect waves-light blue darken-2 right">
+                <i className="material-icons right">add</i>Añadir
+              </Link>
+            </div>
+            <SongList searcher={true} />
           </Route>
           <Route path="/add-song" >
             <SongForm />
