@@ -40,7 +40,7 @@ const Navigation = () => {
                     {(!lastPage)&&
                         <Link to="/" className="brand-logo hide-on-med-and-down" style={{ paddingLeft: '20px' }}>Herramientas para Misa</Link>
                     }
-                    <div data-target="mobile-demo" className="sidenav-trigger hide-on-large-only" style={{ cursor: 'pointer' }}><i className="material-icons">menu</i></div>
+                    <div data-target="mobile-demo" className="sidenav-trigger hide-on-large-only noselect" style={{ cursor: 'pointer' }}><i className="material-icons noselect">menu</i></div>
                     {(lastPage) &&
                         <div onClick={history.goBack} className="brand-logo" style={{cursor: 'pointer', fontSize: '25px', paddingLeft: '10px'}}>
                             <i className="material-icons">chevron_left</i>
