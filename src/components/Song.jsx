@@ -4,7 +4,7 @@ import { useSongs } from '../songs-context';
 import axios from '../axios';
 import M from 'materialize-css';
 import '../styles/Song.css';
-
+import fullLabels from '../data/fullLabels.js';
 
 const Song = () => {
     const history = useHistory();
@@ -60,7 +60,7 @@ const Song = () => {
                     {
                         song.labels.map((label, i) => (
                             <div key={i} className="label">
-                                <span>{label}</span>
+                                <span>{fullLabels[fullLabels.findIndex(type => type.lbs[label])].lbs[label]}</span>
                             </div>
                         ))
                     }
@@ -73,7 +73,7 @@ const Song = () => {
                 </span>
             </div>
             {song.creator && (
-                <span>
+                <span style={{fonStyle: 'italic'}}>
                     Transcripción hecha por {song.creator}
                 </span>
             )}

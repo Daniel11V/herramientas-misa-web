@@ -11,9 +11,9 @@ const SongForm = () => {
     const { songs, setNeedReload, user } = useSongs();
     const [ title, setTitle ] = useState('');
     const [ author, setAuthor ] = useState('');
-    const [ creator, setCreator ] = useState('');
+    const [ creator, setCreator ] = useState(null);
     const [ lyric, setLyric ] = useState('');
-    const [ labels, setLabels ] = useState('');
+    const [ labels, setLabels ] = useState([]);
 
     useEffect(() => {
         var elems = document.querySelectorAll('select');
@@ -43,20 +43,20 @@ const SongForm = () => {
     const submitSong = async(e) => {
         e.preventDefault();
 
-        const creatorSend = (!creator && user)?user.name:creator;
+        const creatorSend = (!creator)?user.name:creator;
 
-        const songToSend = { title, author, creatorSend, lyric, labels, rating: [] };
+        const songToSend = { title, author, creator: creatorSend, lyric, labels, rating: [] };
 
         if (id) {
             const res = await axios.put(`/api/songs/${id}`, { ...songToSend, _id: id})
                 .catch((err) => console.error(err));
             console.log(res.data);
-            M.toast({ html: 'Song Updated' });
+            M.toast({ html: 'Canción Actualizada' });
         } else {
             const res = await axios.post('/api/songs', songToSend)
                 .catch((err) => console.error(err));
             console.log(res.data);
-            M.toast({ html: 'Song Saved' });
+            M.toast({ html: 'Canción Guardada' });
         }
 
         setNeedReload(true);
