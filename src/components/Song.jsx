@@ -64,13 +64,6 @@ const Song = () => {
                             </div>
                         ))
                     }
-                    {
-                        song.topics.map((topic, i) => (
-                            <div key={i} className="label">
-                                <span>{topic}</span>
-                            </div>
-                        ))
-                    }
                 </div>
             }
             <h3 className="header-song">{song.title} {song.author&&` - ${song.author}`}</h3>

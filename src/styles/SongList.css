@@ -15,9 +15,26 @@
     height: 100px !important;
 }
 
-.profile-side span {
+.profile-side .name {
     margin: 10px 20px 0 !important;
     font-size: 25px !important;
+}
+
+.profile-side .googleLogout {
+    border-radius: 4px !important;
+    margin-top: 15px !important;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 5px !important;
+}
+
+.profile-side .googleLogout * {
+    padding: 0 !important;
+}
+
+.profile-side button {
+    /* height: 40px !important; */
 }
 
 li.profile {

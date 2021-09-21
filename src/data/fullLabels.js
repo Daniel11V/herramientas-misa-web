@@ -19,6 +19,27 @@ const fullLabels = [
             Alabanza: 'Alabanza'
         }
     }, {
+        name: 'Etiquetas de tiempo liturgico',
+        ask: 'Para que tiempos liturgicos?',
+        lbs: {
+            adviento: 'Adviento',
+            navidad: 'Navidad',
+            cuaresma: 'Cuaresma',
+            pascua: 'Pascua'
+        }
+    }, {
+        name: 'Etiquetas de sacramentos',
+        ask: 'Para que sacramentos?',
+        lbs: {
+            bautismo: 'Bautismo',
+            primeraComunion: 'Primera Comunión',
+            confirmacion: 'Confirmación',
+            reconciliaciónPenitencia: 'Reconciliación / Penitencia',
+            uncionDeLosEnfermos: 'Unción de los Enfermos',
+            casamiento: 'Casamiento',
+            ordenSagrado: 'Orden Sagrado'
+        }
+    }, {
         name: 'Etiquetas de misa',
         ask: 'Para que momentos de misa?',
         lbs: {

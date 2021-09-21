@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import { useSongs } from '../songs-context.jsx';
-import GoogleLogin from 'react-google-login';
+import LoginLogout from './LoginLogout.jsx';
 import M from 'materialize-css';
 
 
@@ -22,16 +22,6 @@ const Navigation = () => {
         });
     }, [history, setLastPage]);
 
-    const responseGoogle = (response) => {
-        if(response.googleId && !user) {
-            setUser({
-                googleId: response.profileObj.googleId,
-                name: response.profileObj.name,
-                imageUrl: response.profileObj.imageUrl              
-            });
-        }
-    }
-
     return (
         <div>
             <div className="navbar-fixed">
@@ -42,7 +32,7 @@ const Navigation = () => {
                     }
                     <div data-target="mobile-demo" className="sidenav-trigger hide-on-large-only noselect" style={{ cursor: 'pointer' }}><i className="material-icons noselect">menu</i></div>
                     {(lastPage) &&
-                        <div onClick={history.goBack} className="brand-logo noselect" style={{cursor: 'pointer', fontSize: '25px', paddingLeft: '10px'}}>
+                        <div onClick={history.goBack} className="brand-logo noselect" style={{cursor: 'pointer', fontSize: '25px', paddingLeft: '10px', display: 'flex', flexWrap: 'nowrap'}}>
                             <i className="material-icons">chevron_left</i>
                             {lastPage}
                         </div>
@@ -57,13 +47,7 @@ const Navigation = () => {
                         </li>
                         ):(
                         <li>
-                            <GoogleLogin
-                            clientId="270166148168-cu4pvav4r2s5pps6b8t8chqdratnklgs.apps.googleusercontent.com"
-                            buttonText="Iniciar Sesion"
-                            onSuccess={responseGoogle}
-                            onFailure={responseGoogle}
-                            cookiePolicy={'single_host_origin'}
-                            />
+                            <LoginLogout update={(v)=>(!user)&&setUser(v)} />
                         </li>
                         )
                     }
@@ -82,6 +66,7 @@ const Navigation = () => {
                         </div>
                         <img className="circle" src={user.imageUrl} key={user.imageUrl} alt="profile" onError={()=>{this.onerror=null;this.src='https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png';}} />
                         <span className="white-text name">{user.name}</span>
+                        <LoginLogout logout={true} update={()=>setUser(null)}/>
                     </div>
                 ) : (
                     <div className="user-view">
@@ -89,13 +74,7 @@ const Navigation = () => {
                             <img alt="background"src="https://images.freecreatives.com/wp-content/uploads/2016/02/Abstract-Bright-Blue-Geometric-Background.jpg" />
                         </div>
                         <img className="circle" src="https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png" alt="profile" />
-                        <GoogleLogin
-                        clientId="270166148168-cu4pvav4r2s5pps6b8t8chqdratnklgs.apps.googleusercontent.com"
-                        buttonText="Iniciar Sesion"
-                        onSuccess={responseGoogle}
-                        onFailure={responseGoogle}
-                        cookiePolicy={'single_host_origin'}
-                        />
+                        <LoginLogout update={(v)=>(!user)&&setUser(v)} />
                     </div>
                 )
                 }
