@@ -20,7 +20,6 @@ const SongForm = () => {
         M.FormSelect.init(elems);
 
         if (id && songs.length !== 0) {
-            console.log(songs);
             const song = songs.find(song => song._id === id);
 
             if (song) {
