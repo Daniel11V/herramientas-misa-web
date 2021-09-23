@@ -14,7 +14,7 @@
         }
     ],
     "theme_color": "#0050da",
-    "background_color": "#0050da",
+    "background_color": "#ffffff",
     "start_url": "https://herramientas-misa.netlify.app/",
     "display": "standalone",
     "orientation": "portrait"
