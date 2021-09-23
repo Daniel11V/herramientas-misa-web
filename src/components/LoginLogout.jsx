@@ -14,7 +14,7 @@ const LoginLogout = ({children = null, logout = false, update}) => {
     }
 
     const logoutResponse = () => {
-        update(null);
+        update({});
     }
     
     if (children) {

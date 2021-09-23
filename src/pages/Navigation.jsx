@@ -40,17 +40,17 @@ const Navigation = () => {
                     <ul className="right hide-on-med-and-down">
                         <li><Link to="/songs">Cancionero</Link></li>
                         <li><Link to="/suggestion">Recomendación</Link></li>
-                        {user?(
+                        {user.name?(
                             <li className="profile">
                                 <div style={{display: 'flex',flexDirection: 'column'}}>
                                     <span className="white-text name" style={{lineHeight: 'normal',marginTop: '2px', fontSize:'23px'}} >{user.name}</span>
-                                    <LoginLogout logout={true} update={()=>setUser(null)}/>
+                                    <LoginLogout logout={true} update={(v)=>setUser(v)}/>
                                 </div>
                                 <img className="circle" src={user.imageUrl} alt="profile" onError={(e)=>{e.target.onerror=null;e.target.src='https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png';}} />
                             </li>
                             ):(
                             <li className="sessionLi" > 
-                                <LoginLogout update={(v)=>(!user)&&setUser(v)} />
+                                <LoginLogout update={(v)=>(!user.name)&&setUser(v)} />
                             </li>
                             )
                         }
@@ -62,14 +62,14 @@ const Navigation = () => {
 
             <ul className="sidenav sidenav-close" id="mobile-demo">
                 <li>
-                {(user) ? (
+                {(user.name) ? (
                     <div className="user-view profile-side">
                         <div className="background">
                             <img alt="background"src="https://images.freecreatives.com/wp-content/uploads/2016/02/Abstract-Bright-Blue-Geometric-Background.jpg" />
                         </div>
                         <img className="circle" src={user.imageUrl} key={user.imageUrl} alt="profile" onError={(e)=>{e.target.onerror=null;e.target.src='https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png';}} />
                         <span className="white-text name">{user.name}</span>
-                        <LoginLogout logout={true} update={()=>setUser(null)} className="logout" />
+                        <LoginLogout logout={true} update={(v)=>setUser(v)} className="logout" />
                     </div>
                 ) : (
                     <div className="user-view">
@@ -77,7 +77,7 @@ const Navigation = () => {
                             <img alt="background"src="https://images.freecreatives.com/wp-content/uploads/2016/02/Abstract-Bright-Blue-Geometric-Background.jpg" />
                         </div>
                         <img className="circle" src="https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png" alt="profile" />
-                        <LoginLogout update={(v)=>(!user)&&setUser(v)} />
+                        <LoginLogout update={(v)=>(!user.name)&&setUser(v)} />
                     </div>
                 )
                 }

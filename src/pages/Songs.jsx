@@ -20,7 +20,7 @@ const Songs = () => {
         <Fragment>
             <div className="header">
               <h3 className="cancionero">Cancionero</h3>
-              {user ? (
+              {user.name ? (
                 <Link
                   to={{ pathname: '/add-song', state: { from: 'Cancionero' } }}
                   className="btn waves-effect waves-light blue darken-2 right">

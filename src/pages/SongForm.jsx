@@ -19,23 +19,26 @@ const SongForm = () => {
         var elems = document.querySelectorAll('select');
         M.FormSelect.init(elems);
 
-        if (id) {
+        if (id && songs.length !== 0) {
+            console.log(songs);
             const song = songs.find(song => song._id === id);
 
-            setTitle(song.title);
-            setAuthor(song.author);
-            setCreator(song.creator);
-            setLyric(song.lyric);
-            setLabels(song.labels);
-    
-            // Autoresize
-            let inputs = document.querySelectorAll('.lab');
-            for(let i = 0; i < inputs.length;i++){
-                inputs[i].classList.add("active");
+            if (song) {
+                setTitle(song.title);
+                setAuthor(song.author);
+                setCreator(song.creator);
+                setLyric(song.lyric);
+                setLabels(song.labels);
+        
+                // Autoresize
+                let inputs = document.querySelectorAll('.lab');
+                for(let i = 0; i < inputs.length;i++){
+                    inputs[i].classList.add("active");
+                }
+        
+                let textarea = document.querySelector('textarea');
+                setTimeout(() => M.textareaAutoResize(textarea), 500);
             }
-    
-            let textarea = document.querySelector('textarea');
-            setTimeout(() => M.textareaAutoResize(textarea), 500);
         }
     }, [songs, id]);
 

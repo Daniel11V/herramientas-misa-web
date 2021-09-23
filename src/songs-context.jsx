@@ -6,7 +6,7 @@ export function SongsProvider({ children }) {
     const [songs, setSongs] = useState([]);
     const [needReload, setNeedReload] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState({});
 
     return (
         <ContextSongs.Provider value={{ 

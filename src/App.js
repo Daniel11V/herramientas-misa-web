@@ -14,7 +14,7 @@ import Song from './pages/Song.jsx';
 import Songs from './pages/Songs';
 
 const App = () => {
-  const { setSongs, setIsLoading, needReload, setNeedReload } = useSongs();
+  const { setSongs, setIsLoading, needReload, setNeedReload, user } = useSongs();
 
   useEffect(() => {
     const fetchSongs = async (repeat = 1) => {
@@ -54,9 +54,11 @@ const App = () => {
         <Switch>
           <Redirect from="/" exact to="/songs" />
           <Route path="/songs" component={Songs} />
-          <Route path={["/add-song", "/edit-song/:id"]} component={SongForm} />
-          <Route path="/suggestion" component={Suggestion} />
           <Route path="/song/:id" component={Song} />
+          <Route path={["/add-song", "/edit-song/:id"]} >
+            {user.name ? <SongForm /> : <Redirect to="/songs" />}
+          </Route>
+          <Route path="/suggestion" component={Suggestion} />
           <Route>
             <h3>Error 404 - No se encontro la página</h3>
           </Route>
