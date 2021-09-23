@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import { useSongs } from '../songs-context.jsx';
-import LoginLogout from './LoginLogout.jsx';
+import LoginLogout from '../components/LoginLogout.jsx';
 import M from 'materialize-css';
 
 
@@ -43,7 +43,7 @@ const Navigation = () => {
                     {user?(
                         <li className="profile">
                             <span className="white-text name">{user.name}</span>
-                            <img className="circle" src={user.imageUrl} alt="profile" onError={()=>{this.onerror=null;this.src='https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png';}} />
+                            <img className="circle" src={user.imageUrl} alt="profile" onError={(e)=>{e.target.onerror=null;e.target.src='https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png';}} />
                         </li>
                         ):(
                         <li>
@@ -64,7 +64,7 @@ const Navigation = () => {
                         <div className="background">
                             <img alt="background"src="https://images.freecreatives.com/wp-content/uploads/2016/02/Abstract-Bright-Blue-Geometric-Background.jpg" />
                         </div>
-                        <img className="circle" src={user.imageUrl} key={user.imageUrl} alt="profile" onError={()=>{this.onerror=null;this.src='https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png';}} />
+                        <img className="circle" src={user.imageUrl} key={user.imageUrl} alt="profile" onError={(e)=>{e.target.onerror=null;e.target.src='https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png';}} />
                         <span className="white-text name">{user.name}</span>
                         <LoginLogout logout={true} update={()=>setUser(null)}/>
                     </div>

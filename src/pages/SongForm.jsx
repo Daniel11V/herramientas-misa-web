@@ -3,7 +3,7 @@ import { useParams, useHistory } from "react-router-dom";
 import M from 'materialize-css';
 import axios from '../axios';
 import { useSongs } from '../songs-context';
-import LabelsInput from './LabelsInput.jsx';
+import LabelsInput from '../components/LabelsInput';
 
 const SongForm = () => {
     const history = useHistory();

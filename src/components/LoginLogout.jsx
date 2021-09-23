@@ -1,7 +1,8 @@
-import React from 'react';
+import React from 'react'
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 
-const LoginLogout = ({children = null, logout = false, update, history = null}) => {    
+const LoginLogout = ({children = null, logout = false, update}) => {    
+
     const loginResponse = (response) => {
         if(response.googleId) {
             update({
@@ -9,17 +10,11 @@ const LoginLogout = ({children = null, logout = false, update, history = null}) 
                 name: response.profileObj.name,
                 imageUrl: response.profileObj.imageUrl              
             });
-            if(history) {
-                history.push({
-                pathname: '/add-song', state: { from: 'Cancionero' }
-                });
-            }
         }
     }
 
-    const logoutResponse = (response) => {
-        update();
-        console.log('Logout response: ', response);
+    const logoutResponse = () => {
+        update(null);
     }
     
     if (children) {
@@ -30,7 +25,6 @@ const LoginLogout = ({children = null, logout = false, update, history = null}) 
                 onSuccess={loginResponse}
                 onFailure={loginResponse}
                 cookiePolicy={'single_host_origin'}
-                isSignedIn={true}
                 render={renderProps => (
                   <div onClick={renderProps.onClick} disabled={renderProps.disabled}>{children}</div>
                 )}

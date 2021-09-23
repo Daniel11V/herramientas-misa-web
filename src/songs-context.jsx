@@ -3,7 +3,7 @@ import React, { createContext, useState } from 'react';
 const ContextSongs = createContext();
 
 export function SongsProvider({ children }) {
-    const [songs, setSongs] = useState(null);
+    const [songs, setSongs] = useState([]);
     const [needReload, setNeedReload] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState(null);

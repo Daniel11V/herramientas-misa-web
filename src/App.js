@@ -3,46 +3,40 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
-  Redirect,
-  useHistory
+  Redirect
 } from "react-router-dom";
 import axios from './axios';
 import { useSongs } from './songs-context';
-import Navigation from './components/Navigation.jsx';
-import SongList from './components/SongList.jsx';
-import SongForm from './components/SongForm.jsx';
-import Suggestion from './components/Suggestion.jsx';
-import Song from './components/Song.jsx';
-import LoginLogout from './components/LoginLogout.jsx';
+import Navigation from './pages/Navigation.jsx';
+import SongForm from './pages/SongForm.jsx';
+import Suggestion from './pages/Suggestion.jsx';
+import Song from './pages/Song.jsx';
+import Songs from './pages/Songs';
 
 const App = () => {
-  const { setSongs, setIsLoading, needReload, setNeedReload, user, setUser } = useSongs();
-  const history = useHistory();
+  const { setSongs, setIsLoading, needReload, setNeedReload } = useSongs();
 
   useEffect(() => {
-    const fetchSongs = async (id) => {
-      setIsLoading(true);
+    const fetchSongs = async (repeat = 1) => {
       try {
+        setIsLoading(true);
         const res = await axios.get('/api/songs');
         //console.log(res.data);
         setSongs(res.data);
         setIsLoading(false);
       } catch (error) {
-        console.error('Error de conexión: ', error);
+        console.log(`${repeat}º Error de conexión: `, error);
+        if (repeat >= 3) {
+          console.log('Fin de la conexión.');
+          setIsLoading(false);
+        } else {
+          fetchSongs(repeat + 1);
+        }
       }
     }
     fetchSongs();
     setNeedReload(false);
   }, [setSongs, setIsLoading, needReload, setNeedReload])
-
-  const loginAddSong = (v) => {
-    setUser(v);
-    history.push({
-      pathname: '/add-song', state: { from: 'Cancionero' }
-    });
-  }
-
 
   return (
     <Router>
@@ -59,40 +53,10 @@ const App = () => {
       <div className="container">
         <Switch>
           <Redirect from="/" exact to="/songs" />
-          <Route path="/songs" >
-            <div className="header">
-              <h3 className="cancionero">Cancionero</h3>
-              {user ? (
-                <Link
-                  to={{ pathname: '/add-song', state: { from: 'Cancionero' } }}
-                  className="btn waves-effect waves-light blue darken-2 right">
-                  <i className="material-icons right">add</i>Añadir
-                </Link>
-              ) : (
-                <LoginLogout update={(v) => loginAddSong(v)}>
-                  <div
-                    className="btn waves-effect waves-light blue darken-2 right">
-                    <i className="material-icons right">add</i>Añadir
-                  </div>
-                </LoginLogout>
-              )
-
-              }
-            </div>
-            <SongList searcher={true} />
-          </Route>
-          <Route path="/add-song" >
-            <SongForm />
-          </Route>
-          <Route path="/edit-song/:id" >
-            <SongForm />
-          </Route>
-          <Route path="/suggestion" >
-            <Suggestion />
-          </Route>
-          <Route path="/song/:id" >
-            <Song />
-          </Route>
+          <Route path="/songs" component={Songs} />
+          <Route path={["/add-song", "/edit-song/:id"]} component={SongForm} />
+          <Route path="/suggestion" component={Suggestion} />
+          <Route path="/song/:id" component={Song} />
           <Route>
             <h3>Error 404 - No se encontro la página</h3>
           </Route>

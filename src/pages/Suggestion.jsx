@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import M from 'materialize-css';
 import axios from '../axios';
-import SongList from './SongList.jsx';
+import SongList from '../components/SongList.jsx';
 
 
 const Suggestion = () => {

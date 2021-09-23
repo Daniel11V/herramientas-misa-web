@@ -108,6 +108,14 @@ const SongList = ({ searcher = false }) => {
                 </span>
             </div>
         }
+        {
+            (songs.length === 0)&&
+            <div className="collection-item" >
+                <span className="song-item" >
+                    Sin conexión, pruebe recargando la página.
+                </span>
+            </div>
+        }
     </div>
 );}
 
