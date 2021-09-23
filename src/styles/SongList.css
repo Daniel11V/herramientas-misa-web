@@ -20,21 +20,36 @@
     font-size: 25px !important;
 }
 
+
 .profile-side .googleLogout {
-    border-radius: 4px !important;
     margin-top: 15px !important;
     height: 30px;
-    display: flex;
-    align-items: center;
-    padding: 0 5px !important;
 }
 
-.profile-side .googleLogout * {
+.googleLogout {
+    border-radius: 4px !important;
+    /* margin-top: 15px !important; */
+    display: flex;
+    align-items: center;
+    padding: 0 8px !important;
+}
+
+.googleLogout * {
     padding: 0 !important;
 }
 
-.profile-side button {
-    /* height: 40px !important; */
+.profile .googleLogout {
+    font-size: 17px;
+    height: auto;
+    padding: 0 5px 0 !important;
+    margin-top: 3px !important;
+    margin-bottom: 2px !important;
+    transform: scale(0.8) translate(-17px, 0px);
+}
+
+.googleLogout div {
+    margin-right: 6px;
+    padding-top: 3px !important;
 }
 
 li.profile {
@@ -52,6 +67,29 @@ li.profile img {
     height: 45px;
     width: 45px;
     margin: 0 15px;
+}
+
+#mobile-demo .googleLogin {
+    border-radius: 7px !important;
+    padding: 0 6px !important;
+    font-size: 18px !important;
+}
+
+#mobile-demo .googleLogin > div {
+    padding: 2px 11px 0 8px !important;
+    margin: 0 !important;
+}
+
+.sessionLi .googleLogin {
+    transform: scale(0.9) translate(-10px, 2px) !important;
+    margin-left: 15px !important;
+}
+
+.sessionLi .googleLogin > * {
+    padding-top: 7px !important;
+    padding-bottom: 4px !important;
+    margin: 0 !important;
+    font-size: 16px !important;
 }
 
 .songs {

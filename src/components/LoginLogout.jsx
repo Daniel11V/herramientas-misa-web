@@ -39,6 +39,7 @@ const LoginLogout = ({children = null, logout = false, update}) => {
                 onFailure={loginResponse}
                 cookiePolicy={'single_host_origin'}
                 isSignedIn={true}
+                className="googleLogin"
                 />   
         )
     } else {

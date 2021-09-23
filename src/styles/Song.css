@@ -37,6 +37,10 @@
     margin: 0;
 }
 
+.song > span {
+    font-style: italic;
+}
+
 .btn-song {
     margin-top: 15px;
     margin-right: 10px;

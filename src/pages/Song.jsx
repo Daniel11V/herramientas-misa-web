@@ -9,7 +9,7 @@ import fullLabels from '../data/fullLabels.js';
 const Song = () => {
     const history = useHistory();
     const { id } = useParams();
-    const { songs, isLoading, setNeedReload } = useSongs();
+    const { songs, isLoading, setNeedReload, user } = useSongs();
     const emptySong = {
         _id: id,
         title: '',
@@ -77,7 +77,7 @@ const Song = () => {
                     Transcripción hecha por {song.creator}
                 </span>
             )}
-            {song.title && (
+            {(song.creator === user.name) && (
                 <div className="btns">
                     <Link 
                         to={{ pathname: `/edit-song/${id}`, state: { from: 'Canción' } }} 

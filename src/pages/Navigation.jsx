@@ -38,19 +38,22 @@ const Navigation = () => {
                         </div>
                     }
                     <ul className="right hide-on-med-and-down">
-                    <li><Link to="/songs">Cancionero</Link></li>
-                    <li><Link to="/suggestion">Recomendación</Link></li>
-                    {user?(
-                        <li className="profile">
-                            <span className="white-text name">{user.name}</span>
-                            <img className="circle" src={user.imageUrl} alt="profile" onError={(e)=>{e.target.onerror=null;e.target.src='https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png';}} />
-                        </li>
-                        ):(
-                        <li>
-                            <LoginLogout update={(v)=>(!user)&&setUser(v)} />
-                        </li>
-                        )
-                    }
+                        <li><Link to="/songs">Cancionero</Link></li>
+                        <li><Link to="/suggestion">Recomendación</Link></li>
+                        {user?(
+                            <li className="profile">
+                                <div style={{display: 'flex',flexDirection: 'column'}}>
+                                    <span className="white-text name" style={{lineHeight: 'normal',marginTop: '2px', fontSize:'23px'}} >{user.name}</span>
+                                    <LoginLogout logout={true} update={()=>setUser(null)}/>
+                                </div>
+                                <img className="circle" src={user.imageUrl} alt="profile" onError={(e)=>{e.target.onerror=null;e.target.src='https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png';}} />
+                            </li>
+                            ):(
+                            <li className="sessionLi" > 
+                                <LoginLogout update={(v)=>(!user)&&setUser(v)} />
+                            </li>
+                            )
+                        }
                     </ul>
                 </div>
                 </nav>
@@ -66,7 +69,7 @@ const Navigation = () => {
                         </div>
                         <img className="circle" src={user.imageUrl} key={user.imageUrl} alt="profile" onError={(e)=>{e.target.onerror=null;e.target.src='https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png';}} />
                         <span className="white-text name">{user.name}</span>
-                        <LoginLogout logout={true} update={()=>setUser(null)}/>
+                        <LoginLogout logout={true} update={()=>setUser(null)} className="logout" />
                     </div>
                 ) : (
                     <div className="user-view">
