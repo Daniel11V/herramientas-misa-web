@@ -12,6 +12,7 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
     const [ labels, setLabels ] = useState(labelsStart);
     const [ search, setSearch ] = useState('');
     const [ instance, setInstance ] = useState(null);
+    const [ songChoose, setSongChoose ] = useState(null);
     const collapse = useRef(null)
 
     useEffect(() => {
@@ -38,17 +39,21 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
             let startsTitle = [];
             let includesTitle = [];
             let includesLyric = [];
-            songs.forEach(song => {
-                if (labels.every(elem => song.labels.includes(elem))) {
-                    if (search === '' || song.title.toLowerCase().startsWith(search.toLowerCase())) {
-                        startsTitle.push(song);
-                    } else if (song.title.toLowerCase().includes(search.toLowerCase())) {
-                        includesTitle.push(song);
-                    } else if (song.lyric.toLowerCase().includes(search.toLowerCase())) {
-                        includesLyric.push(song);
+            if (songChoose) {
+                startsTitle.push(songs.find(song=>song._id===songChoose));
+            } else {
+                songs.forEach(song => {
+                    if (labels.every(elem => song.labels.includes(elem))) {
+                        if (search === '' || song.title.toLowerCase().startsWith(search.toLowerCase())) {
+                            startsTitle.push(song);
+                        } else if (song.title.toLowerCase().includes(search.toLowerCase())) {
+                            includesTitle.push(song);
+                        } else if (song.lyric.toLowerCase().includes(search.toLowerCase())) {
+                            includesLyric.push(song);
+                        }
                     }
-                }
-            })
+                })
+            }
     
             setFilteredSongs([
                 ...startsTitle,
@@ -57,7 +62,22 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
             ]);
         }
 
-    }, [songs, search, labels])
+    }, [songs, search, labels, songChoose])
+
+    const handleCheck = (e, songId) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (songId === songChoose) {
+            setSongChoose(null);
+            document.getElementById(songId).checked = false;
+        } else {
+            setSongChoose(songId);
+            document.getElementById(songId).checked = true;
+        }
+
+    }
+    
 
     if (isLoading) return (
         <div className="progress" style={{backgroundColor: '#9cd1ff'}}>
@@ -92,16 +112,16 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
             filteredSongs.map(song => (
                 <Link 
                     to={{ pathname: `/song/${song._id}`, state: { from: 'Cancionero' } }}
-                    key={song._id} className="collection-item">
+                    key={song._id} className={`collection-item ${checking?'with-check':''}`}>
                     <span className="song-item" >
                         {song.title}
                         {song.author&&` - ${song.author}`}
                     </span>
-                    {/* {checking&&(
-                        <label>
-                            <input type="checkbox" class="filled-in" checked="checked" />
+                    {checking&&(
+                        <label onClick={(e)=>handleCheck(e, song._id)}>
+                            <input type="checkbox" id={song._id} className="filled-in checkbox-blue" /><span />
                         </label>
-                    )} */}
+                    )} 
                 </Link>
             ))
         }

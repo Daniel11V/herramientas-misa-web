@@ -12,6 +12,7 @@ import SongForm from './pages/SongForm.jsx';
 import Suggestion from './pages/Suggestion.jsx';
 import Song from './pages/Song.jsx';
 import Songs from './pages/Songs';
+import Coros from './pages/Coros';
 
 const App = () => {
   const { setSongs, setIsLoading, needReload, setNeedReload, user } = useSongs();
@@ -59,6 +60,7 @@ const App = () => {
             {user.name ? <SongForm /> : <Redirect to="/songs" />}
           </Route>
           <Route path="/suggestion" component={Suggestion} />
+          <Route path="/coros" component={Coros} />
           <Route>
             <h3>Error 404 - No se encontro la página</h3>
           </Route>

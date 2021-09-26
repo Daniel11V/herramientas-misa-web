@@ -39,6 +39,7 @@ const Navigation = () => {
                     }
                     <ul className="right hide-on-med-and-down">
                         <li><Link to="/songs">Cancionero</Link></li>
+                        <li><Link to="/coros">Coros</Link></li>
                         <li><Link to="/suggestion">Recomendación</Link></li>
                         {user.name?(
                             <li className="profile">
@@ -84,6 +85,7 @@ const Navigation = () => {
                 </li>
                 <li><i><a href="/" className="subheader" style={{ paddingLeft: '20px' }}>Herramientas para misa</a></i></li>
                 <li><Link to="/songs" >Cancionero</Link></li>
+                <li><Link to="/coros" >Coros</Link></li>
                 <li><Link to="/suggestion" >Recomendación para misa</Link></li>
             </ul>
         </div>

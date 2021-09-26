@@ -195,6 +195,23 @@ li.profile img {
     border-bottom-right-radius: 5px;
 }
 
+.collection-item.with-check {
+    display: flex !important;
+    justify-content: space-between;
+    height: 42px !important;
+    padding: 0 0 0 20px !important;
+}
+
+.collection-item.with-check > span {
+    flex: 1;
+    padding-top: 10px;
+}
+
+.collection-item.with-check > label {
+    margin: 10px 0 0 10px;
+    z-index: 20;
+}
+
 /* De SongForm */
 
 .select-wrapper input.select-dropdown:focus {
@@ -224,4 +241,23 @@ input:not([type]):focus:not([readonly])+label, input[type=text]:not(.browser-def
 
 .noselect:focus {
     outline: none !important;
+}
+
+.checkbox-blue[type="checkbox"].filled-in:checked+span:not(.lever):after{
+     border: 2px solid #1976D2;
+     background-color: #1976D2;
+}
+
+.indications th {
+    font-weight: normal;
+    font-style: italic;
+    padding-bottom: 5px;
+}
+
+.moment th {
+    padding-bottom: 0 !important;
+}
+
+.moment tr {
+    border: 0 !important;
 }

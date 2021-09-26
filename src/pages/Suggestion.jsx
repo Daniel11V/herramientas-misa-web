@@ -32,56 +32,59 @@ const Suggestion = () => {
 
     return (
         <div className="row">
-            <div className="card" style={{marginTop: '20px'}}>
-                <div className="card-content">
-                    <form onSubmit={searchSongs} >
-                        <h5 style={{marginBottom: '40px'}}>Solicitar Recomendación</h5>
-                        <div className="input-field">
-                            <select value={base} onChange={(e)=>setBase(e.target.value)}>
-                                <option value="EvDom">Evangelio del Domingo</option>
-                                <option value="EvHoy">Evangelio de hoy</option>
-                                <option value="EvInput">Palabras clave</option>
-                            </select>
-                            <label>En base a: </label>
-                        </div>
-                        {   (base === 'EvInput')?(
-                                <div className="input-field">
-                                    <textarea 
-                                        id="input" 
-                                        name="input" 
-                                        className="materialize-textarea" 
-                                        onChange={(e)=>setInput(e.target.value)} 
-                                        value={input}/>
-                                    <label htmlFor="input">Texto / Palabras clave</label>
-                                </div>
-                            ):null
-                        }
-                        <div className="input-field row">
-                            <input type="submit" className="btn light-blue darken-4 col s12" value="Buscar" />
-                        </div>
-                    </form>
+            <form onSubmit={searchSongs} style={{margin: '25px 0'}}>
+                <header>
+                    <h3 style={{marginBottom: '40px'}}>Solicitar Recomendación</h3>
+                </header>
+                <div className="input-field">
+                    <select value={base} onChange={(e)=>setBase(e.target.value)}>
+                        <option value="EvDom">Evangelio del Domingo</option>
+                        <option value="EvHoy">Evangelio de hoy</option>
+                        <option value="EvInput">Palabras clave</option>
+                    </select>
+                    <label>En base a: </label>
                 </div>
-            </div>
+                {   (base === 'EvInput')?(
+                        <div className="input-field">
+                            <textarea 
+                                id="input" 
+                                name="input" 
+                                className="materialize-textarea" 
+                                onChange={(e)=>setInput(e.target.value)} 
+                                value={input}/>
+                            <label htmlFor="input">Texto / Palabras clave</label>
+                        </div>
+                    ):null
+                }
+                <div className="input-field row">
+                    <input type="submit" className="btn light-blue darken-4 col s12" value="Buscar" />
+                </div>
+            </form>
 
             {/* Suggested Songs */}
-            <table>
+            <table className="indications">
                 <thead>
                     <tr>
                         <th>Canciónes Recomendadas</th>
+                        <th style={{textAlign: 'right'}}>Elegir</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {(topSongs)?
-                        Object.keys(fullLabels[4].lbs).map(moment => (
-                            <tc style={{border: '0'}}>
-                                <th style={{paddingBottom: '0'}}>{fullLabels[4].lbs[moment]}</th>
-                                <SongList songs={topSongs} labelsStart={[moment]} checking={true}/>
-                            </tc>
-                        ))
-                        :null
-                    }
-                </tbody>
             </table>
+            {(topSongs)?
+                Object.keys(fullLabels[4].lbs).map(moment => (
+                    <div className="moment" key={moment}>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>{fullLabels[4].lbs[moment]}</th>
+                                </tr>
+                            </thead>
+                        </table>
+                        <SongList songs={topSongs} labelsStart={[moment]} checking={true}/>
+                    </div>
+                ))
+                :null
+            }
         </div>
     );
 }
