@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import M from 'materialize-css';
 import axios from '../axios';
 import SongList from '../components/SongList.jsx';
+import fullLabels from '../data/fullLabels';
 
 
 const Suggestion = () => {
     const [ base, setBase ] = useState('EvDom');
     const [ input, setInput ] = useState('');
-    const [ topSongs, setTopSongs ] = useState([]);
+    const [ topSongs, setTopSongs ] = useState([])
 
     // const fetchTopSongs = async() => {
     //     const res = await axios.get('/api/suggestion');
@@ -24,7 +25,6 @@ const Suggestion = () => {
         e.preventDefault();
         const res = await axios.post('/api/suggestion', { base, input })
             .catch((err) => console.error(err));
-        console.log(res.data);
         setTopSongs(res.data);
         M.toast({ html: 'Readings Updated' });
         // fetchTopSongs();
@@ -70,11 +70,18 @@ const Suggestion = () => {
                         <th>Canciónes Recomendadas</th>
                     </tr>
                 </thead>
+                <tbody>
+                    {(topSongs)?
+                        Object.keys(fullLabels[4].lbs).map(moment => (
+                            <tc style={{border: '0'}}>
+                                <th style={{paddingBottom: '0'}}>{fullLabels[4].lbs[moment]}</th>
+                                <SongList songs={topSongs} labelsStart={[moment]} checking={true}/>
+                            </tc>
+                        ))
+                        :null
+                    }
+                </tbody>
             </table>
-            {(topSongs)?
-                <SongList songs={topSongs} />
-                :null
-            }
         </div>
     );
 }

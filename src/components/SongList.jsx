@@ -5,11 +5,11 @@ import { useSongs } from '../songs-context';
 import LabelsInput from './LabelsInput.jsx';
 import M from 'materialize-css';
 
-const SongList = ({ searcher = false }) => {
+const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
     const { songs, isLoading } = useSongs();
     const [ filteredSongs, setFilteredSongs ] = useState(songs);
     const [ showFiltros, setShowFiltros ] = useState(false);
-    const [ labels, setLabels ] = useState([]);
+    const [ labels, setLabels ] = useState(labelsStart);
     const [ search, setSearch ] = useState('');
     const [ instance, setInstance ] = useState(null);
     const collapse = useRef(null)
@@ -97,6 +97,11 @@ const SongList = ({ searcher = false }) => {
                         {song.title}
                         {song.author&&` - ${song.author}`}
                     </span>
+                    {/* {checking&&(
+                        <label>
+                            <input type="checkbox" class="filled-in" checked="checked" />
+                        </label>
+                    )} */}
                 </Link>
             ))
         }
