@@ -3,20 +3,20 @@ const fullLabels = [
         name: 'Etiquetas de personas',
         ask: 'A quienes se menciona?',
         lbs: {
-            Maria: 'María',
-            DiosPadre: 'Dios Padre',
-            Jesus: 'Jesús',
-            ES: 'Espiritu Santo'
+            maria: 'María',
+            padre: 'Dios Padre',
+            jesus: 'Jesús',
+            espiritu_santo: 'Espiritu Santo'
         }
     }, {
         name: 'Etiquetas de temas',
         ask: 'Que temas menciona?',
         lbs: {
-            SeguirAJesus: 'Seguir a Jesús',
-            PredicarMisionar: 'Pedicar/Misionar',
-            Misericordia: 'Misericordia',
-            Santidad: 'Santidad',
-            Alabanza: 'Alabanza'
+            seguirAJesus: 'Seguir a Jesús',
+            predicarMisionar: 'Pedicar/Misionar',
+            misericordia: 'Misericordia',
+            santidad: 'Santidad',
+            alabanza: 'Alabanza'
         }
     }, {
         name: 'Etiquetas de tiempo liturgico',

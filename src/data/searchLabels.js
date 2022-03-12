@@ -1,0 +1,33 @@
+const searchLabels = {
+    maria: ['maria', 'madre'],
+    padre: ['padre', 'creador'],
+    jesus: ['padre', 'creador'],
+    espiritu_santo: ['espiritu', 'soplo', 'sopla', 'viento', 'fuego', 'paloma', 'santo'],
+    seguirAJesus: [],
+    predicarMisionar: [],
+    misericordia: [],
+    santidad: [],
+    alabanza: [],
+    adviento: [],
+    navidad: [],
+    cuaresma: [],
+    pascua: [],
+    bautismo: [],
+    primeraComunion: [],
+    confirmacion: [],
+    reconciliaciónPenitencia: [],
+    uncionDeLosEnfermos: [],
+    casamiento: [],
+    ordenSagrado: [],
+    entrada: [],
+    gloria: [],
+    aleluya: [],
+    ofrenda: [],
+    santo: [],
+    cordero: [],
+    comunion: [],
+    meditacion: [],
+    salida: ['maria', 'madre']
+};
+
+export default searchLabels;

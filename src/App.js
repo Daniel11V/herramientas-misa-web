@@ -1,43 +1,20 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect
 } from "react-router-dom";
-import axios from './axios';
-import { useSongs } from './songs-context';
-import Navigation from './pages/Navigation.jsx';
-import SongForm from './pages/SongForm.jsx';
-import Suggestion from './pages/Suggestion.jsx';
-import Song from './pages/Song.jsx';
-import Songs from './pages/Songs';
-import Coros from './pages/Coros';
+import { useUser } from './layout/context/UserContext';
+import Navigation from './layout/components/Navigation';
+import Song from './songs/pages/Song';
+import Songs from './songs/pages/Songs';
+import SongForm from './songs/pages/SongForm';
+import Repertories from './repertories/pages/Repertories';
+import Suggestion from './suggestions/pages/Suggestion';
 
 const App = () => {
-  const { setSongs, setIsLoading, needReload, setNeedReload, user } = useSongs();
-
-  useEffect(() => {
-    const fetchSongs = async (repeat = 1) => {
-      try {
-        setIsLoading(true);
-        const res = await axios.get('/api/songs');
-        //console.log(res.data);
-        setSongs(res.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(`${repeat}º Error de conexión: `, error);
-        if (repeat >= 3) {
-          console.log('Fin de la conexión.');
-          setIsLoading(false);
-        } else {
-          fetchSongs(repeat + 1);
-        }
-      }
-    }
-    fetchSongs();
-    setNeedReload(false);
-  }, [setSongs, setIsLoading, needReload, setNeedReload])
+  const [user] = useUser();
 
   return (
     <Router>
@@ -60,7 +37,7 @@ const App = () => {
             {user.name ? <SongForm /> : <Redirect to="/songs" />}
           </Route>
           <Route path="/suggestion" component={Suggestion} />
-          <Route path="/coros" component={Coros} />
+          <Route path="/repertories" component={Repertories} />
           <Route>
             <h3>Error 404 - No se encontro la página</h3>
           </Route>

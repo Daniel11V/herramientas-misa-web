@@ -248,6 +248,26 @@ input:not([type]):focus:not([readonly])+label, input[type=text]:not(.browser-def
      background-color: #1976D2;
 }
 
+[type="checkbox"].filled-in+span:not(.lever):after {
+    top: 2px !important;
+}
+
+[type="checkbox"]+span:not(.lever):before {
+    top: 2px !important;
+}
+
+.switch {
+    margin-bottom: 45px !important;
+}
+
+.switch .lever {
+    margin: 0 15px 0 0 !important;
+}
+
+.switch label:last-child {
+    font-size: 1.1rem;
+}
+
 .indications th {
     font-weight: normal;
     font-style: italic;
@@ -260,4 +280,12 @@ input:not([type]):focus:not([readonly])+label, input[type=text]:not(.browser-def
 
 .moment tr {
     border: 0 !important;
+}
+
+.switch label input[type=checkbox]:checked+.lever {
+    background-color: #679fd6 !important;
+}
+
+.switch label input[type=checkbox]:checked+.lever:after {
+    background-color: #1976d2 !important;
 }
