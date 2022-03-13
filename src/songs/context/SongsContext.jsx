@@ -6,7 +6,6 @@ const SongsContext = React.createContext();
 function songReducer(state, action) {
 	switch (action.type) {
 		case "SET_SONGS": {
-			console.log("Reducer Set Songs");
 			return {
 				allSongs: action.payload.data,
 				filteredSongs: action.payload.data,
@@ -47,7 +46,6 @@ function useSongs() {
 	const songsQuery = useQuery("SONGS", async () => {
 		const SERVER_PATH =
 			process.env.REACT_APP_LOCAL_SERVER || process.env.REACT_APP_SERVER;
-		console.log(SERVER_PATH);
 		const res = await fetch(SERVER_PATH + "/api/songs");
 		if (!res.ok) {
 			throw new Error("Error fetching song list");
@@ -66,7 +64,6 @@ function useSongs() {
 			!state.allSongs.length
 		) {
 			setIsMounted(true);
-			console.log(songsQuery);
 			dispatch({
 				type: "SET_SONGS",
 				payload: songsQuery,
@@ -81,6 +78,8 @@ function useSongs() {
 
 	const filterById = (filterId) =>
 		dispatch({ type: "FILTER_BY_ID", payload: filterId });
+
+	// const addNewSongLocal = (songs) => {};
 
 	return {
 		...state,

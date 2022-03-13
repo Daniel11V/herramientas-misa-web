@@ -4,10 +4,10 @@ import axios from "../../axios";
 import M from "materialize-css";
 import { useUser } from "../../layout/context/UserContext";
 import { useSongs } from "../context/SongsContext";
-import LabelsInput from "../components/LabelsInput";
 import SongFormDescription from "../components/SongFormDescription";
 import SongFormLyric from "../components/SongFormLyric";
-import SongFormChords from "../components/SongFormChords";
+import SongFormExtraDetails from "../components/SongFormExtraDetails";
+import LyricWithChords from "../components/LyricWithChords";
 
 const SongForm = () => {
 	const { id } = useParams();
@@ -19,8 +19,9 @@ const SongForm = () => {
 	const [title, setTitle] = useState("");
 	const [author, setAuthor] = useState("");
 	const [lyric, setLyric] = useState("");
-	const [arrayLyric, setArrayLyric] = useState([]);
-	const [newChords, setNewChords] = useState({});
+	const [chords, setChords] = useState({});
+	const [tempo, setTempo] = useState("");
+	const [pulse, setPulse] = useState("");
 	const [labels, setLabels] = useState([]);
 
 	const history = useHistory();
@@ -34,6 +35,9 @@ const SongForm = () => {
 				setTitle(song.title);
 				setAuthor(song.author);
 				setLyric(song.lyric);
+				setChords(song.chords);
+				setTempo(song.tempo);
+				setPulse(song.pulse);
 				setLabels(song.labels);
 
 				// Autoresize
@@ -53,7 +57,9 @@ const SongForm = () => {
 			title,
 			author,
 			lyric,
-			chords: newChords,
+			chords: chords,
+			tempo,
+			pulse,
 			labels,
 			rating: [],
 		};
@@ -62,12 +68,13 @@ const SongForm = () => {
 			await axios
 				.put(`/api/songs/${id}`, { ...songToSend, _id: id })
 				.catch((err) => console.error(err));
+
 			M.toast({ html: "Canción Actualizada" });
 		} else {
-			const res = await axios
+			await axios
 				.post("/api/songs", songToSend)
 				.catch((err) => console.error(err));
-			res ? console.log(res.data) : console.log("No response");
+			// res ? console.log(res.data) : console.log("No response");
 			M.toast({ html: "Canción Guardada" });
 		}
 	};
@@ -75,21 +82,19 @@ const SongForm = () => {
 	const next = async (e) => {
 		e.preventDefault();
 
+		const LAST_STEP = 4;
+
 		// Validations
 
 		// Safe & Prepare Date
-		if (formStep === 1) {
-		} else if (formStep === 2) {
-			setArrayLyric(lyric.split("\n").map((p) => (p ? p.split("") : [""])));
-		} else if (formStep === 3) {
-		} else if (formStep === 4) {
+		if (formStep === LAST_STEP) {
 			await saveSong();
 			refetchSongs();
 			history.goBack();
+		} else {
+			// Next Step
+			setFormStep((lastStep) => lastStep + 1);
 		}
-
-		// Next Step
-		setFormStep((lastStep) => lastStep + 1);
 	};
 
 	return (
@@ -112,27 +117,21 @@ const SongForm = () => {
 							<SongFormLyric lyric={lyric} setLyric={setLyric} />
 						)}
 						{formStep === 3 && (
-							<SongFormChords
-								arrayLyric={arrayLyric}
-								newChords={newChords}
-								setNewChords={setNewChords}
+							<LyricWithChords
+								lyric={lyric}
+								chords={chords}
+								setChords={setChords}
 							/>
 						)}
-
-						{/* <div className="row switch">
-							<label onChange={() => setManualLabel(!manualLabel)}>
-								<input type="checkbox" id="checkAuto" />
-								<span className="lever"></span>
-								<span>Colocar etiquetas (recomendado)</span>
-							</label>
-						</div> */}
 						{formStep === 4 && (
-							<div className="row">
-								<LabelsInput
-									labels={labels}
-									updateLabels={(lb) => setLabels(lb)}
-								/>
-							</div>
+							<SongFormExtraDetails
+								tempo={tempo}
+								setTempo={setTempo}
+								pulse={pulse}
+								setPulse={setPulse}
+								labels={labels}
+								setLabels={setLabels}
+							/>
 						)}
 						<div className="row">
 							<div className="input-field">

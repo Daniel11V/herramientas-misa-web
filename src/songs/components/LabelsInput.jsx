@@ -51,7 +51,6 @@ const LabelsInput = ({ labels = [], updateLabels }) => {
 		// }
 
 		updateLabels(newArray);
-		console.log("change", newArray);
 	};
 
 	return (

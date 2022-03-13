@@ -7,7 +7,6 @@ import "../../styles/SongList.css";
 
 const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 	const { allSongs, loadingSongs, errorSongs } = useSongs();
-	console.log("inside isLoading: ", loadingSongs);
 	const [filteredSongs, setFilteredSongs] = useState(allSongs);
 	const [showFiltros, setShowFiltros] = useState(false);
 	const [labels, setLabels] = useState(labelsStart);
