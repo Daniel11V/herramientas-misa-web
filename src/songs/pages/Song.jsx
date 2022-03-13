@@ -31,10 +31,14 @@ const Song = () => {
 	const [song, setSong] = useState(emptySong);
 	const [tone, setTone] = useState(null);
 	const [currentChords, setCurrentChords] = useState({});
+	const [showChords, setShowChords] = useState(true);
 
 	useEffect(() => {
 		const elems = document.querySelectorAll(".modal");
 		M.Modal.init(elems);
+
+		// let elem = document.querySelectorAll(".checkbox");
+		// elem.prop.checked = true;
 	}, []);
 
 	useEffect(() => {
@@ -156,6 +160,13 @@ const Song = () => {
 			{song.tempo && <SongInfo>Tempo recomendado: {song.tempo}</SongInfo>}
 			{hasChords() && (
 				<div>
+					<div className="row switch">
+						<label onChange={() => setShowChords(!showChords)}>
+							<input type="checkbox" id="checkAuto" />
+							<span className="lever"></span>
+							<span>Mostrar acordes</span>
+						</label>
+					</div>
 					<div
 						style={{
 							display: "inline-block",
