@@ -36,9 +36,6 @@ const Song = () => {
 	useEffect(() => {
 		const elems = document.querySelectorAll(".modal");
 		M.Modal.init(elems);
-
-		// let elem = document.querySelectorAll(".checkbox");
-		// elem.prop.checked = true;
 	}, []);
 
 	useEffect(() => {
@@ -46,6 +43,9 @@ const Song = () => {
 			const currentSong = allSongs.find((song) => song._id === id);
 			if (currentSong) {
 				setSong(currentSong);
+
+				let elem = document.getElementById("checkAuto");
+				if (elem) elem.checked = true;
 
 				// If has chords, set tone
 				const chords = currentSong.chords;
@@ -158,41 +158,51 @@ const Song = () => {
 			</h3>
 			{song.pulse && <SongInfo>Pulso: {song.pulse}</SongInfo>}
 			{song.tempo && <SongInfo>Tempo recomendado: {song.tempo}</SongInfo>}
+			<div
+				className="switch"
+				style={{ marginTop: "10px", display: hasChords() ? "block" : "none" }}
+			>
+				<label onChange={() => setShowChords(!showChords)}>
+					<input type="checkbox" id="checkAuto" />
+					<span className="lever"></span>
+					<span style={{ color: "black" }}>Mostrar acordes</span>
+				</label>
+			</div>
 			{hasChords() && (
 				<div>
-					<div className="row switch">
-						<label onChange={() => setShowChords(!showChords)}>
-							<input type="checkbox" id="checkAuto" />
-							<span className="lever"></span>
-							<span>Mostrar acordes</span>
-						</label>
-					</div>
-					<div
-						style={{
-							display: "inline-block",
-							paddingTop: "12px",
-							paddingRight: "5px",
-						}}
-					>
-						Tono:
-					</div>
-					<div
-						style={{
-							display: "inline-block",
-							width: "100px",
-							textAlign: "center",
-						}}
-					>
-						<ChordSelector
-							selectedChord={tone}
-							setSelectedChord={setNewTone}
-							color={"#000"}
-						/>
-					</div>
+					{!!showChords && (
+						<>
+							<div
+								style={{
+									display: "inline-block",
+									paddingTop: "12px",
+									paddingRight: "5px",
+								}}
+							>
+								Tono:
+							</div>
+							<div
+								style={{
+									display: "inline-block",
+									width: "100px",
+									textAlign: "center",
+								}}
+							>
+								<ChordSelector
+									selectedChord={tone}
+									setSelectedChord={setNewTone}
+									color={"#000"}
+								/>
+							</div>
+						</>
+					)}
 				</div>
 			)}
 			<br />
-			<LyricWithChords lyric={song.lyric} chords={currentChords} />
+			<LyricWithChords
+				lyric={song.lyric}
+				chords={showChords ? currentChords : {}}
+			/>
 			<br />
 			{song.creator && (
 				<span style={{ fontStyle: "italic" }}>
