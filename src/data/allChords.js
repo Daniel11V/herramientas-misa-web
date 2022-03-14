@@ -35,6 +35,22 @@ const allChords = {
         }, {
             name: "Septimas",
             chords: [
+                "DO7",
+                "DO#7",
+                "RE7",
+                "RE#7",
+                "MI7",
+                "FA7",
+                "FA#7",
+                "SOL7",
+                "SOL#7",
+                "LA7",
+                "LA#7",
+                "SI7",
+            ]
+        }, {
+            name: "Mayores Septimas",
+            chords: [
                 "DOmaj7",
                 "DO#maj7",
                 "REmaj7",
@@ -74,6 +90,22 @@ const allChords = {
             ],
         }, {
             name: "Seventh",
+            chords: [
+                "C7",
+                "C#7",
+                "D7",
+                "D#7",
+                "E7",
+                "F7",
+                "F#7",
+                "G7",
+                "G#7",
+                "A7",
+                "A#7",
+                "B7",
+            ]
+        }, {
+            name: "Majors Seventh",
             chords: [
                 "Cmaj7",
                 "C#maj7",
