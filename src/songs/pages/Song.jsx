@@ -77,9 +77,10 @@ const Song = () => {
 		chords && Object.keys(chords).length !== 0;
 
 	const getChordIndex = (chord) => {
+		// In allChords
 		for (let i = 0; i < allChords.es.length; i++)
 			for (let k = 0; k < allChords.es[i].chords.length; k++)
-				if (allChords.es[i].chords[k] === chord) return [i, k];
+				if (!allChords.es[i].chords[k].localeCompare(chord)) return [i, k];
 	};
 
 	const getModuleDiference = (a, b) => {
@@ -90,9 +91,9 @@ const Song = () => {
 
 	const getNewChord = (lastChord, toneDiference) => {
 		const lastChordIndex = getChordIndex(lastChord);
-		let newChordIndex = lastChordIndex[1] + toneDiference[1];
+		let newChordIndex = lastChordIndex[1] + toneDiference;
 		if (newChordIndex > 11) newChordIndex = newChordIndex - 12;
-		return allChords.es[toneDiference[0]].chords[newChordIndex];
+		return allChords.es[lastChordIndex[0]].chords[newChordIndex];
 	};
 
 	const setNewTone = (newTone) => {
@@ -100,17 +101,20 @@ const Song = () => {
 		if (newTone !== originalTone) {
 			const originalToneIndex = getChordIndex(originalTone);
 			const newToneIndex = getChordIndex(newTone);
-			const toneDiference = [
-				newToneIndex[0],
-				getModuleDiference(originalToneIndex[1], newToneIndex[1]),
-			];
+			const toneDiference = getModuleDiference(
+				originalToneIndex[1],
+				newToneIndex[1]
+			);
 
 			let newChords = {};
 			for (const line in currentChords)
-				for (const letter in currentChords[line])
+				for (const letterIndex in currentChords[line])
 					newChords[line] = {
 						...newChords[line],
-						[letter]: getNewChord(currentChords[line][letter], toneDiference),
+						[letterIndex]: getNewChord(
+							currentChords[line][letterIndex],
+							toneDiference
+						),
 					};
 
 			setCurrentChords(newChords);
