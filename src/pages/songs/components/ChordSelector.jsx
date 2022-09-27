@@ -1,11 +1,12 @@
 import M from "materialize-css";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import allChords from "../../data/allChords";
+import allChords from "../../../data/allChords";
 
 const ChordSelector = ({
 	selectedChord,
 	setSelectedChord,
+	chordLang,
 	color = "white",
 }) => {
 	const [chordModal, setChordModal] = useState(null);
@@ -45,7 +46,7 @@ const ChordSelector = ({
 			>
 				<div className="modal-content">
 					<h5>Elegir Acorde</h5>
-					{allChords.es.map((type, i) => (
+					{allChords[chordLang].map((type, i) => (
 						<div key={i}>
 							<ChordText>
 								<b>{type.name}</b>

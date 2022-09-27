@@ -1,19 +1,27 @@
 import React from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/actions/user";
 
-const LoginLogout = ({ children = null, logout = false, update }) => {
+const LoginLogout = ({ children = null, logout = false }) => {
+	const dispatch = useDispatch();
+
 	const loginResponse = (response) => {
 		if (response.googleId) {
-			update({
-				googleId: response.profileObj.googleId,
-				name: response.profileObj.name,
-				imageUrl: response.profileObj.imageUrl,
-			});
+			dispatch(
+				login({
+					id: response.profileObj.googleId,
+					name: response.profileObj.name,
+					email: response.profileObj.imageUrl,
+					imageUrl: response.profileObj.imageUrl,
+					accessToken: response.accessToken,
+				})
+			);
 		}
 	};
 
 	const logoutResponse = () => {
-		update({});
+		dispatch(logout());
 	};
 
 	if (children) {

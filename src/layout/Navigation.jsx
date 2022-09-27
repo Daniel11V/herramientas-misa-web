@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import M from "materialize-css";
-import { useUser } from "../context/UserContext";
-import LoginLogout from "./LoginLogout.jsx";
+import LoginLogout from "./components/LoginLogout.jsx";
+import { useSelector } from "react-redux";
 
 const Navigation = () => {
 	const history = useHistory();
 	const [lastPage, setLastPage] = useState("");
-	const [user, setUser] = useUser();
+	const user = useSelector((state) => state.user.google);
 
 	useEffect(() => {
 		let elems = document.querySelectorAll(".sidenav");
@@ -59,15 +59,20 @@ const Navigation = () => {
 							</div>
 						)}
 						<ul className="right hide-on-med-and-down">
-							<li>
+							{/* <li>
 								<Link to="/repertories">Repertorios</Link>
-							</li>
+							</li> */}
 							<li>
 								<Link to="/songs">Cancionero</Link>
 							</li>
-							<li>
+							{user.name && (
+								<li>
+									<Link to="/myLibrary">Mi Biblioteca</Link>
+								</li>
+							)}
+							{/* <li>
 								<Link to="/suggestion">Recomendación</Link>
-							</li>
+							</li> */}
 							{user.name ? (
 								<li className="profile">
 									<div style={{ display: "flex", flexDirection: "column" }}>
@@ -81,7 +86,7 @@ const Navigation = () => {
 										>
 											{user.name}
 										</span>
-										<LoginLogout logout={true} update={(v) => setUser(v)} />
+										<LoginLogout logout />
 									</div>
 									<img
 										className="circle"
@@ -96,7 +101,7 @@ const Navigation = () => {
 								</li>
 							) : (
 								<li className="sessionLi">
-									<LoginLogout update={(v) => !user.name && setUser(v)} />
+									<LoginLogout />
 								</li>
 							)}
 						</ul>
@@ -126,11 +131,7 @@ const Navigation = () => {
 								}}
 							/>
 							<span className="white-text name">{user.name}</span>
-							<LoginLogout
-								logout={true}
-								update={(v) => setUser(v)}
-								className="logout"
-							/>
+							<LoginLogout logout className="logout" />
 						</div>
 					) : (
 						<div className="user-view">
@@ -145,7 +146,7 @@ const Navigation = () => {
 								src="https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png"
 								alt="profile"
 							/>
-							<LoginLogout update={(v) => !user.name && setUser(v)} />
+							<LoginLogout />
 						</div>
 					)}
 				</li>
@@ -156,15 +157,20 @@ const Navigation = () => {
 						</a>
 					</i>
 				</li>
-				<li>
+				{/* <li>
 					<Link to="/repertories">Repertorios</Link>
-				</li>
+				</li> */}
 				<li>
 					<Link to="/songs">Cancionero</Link>
 				</li>
-				<li>
+				{user.name && (
+					<li>
+						<Link to="/mylibrary">Mi Biblioteca</Link>
+					</li>
+				)}
+				{/* <li>
 					<Link to="/suggestion">Recomendación para misa</Link>
-				</li>
+				</li> */}
 			</ul>
 		</div>
 	);

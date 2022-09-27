@@ -24,7 +24,7 @@ const SongFormLyric = ({ lyric, setLyric }) => {
 					value={lyric || ""}
 				/>
 				<label htmlFor="lyric" className="lab">
-					Copiar y pegar letra sin acordes
+					Copiar y pegar letra con acordes
 				</label>
 			</div>
 		</div>

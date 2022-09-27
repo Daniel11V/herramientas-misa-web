@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import M from "materialize-css";
-import fullLabels from "../../data/fullLabels";
+import fullLabels from "../../../data/fullLabels";
 
 const LabelsInput = ({ labels = [], updateLabels }) => {
 	useEffect(() => {

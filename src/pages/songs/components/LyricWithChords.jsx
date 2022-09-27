@@ -3,7 +3,12 @@ import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import ChordSelector from "./ChordSelector";
 
-const LyricWithChords = ({ lyric = "", chords = {}, setChords = null }) => {
+const LyricWithChords = ({
+	lyric = "",
+	chords = {},
+	setChords = null,
+	chordLang,
+}) => {
 	const [arrayLyric, setArrayLyric] = useState([]);
 	const [isEditable, setIsEditable] = useState(false);
 	const [selectedLetter, setSelectedLetter] = useState([null, null]);
@@ -11,7 +16,8 @@ const LyricWithChords = ({ lyric = "", chords = {}, setChords = null }) => {
 
 	useEffect(() => {
 		setArrayLyric(lyric.split("\n").map((p) => (p ? p.split("") : [""])));
-	}, [lyric]);
+		setSelectedChord(chordLang === "en" ? "C" : "DO");
+	}, [lyric, chordLang]);
 
 	useEffect(() => {
 		if (setChords !== null) setIsEditable(true);
@@ -56,7 +62,7 @@ const LyricWithChords = ({ lyric = "", chords = {}, setChords = null }) => {
 			} else {
 				setSelectedLetter([i, k]);
 				if (hasChord(i, k)) setSelectedChord(chords[i][k]);
-				else setSelectedChord("DO");
+				else setSelectedChord(chordLang === "en" ? "C" : "DO");
 			}
 		}
 	};
@@ -105,6 +111,7 @@ const LyricWithChords = ({ lyric = "", chords = {}, setChords = null }) => {
 									<ChordSelector
 										selectedChord={selectedChord}
 										setSelectedChord={addChord}
+										chordLang={chordLang}
 									/>
 									<TooltipFooter>
 										<TooltipBtn onClick={(e) => handleArrowBtns(e, i, k, -1)}>

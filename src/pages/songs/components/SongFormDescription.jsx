@@ -25,7 +25,7 @@ const SongFormDescription = ({ author, setAuthor, title, setTitle }) => {
 						value={title || ""}
 					/>
 					<label htmlFor="title" className="lab">
-						Titulo
+						Titulo*
 					</label>
 				</div>
 			</div>

@@ -1,37 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useHistory } from "react-router-dom";
 import M from "materialize-css";
-import axios from "../../axios";
-import { useUser } from "../../layout/context/UserContext";
+import { useDispatch, useSelector } from "react-redux";
 import fullLabels from "../../data/fullLabels.js";
-import { useSongs } from "../context/SongsContext";
 import "../../styles/Song.css";
-import LyricWithChords from "../components/LyricWithChords";
+import LyricWithChords from "./components/LyricWithChords";
 import styled from "styled-components";
-import ChordSelector from "../components/ChordSelector";
+import ChordSelector from "./components/ChordSelector";
 import allChords from "../../data/allChords";
+import { getSong } from "../../store/actions/community";
+import { setLoading } from "../../store/actions/user";
+import { getChordsFromLyric } from "../../utils.js";
 
 const Song = () => {
 	const history = useHistory();
 	const { id } = useParams();
-	const { allSongs, refetchSongs, loadingSongs } = useSongs();
-	const [user] = useUser();
-	const emptySong = {
-		_id: id,
-		title: "",
-		lyric: "",
-		chords: {},
-		creator: "",
-		author: "",
-		rating: [],
-		tempo: "",
-		pulse: "",
-		labels: [],
-	};
-	const [song, setSong] = useState(emptySong);
+	const dispatch = useDispatch();
+	const { currentSong: song, loading } = useSelector(
+		(state) => state.community
+	);
+	const user = useSelector((state) => state.user.google);
+
 	const [tone, setTone] = useState(null);
 	const [currentChords, setCurrentChords] = useState({});
 	const [showChords, setShowChords] = useState(true);
+	const [hasChords, sethasChords] = useState(false);
+	const [chordLang, setChordLang] = useState("en");
+	const [onlyLyric, setOnlyLyric] = useState("");
 
 	useEffect(() => {
 		const elems = document.querySelectorAll(".modal");
@@ -39,31 +34,28 @@ const Song = () => {
 	}, []);
 
 	useEffect(() => {
-		if (allSongs && song.title === "") {
-			const currentSong = allSongs.find((song) => song._id === id);
-			if (currentSong) {
-				setSong(currentSong);
+		if (song.id === id) {
+			let elem = document.getElementById("checkAuto");
+			if (elem) elem.checked = true;
 
-				let elem = document.getElementById("checkAuto");
-				if (elem) elem.checked = true;
-
-				// If has chords, set tone
-				const chords = currentSong.chords;
-				if (chords && Object.keys(chords).length !== 0) {
-					const i = Object.keys(chords)[0];
-					const k = Object.keys(chords[i])[0];
-					setTone(chords[i][k]);
-
-					setCurrentChords(chords);
-				}
-			}
+			const { chords, chordTone, chordLang, onlyLyric } = getChordsFromLyric(
+				song.lyric
+			);
+			setCurrentChords(chords);
+			setTone(chordTone);
+			sethasChords(!!chordTone);
+			setChordLang(chordLang);
+			setOnlyLyric(onlyLyric);
+		} else if (id) {
+			dispatch(setLoading(true));
+			dispatch(getSong(id));
 		}
-	}, [id, song, allSongs]);
+	}, [id, song, dispatch]);
 
 	const deleteSong = async () => {
-		await axios.delete(`/api/songs/${id}`).catch((err) => console.error(err));
+		// await axios.delete(`/api/songs/${id}`).catch((err) => console.error(err));
 		M.toast({ html: "Song Deleted" });
-		refetchSongs();
+		// refetchSongs();
 		history.goBack();
 	};
 
@@ -73,14 +65,15 @@ const Song = () => {
 		return chords[i][k];
 	};
 
-	const hasChords = (chords = song.chords) =>
-		chords && Object.keys(chords).length !== 0;
+	// const hasChords = (chords = song.chords) =>
+	// 	chords && Object.keys(chords).length !== 0;
 
 	const getChordIndex = (chord) => {
 		// In allChords
-		for (let i = 0; i < allChords.es.length; i++)
-			for (let k = 0; k < allChords.es[i].chords.length; k++)
-				if (!allChords.es[i].chords[k].localeCompare(chord)) return [i, k];
+		for (let i = 0; i < allChords[chordLang].length; i++)
+			for (let k = 0; k < allChords[chordLang][i].chords.length; k++)
+				if (!allChords[chordLang][i].chords[k].localeCompare(chord))
+					return [i, k];
 	};
 
 	const getModuleDiference = (a, b) => {
@@ -93,7 +86,7 @@ const Song = () => {
 		const lastChordIndex = getChordIndex(lastChord);
 		let newChordIndex = lastChordIndex[1] + toneDiference;
 		if (newChordIndex > 11) newChordIndex = newChordIndex - 12;
-		return allChords.es[lastChordIndex[0]].chords[newChordIndex];
+		return allChords[chordLang][lastChordIndex[0]].chords[newChordIndex];
 	};
 
 	const setNewTone = (newTone) => {
@@ -122,7 +115,7 @@ const Song = () => {
 		}
 	};
 
-	if (loadingSongs)
+	if (loading)
 		return (
 			<div className="progress" style={{ backgroundColor: "#9cd1ff" }}>
 				<div
@@ -164,7 +157,7 @@ const Song = () => {
 			{song.tempo && <SongInfo>Tempo recomendado: {song.tempo}</SongInfo>}
 			<div
 				className="switch"
-				style={{ marginTop: "10px", display: hasChords() ? "block" : "none" }}
+				style={{ marginTop: "10px", display: hasChords ? "block" : "none" }}
 			>
 				<label onChange={() => setShowChords(!showChords)}>
 					<input type="checkbox" id="checkAuto" />
@@ -172,7 +165,7 @@ const Song = () => {
 					<span style={{ color: "black" }}>Mostrar acordes</span>
 				</label>
 			</div>
-			{hasChords() && (
+			{hasChords && (
 				<div>
 					{!!showChords && (
 						<>
@@ -195,6 +188,7 @@ const Song = () => {
 								<ChordSelector
 									selectedChord={tone}
 									setSelectedChord={setNewTone}
+									chordLang={chordLang}
 									color={"#000"}
 								/>
 							</div>
@@ -204,7 +198,7 @@ const Song = () => {
 			)}
 			<br />
 			<LyricWithChords
-				lyric={song.lyric}
+				lyric={onlyLyric}
 				chords={showChords ? currentChords : {}}
 			/>
 			<br />

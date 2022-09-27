@@ -105,6 +105,54 @@ const allChords = {
                 "B7",
             ]
         }, {
+            name: "Menor Seventh",
+            chords: [
+                "Cm7",
+                "C#m7",
+                "Dm7",
+                "D#m7",
+                "Em7",
+                "Fm7",
+                "F#m7",
+                "Gm7",
+                "G#m7",
+                "Am7",
+                "A#m7",
+                "Bm7",
+            ]
+        }, {
+            name: "Nineth",
+            chords: [
+                "C9",
+                "C#9",
+                "D9",
+                "D#9",
+                "E9",
+                "F9",
+                "F#9",
+                "G9",
+                "G#9",
+                "A9",
+                "A#9",
+                "B9",
+            ]
+        }, {
+            name: "Menor Nineth",
+            chords: [
+                "Cm9",
+                "C#m9",
+                "Dm9",
+                "D#m9",
+                "Em9",
+                "Fm9",
+                "F#m9",
+                "Gm9",
+                "G#m9",
+                "Am9",
+                "A#m9",
+                "Bm9",
+            ]
+        }, {
             name: "Majors Seventh",
             chords: [
                 "Cmaj7",
