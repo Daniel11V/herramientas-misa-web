@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-// import M from "materialize-css";
-// import { useSongs } from "../context/SongsContext";
-// import LabelsInput from "./LabelsInput.jsx";
+import M from "materialize-css";
+import LabelsInput from "./LabelsInput.jsx";
 import "../../../styles/SongList.css";
 import { useDispatch, useSelector } from "react-redux";
 import { objIsEmpty } from "../../../utils";
@@ -14,21 +13,13 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 		(state) => state.community
 	);
 
-	// console.log(
-	// 	"ACA ",
-	// 	allSongTitles,
-	// 	loading,
-	// 	errorFetching,
-	// 	objIsEmpty(allSongTitles)
-	// );
-	// const { allSongs, loadingSongs, errorSongs } = useSongs();
 	// const [filteredSongs, setFilteredSongs] = useState(allSongs);
-	// const [showFiltros, setShowFiltros] = useState(false);
-	// const [labels, setLabels] = useState(labelsStart);
-	// const [search, setSearch] = useState("");
-	// const [filterSelectors, setFilterSelectors] = useState(null);
+	const [showFiltros, setShowFiltros] = useState(false);
+	const [labels, setLabels] = useState(labelsStart);
+	const [search, setSearch] = useState("");
+	const [filterSelectors, setFilterSelectors] = useState(null);
 	const [songChoose, setSongChoose] = useState(null);
-	// const collapse = useRef(null);
+	const collapse = useRef(null);
 
 	useEffect(() => {
 		if (objIsEmpty(allSongTitles) && !errorFetching) {
@@ -37,22 +28,22 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 		}
 	}, [allSongTitles, errorFetching, dispatch]);
 
-	// useEffect(() => {
-	// 	if (collapse.current && !filterSelectors) {
-	// 		let inst = M.Collapsible.init(collapse.current);
-	// 		setFilterSelectors(inst);
-	// 	}
-	// }, [showFiltros, filterSelectors]);
+	useEffect(() => {
+		if (collapse.current && !filterSelectors) {
+			let inst = M.Collapsible.init(collapse.current);
+			setFilterSelectors(inst);
+		}
+	}, [showFiltros, filterSelectors]);
 
-	// useEffect(() => {
-	// 	if (filterSelectors) {
-	// 		if (showFiltros) {
-	// 			filterSelectors.open(0);
-	// 		} else {
-	// 			filterSelectors.close(0);
-	// 		}
-	// 	}
-	// }, [showFiltros, filterSelectors]);
+	useEffect(() => {
+		if (filterSelectors) {
+			if (showFiltros) {
+				filterSelectors.open(0);
+			} else {
+				filterSelectors.close(0);
+			}
+		}
+	}, [showFiltros, filterSelectors]);
 
 	// useEffect(() => {
 	// 	if (allSongs) {
@@ -122,7 +113,7 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 
 	return (
 		<div className="collection songs">
-			{/* {searcher && (
+			{searcher && (
 				<div className="nav-wrapper collection-item searcher">
 					<div
 						className="search-line"
@@ -165,7 +156,7 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 						</li>
 					</ul>
 				</div>
-			)} */}
+			)}
 			{/* {filteredSongs.map((song) => (
 				<Link
 					to={{ pathname: `/song/${song.id}`, state: { from: "Cancionero" } }}

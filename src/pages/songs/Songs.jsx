@@ -38,7 +38,7 @@ const Songs = () => {
 					</LoginLogout>
 				)}
 			</div>
-			<SongList searcher={false} />
+			<SongList searcher />
 		</Fragment>
 	);
 };
