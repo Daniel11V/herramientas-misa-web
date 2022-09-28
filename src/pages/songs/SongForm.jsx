@@ -59,6 +59,7 @@ const SongForm = () => {
 		const creatorSend = !creator ? user.name : creator;
 
 		const songEdited = {
+			...song,
 			creator: creatorSend,
 			title,
 			author,
@@ -72,7 +73,7 @@ const SongForm = () => {
 			// await axios
 			// 	.put(`/api/songs/${id}`, { ...songToSend, _id: id })
 			// 	.catch((err) => console.error(err));
-			dispatch(editSong({ ...song, ...songEdited }));
+			dispatch(editSong(songEdited));
 			M.toast({ html: "Canción Actualizada" });
 		} else {
 			// await axios

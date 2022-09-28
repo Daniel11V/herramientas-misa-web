@@ -1,5 +1,6 @@
-export const allSongTitles = {
+export const publicSongTitles = {
     id: { type: "String", required: true },
+    versionGroupId: { type: "String", required: true },
     title: { type: "String", required: true },
     author: {
         type: {
@@ -12,8 +13,9 @@ export const allSongTitles = {
     rating: { type: "Array", required: false }
 };
 
-export const allSongs = {
+export const publicSongs = {
     id: { type: "String", required: true },
+    versionGroupId: { type: "String", required: true },
     title: { type: "String", required: true },
     author: {
         type: {

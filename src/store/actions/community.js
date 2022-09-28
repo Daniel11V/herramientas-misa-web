@@ -1,7 +1,8 @@
 // import { child, ref, get, set, remove, push, onValue } from "firebase/database";
 // import { db } from "../../database/firebase"
-import { database } from "../../data/database.js";
 // import * as FileSystem from 'expo-file-system'
+// import { database } from "../../data/database.js";
+import { types as dbTypes } from "./database.js"; 
 
 export const types = {
     SET_LOADING: 'SET_LOADING',
@@ -33,11 +34,15 @@ export const setLoading = (isLoading) => ({
 // Thunks
 
 export const getAllSongTitles = () => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {
+            console.log("ACA allSongTitles",getState().database)
+
+            const allSongTitles = getState().database.allSongTitles;
+
             dispatch({
                 type: types.SET_ALL_SONG_TITLES,
-                payload: { allSongTitles: database.allSongTitles }
+                payload: { allSongTitles }
             })
             dispatch(setLoading(false))
         } catch (error) {
@@ -48,11 +53,13 @@ export const getAllSongTitles = () => {
 }
 
 export const getAllSongs = () => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {
+            const allSongs = getState().database.allSongs;
+
             dispatch({
                 type: types.SET_ALL_SONGS,
-                payload: { allSongs: database.allSongs }
+                payload: { allSongs }
             })
             dispatch(setLoading(false))
         } catch (error) {
@@ -63,11 +70,13 @@ export const getAllSongs = () => {
 }
 
 export const getSong = (songId) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {
+            const song = getState().database.allSongs[songId] || {};
+
             dispatch({
                 type: types.SET_CURRENT_SONG,
-                payload: { song: database.allSongs[songId] || {} }
+                payload: { song }
             })
             dispatch(setLoading(false))
         } catch (error) {
@@ -78,8 +87,18 @@ export const getSong = (songId) => {
 }
 
 export const editSong = (songEdited) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {
+            const database = getState().database;
+
+            dispatch({
+                type: dbTypes.SET_DATABASE,
+                payload: { newDatabase: {
+                    ...database,
+
+                }}
+            })
+
             dispatch({
                 type: types.EDIT_CURRENT_SONG,
                 payload: { songEdited }
@@ -93,11 +112,13 @@ export const editSong = (songEdited) => {
 }
 
 export const getAllRepertoryTitles = () => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {
+            const allRepertoryTitles = getState().database.allRepertoryTitles;
+
             dispatch({
                 type: types.SET_ALL_REPERTORY_TITLES,
-                payload: { allRepertoryTitles: database.allRepertoryTitles }
+                payload: { allRepertoryTitles }
             })
         } catch (error) {
             console.warn(error);
@@ -107,11 +128,13 @@ export const getAllRepertoryTitles = () => {
 }
 
 export const getAllRepertories = () => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {
+            const allRepertories = getState().database.allRepertories;
+
             dispatch({
                 type: types.SET_ALL_REPERTORIES,
-                payload: { allRepertories: database.allRepertories }
+                payload: { allRepertories }
             })
         } catch (error) {
             console.warn(error);

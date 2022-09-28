@@ -1,4 +1,5 @@
-import { database } from "../../data/database.js";
+// import { database } from "../../data/database.js";
+import { types as dbTypes } from "./database.js"; 
 
 
 export const types = {
@@ -26,11 +27,13 @@ export const logout = () => ({
 // Thunks
 
 export const getUserSongTitles = (userId) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {
+            const newUserSongTitles = getState().database.users[userId]?.songTitles || {};
+            
             dispatch({
                 type: types.SET_USER_SONG_TITLES,
-                payload: { newUserSongTitles: database.users[userId]?.songTitles || {} }
+                payload: { newUserSongTitles }
             })
             dispatch(setLoading(false))
         } catch (error) {
@@ -41,11 +44,12 @@ export const getUserSongTitles = (userId) => {
 }
 
 export const getUserSongs = (userId) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {
+            const newUserSongs = getState().database.users[userId]?.songs || {};
             dispatch({
                 type: types.SET_USER_SONGS,
-                payload: { newUserSongs: database.users[userId]?.songs || {} }
+                payload: { newUserSongs }
             })
             dispatch(setLoading(false))
         } catch (error) {

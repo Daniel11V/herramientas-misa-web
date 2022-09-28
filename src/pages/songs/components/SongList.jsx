@@ -22,6 +22,7 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 	const collapse = useRef(null);
 
 	useEffect(() => {
+		console.log("ACA allSongTitles", allSongTitles)
 		if (objIsEmpty(allSongTitles) && !errorFetching) {
 			dispatch(setLoading(true));
 			dispatch(getAllSongTitles());
@@ -179,7 +180,7 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 					)}
 				</Link>
 			))} */}
-			{Object.values(allSongTitles).map((song) => (
+			{Object.values(allSongTitles || {}).map((song) => (
 				<Link
 					to={{ pathname: `/song/${song.id}`, state: { from: "Cancionero" } }}
 					key={song.id}
