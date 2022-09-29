@@ -194,6 +194,38 @@ li.profile img {
 	border-bottom-right-radius: 5px;
 }
 
+.collection-songs {
+	display: flex !important;
+	justify-content: space-between;
+	padding-right: 15px !important;
+}
+
+.levelIcon {
+	position: relative;
+	width: 28px;
+	margin-top: 2px;
+}
+
+.levelIcon > i {
+	position: absolute;
+	color: #006cd7;
+	font-size: 27px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.levelIcon > span {
+	position: absolute;
+	color: white;
+	font-size: 10px;
+	font-weight: bold;
+	top: 44%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 10;
+}
+
 .collection-item.with-check {
 	display: flex !important;
 	justify-content: space-between;
@@ -204,6 +236,11 @@ li.profile img {
 .collection-item.with-check > span {
 	flex: 1;
 	padding-top: 10px;
+}
+
+.collection-item.with-check > .levelIcon {
+	padding-top: 10px;
+	padding-right: 10px;
 }
 
 .collection-item.with-check > label {

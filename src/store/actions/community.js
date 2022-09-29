@@ -2,26 +2,29 @@
 // import { db } from "../../database/firebase"
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
-import { types as dbTypes } from "./database.js"; 
+import { types as dbTypes } from "./database.js";
 
 export const types = {
     SET_LOADING: 'SET_LOADING',
 
-    SET_ALL_SONG_TITLES: 'SET_ALL_SONG_TITLES',
-    SET_ALL_SONGS: 'SET_ALL_SONGS',
+    SET_PUBLIC_SONG_TITLES: 'SET_PUBLIC_SONG_TITLES',
+    // SET_PUBLIC_SONG_DETAILS: 'SET_PUBLIC_SONG_DETAILS',
+    SET_PUBLIC_SONG_TITLES_FILTER: 'SET_PUBLIC_SONG_TITLES_FILTER',
+    // SET_PUBLIC_SONG_DETAILS_FILTER: 'SET_PUBLIC_SONG_DETAILS_FILTER',
 
-    SET_ALL_SONG_TITLES_FILTER: 'SET_ALL_SONG_TITLES_FILTER',
-    SET_ALL_SONGS_FILTER: 'SET_ALL_SONGS_FILTER',
+    SET_PRIVATE_SONG_TITLES: 'SET_PRIVATE_SONG_TITLES',
+    // SET_PRIVATE_SONG_DETAILS: 'SET_PRIVATE_SONG_DETAILS',
+    SET_PRIVATE_SONG_TITLES_FILTER: 'SET_PRIVATE_SONG_TITLES_FILTER',
+    // SET_PRIVATE_SONG_DETAILS_FILTER: 'SET_PRIVATE_SONG_DETAILS_FILTER',
 
     SET_CURRENT_SONG: 'SET_CURRENT_SONG',
-
     EDIT_CURRENT_SONG: 'EDIT_CURRENT_SONG',
 
-    SET_ALL_REPERTORY_TITLES: 'SET_ALL_REPERTORY_TITLES',
-    SET_ALL_REPERTORIES: 'SET_ALL_REPERTORIES',
+    SET_PUBLIC_REPERTORY_TITLES: 'SET_PUBLIC_REPERTORY_TITLES',
+    // SET_PUBLIC_REPERTORY_DETAILS: 'SET_PUBLIC_REPERTORY_DETAILS',
 
-    SET_ALL_REPERTORY_TITLES_FILTER: 'SET_ALL_REPERTORY_TITLES_FILTER',
-    SET_ALL_REPERTORIES_FILTER: 'SET_ALL_REPERTORIES_FILTER',
+    SET_PUBLIC_REPERTORY_TITLES_FILTER: 'SET_PUBLIC_REPERTORY_TITLES_FILTER',
+    // SET_PUBLIC_REPERTORY_DETAILS_FILTER: 'SET_PUBLIC_REPERTORY_DETAILS_FILTER',
 
     SET_CURRENT_REPERTORY: 'SET_CURRENT_REPERTORY',
 }
@@ -33,46 +36,110 @@ export const setLoading = (isLoading) => ({
 
 // Thunks
 
-export const getAllSongTitles = () => {
+export const getPublicSongTitles = () => {
     return async (dispatch, getState) => {
         try {
-            console.log("ACA allSongTitles",getState().database)
-
-            const allSongTitles = getState().database.allSongTitles;
+            const publicSongTitles = getState().database.publicSongTitles;
 
             dispatch({
-                type: types.SET_ALL_SONG_TITLES,
-                payload: { allSongTitles }
+                type: types.SET_PUBLIC_SONG_TITLES,
+                payload: { publicSongTitles }
             })
             dispatch(setLoading(false))
         } catch (error) {
             console.warn(error);
+            dispatch({
+                type: types.SET_PUBLIC_SONG_TITLES,
+                payload: { publicSongTitles: { error } }
+            })
             dispatch(setLoading(false))
         }
     }
 }
 
-export const getAllSongs = () => {
+// export const getPublicSongDetails = () => {
+//     return async (dispatch, getState) => {
+//         try {
+//             const publicSongDetails = getState().database.publicSongDetails;
+
+//             dispatch({
+//                 type: types.SET_PUBLIC_SONG_DETAILS,
+//                 payload: { publicSongDetails }
+//             })
+//             dispatch(setLoading(false))
+//         } catch (error) {
+//             console.warn(error);
+//             dispatch(setLoading(false))
+//         }
+//     }
+// }
+
+export const getPrivateSongTitles = (userId) => {
     return async (dispatch, getState) => {
         try {
-            const allSongs = getState().database.allSongs;
+            // const userId = getState().user.google.id;
+            if (userId) {
+                const privateSongTitles = Object.values(getState().database.privateSongTitles)
+                    .reduce((userPrivateSongTitles, privateSongTitle) =>
+                        privateSongTitle.creator.id === userId ?
+                            ({ ...userPrivateSongTitles, [privateSongTitle.id]: privateSongTitle })
+                            : userPrivateSongTitles,
+                        {}) || {};
 
-            dispatch({
-                type: types.SET_ALL_SONGS,
-                payload: { allSongs }
-            })
+                dispatch({
+                    type: types.SET_PRIVATE_SONG_TITLES,
+                    payload: { privateSongTitles }
+                })
+            }
             dispatch(setLoading(false))
         } catch (error) {
             console.warn(error);
+            dispatch({
+                type: types.SET_PRIVATE_SONG_TITLES,
+                payload: { privateSongTitles: { error } }
+            })
             dispatch(setLoading(false))
         }
     }
 }
+
+// export const getPrivateSongDetails = () => {
+//     return async (dispatch, getState) => {
+//         try {
+//             const privateSongDetails = getState().database.privateSongDetails;
+
+//             dispatch({
+//                 type: types.SET_PRIVATE_SONG_DETAILS,
+//                 payload: { privateSongDetails }
+//             })
+//             dispatch(setLoading(false))
+//         } catch (error) {
+//             console.warn(error);
+//             dispatch(setLoading(false))
+//         }
+//     }
+// }
 
 export const getSong = (songId) => {
     return async (dispatch, getState) => {
         try {
-            const song = getState().database.allSongs[songId] || {};
+            const community = getState().community;
+            let song = {};
+            let songLocation;
+
+            if (Object.keys(community.publicSongTitles).includes(songId)) {
+                song = { ...community.publicSongTitles[songId] };
+                songLocation = "PUBLIC";
+            } else if (Object.keys(community.privateSongTitles).includes(songId)) {
+                song = { ...community.privateSongTitles[songId] };
+                songLocation = "PRIVATE";
+            }
+
+            if (songLocation === "PUBLIC") {
+                song = { ...song, ...getState().database.publicSongDetails[songId] };
+            } if (songLocation === "PRIVATE") {
+                song = { ...song, ...getState().database.privateSongDetails[songId] };
+            }
 
             dispatch({
                 type: types.SET_CURRENT_SONG,
@@ -81,22 +148,28 @@ export const getSong = (songId) => {
             dispatch(setLoading(false))
         } catch (error) {
             console.warn(error);
+            dispatch({
+                type: types.SET_CURRENT_SONG,
+                payload: { song: { error } }
+            })
             dispatch(setLoading(false))
         }
     }
 }
 
-export const editSong = (songEdited) => {
+export const editSong = (songEdited, saveAsPublic = false) => {
     return async (dispatch, getState) => {
         try {
             const database = getState().database;
 
             dispatch({
                 type: dbTypes.SET_DATABASE,
-                payload: { newDatabase: {
-                    ...database,
+                payload: {
+                    newDatabase: {
+                        ...database,
 
-                }}
+                    }
+                }
             })
 
             dispatch({
@@ -111,14 +184,14 @@ export const editSong = (songEdited) => {
     }
 }
 
-export const getAllRepertoryTitles = () => {
+export const getPublicRepertoryTitles = () => {
     return async (dispatch, getState) => {
         try {
-            const allRepertoryTitles = getState().database.allRepertoryTitles;
+            const publicRepertoryTitles = getState().database.publicRepertoryTitles;
 
             dispatch({
-                type: types.SET_ALL_REPERTORY_TITLES,
-                payload: { allRepertoryTitles }
+                type: types.SET_PUBLIC_REPERTORY_TITLES,
+                payload: { publicRepertoryTitles }
             })
         } catch (error) {
             console.warn(error);
@@ -127,18 +200,18 @@ export const getAllRepertoryTitles = () => {
     }
 }
 
-export const getAllRepertories = () => {
-    return async (dispatch, getState) => {
-        try {
-            const allRepertories = getState().database.allRepertories;
+// export const getPublicRepertoryDetails = () => {
+//     return async (dispatch, getState) => {
+//         try {
+//             const publicRepertoryDetails = getState().database.publicRepertoryDetails;
 
-            dispatch({
-                type: types.SET_ALL_REPERTORIES,
-                payload: { allRepertories }
-            })
-        } catch (error) {
-            console.warn(error);
-            dispatch(setLoading(false))
-        }
-    }
-}
+//             dispatch({
+//                 type: types.SET_PUBLIC_REPERTORY_DETAILS,
+//                 payload: { publicRepertoryDetails }
+//             })
+//         } catch (error) {
+//             console.warn(error);
+//             dispatch(setLoading(false))
+//         }
+//     }
+// }

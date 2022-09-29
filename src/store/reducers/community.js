@@ -2,13 +2,15 @@ import { types } from "../actions/community"
 
 const initialState = {
     laoding: false,
-    errorFetching: false,
 
-    allSongs: {},
-    allSongTitles: {},
+    publicSongTitles: {},
+    // publicSongDetails: {},
 
-    allRepertories: {},
-    allRepertoryTitles: {},
+    privateSongTitles: {},
+    // privateSongDetails: {},
+
+    publicRepertoryTitles: {},
+    // publicRepertoryDetails: {},
 
     currentSong: {
         id: "0",
@@ -21,7 +23,11 @@ const initialState = {
         tempo: "",
         pulse: "",
         labels: [],
-    }
+    },
+
+    myLibrarySongTitles: {
+
+    },
 }
 
 const CommunityReducer = (state = initialState, { type, payload }) => {
@@ -29,15 +35,20 @@ const CommunityReducer = (state = initialState, { type, payload }) => {
         case types.SET_LOADING:
             return { ...state, loading: payload.loading }
 
-        case types.SET_ALL_SONG_TITLES:
-            return { ...state, allSongTitles: payload.allSongTitles }
-        case types.SET_ALL_SONGS:
-            return { ...state, allSongs: payload.allSongs }
+        case types.SET_PUBLIC_SONG_TITLES:
+            return { ...state, publicSongTitles: payload.publicSongTitles }
+        // case types.SET_PUBLIC_SONG_DETAILS:
+        //     return { ...state, publicSongDetails: payload.publicSongDetails }
 
-        case types.SET_ALL_REPERTORY_TITLES:
-            return { ...state, allRepertoryTitles: payload.allRepertoryTitles }
-        case types.SET_ALL_REPERTORIES:
-            return { ...state, allRepertories: payload.allRepertories }
+        case types.SET_PRIVATE_SONG_TITLES:
+            return { ...state, privateSongTitles: payload.privateSongTitles }
+        // case types.SET_PRIVATE_SONG_DETAILS:
+        //     return { ...state, privateSongDetails: payload.privateSongDetails }
+
+        case types.SET_PUBLIC_REPERTORY_TITLES:
+            return { ...state, publicRepertoryTitles: payload.publicRepertoryTitles }
+        // case types.SET_PUBLIC_REPERTORY_DETAILS:
+        //     return { ...state, publicRepertoryDetails: payload.publicRepertoryDetails }
 
         case types.SET_CURRENT_SONG:
             return { ...state, currentSong: { ...payload.song } }

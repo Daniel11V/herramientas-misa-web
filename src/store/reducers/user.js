@@ -5,7 +5,7 @@ const initialState = {
 
     isLogged: false,
     google: {
-        id: '0',
+        id: '',
         name: '',
         imageUrl: '',
         email: '',

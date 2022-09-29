@@ -5,15 +5,20 @@ import LabelsInput from "./LabelsInput.jsx";
 import "../../../styles/SongList.css";
 import { useDispatch, useSelector } from "react-redux";
 import { objIsEmpty } from "../../../utils";
-import { getAllSongTitles, setLoading } from "../../../store/actions/community";
+import {
+	getPrivateSongTitles,
+	getPublicSongTitles,
+	setLoading,
+} from "../../../store/actions/community";
 
 const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 	const dispatch = useDispatch();
-	const { allSongTitles, loading, errorFetching } = useSelector(
+	const { publicSongTitles, privateSongTitles, loading } = useSelector(
 		(state) => state.community
 	);
+	const userId = useSelector((state) => state.user.google.id);
 
-	// const [filteredSongs, setFilteredSongs] = useState(allSongs);
+	// const [filteredSongs, setFilteredSongs] = useState(allSongDetails);
 	const [showFiltros, setShowFiltros] = useState(false);
 	const [labels, setLabels] = useState(labelsStart);
 	const [search, setSearch] = useState("");
@@ -22,12 +27,18 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 	const collapse = useRef(null);
 
 	useEffect(() => {
-		console.log("ACA allSongTitles", allSongTitles)
-		if (objIsEmpty(allSongTitles) && !errorFetching) {
+		if (objIsEmpty(publicSongTitles)) {
 			dispatch(setLoading(true));
-			dispatch(getAllSongTitles());
+			dispatch(getPublicSongTitles());
 		}
-	}, [allSongTitles, errorFetching, dispatch]);
+	}, [publicSongTitles, dispatch]);
+
+	useEffect(() => {
+		if (userId && objIsEmpty(privateSongTitles)) {
+			dispatch(setLoading(true));
+			dispatch(getPrivateSongTitles(userId));
+		}
+	}, [userId, privateSongTitles, dispatch]);
 
 	useEffect(() => {
 		if (collapse.current && !filterSelectors) {
@@ -47,16 +58,16 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 	}, [showFiltros, filterSelectors]);
 
 	// useEffect(() => {
-	// 	if (allSongs) {
+	// 	if (allSongDetails) {
 	// 		// Filter
 	// 		let startsTitle = [];
 	// 		let includesTitle = [];
 	// 		let includesLyric = [];
 	// 		if (songChoose) {
-	// 			startsTitle.push(allSongs.find((song) => song.id === songChoose));
+	// 			startsTitle.push(allSongDetails.find((song) => song.id === songChoose));
 	// 			// filterById(songChoose)
 	// 		} else {
-	// 			allSongs.forEach((song) => {
+	// 			allSongDetails.forEach((song) => {
 	// 				if (labels.every((elem) => song.labels.includes(elem))) {
 	// 					if (
 	// 						search === "" ||
@@ -78,7 +89,7 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 
 	// 		setFilteredSongs([...startsTitle, ...includesTitle, ...includesLyric]);
 	// 	}
-	// }, [allSongs, search, labels, songChoose]);
+	// }, [allSongDetails, search, labels, songChoose]);
 
 	const handleCheck = (e, songId) => {
 		e.preventDefault();
@@ -100,15 +111,6 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 					className="indeterminate"
 					style={{ backgroundColor: "#1976d2" }}
 				></div>
-			</div>
-		);
-
-	if (errorFetching)
-		return (
-			<div className="collection-item">
-				<span className="song-item">
-					Sin conexión, pruebe recargando la página.
-				</span>
 			</div>
 		);
 
@@ -180,16 +182,29 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 					)}
 				</Link>
 			))} */}
-			{Object.values(allSongTitles || {}).map((song) => (
+			{Object.values(publicSongTitles || {}).map((song) => (
 				<Link
 					to={{ pathname: `/song/${song.id}`, state: { from: "Cancionero" } }}
 					key={song.id}
-					className={`collection-item ${checking ? "with-check" : ""}`}
+					className={`collection-item collection-songs ${
+						checking ? "with-check" : ""
+					}`}
 				>
 					<span className="song-item">
 						{song.title}
-						{song.author && ` - ${song.author}`}
+						{song?.author?.name && ` - ${song.author.name}`}
 					</span>
+					{userId && song?.creator?.id === userId && (
+						<div className="levelIcon">
+							<i className="material-icons">favorite</i>
+							<span>{song?.level?.main}</span>
+						</div>
+					)}
+					{/* <div className="levelIcon">
+							<i className="material-icons" style={{ color: "#5a5a5a" }}>
+								favorite_border
+							</i>
+						</div> */}
 					{checking && (
 						<label onClick={(e) => handleCheck(e, song.id)}>
 							<input
@@ -202,12 +217,12 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 					)}
 				</Link>
 			))}
-			{/* {!filteredSongs && allSongs && (
+			{/* {!filteredSongs && allSongDetails && (
 				<div className="collection-item">
 					<span className="song-item">Ninguna canción coincide...</span>
 				</div>
 			)} */}
-			{objIsEmpty(allSongTitles) && (
+			{(objIsEmpty(publicSongTitles) || !!publicSongTitles?.error) && (
 				<div className="collection-item">
 					<span className="song-item">
 						Sin conexión, pruebe recargando la página.

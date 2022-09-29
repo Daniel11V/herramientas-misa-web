@@ -46,7 +46,7 @@ const Song = () => {
 			sethasChords(!!chordTone);
 			setChordLang(chordLang);
 			setOnlyLyric(onlyLyric);
-		} else if (id) {
+		} else if (id && !song?.error) {
 			dispatch(setLoading(true));
 			dispatch(getSong(id));
 		}
@@ -127,7 +127,7 @@ const Song = () => {
 
 	return (
 		<div className="song">
-			{song.labels.length !== 0 && (
+			{song.labels?.length !== 0 && (
 				<div
 					style={{
 						display: "flex",
@@ -137,7 +137,7 @@ const Song = () => {
 					}}
 				>
 					<i className="material-icons label-icon">local_offer</i>
-					{song.labels.map((label, i) => (
+					{song.labels?.map((label, i) => (
 						<div key={i} className="label">
 							<span>
 								{
@@ -151,7 +151,7 @@ const Song = () => {
 				</div>
 			)}
 			<h3 className="header-song">
-				{song.title} {song.author && ` - ${song.author}`}
+				{song.title} {song.author?.name && ` - ${song.author.name}`}
 			</h3>
 			{song.pulse && <SongInfo>Pulso: {song.pulse}</SongInfo>}
 			{song.tempo && <SongInfo>Tempo recomendado: {song.tempo}</SongInfo>}
@@ -202,28 +202,28 @@ const Song = () => {
 				chords={showChords ? currentChords : {}}
 			/>
 			<br />
-			{song.creator && (
+			{song.creator?.name && (
 				<span style={{ fontStyle: "italic" }}>
-					Transcripción hecha por {song.creator}
+					Transcripción hecha por {song.creator.name}
 				</span>
 			)}
-			{(song.creator === user.name ||
-				user.googleId === "111418653738749034139") && (
-				<div className="btns">
-					<Link
-						to={{ pathname: `/edit-song/${id}`, state: { from: "Canción" } }}
-						className="btn btn-song waves-effect waves-light blue darken-2"
-					>
-						<i className="material-icons right">edit</i>Editar
-					</Link>
+			<div className="btns">
+				<Link
+					to={{ pathname: `/edit-song/${id}`, state: { from: "Canción" } }}
+					className="btn btn-song waves-effect waves-light blue darken-2"
+				>
+					<i className="material-icons right">edit</i>Editar
+				</Link>
+				{(song.creator?.name === user.name ||
+					user.googleId === "111418653738749034139") && (
 					<a
 						href="#modal1"
 						className="btn btn-song waves-effect blue darken-2 modal-trigger"
 					>
 						<i className={`material-icons ${"right"}`}>delete</i>Eliminar
 					</a>
-				</div>
-			)}
+				)}
+			</div>
 
 			<div id="modal1" className="modal">
 				<div className="modal-content">

@@ -36,7 +36,6 @@ export const automaticLabels = (lyric, labels) => {
 
 
     onlyLyric.forEach((p, i, thisArray) => (thisArray[i] = p.trim()));
-    console.log(onlyLyric);
 
     const manualLabel = false;
 
@@ -44,7 +43,7 @@ export const automaticLabels = (lyric, labels) => {
         for (const label in searchLabels) {
             for (const keyWords of searchLabels[label]) {
                 if (lyric.includes(keyWords)) {
-                    console.log("Incluye: ", label);
+                    // console.log("Incluye: ", label);
                     if (!labels.includes(label)) {
                         labels.push(label);
                     }
