@@ -2,16 +2,21 @@ import { types } from "../actions/community"
 
 const initialState = {
     laoding: false,
+    error: null,
 
+    publicSongTitlesStatus: "INITIAL",
     publicSongTitles: {},
     // publicSongDetails: {},
 
+    privateSongTitlesStatus: "INITIAL",
     privateSongTitles: {},
     // privateSongDetails: {},
 
+    publicRepertoryTitlesStatus: "INITIAL",
     publicRepertoryTitles: {},
     // publicRepertoryDetails: {},
 
+    currentSongStatus: "INITIAL",
     currentSong: {
         id: "0",
         title: "",
@@ -36,7 +41,7 @@ const CommunityReducer = (state = initialState, { type, payload }) => {
             return { ...state, loading: payload.loading }
 
         case types.SET_PUBLIC_SONG_TITLES:
-            return { ...state, publicSongTitles: payload.publicSongTitles }
+            return { ...state, publicSongTitles: payload.publicSongTitles, publicSongTitlesStatus: payload.publicSongTitlesStatus }
         // case types.SET_PUBLIC_SONG_DETAILS:
         //     return { ...state, publicSongDetails: payload.publicSongDetails }
 

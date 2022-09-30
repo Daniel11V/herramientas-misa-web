@@ -4,9 +4,12 @@ const initialState = {
     loading: false,
 
     isLogged: false,
+    isLogged: true,
     google: {
         id: '',
         name: '',
+        id: '111418653738749034139',
+        name: 'Daniel Vinet',
         imageUrl: '',
         email: '',
         accessToken: '',

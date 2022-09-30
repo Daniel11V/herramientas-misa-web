@@ -43,14 +43,14 @@ export const getPublicSongTitles = () => {
 
             dispatch({
                 type: types.SET_PUBLIC_SONG_TITLES,
-                payload: { publicSongTitles }
+                payload: { publicSongTitles, publicSongTitlesStatus: "SUCCESS" }
             })
             dispatch(setLoading(false))
         } catch (error) {
             console.warn(error);
             dispatch({
                 type: types.SET_PUBLIC_SONG_TITLES,
-                payload: { publicSongTitles: { error } }
+                payload: { publicSongTitles: { error }, publicSongTitlesStatus: "FAILURE" }
             })
             dispatch(setLoading(false))
         }
@@ -88,7 +88,7 @@ export const getPrivateSongTitles = (userId) => {
 
                 dispatch({
                     type: types.SET_PRIVATE_SONG_TITLES,
-                    payload: { privateSongTitles }
+                    payload: { privateSongTitles, privateSongTitlesStatus: "SUCCESS" }
                 })
             }
             dispatch(setLoading(false))
@@ -96,7 +96,7 @@ export const getPrivateSongTitles = (userId) => {
             console.warn(error);
             dispatch({
                 type: types.SET_PRIVATE_SONG_TITLES,
-                payload: { privateSongTitles: { error } }
+                payload: { privateSongTitles: { error }, privateSongTitlesStatus: "FAILURE" }
             })
             dispatch(setLoading(false))
         }
@@ -143,14 +143,14 @@ export const getSong = (songId) => {
 
             dispatch({
                 type: types.SET_CURRENT_SONG,
-                payload: { song }
+                payload: { song, songStatus: "SUCCESS" }
             })
             dispatch(setLoading(false))
         } catch (error) {
             console.warn(error);
             dispatch({
                 type: types.SET_CURRENT_SONG,
-                payload: { song: { error } }
+                payload: { song: { error }, songStatus: "FAILURE" }
             })
             dispatch(setLoading(false))
         }

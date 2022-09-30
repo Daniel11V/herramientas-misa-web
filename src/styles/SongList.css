@@ -197,12 +197,12 @@ li.profile img {
 .collection-songs {
 	display: flex !important;
 	justify-content: space-between;
-	padding-right: 15px !important;
+	padding-right: 14px !important;
 }
 
 .levelIcon {
 	position: relative;
-	width: 28px;
+	width: 27px;
 	margin-top: 2px;
 }
 
@@ -220,7 +220,7 @@ li.profile img {
 	color: white;
 	font-size: 10px;
 	font-weight: bold;
-	top: 44%;
+	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 10;

@@ -13,7 +13,7 @@ import {
 
 const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 	const dispatch = useDispatch();
-	const { publicSongTitles, privateSongTitles, loading } = useSelector(
+	const { publicSongTitles, publicSongTitlesStatus, privateSongTitles, privateSongTitlesStatus, loading } = useSelector(
 		(state) => state.community
 	);
 	const userId = useSelector((state) => state.user.google.id);
@@ -24,21 +24,45 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 	const [search, setSearch] = useState("");
 	const [filterSelectors, setFilterSelectors] = useState(null);
 	const [songChoose, setSongChoose] = useState(null);
+	const [finalList, setFinalList] = useState([]);
+	const [versionGroups, setVersionGroups] = useState([]);
 	const collapse = useRef(null);
 
 	useEffect(() => {
-		if (objIsEmpty(publicSongTitles)) {
+		if (publicSongTitlesStatus === "INITIAL") {
 			dispatch(setLoading(true));
 			dispatch(getPublicSongTitles());
-		}
-	}, [publicSongTitles, dispatch]);
+		} 
+	}, [publicSongTitlesStatus, dispatch]);
 
 	useEffect(() => {
-		if (userId && objIsEmpty(privateSongTitles)) {
+		if (userId && privateSongTitlesStatus === "INITIAL") {
 			dispatch(setLoading(true));
 			dispatch(getPrivateSongTitles(userId));
 		}
-	}, [userId, privateSongTitles, dispatch]);
+	}, [userId, privateSongTitlesStatus, dispatch]);
+
+	useEffect(() => {
+		if (userId && privateSongTitlesStatus !== "INITIAL" && publicSongTitlesStatus !== "INITIAL") {
+			const newList = [];
+			/* 
+			Cancionero:
+			- Canciones de otros publicas
+			- Si hay varias versiones mostrar la mia publica o privada
+			- Mis canciones publicas
+			- En codigo: publicSongTitles + privateSongTitles, dejando una por versiones
+			Mi Biblioteca:
+			- Mis canciones privadas y publicas
+			- 
+
+
+			publicSongTitles
+			En Favoritos una:
+			- crea un privateSongTitles de esa que apunta al detalle de la publica, si 
+			se edita algo de Details se crea nueva Detail en private
+			*/
+		}
+	}, [userId, publicSongTitlesStatus, privateSongTitlesStatus, publicSongTitles, privateSongTitles]);
 
 	useEffect(() => {
 		if (collapse.current && !filterSelectors) {

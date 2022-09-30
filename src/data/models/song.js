@@ -50,6 +50,7 @@ export const publicSongDetail = {
 
 export const privateSongTitle = {
     ...publicSongTitle,
+    songDetailId: { type: "String", required: false },
     hasAccess: {
         type: {
             $userId: { type: "String", required: true }, // name
