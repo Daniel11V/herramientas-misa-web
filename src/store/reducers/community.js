@@ -23,7 +23,7 @@ const initialState = {
         lyric: "",
         chords: {},
         creator: "",
-        author: "",
+        author: {},
         rating: [],
         tempo: "",
         pulse: "",

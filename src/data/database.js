@@ -6,6 +6,8 @@ export const database = {
             name: 'Facundo Etcheberry',
             email: '',
             photoUrl: '',
+            creatorId: '111418653738749034139',
+            songTitleIds: ["123", "124"],
         }
     },
     users: {

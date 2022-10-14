@@ -8,6 +8,7 @@ const initialState = {
     google: {
         id: '',
         name: '',
+        // PRECOMMIT
         id: '111418653738749034139',
         name: 'Daniel Vinet',
         imageUrl: '',

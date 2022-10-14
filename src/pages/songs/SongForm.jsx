@@ -21,7 +21,8 @@ const SongForm = () => {
 
 	const [creator, setCreator] = useState(null);
 	const [title, setTitle] = useState("");
-	const [author, setAuthor] = useState("");
+	const [author, setAuthor] = useState({value: '123455',
+	label: 'Facundo Etcheberry'}); // name, id
 	const [lyric, setLyric] = useState("");
 	const [onlyLiric, setOnlyLyric] = useState("");
 	const [chords, setChords] = useState({});
@@ -38,7 +39,10 @@ const SongForm = () => {
 		if (id && song.id === id) {
 			setCreator(song.creator);
 			setTitle(song.title);
-			setAuthor(song.author);
+			setAuthor({
+				value: song.author.id,
+				label: song.author.name,
+			});
 			setTempo(song.tempo);
 			setPulse(song.pulse);
 			setLabels(song.labels);

@@ -3,6 +3,8 @@ export const author = {
     name: { type: "String", required: false },
     email: { type: "String", required: false },
     photoUrl: { type: "String", required: false },
+    creatorId: { type: "String", required: true },
+    songTitleIds: { type: "Array", required: true },
 };
 export const user = {
     id: { type: "String", required: true },

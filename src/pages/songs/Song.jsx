@@ -189,7 +189,6 @@ const Song = () => {
 									selectedChord={tone}
 									setSelectedChord={setNewTone}
 									chordLang={chordLang}
-									color={"#000"}
 								/>
 							</div>
 						</>

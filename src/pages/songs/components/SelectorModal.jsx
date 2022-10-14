@@ -1,21 +1,21 @@
 import M from "materialize-css";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import allChords from "../../../data/allChords";
 
-const ChordSelector = ({
-	selectedChord,
-	setSelectedChord,
-	chordLang,
+const SelectorModal = ({
+	selectedItem,
+	setSelectedItem,
+	items = [{value:"1",label:"A"}, {value:"2",label:"B"}],
+	title = ""
 }) => {
-	const [chordModal, setChordModal] = useState(null);
+	const [modalRef, setModalRef] = useState(null);
 
 	useEffect(() => {
-		const elem = document.querySelector(".chord-modal");
+		const elem = document.querySelector(".selector-modal");
 		const instance = M.Modal.init(elem, {
 			endingTop: "15%",
 		});
-		setChordModal(instance);
+		setModalRef(instance);
 		return () => {
 			instance.destroy();
 		};
@@ -23,47 +23,53 @@ const ChordSelector = ({
 
 	const handleSelectorClick = (event) => {
 		event.stopPropagation();
-		chordModal?.open();
+		modalRef?.open();
 	};
 
-	const handleChordClick = (chord) => {
-		setSelectedChord(chord);
-		chordModal.close();
+	const handleItemClick = (item) => {
+		setSelectedItem(item);
+		modalRef.close();
 	};
 
 	return (
 		<>
-			<SelectedChord onClick={(e) => handleSelectorClick(e)}>
-				{selectedChord}
-				<SelectedChordArrow className="material-icons">
+			<SelectedItem onClick={(e) => handleSelectorClick(e)}>
+				{selectedItem.label}
+				<SelectedItemArrow className="material-icons">
 					keyboard_arrow_down
-				</SelectedChordArrow>
-			</SelectedChord>
+				</SelectedItemArrow>
+			</SelectedItem>
 			<div
-				className="modal chord-modal"
+				className="modal selector-modal"
 				style={{ color: "black", padding: 0, textAlign: "center" }}
 			>
 				<div className="modal-content">
-					<h5>Elegir Acorde</h5>
-					{allChords[chordLang].map((type, i) => (
+					{title && <h5>{title}</h5>}
+					{items.map((item) => (
+						<ItemBtn key={item.value} onClick={() => handleItemClick(item)}>
+							{item.label}
+						</ItemBtn>
+					))}
+					{/* With Categories */}
+					{/* {items.map((type, i) => (
 						<div key={i}>
-							<ChordText>
+							<ItemText>
 								<b>{type.name}</b>
-							</ChordText>
-							{type.chords.map((chord, k) => (
-								<ChordBtn key={k} onClick={() => handleChordClick(chord)}>
-									{chord}
-								</ChordBtn>
+							</ItemText>
+							{type.chords.map((item, k) => (
+								<ItemBtn key={k} onClick={() => handleItemClick(item)}>
+									{item}
+								</ItemBtn>
 							))}
 						</div>
-					))}
+					))} */}
 				</div>
 			</div>
 		</>
 	);
 };
 
-const ChordText = styled.span`
+const ItemText = styled.span`
 	width: 100%;
 	border-bottom: 1px solid #e4e4e4;
 	padding: 10px;
@@ -71,7 +77,7 @@ const ChordText = styled.span`
 	display: block;
 `;
 
-const ChordBtn = styled(ChordText)`
+const ItemBtn = styled(ItemText)`
 	padding-top: 10px;
 	cursor: pointer;
 
@@ -80,7 +86,7 @@ const ChordBtn = styled(ChordText)`
 	}
 `;
 
-const SelectedChordArrow = styled.i`
+const SelectedItemArrow = styled.i`
 	position: absolute;
 	top: 8px;
 	right: 10px;
@@ -88,7 +94,7 @@ const SelectedChordArrow = styled.i`
 	color: #000;
 `;
 
-const SelectedChord = styled.div`
+const SelectedItem = styled.div`
 	position: relative;
 	display: inline-block;
 	/* border: 1px solid gray; */
@@ -112,4 +118,4 @@ const SelectedChord = styled.div`
 	}
 `;
 
-export default ChordSelector;
+export default SelectorModal;

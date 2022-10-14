@@ -192,7 +192,7 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 				>
 					<span className="song-item">
 						{song.title}
-						{song.author && ` - ${song.author}`}
+						{song.author.name && ` - ${song.author.name}`}
 					</span>
 					{checking && (
 						<label onClick={(e) => handleCheck(e, song.id)}>
