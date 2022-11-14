@@ -62,13 +62,12 @@ export const getSong = ({ userId, songId }) => {
             //////////////////////////////
 
             const songList = getState().song.songList;
-            let songTitle = {};
+            let songTitle;
 
             if (!arrayIsEmpty(songList)) {
                 songTitle = songList.find(i => i.id === songId);
             } else {
                 songTitle = await getPrivateSongTitleDB({ userId, songId });
-
                 if (!songTitle) songTitle = await getPublicSongTitleDB({ songId });
             }
 

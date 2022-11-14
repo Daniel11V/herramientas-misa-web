@@ -13,7 +13,7 @@ export const privateSongTitleModel = {
 };
 
 export const getPrivateSongTitleListDB = async ({ userId }) => {
-    if (!userId) return {};
+    if (!userId) return null;
 
     const allPrivateSongTitleList = store.getState().database.privateSongTitleList
 
@@ -28,7 +28,7 @@ export const getPrivateSongTitleListDB = async ({ userId }) => {
 }
 
 export const getPrivateSongTitleDB = async ({ userId, songId }) => {
-    if (!userId) return {};
+    if (!userId) return null;
     if (!songId) throw new Error("Invalid song ID.");
 
     const privateSongTitle = store.getState().database.privateSongTitleList[songId];

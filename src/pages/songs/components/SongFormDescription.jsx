@@ -1,18 +1,25 @@
+import SelectorModal from "./SelectorModal";
+
 const SongFormDescription = ({ author, setAuthor, title, setTitle }) => {
 	return (
 		<>
 			<div className="row">
 				<div className="input-field">
-					<input
+					{/* Replace with selector */}
+					{/* <input
 						id="author"
 						name="author"
 						onChange={(e) => setAuthor(e.target.value)}
 						type="text"
 						value={author || ""}
-					/>
+					/> */}
 					<label htmlFor="author" className="lab">
 						Autor
 					</label>
+					<SelectorModal
+						selectedItem={author}
+						setSelectedItem={setAuthor}
+					/>
 				</div>
 			</div>
 			<div className="row">
