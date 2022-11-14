@@ -1,14 +1,5 @@
 // import { database } from "../../data/database.js";
-import { types as dbTypes } from "./database.js"; 
-
-
-export const types = {
-    SET_LOADING: 'SET_LOADING',
-    LOGIN: 'LOGIN',
-    LOGOUT: 'LOGOUT',
-    SET_USER_SONG_TITLES: 'SET_USER_SONG_TITLES',
-    SET_USER_SONGS: 'SET_USER_SONGS',
-}
+import { types } from "./types.js";
 
 export const setLoading = (isLoading) => ({
     type: types.SET_LOADING,
@@ -29,8 +20,8 @@ export const logout = () => ({
 export const getUserSongTitles = (userId) => {
     return async (dispatch, getState) => {
         try {
-            const newUserSongTitles = getState().database.users[userId]?.songTitles || {};
-            
+            const newUserSongTitles = getState().database.userList[userId]?.songTitles || {};
+
             dispatch({
                 type: types.SET_USER_SONG_TITLES,
                 payload: { newUserSongTitles }
@@ -46,7 +37,7 @@ export const getUserSongTitles = (userId) => {
 export const getUserSongs = (userId) => {
     return async (dispatch, getState) => {
         try {
-            const newUserSongs = getState().database.users[userId]?.songs || {};
+            const newUserSongs = getState().database.userList[userId]?.songs || {};
             dispatch({
                 type: types.SET_USER_SONGS,
                 payload: { newUserSongs }

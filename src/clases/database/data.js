@@ -8,7 +8,7 @@ export const database = {
             photoUrl: '',
         }
     },
-    users: {
+    userList: {
         '111418653738749034139': {
             id: '111418653738749034139',
             name: 'Daniel Vinet',
@@ -23,10 +23,38 @@ export const database = {
         }
     },
 
-    privateSongTitles: {
+    privateRepertoryList: {
+        "6144d6372d6d4f8085af95ee": {
+            "id": "6144d6372d6d4f8085af95ee",
+            "creator": {
+                "id": "111418653738749034139",
+                "name": "Daniel Vinet",
+            },
+            "title": "Misa 250 Años de la Parroquia",
+            "description": "",
+            "members": [],
+            "placeTitle": "Parroquia Ntra. Sra. del Pilar",
+            "placeUbication": "",
+            "isMass": true,
+            "songs": {
+                "entrada": [""],
+                "gloria": [""],
+                "aleluya": [""],
+                "ofrenda": [""],
+                "santo": [""],
+                "cordero": [""],
+                "comunion": [""],
+                "meditacion": [""],
+                "salida": [""],
+            }
+        }
+    },
+
+    privateSongTitleList: {
         "6144d6372d6d4f8085af95ee": {
             "id": "6144d6372d6d4f8085af95ee",
             "versionGroupId": "6144d6372d6d4f8085af95ed",
+            "isPrivate": true,
             "title": "Aleluya III",
             "creator": {
                 "id": "111418653738749034139",
@@ -48,7 +76,7 @@ export const database = {
             },
         }
     },
-    privateSongDetails: {
+    privateSongDetailsList: {
         "6144d6372d6d4f8085af95ee": {
             songTitleId: "6144d6372d6d4f8085af95ee",
             pulse: "4/4 por acorde",
@@ -56,13 +84,13 @@ export const database = {
         },
     },
 
-    publicRepertoryTitles: {},
-    publicRepertoryDetails: {},
+    publicRepertoryList: {},
 
-    publicSongTitles: {
+    publicSongTitleList: {
         "123": {
             "id": "123",
             "versionGroupId": "123",
+            "isPrivate": false,
             "title": "Espíritu de Verdad",
             "author": {
                 "id": "123455",
@@ -80,6 +108,7 @@ export const database = {
         "124": {
             "id": "124",
             "versionGroupId": "124",
+            "isPrivate": false,
             "title": "Todo Poder y Gloria",
             "author": {
                 "id": "123455",
@@ -97,6 +126,7 @@ export const database = {
         "125": {
             "id": "125",
             "versionGroupId": "125",
+            "isPrivate": false,
             "title": "Recibe mi corazón",
             "author": {
                 "id": "123454",
@@ -114,6 +144,7 @@ export const database = {
         "613c854ef601f09e344f43bf": {
             "id": "613c854ef601f09e344f43bf",
             "versionGroupId": "613c854ef601f09e344f43bf",
+            "isPrivate": false,
             "title": "A Él la gloria",
             "author": {
                 "id": "123453",
@@ -131,6 +162,7 @@ export const database = {
         "613c8597f601f09e344f43c2": {
             "id": "613c8597f601f09e344f43c2",
             "versionGroupId": "613c8597f601f09e344f43c2",
+            "isPrivate": false,
             "title": "A casa de Zacarí­as",
             "creator": {
                 "id": "111418653738749034139",
@@ -144,6 +176,7 @@ export const database = {
         "6144d3152d6d4f8085af95d9": {
             "id": "6144d3152d6d4f8085af95d9",
             "versionGroupId": "6144d3152d6d4f8085af95d9",
+            "isPrivate": false,
             "title": "Al contemplarte en la Cruz",
             "creator": {
                 "id": "111418653738749034139",
@@ -157,6 +190,7 @@ export const database = {
         "6144d6372d6d4f8085af95ed": {
             "id": "6144d6372d6d4f8085af95ed",
             "versionGroupId": "6144d6372d6d4f8085af95ed",
+            "isPrivate": false,
             "title": "Aleluya II (Busca primero el Reino de Dios)",
             "creator": {
                 "id": "111418653738749034139",
@@ -168,7 +202,7 @@ export const database = {
             "level": { main: 1 },
         }
     },
-    publicSongDetails: {
+    publicSongDetailsList: {
         "123": {
             songTitleId: "123",
             lyric: `D                                      Em7

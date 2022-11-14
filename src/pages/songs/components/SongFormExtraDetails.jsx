@@ -1,4 +1,4 @@
-import LabelsInput from "./LabelsInput";
+import LabelsInput from "../../components/LabelsInput";
 
 const SongFormExtraDetails = ({
 	labels,

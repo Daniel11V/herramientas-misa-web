@@ -1,5 +1,5 @@
-import { database } from "../../data/database"
-import { types } from "../actions/database"
+import { database } from "./data";
+import { types } from "./types";
 
 
 const initialState = { ...database };

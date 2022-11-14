@@ -54,6 +54,21 @@ export const automaticLabels = (lyric, labels) => {
 }
 
 export const objIsEmpty = (object) => !object || Object.keys(object)?.length === 0;
+export const arrayIsEmpty = (arr) => !arr || arr.length === 0;
+
+export const getRating = (rates = {}) => {
+    let sumatory = 0;
+    Object.values(rates).forEach(rate => {
+        sumatory += rate;
+    })
+    const floatRating = sumatory / (Object.values(rates).length || 1);
+
+    const fixedRating = Math.floor(floatRating);
+    let finalRating = fixedRating;
+    if (floatRating - fixedRating >= 0.5) finalRating += 0.5;
+
+    return finalRating;
+}
 
 export const getChordsFromLyric = (lyric) => {
     const songLines = lyric.split("\n");

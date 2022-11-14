@@ -1,7 +1,4 @@
-
-export const types = {
-    SET_DATABASE: 'SET_DATABASE',
-}
+import { types } from "./types";
 
 export const setDatabase = (newDatabase) => ({
     type: types.SET_DATABASE,

@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useHistory } from "react-router-dom";
 import M from "materialize-css";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import fullLabels from "../../data/fullLabels.js";
 import "../../styles/Song.css";
 import LyricWithChords from "./components/LyricWithChords";
 import styled from "styled-components";
 import ChordSelector from "./components/ChordSelector";
 import allChords from "../../data/allChords";
-import { getSong } from "../../store/actions/community";
-import { setLoading } from "../../store/actions/user";
 import { getChordsFromLyric } from "../../utils.js";
+import { useSong } from "../../clases/song/useSong.js";
 
 const Song = () => {
 	const history = useHistory();
 	const { id } = useParams();
-	const dispatch = useDispatch();
-	const { currentSong: song, loading } = useSelector(
-		(state) => state.community
-	);
+	const [song, loading, error] = useSong(id);
+
 	const user = useSelector((state) => state.user.google);
 
 	const [tone, setTone] = useState(null);
@@ -46,11 +43,8 @@ const Song = () => {
 			sethasChords(!!chordTone);
 			setChordLang(chordLang);
 			setOnlyLyric(onlyLyric);
-		} else if (id && !song?.error) {
-			dispatch(setLoading(true));
-			dispatch(getSong(id));
 		}
-	}, [id, song, dispatch]);
+	}, [song, id]);
 
 	const deleteSong = async () => {
 		// await axios.delete(`/api/songs/${id}`).catch((err) => console.error(err));
@@ -125,9 +119,11 @@ const Song = () => {
 			</div>
 		);
 
+	if (!!error) return <div>Error - {error}</div>;
+
 	return (
 		<div className="song">
-			{song.labels?.length !== 0 && (
+			{!!song?.labels?.length && (
 				<div
 					style={{
 						display: "flex",

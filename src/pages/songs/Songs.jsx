@@ -3,10 +3,15 @@ import { Link } from "react-router-dom";
 import LoginLogout from "../../layout/components/LoginLogout";
 import { useHistory } from "react-router";
 import SongList from "./components/SongList";
-import { login } from "../../store/actions/user";
 import { useDispatch, useSelector } from "react-redux";
+// import { useSongBookList } from "./hooks/useSongBookList";
+import { useSongList } from "../../clases/song/useSongList";
+import { login } from "../../clases/user/actions";
 
 const Songs = () => {
+	// const [songBookList, loadingSongBookList, errorSongBookList] =
+	// 	useSongBookList();
+	const [songList, loadingSongList, errorSongList] = useSongList();
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const isLogged = useSelector((state) => state.user.isLogged);
@@ -38,7 +43,12 @@ const Songs = () => {
 					</LoginLogout>
 				)}
 			</div>
-			<SongList searcher />
+			<SongList
+				searcher
+				songs={songList}
+				loading={loadingSongList}
+				error={errorSongList}
+			/>
 		</Fragment>
 	);
 };

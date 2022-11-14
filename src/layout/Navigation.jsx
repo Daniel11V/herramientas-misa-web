@@ -59,9 +59,9 @@ const Navigation = () => {
 							</div>
 						)}
 						<ul className="right hide-on-med-and-down">
-							{/* <li>
+							<li>
 								<Link to="/repertories">Repertorios</Link>
-							</li> */}
+							</li>
 							<li>
 								<Link to="/songs">Cancionero</Link>
 							</li>
@@ -157,9 +157,9 @@ const Navigation = () => {
 						</a>
 					</i>
 				</li>
-				{/* <li>
+				<li>
 					<Link to="/repertories">Repertorios</Link>
-				</li> */}
+				</li>
 				<li>
 					<Link to="/songs">Cancionero</Link>
 				</li>

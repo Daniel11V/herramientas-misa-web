@@ -1,15 +1,16 @@
-import { types } from "../actions/user"
+import { types } from "./types"
 
 const initialState = {
     loading: false,
+    error: null,
 
-    isLogged: false,
-    isLogged: true,
+    isLogged: false, // PREDEPLOY
+    // isLogged: true,
     google: {
-        id: '',
-        name: '',
-        id: '111418653738749034139',
-        name: 'Daniel Vinet',
+        id: '',      // PREDEPLOY
+        name: '',    // PREDEPLOY
+        // id: '111418653738749034139',
+        // name: 'Daniel Vinet',
         imageUrl: '',
         email: '',
         accessToken: '',

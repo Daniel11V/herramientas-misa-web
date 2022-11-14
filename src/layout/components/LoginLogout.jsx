@@ -1,7 +1,7 @@
 import React from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 import { useDispatch } from "react-redux";
-import { login } from "../../store/actions/user";
+import { login } from "../../clases/user/actions";
 
 const LoginLogout = ({ children = null, logout = false }) => {
 	const dispatch = useDispatch();

@@ -7,8 +7,8 @@ import SongFormDescription from "./components/SongFormDescription";
 import SongFormLyric from "./components/SongFormLyric";
 import SongFormExtraDetails from "./components/SongFormExtraDetails";
 import LyricWithChords from "./components/LyricWithChords";
-import { getSong, setLoading, editSong } from "../../store/actions/community";
 import { getChordsFromLyric, getLyricWithChords } from "../../utils";
+import { editSong, getSong } from "../../clases/song/actions";
 
 const SongForm = () => {
 	const { id } = useParams();
@@ -50,7 +50,6 @@ const SongForm = () => {
 			// 	inputs[i].classList.add("active");
 			// }
 		} else if (id) {
-			dispatch(setLoading(true));
 			dispatch(getSong(id));
 		}
 	}, [id, song, dispatch]);
@@ -80,6 +79,7 @@ const SongForm = () => {
 			// 	.post("/api/songs", songToSend)
 			// 	.catch((err) => console.error(err));
 			// res ? console.log(res.data) : console.log("No response");
+			dispatch(editSong(songEdited));
 			M.toast({ html: "Canción Guardada" });
 		}
 	};

@@ -1,21 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import M from "materialize-css";
-import LabelsInput from "./LabelsInput.jsx";
+import LabelsInput from "../../components/LabelsInput.jsx";
 import "../../../styles/SongList.css";
-import { useDispatch, useSelector } from "react-redux";
-import { objIsEmpty } from "../../../utils";
-import {
-	getPrivateSongTitles,
-	getPublicSongTitles,
-	setLoading,
-} from "../../../store/actions/community";
+import { useSelector } from "react-redux";
+import { arrayIsEmpty } from "../../../utils";
 
-const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
-	const dispatch = useDispatch();
-	const { publicSongTitles, publicSongTitlesStatus, privateSongTitles, privateSongTitlesStatus, loading } = useSelector(
-		(state) => state.community
-	);
+const SongList = ({
+	songs = [],
+	loading = false,
+	error = "",
+	searcher = false,
+	labelsStart = [],
+	checking = false,
+}) => {
 	const userId = useSelector((state) => state.user.google.id);
 
 	// const [filteredSongs, setFilteredSongs] = useState(allSongDetails);
@@ -24,45 +22,7 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 	const [search, setSearch] = useState("");
 	const [filterSelectors, setFilterSelectors] = useState(null);
 	const [songChoose, setSongChoose] = useState(null);
-	const [finalList, setFinalList] = useState([]);
-	const [versionGroups, setVersionGroups] = useState([]);
 	const collapse = useRef(null);
-
-	useEffect(() => {
-		if (publicSongTitlesStatus === "INITIAL") {
-			dispatch(setLoading(true));
-			dispatch(getPublicSongTitles());
-		} 
-	}, [publicSongTitlesStatus, dispatch]);
-
-	useEffect(() => {
-		if (userId && privateSongTitlesStatus === "INITIAL") {
-			dispatch(setLoading(true));
-			dispatch(getPrivateSongTitles(userId));
-		}
-	}, [userId, privateSongTitlesStatus, dispatch]);
-
-	useEffect(() => {
-		if (userId && privateSongTitlesStatus !== "INITIAL" && publicSongTitlesStatus !== "INITIAL") {
-			const newList = [];
-			/* 
-			Cancionero:
-			- Canciones de otros publicas
-			- Si hay varias versiones mostrar la mia publica o privada
-			- Mis canciones publicas
-			- En codigo: publicSongTitles + privateSongTitles, dejando una por versiones
-			Mi Biblioteca:
-			- Mis canciones privadas y publicas
-			- 
-
-
-			publicSongTitles
-			En Favoritos una:
-			- crea un privateSongTitles de esa que apunta al detalle de la publica, si 
-			se edita algo de Details se crea nueva Detail en private
-			*/
-		}
-	}, [userId, publicSongTitlesStatus, privateSongTitlesStatus, publicSongTitles, privateSongTitles]);
 
 	useEffect(() => {
 		if (collapse.current && !filterSelectors) {
@@ -206,7 +166,7 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 					)}
 				</Link>
 			))} */}
-			{Object.values(publicSongTitles || {}).map((song) => (
+			{songs.map((song) => (
 				<Link
 					to={{ pathname: `/song/${song.id}`, state: { from: "Cancionero" } }}
 					key={song.id}
@@ -246,7 +206,7 @@ const SongList = ({ searcher = false, labelsStart = [], checking = false }) => {
 					<span className="song-item">Ninguna canción coincide...</span>
 				</div>
 			)} */}
-			{(objIsEmpty(publicSongTitles) || !!publicSongTitles?.error) && (
+			{(arrayIsEmpty(songs) || !!error) && (
 				<div className="collection-item">
 					<span className="song-item">
 						Sin conexión, pruebe recargando la página.
