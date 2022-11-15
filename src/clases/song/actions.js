@@ -31,8 +31,8 @@ export const getSongList = ({ userId }) => {
             const userPrivateSongTitleList = await getPrivateSongTitleListDB({ userId });
 
             const songList = [
-                ...Object.values(publicSongTitleList),
-                ...Object.values(userPrivateSongTitleList),
+                ...Object.values(publicSongTitleList || {}),
+                ...Object.values(userPrivateSongTitleList || {}),
             ]
 
             //////////////////////////////////////

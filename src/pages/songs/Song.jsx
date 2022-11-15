@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useHistory } from "react-router-dom";
 import M from "materialize-css";
@@ -10,6 +11,8 @@ import ChordSelector from "./components/ChordSelector";
 import allChords from "../../data/allChords";
 import { getChordsFromLyric } from "../../utils.js";
 import { useSong } from "../../clases/song/useSong.js";
+import { colors, noSelectableText } from "../../styles/styleUtils.js";
+import MessageModal from "../components/MessageModal.jsx";
 
 const Song = () => {
 	const history = useHistory();
@@ -24,6 +27,8 @@ const Song = () => {
 	const [hasChords, sethasChords] = useState(false);
 	const [chordLang, setChordLang] = useState("en");
 	const [onlyLyric, setOnlyLyric] = useState("");
+
+	const [messageModalOpts, setMessageModalOpts] = useState(null);
 
 	useEffect(() => {
 		const elems = document.querySelectorAll(".modal");
@@ -109,6 +114,30 @@ const Song = () => {
 		}
 	};
 
+	const handleFloatingBtn = (event) => {
+		// event.stopPropagation();
+		// actionBtn.close();
+	};
+
+	const handleEditBtn = (event) => {
+		// event.stopPropagation();
+		// actionBtn.close();
+	};
+	const handleDeleteBtn = (event) => {
+		event.stopPropagation();
+		setMessageModalOpts({
+			title: "¿Esta seguro que desea eliminar esta canción?",
+			message:
+				"Esta acción no se puede deshacer y se eliminará para todos los usuarios.",
+			onClose: () => {
+				setMessageModalOpts(null);
+			},
+			onCancel: () => {},
+			onConfirm: () => {},
+		});
+		// actionBtn.close();
+	};
+
 	if (loading)
 		return (
 			<div className="progress" style={{ backgroundColor: "#9cd1ff" }}>
@@ -122,7 +151,7 @@ const Song = () => {
 	if (!!error) return <div>Error - {error}</div>;
 
 	return (
-		<div className="song">
+		<SongPage>
 			{!!song?.labels?.length && (
 				<div
 					style={{
@@ -132,23 +161,17 @@ const Song = () => {
 						flexWrap: "wrap",
 					}}
 				>
-					<i className="material-icons label-icon">local_offer</i>
+					<LabelIcon className="material-icons">local_offer</LabelIcon>
 					{song.labels?.map((label, i) => (
-						<div key={i} className="label">
-							<span>
-								{
-									fullLabels[
-										fullLabels.findIndex((type) => type.lbs[label]?.length > 0)
-									]?.lbs[label]
-								}
-							</span>
-						</div>
+						<SongLabel key={i}>
+							{fullLabels.find((type) => !!type.lbs[label]).lbs[label]}
+						</SongLabel>
 					))}
 				</div>
 			)}
-			<h3 className="header-song">
+			<SongTitle>
 				{song.title} {song.author?.name && ` - ${song.author.name}`}
-			</h3>
+			</SongTitle>
 			{song.pulse && <SongInfo>Pulso: {song.pulse}</SongInfo>}
 			{song.tempo && <SongInfo>Tempo recomendado: {song.tempo}</SongInfo>}
 			<div
@@ -212,40 +235,62 @@ const Song = () => {
 				{(song.creator?.name === user.name ||
 					user.googleId === "111418653738749034139") && (
 					<a
-						href="#modal1"
 						className="btn btn-song waves-effect blue darken-2 modal-trigger"
+						onClick={handleDeleteBtn}
 					>
 						<i className={`material-icons ${"right"}`}>delete</i>Eliminar
 					</a>
 				)}
 			</div>
-
-			<div id="modal1" className="modal">
-				<div className="modal-content">
-					<h4>¿Esta seguro que desea eliminar esta canción?</h4>
-					<p>
-						Esta acción no se puede deshacer y se eliminará para todos los
-						usuarios.
-					</p>
-				</div>
-				<div className="modal-footer">
-					<div
-						onClick={deleteSong}
-						className="modal-close waves-effect waves-light-blue btn-flat"
-					>
-						Confirmar
-					</div>
-					<div className="modal-close waves-effect waves-light-blue btn-flat">
-						Cancelar
-					</div>
-				</div>
+			<MessageModal opts={messageModalOpts} />
+			<div className="fixed-action-btn">
+				<a
+					className="btn-floating btn-large waves-effect waves-light blue"
+					onClick={handleFloatingBtn}
+				>
+					<i className="large material-icons">mode_edit</i>
+				</a>
 			</div>
-		</div>
+		</SongPage>
 	);
 };
 
+const SongPage = styled.div`
+	font-size: 1.1em;
+	margin: 0 auto 40px auto;
+	max-width: 700px;
+	${noSelectableText}
+`;
+const SongTitle = styled.h3`
+	@media (max-width: 600px) {
+		font-size: 2.3rem;
+	}
+`;
+const LabelIcon = styled.i`
+	color: ${colors.primary};
+	margin-right: 10px;
+	margin-bottom: 3px;
+`;
+const SongLabel = styled.div`
+	display: inline-block;
+	height: 29px;
+	font-size: 13px;
+	font-weight: 500;
+	color: rgba(0, 0, 0, 0.6);
+	line-height: 29px;
+	padding: 0 12px;
+	border-radius: 16px;
+	background-color: #e4e4e4;
+	margin-bottom: 3px;
+	margin-right: 5px;
+	cursor: default;
+`;
 const SongInfo = styled.div`
 	vertical-align: center;
+`;
+const SongButton = styled.div`
+	margin-top: 15px;
+	margin-right: 10px;
 `;
 
 export default Song;

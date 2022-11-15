@@ -4,13 +4,13 @@ const initialState = {
     loading: false,
     error: null,
 
-    isLogged: false, // PREDEPLOY
-    // isLogged: true,
+    // isLogged: false, // PREDEPLOY
+    isLogged: true,
     google: {
-        id: '',      // PREDEPLOY
-        name: '',    // PREDEPLOY
-        // id: '111418653738749034139',
-        // name: 'Daniel Vinet',
+        // id: '',      // PREDEPLOY
+        // name: '',    // PREDEPLOY
+        id: '111418653738749034139',
+        name: 'Daniel Vinet',
         imageUrl: '',
         email: '',
         accessToken: '',

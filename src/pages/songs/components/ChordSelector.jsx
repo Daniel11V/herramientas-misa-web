@@ -3,11 +3,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import allChords from "../../../data/allChords";
 
-const ChordSelector = ({
-	selectedChord,
-	setSelectedChord,
-	chordLang,
-}) => {
+const ChordSelector = ({ selectedChord, setSelectedChord, chordLang }) => {
 	const [chordModal, setChordModal] = useState(null);
 
 	useEffect(() => {
@@ -33,7 +29,7 @@ const ChordSelector = ({
 
 	return (
 		<>
-			<SelectedChord onClick={(e) => handleSelectorClick(e)}>
+			<SelectedChord onClick={handleSelectorClick}>
 				{selectedChord}
 				<SelectedChordArrow className="material-icons">
 					keyboard_arrow_down
@@ -43,18 +39,25 @@ const ChordSelector = ({
 				className="modal chord-modal"
 				style={{ color: "black", padding: 0, textAlign: "center" }}
 			>
-				<div className="modal-content">
+				<div
+					className="modal-content"
+					style={{ padding: 0, paddingTop: "24px" }}
+				>
 					<h5>Elegir Acorde</h5>
 					{allChords[chordLang].map((type, i) => (
 						<div key={i}>
 							<ChordText>
 								<b>{type.name}</b>
 							</ChordText>
-							{type.chords.map((chord, k) => (
-								<ChordBtn key={k} onClick={() => handleChordClick(chord)}>
-									{chord}
-								</ChordBtn>
-							))}
+							{type.chords.map((chord, k) =>
+								chord === selectedChord ? (
+									<ChordBtnSelected key={k}>{chord}</ChordBtnSelected>
+								) : (
+									<ChordBtn key={k} onClick={() => handleChordClick(chord)}>
+										{chord}
+									</ChordBtn>
+								)
+							)}
 						</div>
 					))}
 				</div>
@@ -66,7 +69,7 @@ const ChordSelector = ({
 const ChordText = styled.span`
 	width: 100%;
 	border-bottom: 1px solid #e4e4e4;
-	padding: 10px;
+	padding: 15px;
 	padding-top: 20px;
 	display: block;
 `;
@@ -78,6 +81,11 @@ const ChordBtn = styled(ChordText)`
 	&&:hover {
 		background-color: #e4e4e4;
 	}
+`;
+
+const ChordBtnSelected = styled(ChordText)`
+	padding-top: 10px;
+	background-color: #e4e4e4;
 `;
 
 const SelectedChordArrow = styled.i`

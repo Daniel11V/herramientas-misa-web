@@ -84,11 +84,15 @@ const LyricWithChords = ({
 					style={{
 						display: "block",
 						marginBottom: 0,
-						marginTop: hasChord(i) ? "15px" : "0px",
 					}}
 				>
 					{row.map((char, k) => (
-						<Letter key={k} isEditable={isEditable} isSpace={char === " "}>
+						<Letter
+							key={k}
+							isEditable={isEditable}
+							isSpace={char === " "}
+							hasChord={hasChord(i)}
+						>
 							{hasChord(i, k) && !isLetterSelected(i, k) && (
 								<>
 									<span
@@ -196,6 +200,7 @@ const Letter = styled.div`
 	display: inline-block;
 	position: relative;
 	margin-left: ${(props) => (props.isSpace ? "6px" : 0)};
+	margin-top: ${(props) => (props.hasChord ? "15px" : 0)};
 
 	.char {
 		padding-right: 1px;
