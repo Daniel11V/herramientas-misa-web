@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Link, useParams, useHistory } from "react-router-dom";
 import M from "materialize-css";
 import { useDispatch, useSelector } from "react-redux";
-import "../../styles/Song.css";
 import { useRepertory } from "../../clases/repertory/useRepertory.js";
 
 const Repertory = () => {

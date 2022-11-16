@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import { useSongBookList } from "./hooks/useSongBookList";
 import { useSongList } from "../../clases/song/useSongList";
 import { login } from "../../clases/user/actions";
-import styled from "styled-components";
+import { Header } from "../../styles/styles";
 
 const Songs = () => {
 	// const [songBookList, loadingSongBookList, errorSongBookList] =
@@ -28,7 +28,7 @@ const Songs = () => {
 	return (
 		<Fragment>
 			<Header>
-				<HeaderTitle>Cancionero</HeaderTitle>
+				<h3>Cancionero</h3>
 				{isLogged ? (
 					<Link
 						to={{ pathname: "/add-song", state: { from: "Cancionero" } }}
@@ -53,23 +53,5 @@ const Songs = () => {
 		</Fragment>
 	);
 };
-
-const Header = styled.div`
-	display: flex;
-	align-items: center;
-	margin: 20px 0 20px 0;
-`;
-const HeaderTitle = styled.h3`
-	flex: 1;
-	margin: 0;
-
-	@media (max-width: 800px) {
-		font-size: 2.6rem;
-	}
-
-	@media (max-width: 600px) {
-		font-size: 2rem;
-	}
-`;
 
 export default Songs;

@@ -49,6 +49,30 @@ export const database = {
                 "meditacion": [""],
                 "salida": [""],
             }
+        },
+        "6144d6373d6d4f8085af95ee": {
+            "id": "6144d6373d6d4f8085af95ee",
+            "creator": {
+                "id": "111418653738749034139",
+                "name": "Daniel Vinet",
+            },
+            "title": "Misa Sábado 20hs",
+            "description": "",
+            "members": [],
+            "placeTitle": "Parroquia Ntra. Sra. del Pilar",
+            "placeUbication": "",
+            "isMass": true,
+            "songs": {
+                "entrada": [""],
+                "gloria": [""],
+                "aleluya": [""],
+                "ofrenda": [""],
+                "santo": [""],
+                "cordero": [""],
+                "comunion": [""],
+                "meditacion": [""],
+                "salida": [""],
+            }
         }
     },
 

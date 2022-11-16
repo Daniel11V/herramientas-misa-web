@@ -1,12 +1,14 @@
 import React from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 import { useDispatch } from "react-redux";
-import { login } from "../../clases/user/actions";
+import styled from "styled-components";
+import { login, logout } from "../../clases/user/actions";
 
-const LoginLogout = ({ children = null, logout = false }) => {
+const LoginLogout = ({ children = null, isLogged = false }) => {
 	const dispatch = useDispatch();
 
 	const loginResponse = (response) => {
+		console.log("ACA loginResponse", response);
 		if (response.googleId) {
 			dispatch(
 				login({
@@ -39,7 +41,16 @@ const LoginLogout = ({ children = null, logout = false }) => {
 				)}
 			/>
 		);
-	} else if (!logout) {
+	} else if (isLogged) {
+		return (
+			<GoogleLogoutStyled
+				clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+				buttonText="Cerrar Sesión"
+				onLogoutSuccess={logoutResponse}
+				className="googleLogout"
+			/>
+		);
+	} else {
 		return (
 			<GoogleLogin
 				clientId="270166148168-cu4pvav4r2s5pps6b8t8chqdratnklgs.apps.googleusercontent.com"
@@ -51,16 +62,23 @@ const LoginLogout = ({ children = null, logout = false }) => {
 				className="googleLogin"
 			/>
 		);
-	} else {
-		return (
-			<GoogleLogout
-				clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-				buttonText="Cerrar Sesión"
-				onLogoutSuccess={logoutResponse}
-				className="googleLogout"
-			/>
-		);
 	}
 };
+const GoogleLogoutStyled = styled(GoogleLogout)`
+	border-radius: 4px !important;
+	/* margin-top: 15px !important; */
+	display: flex;
+	align-items: center;
+	padding: 0 8px !important;
+
+	* {
+		padding: 0 !important;
+	}
+
+	div {
+		margin-right: 6px;
+		padding-top: 3px !important;
+	}
+`;
 
 export default LoginLogout;

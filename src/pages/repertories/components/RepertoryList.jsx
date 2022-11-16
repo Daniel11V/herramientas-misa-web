@@ -1,7 +1,8 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import "../../../styles/SongList.css";
 import { arrayIsEmpty } from "../../../utils";
+import Collection from "../../components/Collection";
 
 const RepertoryList = ({
 	repertoryList = [],
@@ -11,6 +12,15 @@ const RepertoryList = ({
 	// labelsStart = [],
 	checking = false,
 }) => {
+	const history = useHistory();
+
+	const handleClickRepertory = (id) => {
+		history.push({
+			pathname: `/repertory/${id}`,
+			state: { from: "Repertorios" },
+		});
+	};
+
 	if (loading)
 		return (
 			<div className="progress" style={{ backgroundColor: "#9cd1ff" }}>
@@ -22,37 +32,21 @@ const RepertoryList = ({
 		);
 
 	return (
-		<div className="collection songs">
+		<Collection withCheck={checking}>
 			{repertoryList.map((repertory) => (
-				<Link
-					to={{
-						pathname: `/repertory/${repertory.id}`,
-						state: { from: "Repertorios" },
-					}}
-					key={repertory.id}
-					className={`collection-item collection-songs ${
-						checking ? "with-check" : ""
-					}`}
-				>
-					<span className="song-item">
-						{repertory.title}
-						{repertory?.placeTitle && ` - ${repertory.placeTitle}`}
-					</span>
-				</Link>
+				<div>
+					{repertory.title}
+					{repertory?.placeTitle && ` - ${repertory.placeTitle}`}
+				</div>
 			))}
 			{/* {!filteredSongs && allSongDetails && (
 				<div className="collection-item">
 					<span className="song-item">Ninguna canción coincide...</span>
 				</div>
 			)} */}
-			{(arrayIsEmpty(repertoryList) || !!error) && (
-				<div className="collection-item">
-					<span className="song-item">
-						Sin conexión, pruebe recargando la página.
-					</span>
-				</div>
-			)}
-		</div>
+			{(arrayIsEmpty(repertoryList) || !!error) &&
+				"Sin conexión, pruebe recargando la página."}
+		</Collection>
 	);
 };
 

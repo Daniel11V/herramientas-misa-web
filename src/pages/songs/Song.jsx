@@ -1,10 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import M from "materialize-css";
 import { useSelector } from "react-redux";
 import fullLabels from "../../data/fullLabels.js";
-import "../../styles/Song.css";
 import LyricWithChords from "./components/LyricWithChords";
 import styled from "styled-components";
 import ChordSelector from "./components/ChordSelector";
@@ -120,8 +119,8 @@ const Song = () => {
 	};
 
 	const handleEditBtn = (event) => {
-		// event.stopPropagation();
-		// actionBtn.close();
+		event.stopPropagation();
+		history.push({ pathname: `/edit-song/${id}`, state: { from: "Canción" } });
 	};
 	const handleDeleteBtn = (event) => {
 		event.stopPropagation();
@@ -135,7 +134,6 @@ const Song = () => {
 			onCancel: () => {},
 			onConfirm: () => {},
 		});
-		// actionBtn.close();
 	};
 
 	if (loading)
@@ -225,23 +223,22 @@ const Song = () => {
 					Transcripción hecha por {song.creator.name}
 				</span>
 			)}
-			<div className="btns">
-				<Link
-					to={{ pathname: `/edit-song/${id}`, state: { from: "Canción" } }}
-					className="btn btn-song waves-effect waves-light blue darken-2"
+			<br />
+			<SongButton
+				className="btn waves-effect waves-light blue darken-2"
+				onClick={handleEditBtn}
+			>
+				<i className="material-icons right">edit</i>Editar
+			</SongButton>
+			{(song.creator?.name === user.name ||
+				user.googleId === "111418653738749034139") && (
+				<SongButton
+					className="btn waves-effect waves-light blue darken-2"
+					onClick={handleDeleteBtn}
 				>
-					<i className="material-icons right">edit</i>Editar
-				</Link>
-				{(song.creator?.name === user.name ||
-					user.googleId === "111418653738749034139") && (
-					<a
-						className="btn btn-song waves-effect blue darken-2 modal-trigger"
-						onClick={handleDeleteBtn}
-					>
-						<i className={`material-icons ${"right"}`}>delete</i>Eliminar
-					</a>
-				)}
-			</div>
+					<i className={`material-icons ${"right"}`}>delete</i>Eliminar
+				</SongButton>
+			)}
 			<MessageModal opts={messageModalOpts} />
 			<div className="fixed-action-btn">
 				<a

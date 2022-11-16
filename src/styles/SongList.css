@@ -1,95 +1,3 @@
-.user-view {
-	display: flex;
-	align-items: center;
-	justify-content: space-around;
-	padding-bottom: 16px !important;
-}
-
-.profile-side {
-	flex-direction: column;
-}
-
-.profile-side .circle {
-	padding: 0 !important;
-	width: 100px !important;
-	height: 100px !important;
-}
-
-.profile-side .name {
-	margin: 10px 20px 0 !important;
-	font-size: 25px !important;
-}
-
-.profile-side .googleLogout {
-	margin-top: 15px !important;
-	height: 30px;
-}
-
-.googleLogout {
-	border-radius: 4px !important;
-	/* margin-top: 15px !important; */
-	display: flex;
-	align-items: center;
-	padding: 0 8px !important;
-}
-
-.googleLogout * {
-	padding: 0 !important;
-}
-
-.profile .googleLogout {
-	font-size: 17px;
-	height: auto;
-	padding: 0 5px 0 !important;
-	margin-top: 3px !important;
-	margin-bottom: 2px !important;
-	transform: scale(0.8) translate(-17px, 0px);
-}
-
-.googleLogout div {
-	margin-right: 6px;
-	padding-top: 3px !important;
-}
-
-li.profile {
-	display: flex;
-	align-items: center;
-	padding-left: 18px;
-	margin-left: 10px;
-	font-size: 20px;
-	border-left: 4px solid #49a2ff;
-	cursor: default;
-}
-
-li.profile img {
-	height: 45px;
-	width: 45px;
-	margin: 0 15px;
-}
-
-#mobile-demo .googleLogin {
-	border-radius: 7px !important;
-	padding: 0 6px !important;
-	font-size: 18px !important;
-}
-
-#mobile-demo .googleLogin > div {
-	padding: 2px 11px 0 8px !important;
-	margin: 0 !important;
-}
-
-.sessionLi .googleLogin {
-	transform: scale(0.9) translate(-10px, 2px) !important;
-	margin-left: 15px !important;
-}
-
-.sessionLi .googleLogin > * {
-	padding-top: 7px !important;
-	padding-bottom: 4px !important;
-	margin: 0 !important;
-	font-size: 16px !important;
-}
-
 .songs {
 	overflow: inherit !important;
 }
@@ -99,17 +7,7 @@ li.profile img {
 	font-size: 14px;
 }
 
-/* .btn-songs {
-    margin-top: 5px;
-} */
-
-/* @media (max-width: 600px) {
-    .btn-songs {
-        margin-top: 0px;
-    }
-} */
-
-.collection:first-child {
+.songs:first-child {
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
 }
@@ -189,7 +87,7 @@ li.profile img {
 	/* transition: visibility 2s linear; */
 }
 
-.collection:last-child {
+.songs:last-child {
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
 }

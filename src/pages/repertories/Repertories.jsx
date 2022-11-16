@@ -6,6 +6,7 @@ import RepertoryList from "./components/RepertoryList";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../clases/user/actions";
 import { useRepertoryList } from "../../clases/repertory/useRepertoryList";
+import { Header } from "../../styles/styles";
 
 const Repertories = () => {
 	const [repertoryList, loadingRepertoryList, errorRepertoryList] =
@@ -24,7 +25,7 @@ const Repertories = () => {
 
 	return (
 		<Fragment>
-			<div className="header">
+			<Header>
 				<h3>Repertorios</h3>
 				{isLogged ? (
 					<Link
@@ -40,7 +41,7 @@ const Repertories = () => {
 						</div>
 					</LoginLogout>
 				)}
-			</div>
+			</Header>
 			<RepertoryList
 				repertoryList={repertoryList}
 				loading={loadingRepertoryList}

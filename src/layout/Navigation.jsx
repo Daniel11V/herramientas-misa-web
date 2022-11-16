@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import M from "materialize-css";
-import LoginLogout from "./components/LoginLogout.jsx";
 import { useSelector } from "react-redux";
+import styled from "styled-components";
+import LoginLogout from "./components/LoginLogout";
 
 const Navigation = () => {
 	const history = useHistory();
 	const [lastPage, setLastPage] = useState("");
 	const user = useSelector((state) => state.user.google);
+	const isDesktop = window.screen.width >= 1280;
 
 	useEffect(() => {
-		let elems = document.querySelectorAll(".sidenav");
-		M.Sidenav.init(elems);
+		let elem = document.querySelector(".sidenav");
+		let instance = M.Sidenav.init(elem);
+
+		return () => {
+			instance.destroy();
+		};
 	}, []);
 
 	useEffect(() => {
@@ -35,28 +41,17 @@ const Navigation = () => {
 								Herramientas para Misa
 							</Link>
 						)}
-						<div
+						<Icon
 							data-target="mobile-demo"
-							className="sidenav-trigger hide-on-large-only noselect"
-							style={{ cursor: "pointer" }}
+							className="sidenav-trigger hide-on-large-only"
 						>
-							<i className="material-icons noselect">menu</i>
-						</div>
+							<i className="material-icons">menu</i>
+						</Icon>
 						{lastPage && (
-							<div
-								onClick={history.goBack}
-								className="brand-logo noselect"
-								style={{
-									cursor: "pointer",
-									fontSize: "25px",
-									paddingLeft: "10px",
-									display: "flex",
-									flexWrap: "nowrap",
-								}}
-							>
+							<BackIcon onClick={history.goBack} className="brand-logo">
 								<i className="material-icons">chevron_left</i>
 								{lastPage}
-							</div>
+							</BackIcon>
 						)}
 						<ul className="right hide-on-med-and-down">
 							<li>
@@ -71,84 +66,74 @@ const Navigation = () => {
 								</li>
 							)}
 							{/* <li>
-								<Link to="/suggestion">Recomendación</Link>
-							</li> */}
-							{user.name ? (
-								<li className="profile">
-									<div style={{ display: "flex", flexDirection: "column" }}>
-										<span
-											className="white-text name"
-											style={{
-												lineHeight: "normal",
-												marginTop: "2px",
-												fontSize: "23px",
+									<Link to="/suggestion">Recomendación</Link>
+								</li> */}
+							{isDesktop &&
+								(user.name ? (
+									<UserProfileNavbar>
+										<div>
+											<UserName>{user.name}</UserName>
+											<LoginLogout isLogged />
+										</div>
+										<img
+											src={user.imageUrl}
+											alt="profile"
+											className="circle"
+											onError={(e) => {
+												e.target.onerror = null;
+												e.target.src =
+													"https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png";
 											}}
-										>
-											{user.name}
-										</span>
-										<LoginLogout logout />
-									</div>
-									<img
-										className="circle"
-										src={user.imageUrl}
-										alt="profile"
-										onError={(e) => {
-											e.target.onerror = null;
-											e.target.src =
-												"https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png";
-										}}
-									/>
-								</li>
-							) : (
-								<li className="sessionLi">
-									<LoginLogout />
-								</li>
-							)}
+										/>
+									</UserProfileNavbar>
+								) : (
+									<UserAnonymousNavbar>
+										<LoginLogout />
+									</UserAnonymousNavbar>
+								))}
 						</ul>
 					</div>
 				</nav>
 			</div>
-
 			<ul className="sidenav sidenav-close" id="mobile-demo">
 				<li>
-					{user.name ? (
-						<div className="user-view profile-side">
-							<div className="background">
-								<img
-									alt="background"
-									src="https://images.freecreatives.com/wp-content/uploads/2016/02/Abstract-Bright-Blue-Geometric-Background.jpg"
+					{!isDesktop &&
+						(user.name ? (
+							<UserProfileSidebar>
+								<div className="background">
+									<img
+										alt="background"
+										src="https://images.freecreatives.com/wp-content/uploads/2016/02/Abstract-Bright-Blue-Geometric-Background.jpg"
+									/>
+								</div>
+								<UserImage
+									src={user.imageUrl}
+									alt="profile"
+									onError={(e) => {
+										e.target.onerror = null;
+										e.target.src =
+											"https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png";
+									}}
 								/>
-							</div>
-							<img
-								className="circle"
-								src={user.imageUrl}
-								key={user.imageUrl}
-								alt="profile"
-								onError={(e) => {
-									e.target.onerror = null;
-									e.target.src =
-										"https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png";
-								}}
-							/>
-							<span className="white-text name">{user.name}</span>
-							<LoginLogout logout className="logout" />
-						</div>
-					) : (
-						<div className="user-view">
-							<div className="background">
+								<UserName>{user.name}</UserName>
+								<LoginLogout isLogged />
+							</UserProfileSidebar>
+						) : (
+							<UserAnonymousSidebar>
+								<div className="background">
+									<img
+										alt="background"
+										src="https://images.freecreatives.com/wp-content/uploads/2016/02/Abstract-Bright-Blue-Geometric-Background.jpg"
+									/>
+								</div>
 								<img
-									alt="background"
-									src="https://images.freecreatives.com/wp-content/uploads/2016/02/Abstract-Bright-Blue-Geometric-Background.jpg"
+									src="https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png"
+									alt="profile"
+									className="circle"
 								/>
-							</div>
-							<img
-								className="circle"
-								src="https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png"
-								alt="profile"
-							/>
-							<LoginLogout />
-						</div>
-					)}
+								<LoginLogout />
+							</UserAnonymousSidebar>
+						))}
 				</li>
 				<li>
 					<i>
@@ -169,11 +154,112 @@ const Navigation = () => {
 					</li>
 				)}
 				{/* <li>
-					<Link to="/suggestion">Recomendación para misa</Link>
-				</li> */}
+						<Link to="/suggestion">Recomendación para misa</Link>
+					</li> */}
 			</ul>
 		</div>
 	);
 };
+const Icon = styled.div`
+	cursor: pointer;
+	flexwrap: nowrap;
+`;
+const BackIcon = styled(Icon)`
+	fontsize: 25px;
+	paddingleft: 10px;
+	display: flex;
+`;
+const UserImage = styled.img.attrs({
+	className: "circle",
+})`
+	padding: 0 !important;
+	width: 100px !important;
+	height: 100px !important;
+`;
+const UserName = styled.span.attrs({
+	className: "white-text",
+})``;
+const UserProfileNavbar = styled.li`
+	display: flex;
+	align-items: center;
+	padding-left: 18px;
+	margin-left: 10px;
+	font-size: 20px;
+	border-left: 4px solid #49a2ff;
+	cursor: default;
+
+	div {
+		display: flex;
+		flex-direction: column;
+	}
+
+	${UserName} {
+		line-height: normal;
+		margin-top: 2px;
+		font-size: 23px;
+	}
+
+	.googleLogout {
+		font-size: 17px;
+		height: auto;
+		padding: 0 5px 0 !important;
+		margin-top: 3px !important;
+		margin-bottom: 2px !important;
+		transform: scale(0.8) translate(-17px, 0px);
+	}
+
+	img {
+		height: 45px;
+		width: 45px;
+		margin: 0 15px;
+	}
+`;
+const UserAnonymousNavbar = styled.li`
+	.googleLogin {
+		transform: scale(0.9) translate(-10px, 2px) !important;
+		margin-left: 15px !important;
+	}
+
+	.googleLogin > * {
+		padding-top: 7px !important;
+		padding-bottom: 4px !important;
+		margin: 0 !important;
+		font-size: 16px !important;
+	}
+`;
+const UserAnonymousSidebar = styled.div.attrs({
+	className: "user-view",
+})`
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	padding-bottom: 16px !important;
+
+	.googleLogin {
+		border-radius: 7px !important;
+		padding: 0 6px !important;
+		font-size: 18px !important;
+	}
+
+	.googleLogin > div {
+		padding: 2px 11px 0 8px !important;
+		margin: 0 !important;
+	}
+`;
+const UserProfileSidebar = styled(UserAnonymousSidebar).attrs({
+	className: "user-view",
+})`
+	flex-direction: column;
+
+	.googleLogout {
+		margin-top: 15px !important;
+		height: 30px;
+	}
+
+	${UserName} {
+		margin: 10px 20px 0 !important;
+		font-size: 25px !important;
+	}
+`;
 
 export default Navigation;
