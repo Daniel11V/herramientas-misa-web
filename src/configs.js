@@ -1,0 +1,1 @@
+export const MAX_RETRYS = 3;

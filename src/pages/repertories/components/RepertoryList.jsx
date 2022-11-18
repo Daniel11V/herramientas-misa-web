@@ -1,17 +1,10 @@
 import React from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import "../../../styles/SongList.css";
+import { Collection, CollectionItem } from "../../../styles/styles";
 import { arrayIsEmpty } from "../../../utils";
-import Collection from "../../components/Collection";
 
-const RepertoryList = ({
-	repertoryList = [],
-	loading = false,
-	error = "",
-	// searcher = false,
-	// labelsStart = [],
-	checking = false,
-}) => {
+const RepertoryList = ({ repertoryList = [], loading = false, error = "" }) => {
 	const history = useHistory();
 
 	const handleClickRepertory = (id) => {
@@ -31,21 +24,23 @@ const RepertoryList = ({
 			</div>
 		);
 
+	if (!!error) return <div>Error - {error}</div>;
+
+	if (arrayIsEmpty(repertoryList))
+		return (
+			<Collection>
+				<CollectionItem>Ningun repertorio encontrado...</CollectionItem>
+			</Collection>
+		);
+
 	return (
-		<Collection withCheck={checking}>
+		<Collection>
 			{repertoryList.map((repertory) => (
-				<div>
+				<CollectionItem key={repertory.id} onClick={() => handleClickRepertory(repertory.id)}>
 					{repertory.title}
 					{repertory?.placeTitle && ` - ${repertory.placeTitle}`}
-				</div>
+				</CollectionItem>
 			))}
-			{/* {!filteredSongs && allSongDetails && (
-				<div className="collection-item">
-					<span className="song-item">Ninguna canción coincide...</span>
-				</div>
-			)} */}
-			{(arrayIsEmpty(repertoryList) || !!error) &&
-				"Sin conexión, pruebe recargando la página."}
 		</Collection>
 	);
 };

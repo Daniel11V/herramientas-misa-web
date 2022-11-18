@@ -74,10 +74,7 @@ const LyricWithChords = ({
 	};
 
 	return (
-		<div
-			className="lyric-chords-view"
-			onClick={() => setSelectedLetter([null, null])}
-		>
+		<div onClick={() => setSelectedLetter([null, null])}>
 			{arrayLyric.map((row, i) => (
 				<div
 					key={i}

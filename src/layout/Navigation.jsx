@@ -4,12 +4,13 @@ import M from "materialize-css";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import LoginLogout from "./components/LoginLogout";
+import { noSelectableText } from "../styles/styleUtils";
 
 const Navigation = () => {
 	const history = useHistory();
 	const [lastPage, setLastPage] = useState("");
 	const user = useSelector((state) => state.user.google);
-	const isDesktop = window.screen.width >= 1280;
+	const isDesktop = useSelector((state) => state.user.isDesktop);
 
 	useEffect(() => {
 		let elem = document.querySelector(".sidenav");
@@ -29,72 +30,70 @@ const Navigation = () => {
 
 	return (
 		<div>
-			<div className="navbar-fixed">
-				<nav className="blue darken-2" style={{ marginBottom: "20px" }}>
-					<div className="nav-wrapper">
-						{!lastPage && (
-							<Link
-								to="/"
-								className="brand-logo hide-on-med-and-down"
-								style={{ paddingLeft: "20px" }}
-							>
-								Herramientas para Misa
-							</Link>
-						)}
-						<Icon
-							data-target="mobile-demo"
-							className="sidenav-trigger hide-on-large-only"
+			<NavBar>
+				<div className="nav-wrapper">
+					{!lastPage && (
+						<Link
+							to="/"
+							className="brand-logo hide-on-med-and-down"
+							style={{ paddingLeft: "20px" }}
 						>
-							<i className="material-icons">menu</i>
-						</Icon>
-						{lastPage && (
-							<BackIcon onClick={history.goBack} className="brand-logo">
-								<i className="material-icons">chevron_left</i>
-								{lastPage}
-							</BackIcon>
+							Herramientas para Misa
+						</Link>
+					)}
+					<Icon
+						data-target="mobile-demo"
+						className="sidenav-trigger hide-on-large-only"
+					>
+						<i className="material-icons">menu</i>
+					</Icon>
+					{lastPage && (
+						<BackIcon onClick={history.goBack} className="brand-logo">
+							<i className="material-icons">chevron_left</i>
+							{lastPage}
+						</BackIcon>
+					)}
+					<ul className="right hide-on-med-and-down">
+						<li>
+							<Link to="/repertories">Repertorios</Link>
+						</li>
+						<li>
+							<Link to="/songs">Cancionero</Link>
+						</li>
+						{user.name && (
+							<li>
+								<Link to="/myLibrary">Mi Biblioteca</Link>
+							</li>
 						)}
-						<ul className="right hide-on-med-and-down">
-							<li>
-								<Link to="/repertories">Repertorios</Link>
-							</li>
-							<li>
-								<Link to="/songs">Cancionero</Link>
-							</li>
-							{user.name && (
-								<li>
-									<Link to="/myLibrary">Mi Biblioteca</Link>
-								</li>
-							)}
-							{/* <li>
+						{/* <li>
 									<Link to="/suggestion">Recomendación</Link>
 								</li> */}
-							{isDesktop &&
-								(user.name ? (
-									<UserProfileNavbar>
-										<div>
-											<UserName>{user.name}</UserName>
-											<LoginLogout isLogged />
-										</div>
-										<img
-											src={user.imageUrl}
-											alt="profile"
-											className="circle"
-											onError={(e) => {
-												e.target.onerror = null;
-												e.target.src =
-													"https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png";
-											}}
-										/>
-									</UserProfileNavbar>
-								) : (
-									<UserAnonymousNavbar>
-										<LoginLogout />
-									</UserAnonymousNavbar>
-								))}
-						</ul>
-					</div>
-				</nav>
-			</div>
+						{isDesktop &&
+							(user.name ? (
+								<UserProfileNavbar>
+									<div>
+										<UserName>{user.name}</UserName>
+										<LoginLogout isLogged />
+									</div>
+									<img
+										src={user.imageUrl}
+										alt="profile"
+										className="circle"
+										onError={(e) => {
+											e.target.onerror = null;
+											e.target.src =
+												"https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png";
+										}}
+									/>
+								</UserProfileNavbar>
+							) : (
+								<UserAnonymousNavbar>
+									<LoginLogout />
+								</UserAnonymousNavbar>
+							))}
+					</ul>
+				</div>
+			</NavBar>
 			<ul className="sidenav sidenav-close" id="mobile-demo">
 				<li>
 					{!isDesktop &&
@@ -160,9 +159,16 @@ const Navigation = () => {
 		</div>
 	);
 };
+const NavBar = styled.nav.attrs({
+	className: "blue darken-2 navbar-fixed",
+})`
+	margin-bottom: 20px;
+	${noSelectableText}
+`;
 const Icon = styled.div`
 	cursor: pointer;
 	flexwrap: nowrap;
+	${noSelectableText}
 `;
 const BackIcon = styled(Icon)`
 	fontsize: 25px;

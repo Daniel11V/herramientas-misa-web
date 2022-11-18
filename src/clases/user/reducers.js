@@ -18,31 +18,26 @@ const initialState = {
     config: {
 
     },
-    songs: {
 
-    },
-    songTitles: {
-
-    },
-
-
-
+    isDesktop: null,
 }
 
 const UserReducer = (state = initialState, { type, payload }) => {
     switch (type) {
-        case types.SET_LOADING:
+        case types.SET_USER_LOADING:
             return { ...state, loading: payload.loading }
 
         case types.LOGIN:
-            return { ...state, google: payload.googleInfo, isLogged: true }
+            return { ...state, google: payload.googleInfo, isLogged: true, loading: false }
         case types.LOGOUT:
-            return { ...initialState }
+            return {
+                ...state, google: initialState.google, loading: false,
+                error: null, isLogged: false
+            }
 
-        case types.SET_USER_SONG_TITLES:
-            return { ...state, songTitles: payload.newUserSongTitles }
-        case types.SET_USER_SONGS:
-            return { ...state, songs: payload.newUserSongs }
+
+        case types.SET_DEVICE:
+            return { ...state, isDesktop: payload.isDesktop }
 
         default:
             return state

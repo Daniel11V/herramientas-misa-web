@@ -2,17 +2,14 @@ import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import LoginLogout from "../../layout/components/LoginLogout";
 import { useHistory } from "react-router";
-import SongList from "./components/SongList";
 import { useDispatch, useSelector } from "react-redux";
-// import { useSongBookList } from "./hooks/useSongBookList";
-import { useSongList } from "../../clases/song/useSongList";
+import { useSongListPage } from "./hooks/useSongListPage";
 import { login } from "../../clases/user/actions";
 import { Header } from "../../styles/styles";
+import SongCollection from "./components/SongCollection";
 
-const Songs = () => {
-	// const [songBookList, loadingSongBookList, errorSongBookList] =
-	// 	useSongBookList();
-	const [songList, loadingSongList, errorSongList] = useSongList();
+const SongListPage = () => {
+	const [songList, loadingSongList, errorSongList] = useSongListPage();
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const isLogged = useSelector((state) => state.user.isLogged);
@@ -44,9 +41,9 @@ const Songs = () => {
 					</LoginLogout>
 				)}
 			</Header>
-			<SongList
+			<SongCollection
 				searcher
-				songs={songList}
+				songList={songList}
 				loading={loadingSongList}
 				error={errorSongList}
 			/>
@@ -54,4 +51,4 @@ const Songs = () => {
 	);
 };
 
-export default Songs;
+export default SongListPage;

@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 // import { Link } from "react-router-dom";
 // import LoginLogout from "../../layout/components/LoginLogout";
 // import { useHistory } from "react-router";
-import SongList from "../songs/components/SongList";
+import SongList from "../songs/components/SongCollection";
 
 const MyLibrary = () => {
 	// const history = useHistory();

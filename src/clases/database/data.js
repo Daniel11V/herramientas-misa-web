@@ -8,7 +8,15 @@ export const database = {
             photoUrl: '',
             creatorId: '111418653738749034139',
             songTitleIds: ["123", "124"],
-        }
+        },
+        123456: {
+            id: '123456',
+            name: 'Athenas',
+            email: '',
+            photoUrl: '',
+            creatorId: '111418653738749034139',
+            songTitleIds: ["123", "124"],
+        },
     },
     userList: {
         '111418653738749034139': {

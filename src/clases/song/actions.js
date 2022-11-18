@@ -9,11 +9,15 @@ import { createPublicSongDetailsDB, getPublicSongDetailsDB } from "./services/pu
 import { createPublicSongTitleDB, getPublicSongTitleDB, getPublicSongTitleListDB } from "./services/publicSongTitleList.js";
 import { types } from "./types"
 
+
+export const resetSongStatus = () => ({
+    type: types.RESET_SONG_STATUS
+})
+
 export const setVersionGroups = (versionGroups) => ({
     type: types.SET_VERSION_GROUPS,
     payload: { versionGroups }
 })
-
 
 // Thunks
 
@@ -21,10 +25,9 @@ export const getSongList = ({ userId }) => {
     return async (dispatch) => {
         try {
             dispatch({
-                type: types.SET_SONG_LIST_STATUS,
-                payload: { songListStatus: "FETCHING", error: null }
+                type: types.FETCH_SONG_LIST,
+                payload: { userId }
             })
-
             //////////////////////////////////////
 
             const publicSongTitleList = await getPublicSongTitleListDB();
@@ -36,16 +39,15 @@ export const getSongList = ({ userId }) => {
             ]
 
             //////////////////////////////////////
-
             dispatch({
-                type: types.SET_SONG_LIST,
-                payload: { songList, songListStatus: "SUCCESS" }
+                type: types.FETCH_SONG_LIST_SUCCESS,
+                payload: { songList }
             })
         } catch (error) {
             console.warn(error);
             dispatch({
-                type: types.SET_SONG_LIST_STATUS,
-                payload: { songListStatus: "FAILURE", error: error.message }
+                type: types.FETCH_SONG_LIST_FAILURE,
+                payload: { error: error.message }
             })
         }
     }
@@ -55,10 +57,9 @@ export const getSong = ({ userId, songId }) => {
     return async (dispatch, getState) => {
         try {
             dispatch({
-                type: types.SET_SONG_STATUS,
-                payload: { songStatus: "FETCHING", error: null }
+                type: types.FETCH_SONG,
+                payload: { userId, songId }
             })
-
             //////////////////////////////
 
             const songList = getState().song.songList;
@@ -87,16 +88,15 @@ export const getSong = ({ userId, songId }) => {
             const song = { ...songTitle, ...songDetails }
 
             //////////////////////////////
-
             dispatch({
-                type: types.SET_SONG,
-                payload: { song, songStatus: "SUCCESS" }
+                type: types.FETCH_SONG_SUCCESS,
+                payload: { song }
             })
         } catch (error) {
             console.warn(error.message);
             dispatch({
-                type: types.SET_SONG_STATUS,
-                payload: { songStatus: "FAILURE", error: error.message }
+                type: types.FETCH_SONG_FAILURE,
+                payload: { error: error.message }
             })
         }
     }
@@ -106,10 +106,9 @@ export const createSong = (songCreated, saveAsPublic = true) => {
     return async (dispatch) => {
         try {
             dispatch({
-                type: types.CREATE_SONG_STATUS,
-                payload: { songStatus: "FETCHING", error: null }
+                type: types.CREATE_SONG,
+                payload: { songCreated, saveAsPublic }
             })
-
             //////////////////////////////////////
 
             if (saveAsPublic) {
@@ -123,16 +122,15 @@ export const createSong = (songCreated, saveAsPublic = true) => {
             }
 
             //////////////////////////////////////
-
             dispatch({
-                type: types.CREATE_SONG,
-                payload: { songCreated, songStatus: "SUCCESS" }
+                type: types.CREATE_SONG_SUCCESS,
+                payload: { songCreated }
             })
         } catch (error) {
             console.warn(error);
             dispatch({
-                type: types.CREATE_SONG_STATUS,
-                payload: { songStatus: "FAILURE", error: error.message }
+                type: types.CREATE_SONG_FAILURE,
+                payload: { error: error.message }
             })
         }
     }
@@ -142,9 +140,10 @@ export const editSong = (songEdited, saveAsPublic = false) => {
     return async (dispatch) => {
         try {
             dispatch({
-                type: types.EDIT_SONG_STATUS,
-                payload: { songStatus: "FETCHING", error: null }
+                type: types.EDIT_SONG,
+                payload: { songEdited, saveAsPublic }
             })
+            //////////////////////////////////////
 
             if (songEdited.isPrivate) {
                 // await editPrivateSongTitleDB({ songEdited });
@@ -154,16 +153,16 @@ export const editSong = (songEdited, saveAsPublic = false) => {
                 // await editPublicaSongDetailsDB({ songEdited });
             }
 
-
+            //////////////////////////////////////
             dispatch({
-                type: types.EDIT_SONG,
-                payload: { songEdited, songStatus: "SUCCESS" }
+                type: types.EDIT_SONG_SUCCESS,
+                payload: { songEdited }
             })
         } catch (error) {
             console.warn(error);
             dispatch({
-                type: types.EDIT_SONG_STATUS,
-                payload: { songStatus: "FAILURE", error: error.message }
+                type: types.EDIT_SONG_FAILURE,
+                payload: { error: error.message }
             })
         }
     }
@@ -173,9 +172,10 @@ export const deleteSong = (songDeletedId, isPrivate = false) => {
     return async (dispatch) => {
         try {
             dispatch({
-                type: types.DELETE_SONG_STATUS,
-                payload: { songStatus: "FETCHING", error: null }
+                type: types.DELETE_SONG,
+                payload: { songDeletedId, isPrivate }
             })
+            //////////////////////////////////////
 
             if (isPrivate) {
                 // deletePrivateSongTitleDB({ songDeletedId });
@@ -185,15 +185,16 @@ export const deleteSong = (songDeletedId, isPrivate = false) => {
                 // deletePublicSongDetailsDB({ songDeletedId });
             }
 
+            //////////////////////////////////////
             dispatch({
-                type: types.DELETE_SONG,
-                payload: { songDeletedId, songStatus: "SUCCESS" }
+                type: types.DELETE_SONG_SUCCESS,
+                payload: { songDeletedId }
             })
         } catch (error) {
             console.warn(error);
             dispatch({
-                type: types.DELETE_SONG_STATUS,
-                payload: { songStatus: "FAILURE", error: error.message }
+                type: types.DELETE_SONG_FAILURE,
+                payload: { error: error.message }
             })
         }
     }

@@ -2,13 +2,12 @@ import React from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { login, logout } from "../../clases/user/actions";
+import { login, logout, setUserLoading } from "../../clases/user/actions";
 
 const LoginLogout = ({ children = null, isLogged = false }) => {
 	const dispatch = useDispatch();
 
 	const loginResponse = (response) => {
-		console.log("ACA loginResponse", response);
 		if (response.googleId) {
 			dispatch(
 				login({
@@ -19,6 +18,8 @@ const LoginLogout = ({ children = null, isLogged = false }) => {
 					accessToken: response.accessToken,
 				})
 			);
+		} else {
+			dispatch(setUserLoading(false));
 		}
 	};
 

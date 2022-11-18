@@ -1,9 +1,9 @@
 // import { database } from "../../data/database.js";
 import { types } from "./types.js";
 
-export const setLoading = (isLoading) => ({
-    type: types.SET_LOADING,
-    payload: { isLoading }
+export const setUserLoading = (loading) => ({
+    type: types.SET_USER_LOADING,
+    payload: { loading }
 })
 
 export const login = (googleInfo) => ({
@@ -15,37 +15,11 @@ export const logout = () => ({
     type: types.LOGOUT,
 })
 
-// Thunks
 
-export const getUserSongTitles = (userId) => {
-    return async (dispatch, getState) => {
-        try {
-            const newUserSongTitles = getState().database.userList[userId]?.songTitles || {};
+export const setDevice = (isDesktop) => ({
+    type: types.SET_DEVICE,
+    payload: { isDesktop }
+})
 
-            dispatch({
-                type: types.SET_USER_SONG_TITLES,
-                payload: { newUserSongTitles }
-            })
-            dispatch(setLoading(false))
-        } catch (error) {
-            console.warn(error);
-            dispatch(setLoading(false))
-        }
-    }
-}
 
-export const getUserSongs = (userId) => {
-    return async (dispatch, getState) => {
-        try {
-            const newUserSongs = getState().database.userList[userId]?.songs || {};
-            dispatch({
-                type: types.SET_USER_SONGS,
-                payload: { newUserSongs }
-            })
-            dispatch(setLoading(false))
-        } catch (error) {
-            console.warn(error);
-            dispatch(setLoading(false))
-        }
-    }
-}
+

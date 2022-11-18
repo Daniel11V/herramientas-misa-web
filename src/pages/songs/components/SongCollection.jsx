@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import M from "materialize-css";
-import LabelsInput from "../../components/LabelsInput.jsx";
-import "../../../styles/SongList.css";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { arrayIsEmpty } from "../../../utils";
+import { CollectionSearcher } from "../../components/CollectionSearcher.jsx";
+import { Collection, CollectionItem } from "../../../styles/styles";
+import styled, { css } from "styled-components";
 
-const SongList = ({
-	songs = [],
+const SongCollection = ({
+	songList = [],
 	loading = false,
 	error = "",
 	searcher = false,
@@ -15,31 +15,9 @@ const SongList = ({
 	checking = false,
 }) => {
 	const userId = useSelector((state) => state.user.google.id);
+	const history = useHistory();
 
-	// const [filteredSongs, setFilteredSongs] = useState(allSongDetails);
-	const [showFiltros, setShowFiltros] = useState(false);
-	const [labels, setLabels] = useState(labelsStart);
-	const [search, setSearch] = useState("");
-	const [filterSelectors, setFilterSelectors] = useState(null);
 	const [songChoose, setSongChoose] = useState(null);
-	const collapse = useRef(null);
-
-	useEffect(() => {
-		if (collapse.current && !filterSelectors) {
-			let inst = M.Collapsible.init(collapse.current);
-			setFilterSelectors(inst);
-		}
-	}, [showFiltros, filterSelectors]);
-
-	useEffect(() => {
-		if (filterSelectors) {
-			if (showFiltros) {
-				filterSelectors.open(0);
-			} else {
-				filterSelectors.close(0);
-			}
-		}
-	}, [showFiltros, filterSelectors]);
 
 	// useEffect(() => {
 	// 	if (allSongDetails) {
@@ -75,6 +53,13 @@ const SongList = ({
 	// 	}
 	// }, [allSongDetails, search, labels, songChoose]);
 
+	const handleClickSong = (id) => {
+		history.push({
+			pathname: `/song/${id}`,
+			state: { from: "Cancionero" },
+		});
+	};
+
 	const handleCheck = (e, songId) => {
 		e.preventDefault();
 		e.stopPropagation();
@@ -98,52 +83,11 @@ const SongList = ({
 			</div>
 		);
 
+	if (arrayIsEmpty(songList) || !!error) return <div>Error - {error}</div>;
+
 	return (
-		<div className="collection songs">
-			{searcher && (
-				<div className="nav-wrapper collection-item searcher">
-					<div
-						className="search-line"
-						style={showFiltros ? { borderBottom: "1px solid #e0e0e0" } : {}}
-					>
-						<label className="label-icon" htmlFor="search">
-							<i className="material-icons">search</i>
-						</label>
-						<input
-							onChange={(e) => setSearch(e.target.value)}
-							id="search"
-							type="search"
-							placeholder="Buscar canción..."
-							value={search}
-						/>
-						<div
-							className="label-icon btn-icon"
-							onClick={() => setShowFiltros(!showFiltros)}
-						>
-							Filtros
-							<i className="material-icons">
-								{showFiltros
-									? "keyboard_double_arrow_up"
-									: "keyboard_double_arrow_down"}
-							</i>
-						</div>
-					</div>
-					<ul
-						className="collapsible"
-						ref={collapse}
-						style={{ border: "none", boxShadow: "none", margin: "0" }}
-					>
-						<li>
-							<div className="collapsible-body labelsInput">
-								<LabelsInput
-									labels={labels}
-									updateLabels={(lb) => setLabels(lb)}
-								/>
-							</div>
-						</li>
-					</ul>
-				</div>
-			)}
+		<Collection>
+			{searcher && <CollectionSearcher labelsStart={labelsStart} />}
 			{/* {filteredSongs.map((song) => (
 				<Link
 					to={{ pathname: `/song/${song.id}`, state: { from: "Cancionero" } }}
@@ -166,23 +110,19 @@ const SongList = ({
 					)}
 				</Link>
 			))} */}
-			{songs.map((song) => (
-				<Link
-					to={{ pathname: `/song/${song.id}`, state: { from: "Cancionero" } }}
+			{songList.map((song) => (
+				<CollectionItem
 					key={song.id}
-					className={`collection-item collection-songs ${
-						checking ? "with-check" : ""
-					}`}
+					onClick={() => handleClickSong(song.id)}
+					withCheck={checking}
 				>
-					<span className="song-item">
-						{song.title}
-						{song?.author?.name && ` - ${song.author.name}`}
-					</span>
+					{song.title}
+					{song?.author?.name && ` - ${song.author.name}`}
 					{userId && song?.creator?.id === userId && (
-						<div className="levelIcon">
+						<LevelIcon withCheck={checking}>
 							<i className="material-icons">favorite</i>
 							<span>{song?.level?.main}</span>
-						</div>
+						</LevelIcon>
 					)}
 					{/* <div className="levelIcon">
 							<i className="material-icons" style={{ color: "#5a5a5a" }}>
@@ -199,22 +139,58 @@ const SongList = ({
 							<span />
 						</label>
 					)}
-				</Link>
+				</CollectionItem>
 			))}
 			{/* {!filteredSongs && allSongDetails && (
 				<div className="collection-item">
 					<span className="song-item">Ninguna canción coincide...</span>
 				</div>
 			)} */}
-			{(arrayIsEmpty(songs) || !!error) && (
-				<div className="collection-item">
-					<span className="song-item">
-						Sin conexión, pruebe recargando la página.
-					</span>
-				</div>
-			)}
-		</div>
+		</Collection>
 	);
 };
 
-export default SongList;
+const LevelIcon = styled.div`
+	position: relative;
+	width: 27px;
+	margin-top: 2px;
+
+	> i {
+		position: absolute;
+		color: #006cd7;
+		font-size: 27px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	> span {
+		position: absolute;
+		color: white;
+		font-size: 10px;
+		font-weight: bold;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 10;
+	}
+
+	${(props) =>
+		props.withCheck &&
+		css`
+			padding-top: 10px;
+			padding-right: 10px;
+
+			> span {
+				flex: 1;
+				padding-top: 10px;
+			}
+
+			> label {
+				margin: 10px 0 0 10px;
+				z-index: 20;
+			}
+		`}
+`;
+
+export default SongCollection;

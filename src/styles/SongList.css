@@ -1,4 +1,4 @@
-.songs {
+/* .songs {
 	overflow: inherit !important;
 }
 
@@ -10,14 +10,14 @@
 .songs:first-child {
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
-}
+} */
 
-.searcher {
+/* .searcher {
 	border-bottom: 3px solid #1976d2 !important;
 	padding: 0 !important;
-}
+} */
 
-.search-line {
+/* .search-line {
 	position: relative;
 	display: flex;
 }
@@ -43,19 +43,11 @@
 	padding-bottom: 1rem;
 }
 
-.search-line i {
-	cursor: default;
-}
-
 #search {
 	font-size: 17px !important;
-	/* display: block; */
-	/* line-height: inherit; */
 	-webkit-transition: 0.3s background-color;
 	transition: 0.3s background-color;
 	height: inherit;
-	/* padding-left: 4rem; */
-	/* width: calc(100% - 8rem); */
 	flex: 1;
 	margin: 0;
 	border: 0;
@@ -84,7 +76,7 @@
 
 .labelsInput {
 	padding: 10px 20px 0 20px;
-	/* transition: visibility 2s linear; */
+	/* transition: visibility 2s linear; */ /*
 }
 
 .songs:last-child {
@@ -144,7 +136,7 @@
 .collection-item.with-check > label {
 	margin: 10px 0 0 10px;
 	z-index: 20;
-}
+} */
 
 /* De SongForm */
 

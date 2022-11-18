@@ -9,14 +9,15 @@ import styled from "styled-components";
 import ChordSelector from "./components/ChordSelector";
 import allChords from "../../data/allChords";
 import { getChordsFromLyric } from "../../utils.js";
-import { useSong } from "../../clases/song/useSong.js";
+import { useSongPage } from "./hooks/useSongPage.js";
 import { colors, noSelectableText } from "../../styles/styleUtils.js";
 import MessageModal from "../components/MessageModal.jsx";
+import BottomSheet from "../components/BottomSheet.jsx";
 
-const Song = () => {
+const SongPage = () => {
 	const history = useHistory();
 	const { id } = useParams();
-	const [song, loading, error] = useSong(id);
+	const [song, isLoading, error] = useSongPage(id);
 
 	const user = useSelector((state) => state.user.google);
 
@@ -28,6 +29,7 @@ const Song = () => {
 	const [onlyLyric, setOnlyLyric] = useState("");
 
 	const [messageModalOpts, setMessageModalOpts] = useState(null);
+	const [open, setOpen] = useState(false);
 
 	useEffect(() => {
 		const elems = document.querySelectorAll(".modal");
@@ -114,8 +116,8 @@ const Song = () => {
 	};
 
 	const handleFloatingBtn = (event) => {
-		// event.stopPropagation();
-		// actionBtn.close();
+		event.stopPropagation();
+		setOpen(true);
 	};
 
 	const handleEditBtn = (event) => {
@@ -136,7 +138,7 @@ const Song = () => {
 		});
 	};
 
-	if (loading)
+	if (!!isLoading)
 		return (
 			<div className="progress" style={{ backgroundColor: "#9cd1ff" }}>
 				<div
@@ -149,7 +151,7 @@ const Song = () => {
 	if (!!error) return <div>Error - {error}</div>;
 
 	return (
-		<SongPage>
+		<PageContainer>
 			{!!song?.labels?.length && (
 				<div
 					style={{
@@ -170,89 +172,96 @@ const Song = () => {
 			<SongTitle>
 				{song.title} {song.author?.name && ` - ${song.author.name}`}
 			</SongTitle>
-			{song.pulse && <SongInfo>Pulso: {song.pulse}</SongInfo>}
-			{song.tempo && <SongInfo>Tempo recomendado: {song.tempo}</SongInfo>}
-			<div
-				className="switch"
-				style={{ marginTop: "10px", display: hasChords ? "block" : "none" }}
-			>
-				<label onChange={() => setShowChords(!showChords)}>
-					<input type="checkbox" id="checkAuto" />
-					<span className="lever"></span>
-					<span style={{ color: "black" }}>Mostrar acordes</span>
-				</label>
-			</div>
-			{hasChords && (
-				<div>
-					{!!showChords && (
-						<>
-							<div
-								style={{
-									display: "inline-block",
-									paddingTop: "12px",
-									paddingRight: "5px",
-								}}
-							>
-								Tono:
-							</div>
-							<div
-								style={{
-									display: "inline-block",
-									width: "100px",
-									textAlign: "center",
-								}}
-							>
-								<ChordSelector
-									selectedChord={tone}
-									setSelectedChord={setNewTone}
-									chordLang={chordLang}
-								/>
-							</div>
-						</>
-					)}
-				</div>
-			)}
-			<br />
 			<LyricWithChords
 				lyric={onlyLyric}
 				chords={showChords ? currentChords : {}}
 			/>
-			<br />
-			{song.creator?.name && (
-				<span style={{ fontStyle: "italic" }}>
-					Transcripción hecha por {song.creator.name}
-				</span>
-			)}
-			<br />
-			<SongButton
-				className="btn waves-effect waves-light blue darken-2"
-				onClick={handleEditBtn}
-			>
-				<i className="material-icons right">edit</i>Editar
-			</SongButton>
-			{(song.creator?.name === user.name ||
-				user.googleId === "111418653738749034139") && (
-				<SongButton
-					className="btn waves-effect waves-light blue darken-2"
-					onClick={handleDeleteBtn}
-				>
-					<i className={`material-icons ${"right"}`}>delete</i>Eliminar
-				</SongButton>
-			)}
-			<MessageModal opts={messageModalOpts} />
-			<div className="fixed-action-btn">
+
+			<SongActionButton>
 				<a
-					className="btn-floating btn-large waves-effect waves-light blue"
+					className="btn-floating btn-large waves-effect waves-light"
 					onClick={handleFloatingBtn}
 				>
-					<i className="large material-icons">mode_edit</i>
+					<i className="large material-icons">tune</i>
 				</a>
-			</div>
-		</SongPage>
+			</SongActionButton>
+			<BottomSheet open={open} setOpen={setOpen} fullscreen>
+				<div>
+					Detalles:
+					{song.pulse && <SongInfo>Pulso: {song.pulse}</SongInfo>}
+					{song.tempo && <SongInfo>Tempo recomendado: {song.tempo}</SongInfo>}
+					<div
+						className="switch"
+						style={{ marginTop: "10px", display: hasChords ? "block" : "none" }}
+					>
+						<label onChange={() => setShowChords(!showChords)}>
+							<input type="checkbox" id="checkAuto" />
+							<span className="lever"></span>
+							<span style={{ color: "black" }}>Mostrar acordes</span>
+						</label>
+					</div>
+					{hasChords && (
+						<div>
+							{!!showChords && (
+								<>
+									<div
+										style={{
+											display: "inline-block",
+											paddingTop: "12px",
+											paddingRight: "5px",
+										}}
+									>
+										Tono:
+									</div>
+									<div
+										style={{
+											display: "inline-block",
+											width: "100px",
+											textAlign: "center",
+										}}
+									>
+										<ChordSelector
+											selectedChord={tone}
+											setSelectedChord={setNewTone}
+											chordLang={chordLang}
+										/>
+									</div>
+								</>
+							)}
+						</div>
+					)}
+					{!!user?.name && (
+						<SongButton
+							className="btn waves-effect waves-light blue darken-2"
+							onClick={handleEditBtn}
+						>
+							<i className="material-icons right">edit</i>Editar
+						</SongButton>
+					)}
+					{(song.creator?.name === user.name ||
+						user.googleId === "111418653738749034139") && (
+						<SongButton
+							className="btn waves-effect waves-light blue darken-2"
+							onClick={handleDeleteBtn}
+						>
+							<i className={`material-icons ${"right"}`}>delete</i>Eliminar
+						</SongButton>
+					)}
+					<br />
+					<br />
+					{song.creator?.name && (
+						<span style={{ fontStyle: "italic" }}>
+							Transcripción hecha por {song.creator.name}
+						</span>
+					)}
+				</div>
+			</BottomSheet>
+			<MessageModal opts={messageModalOpts} />
+		</PageContainer>
 	);
 };
 
-const SongPage = styled.div`
+const PageContainer = styled.div`
 	font-size: 1.1em;
 	margin: 0 auto 40px auto;
 	max-width: 700px;
@@ -260,7 +269,7 @@ const SongPage = styled.div`
 `;
 const SongTitle = styled.h3`
 	@media (max-width: 600px) {
-		font-size: 2.3rem;
+		font-size: 1.8rem;
 	}
 `;
 const LabelIcon = styled.i`
@@ -289,5 +298,12 @@ const SongButton = styled.div`
 	margin-top: 15px;
 	margin-right: 10px;
 `;
+const SongActionButton = styled.div.attrs({
+	className: "fixed-action-btn",
+})`
+	> a {
+		background-color: ${colors.primary} !important;
+	}
+`;
 
-export default Song;
+export default SongPage;
