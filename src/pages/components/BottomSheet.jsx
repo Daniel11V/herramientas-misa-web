@@ -98,6 +98,7 @@ const BottomSheetStyled = styled.div`
 		width: 100vw;
 		height: 30px;
 		position: relative;
+		cursor: pointer;
 
 		> div {
 			width: 200px;

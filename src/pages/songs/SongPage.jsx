@@ -31,6 +31,9 @@ const SongPage = () => {
 	const [messageModalOpts, setMessageModalOpts] = useState(null);
 	const [open, setOpen] = useState(false);
 
+	const pageTitle =
+		song.title + " " + (song.author?.name ? " - " + song.author.name : "");
+
 	useEffect(() => {
 		const elems = document.querySelectorAll(".modal");
 		M.Modal.init(elems);
@@ -120,6 +123,31 @@ const SongPage = () => {
 		setOpen(true);
 	};
 
+	const handlePrintBtn = (event) => {
+		event.stopPropagation();
+		const elementToPrint = document.getElementById("to-print");
+
+		let content = "<html><head>";
+		content += `<title>${pageTitle}</title>`;
+		const styles = document.querySelectorAll("style");
+		for (const style of styles) {
+			content += "<style>" + style.innerHTML + "</style>";
+		}
+		content +=
+			'</head><body onload="window.print(); setTimeout(window.close, 3000);">';
+		content += elementToPrint.innerHTML;
+		content += "</body>";
+		content += "</html>";
+
+		const win = window.open(
+			"",
+			"",
+			"left=0,top=0,width=552,height=477,toolbar=0,scrollbars=0,status =0"
+		);
+		win.document.write(content);
+		win.document.close();
+	};
+
 	const handleEditBtn = (event) => {
 		event.stopPropagation();
 		history.push({ pathname: `/edit-song/${id}`, state: { from: "Canción" } });
@@ -134,7 +162,9 @@ const SongPage = () => {
 				setMessageModalOpts(null);
 			},
 			onCancel: () => {},
-			onConfirm: () => {},
+			onConfirm: () => {
+				deleteSong();
+			},
 		});
 	};
 
@@ -169,13 +199,15 @@ const SongPage = () => {
 					))}
 				</div>
 			)}
-			<SongTitle>
-				{song.title} {song.author?.name && ` - ${song.author.name}`}
-			</SongTitle>
-			<LyricWithChords
-				lyric={onlyLyric}
-				chords={showChords ? currentChords : {}}
-			/>
+			<div id="to-print">
+				<SongTitle>
+					{song.title} {song.author?.name && ` - ${song.author.name}`}
+				</SongTitle>
+				<LyricWithChords
+					lyric={onlyLyric}
+					chords={showChords ? currentChords : {}}
+				/>
+			</div>
 
 			<SongActionButton>
 				<a
@@ -187,9 +219,17 @@ const SongPage = () => {
 			</SongActionButton>
 			<BottomSheet open={open} setOpen={setOpen} fullscreen>
 				<div>
+					<br />
 					Detalles:
 					{song.pulse && <SongInfo>Pulso: {song.pulse}</SongInfo>}
 					{song.tempo && <SongInfo>Tempo recomendado: {song.tempo}</SongInfo>}
+					{song.creator?.name && (
+						<p>
+							<i>Transcripción hecha por {song.creator.name}</i>
+						</p>
+					)}
+					<hr />
+					Opciones:
 					<div
 						className="switch"
 						style={{ marginTop: "10px", display: hasChords ? "block" : "none" }}
@@ -230,6 +270,15 @@ const SongPage = () => {
 							)}
 						</div>
 					)}
+					<hr />
+					Acciones:
+					<br />
+					<SongButton
+						className="btn waves-effect waves-light blue darken-2"
+						onClick={handlePrintBtn}
+					>
+						<i className="material-icons right">print</i>Imprimir
+					</SongButton>
 					{!!user?.name && (
 						<SongButton
 							className="btn waves-effect waves-light blue darken-2"
@@ -246,13 +295,6 @@ const SongPage = () => {
 						>
 							<i className={`material-icons ${"right"}`}>delete</i>Eliminar
 						</SongButton>
-					)}
-					<br />
-					<br />
-					{song.creator?.name && (
-						<span style={{ fontStyle: "italic" }}>
-							Transcripción hecha por {song.creator.name}
-						</span>
 					)}
 				</div>
 			</BottomSheet>
