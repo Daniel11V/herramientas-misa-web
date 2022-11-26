@@ -28,6 +28,12 @@ export const publicSongTitleModel = {
             //...
         }, required: true
     },
+    description: { type: "String", required: false },
+    pulse: { type: "String", required: false },
+    tempo: { type: "String", required: false },
+
+    lyricId: { type: "String", required: true },
+    lyricIsPublic: { type: "Bool", required: true },
 };
 
 /*

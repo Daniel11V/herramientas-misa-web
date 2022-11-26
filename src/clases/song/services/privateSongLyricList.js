@@ -1,0 +1,25 @@
+import store from "../../../store";
+import { publicSongLyricModel } from "./publicSongLyricList";
+
+export const privateSongLyricModel = {
+    ...publicSongLyricModel,
+};
+
+export const getPrivateSongLyricListDB = async ({ songId }) => {
+    if (!songId) throw new Error("Invalid song ID.");
+
+    const privateSongLyric = store.getState().database.privateSongLyricList[songId];
+
+    return privateSongLyric;
+}
+
+export const createPrivateSongLyricDB = async ({ lyric }) => {
+
+    const newId = new Date().getTime();
+    store.getState().database.privateSongLyricList[newId] = { lyric };
+    const response = { id: newId, lyric };
+
+    if (!response) throw new Error("Error fetching in createPrivateSongLyricDB.");
+
+    return response;
+}

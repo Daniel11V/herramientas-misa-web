@@ -268,11 +268,12 @@ const SongPage = () => {
 						className="switch"
 						style={{ marginTop: "10px", display: hasChords ? "block" : "none" }}
 					>
-						<label onChange={toggleShowChords}>
+						<label>
 							<input
 								type="checkbox"
 								id="checkAuto"
 								checked={pageOptions.showChords}
+								onChange={toggleShowChords}
 							/>
 							<span className="lever"></span>
 							<span style={{ color: "black" }}>Mostrar acordes</span>
@@ -308,7 +309,7 @@ const SongPage = () => {
 					>
 						<i className="material-icons right">print</i>Imprimir
 					</SongButton> */}
-					{!!user?.name && (
+					{!!user?.name && user.googleId === "111418653738749034139" && (
 						<SongButton
 							className="btn waves-effect waves-light blue darken-2"
 							onClick={handleEditBtn}

@@ -1,8 +1,8 @@
 import { privateRepertoryModel } from "../repertory/services/privateRepertoryList";
 import { publicRepertoryModel } from "../repertory/services/publicRepertoryList";
-import { privateSongDetailsModel } from "../song/services/privateSongDetailsList";
+import { privateSongLyricModel } from "../song/services/privateSongLyricList";
 import { privateSongTitleModel } from "../song/services/privateSongTitleList";
-import { publicSongDetailsModel } from "../song/services/publicSongDetailsList";
+import { publicSongLyricModel } from "../song/services/publicSongLyricList";
 import { publicSongTitleModel } from "../song/services/publicSongTitleList";
 import { userModel } from "../user/services/userList";
 
@@ -25,16 +25,16 @@ export const databaseModel = {
         "$pushId": privateSongTitleModel,
         // ...
     },
-    privateSongDetailsList: {
-        "$privateSongTitleId": privateSongDetailsModel,
+    privateSongLyricList: {
+        "$privateSongTitleId": privateSongLyricModel,
         // ...
     },
     publicSongTitleList: {
         "$pushId": publicSongTitleModel,
         // ...
     },
-    publicSongDetailsList: {
-        "$publicSongTitleId": publicSongDetailsModel,
+    publicSongLyricList: {
+        "$publicSongTitleId": publicSongLyricModel,
         // ...
     },
     privateRepertoryList: {

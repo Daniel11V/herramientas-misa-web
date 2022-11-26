@@ -105,15 +105,15 @@ export const database = {
                 voice: 3,
                 guitar: 3,
             },
+            "pulse": "4/4 por acorde",
             "chords": {
                 "5": { "0": "DO", "5": "SOL", "14": "LAm", "25": "MIm" }, "6": { "0": "FA", "5": "DO", "13": "RE7", "17": "SOL" }, "7": { "0": "DO", "5": "SOL", "14": "LAm", "25": "MIm" }, "8": { "0": "FA", "5": "DO", "13": "SOL", "17": "DO" }
             },
         }
     },
-    privateSongDetailsList: {
+    privateSongLyricList: {
         "6144d6372d6d4f8085af95ee": {
             songTitleId: "6144d6372d6d4f8085af95ee",
-            pulse: "4/4 por acorde",
             lyric: "Busca primero el Reino de Dios\ny su perfecta justicia,\ny lo demás añadido será.  \nAleluya, aleluuuuuuya.\n\nAleluya,   aleluya, aleluya\nAleluya,  aleluuuya\nAleluya,   aleluya, aleluya\nAleluya,  aleluuuya\n\nOtras antífonas:\nCanto a la vida que Cristo regaló \ncambiando su historia\ncuando en la cruz él murió por nuestro amor.\nAleluya, aleluya.\n\nCanto por Cristo que nos liberará \ncuando él venga en la gloria\ncuando la vida por él renacerá. \nAleluya, aleluya."
         },
     },
@@ -234,11 +234,84 @@ export const database = {
             "labels": ["aleluya"],
             "rating": [],
             "level": { main: 1 },
-        }
+        },
+        '1669486125378': {
+            id: "1669486125378",
+            versionGroupId: "1669486125378",
+            isPrivate: true,
+            title: 'Despertemos llega Cristo',
+            author: '',
+            creator: 'Daniel Vinet',
+            labels: [
+              'adviento',
+              'navidad'
+            ],
+            pulse: '',
+            tempo: '',
+            level: {
+              main: 1
+            },
+            lyricId: 1669486125376,
+            lyricIsPublic: false
+          },
+          '1669487158543': {
+            id: '1669487158543',
+            versionGroupId: '1669487158543',
+            isPrivate: true,
+            title: 'Saber que vendrás',
+            author: '',
+            creator: 'Daniel Vinet',
+            labels: [
+              'ofrenda'
+            ],
+            pulse: '',
+            tempo: '',
+            level: {
+              main: 1
+            },
+            lyricId: 1669487158540,
+            lyricIsPublic: false
+          },
+          '1669487612348': {
+            id: '1669487612348',
+            versionGroupId: '1669487612348',
+            isPrivate: true,
+            title: 'María de la Esperanza',
+            author: '',
+            creator: 'Daniel Vinet',
+            labels: [
+              'comunion'
+            ],
+            pulse: '',
+            tempo: '',
+            level: {
+              main: 1
+            },
+            lyricId: 1669487612347,
+            lyricIsPublic: false
+          },
+          '1669487992788': {
+            id: '1669487992788',
+            versionGroupId: '1669487992788',
+            isPrivate: true,
+            title: 'Toda la tierra',
+            author: '',
+            creator: 'Daniel Vinet',
+            labels: [
+              'meditacion'
+            ],
+            pulse: '',
+            tempo: '',
+            level: {
+              main: 1
+            },
+            lyricId: 1669487992786,
+            lyricIsPublic: false
+          }
     },
-    publicSongDetailsList: {
+    publicSongLyricList: {
         "123": {
-            songTitleId: "123",
+            // songTitleId: "123",
             lyric: `D                                      Em7
 En tormentas, en mi oscuridad
              G                     D
@@ -293,7 +366,7 @@ Ven Espíritu de amor,
 sopla en mi corazón`,
         },
         "124": {
-            songTitleId: "124",
+            // songTitleId: "124",
             lyric: `           E                B
 Tu presencia es real
          F#m             A
@@ -318,7 +391,7 @@ Seas bendito y alabado
 Jesús sacramentado`,
         },
         "125": {
-            songTitleId: "125",
+            // songTitleId: "125",
             lyric: `D              G
 En la intimidad de tu presencia
      D                      G
@@ -337,15 +410,15 @@ D                         G9
 En la intimidad de tu presencia.`,
         },
         "613c854ef601f09e344f43bf": {
-            songTitleId: "613c854ef601f09e344f43bf",
+            // songTitleId: "613c854ef601f09e344f43bf",
             lyric: "DO                          FA\nQue todos se postren ante Dios nuestro Señor,\nSOL                      DO  SOL\nque todas las almas lo adoren\nEn la Eucaristía, fuente viva de amor,\nPan de vida nueva que desciende por vos.\n\nLAm                        MIm\nRey de reyes, creador del hombre,\n     FA       REm        SOL    \ntodopoderoso en tu majestad.\nMI7                             LAm\nSanto Cristo que entregaste al mundo\n                 FA                     SOL\ntodo tu amor profundo para darnos tu vida.\n\n  DO  FA    SOL DO   \nGloria,   gloria.\nSOL        DO  FA    SOL  DO\n A El la Gloria,   gloria.\n\nLuz que alumbra siempre donde hay oscuridad,\nBuen pastor que a todos nos socorre.\nCordero inmolado que se ofrece en el altar\nPara darle vida nueva al hombre.\n\nRey de reyes, creador del hombre,\nTodo poderoso en su majestad.\nSanto Cristo que entregaste al mundo\nTodo tu amor profundo para darnos tu vida\n\nGloria, gloria.\nA El la Gloria, gloria",
         },
         "613c8597f601f09e344f43c2": {
-            songTitleId: "613c8597f601f09e344f43c2",
+            // songTitleId: "613c8597f601f09e344f43c2",
             lyric: "RE              \nA casa de Zacarí­as,\n   LA7           RE\nMarí­a se encaminó,\n   LA7           RE\n/camino de montañas\n              SOL             RE\ny en sus entrañas el mismo Dios./ (bis)\n \nRE\nLlena de gracia has venido a mí­,\n                  LA\nla mamacita del Salvador.\n/Dichosa sea la que creyó\nen la promesa de su Señor./ (bis)\n \nOyó Isabel el saludo,\nsu seno se estremeció\n/y el Espíritu Santo\ncasi cantando en ella obró./ (bis)\n\nEn el Señor yo me alegro,\nMaría un canto entonó,\n/puso en mí la mirada\nsu humilde esclava de corazón./ (bis)\n\nFortaleció a los humildes,\nal poderoso lo echó,\n/por la misericordia\nque en nuestra historia El derramó./ (bis)",
         },
         "6144d3152d6d4f8085af95d9": {
-            songTitleId: "6144d3152d6d4f8085af95d9",
+            // songTitleId: "6144d3152d6d4f8085af95d9",
             lyric: `REm   LA#   FA   DO
 
          FA
@@ -394,9 +467,21 @@ Y mi vida entregarte, Jesús.
 Siendo Dios, tomaste mi lugar...`,
         },
         "6144d6372d6d4f8085af95ed": {
-            songTitleId: "6144d6372d6d4f8085af95ed",
+            // songTitleId: "6144d6372d6d4f8085af95ed",
             lyric: "Busca primero el Reino de Dios\ny su perfecta justicia,\ny lo demás añadido será.  \nAleluya, aleluuuuuuya.\n\nAleluya,   aleluya, aleluya\nAleluya,  aleluuuya\nAleluya,   aleluya, aleluya\nAleluya,  aleluuuya\n\nOtras antífonas:\nCanto a la vida que Cristo regaló \ncambiando su historia\ncuando en la cruz él murió por nuestro amor.\nAleluya, aleluya.\n\nCanto por Cristo que nos liberará \ncuando él venga en la gloria\ncuando la vida por él renacerá. \nAleluya, aleluya.",
         },
+        '1669486125376': {
+            lyric: 'Despertemos, llega Cristo, ven Señor\nAcudamos a su encuentro\nven Señor\n\nLa iglesia espera tu venida ven Señor\ny llena de alegría canta\nven Señor\n\nPalabra eterna y creadora, ven Señor\na renovar todas las cosas\nven Señor\n\nImagen de la luz eterna, ven Señor\na iluminar nuestras tinieblas\nven Señor\n\nVerdad y vida encarnada ven Señor\na responder a nuestras ansias\nven Señor\n\nPastor y rey de nuestro pueblo, ven Señor\na conducirnos a tu Reino\nven Señor'
+        },
+        '1669487158540': {
+            lyric: 'En este mundo que Cristo nos da,\nhacemos la ofrenda del pan;\nel pan de nuestro trabajo sin fin,\ny el vino de nuestro cantar.\nTraigo ante Ti nuestra justa inquietud:\namar la justicia y la paz.\n\nSABER QUE VENDRÁS,\nSABER QUE ESTARÁS\nPARTIENDO A LOS POBRES TU PAN.\n[Bis todo]\n\nLa sed de todos los hombres sin luz,\nla pena y triste llorar.\nEl odio de los que mueren sin fe,\ncansados de tanto luchar.\nEn la patena de nuestra oblación,\nacepta la vida, Señor.'
+          },
+          '1669487612347': {
+            lyric: 'SOL       RE    SOL\nMaría de la esperanza \n     RE    SOL       RE     SOL  RE\npreparanos para recibir a Dios. \nSOL           DO    SOL\nQue tus dos manitos buenas \n      DO     SOL             RE  SOL\nrecuesten al niño en nuestro corazón. (BIS) \n\n\nSOL           SIm   SOL          RE\nMadre de la aurora  traenos al Señor, \nSI7           MIm               LA7\nque nuestra pobreza haga de horizonte \n               RE7\ndonde salga el sol. \nSOL       SIm    SOL             RE\nMadre peregrina, virgencita de Belén, \nSOL        DO    SOL          DO   SOL\ntraenos la buena nueva virgen misionera \n       RE  SOL\nhaznos renacer. \n\n\nSOL            SIm     SOL             RE\nAlegría de los pobres, madrecita del amor, \nSI7        MIm                LA7\namor hecho niño que une en su carne \n               RE7\nal hombre con Dios. \n\nSOL               SIm    SOL              RE\nIlumina nuestra espera, que se haga realidad, \nSOL           DO     SOL            DO      SOL\nven a transformar la noche, nuestra noche oscura \n   RE      SOL\nen Nochebuena.'
+          },
+          '1669487992786': {
+            lyric: 'DO        MIm   REm      SOL\nToda la tierra espera al Salvador,\nDO          MIm           FA     SOL\ny el surco abierto, a la obra del Señor;\n      LAm        MIm   FA  DO\nes el mundo que lucha por la libertad,\n   LAm    MIm      SOL      DO\nreclama justicia y busca la verdad.\n\nDice el Profeta al pueblo de Israel:\n"De madre virgen ya viene el Emmanuel";\nserá "Dios con nosotros", hermano será,\ncon él la esperanza al mundo volverá.\n\nCerros y valles habrá que preparar,\nnuevos caminos tenemos que trazar;\nel Señor está cerca, hay que irlo a encontrar,\ny todas las puertas abrir de par en par.\n\nEn un pesebre, Jesús apareció,\npero en el mundo es donde nace hoy;\nvive en nuestros hermanos, con ellos está,\ny vuelve de nuevo a darnos libertad.'
+          }
     },
 };
 

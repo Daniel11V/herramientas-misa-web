@@ -63,14 +63,14 @@ export const useSongListPage = () => {
             publicSongTitles
             En Favoritos una:
             - crea un privateSongTitles de esa que apunta al detalle de la publica, si 
-            se edita algo de Details se crea nueva Detail en private
+            se edita algo de Lyric se crea nueva Lyric en private
         */
     }, [status, songStatus, userId, dispatch]);
 
     useEffect(() => {
         if (status === "2_VERSION_GROUPS") {
             if (!objIsEmpty(versionGroups)) {
-                setCurrentSongList(lastCurrentSongList => lastCurrentSongList.filter(song => versionGroups[song.versionGroupId].moreRated === song.id));
+                setCurrentSongList(lastCurrentSongList => lastCurrentSongList.filter(song => versionGroups[song?.versionGroupId]?.moreRated === song.id));
                 setStatus("FINISHED");
             } else {
                 setStatus("2_GET_VERSION_GROUPS");

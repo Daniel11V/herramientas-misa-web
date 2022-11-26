@@ -9,7 +9,7 @@ export const CollectionSearcher = ({ labelsStart = [] }) => {
 	const [labels, setLabels] = useState(labelsStart);
 	const [search, setSearch] = useState("");
 	const [filterSelectors, setFilterSelectors] = useState(null);
-	// const [filteredSongs, setFilteredSongs] = useState(allSongDetails);
+	// const [filteredSongs, setFilteredSongs] = useState(allSongLyric);
 
 	useEffect(() => {
 		if (!filterSelectors) {

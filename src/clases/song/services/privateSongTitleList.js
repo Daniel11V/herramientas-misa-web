@@ -3,7 +3,6 @@ import { publicSongTitleModel } from "./publicSongTitleList";
 
 export const privateSongTitleModel = {
     ...publicSongTitleModel,
-    publicDetailId: { type: "String", required: false },
     hasAccess: {
         type: {
             $userId: { type: "String", required: true }, // name
@@ -42,13 +41,13 @@ export const getPrivateSongTitleDB = async ({ userId, songId }) => {
 }
 
 export const createPrivateSongTitleDB = async ({ songTitleCreated }) => {
+    const newId = new Date().getTime().toString();
+    const newSongTitle = {
+        id: newId,
+        versionGroupId: newId,
+        ...songTitleCreated,
+    }
+    store.getState().database.privateSongTitleList[newId] = newSongTitle;
 
-    if (!songTitleCreated?.id) throw new Error("Invalid song ID.");
-
-    store.getState().database.privateSongTitleList[songTitleCreated.id] = songTitleCreated;
-    const response = songTitleCreated;
-
-    if (!response) throw new Error("Error fetching in createPrivateSongTitleDB.");
-
-    return response;
+    return newSongTitle;
 }
