@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
+import { colors } from "../../styles/styleUtils";
 
 const BottomSheet = ({ children, open, setOpen, fullscreen = false }) => {
 	const [topValue, setTopValue] = useState(null);
@@ -124,6 +125,14 @@ const BottomSheetStyled = styled.div`
 			css`
 				height: 90vh;
 			`}
+
+		hr {
+			height: 4px;
+			border-radius: 2px;
+			background-color: ${colors.primary}30;
+			border: none;
+			margin: 25px 0;
+		}
 	}
 `;
 

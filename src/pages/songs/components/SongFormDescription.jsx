@@ -1,11 +1,10 @@
-
 const SongFormDescription = ({ author, setAuthor, title, setTitle }) => {
 	return (
 		<>
 			<div className="row">
 				<div className="input-field">
 					{/* Replace with selector */}
-					<label htmlFor="author" className="lab">
+					<label htmlFor="author" className={"lab" + (author ? " active" : "")}>
 						Autor
 					</label>
 					<input
@@ -30,7 +29,7 @@ const SongFormDescription = ({ author, setAuthor, title, setTitle }) => {
 						type="text"
 						value={title || ""}
 					/>
-					<label htmlFor="title" className="lab">
+					<label htmlFor="title" className={"lab" + (title ? " active" : "")}>
 						Titulo*
 					</label>
 				</div>

@@ -16,7 +16,10 @@ const initialState = {
         accessToken: '',
     },
     config: {
-
+        songPageOptions: {
+            fontSize: '16',
+            showChords: true,
+        }
     },
 
     isDesktop: null,
@@ -35,9 +38,11 @@ const UserReducer = (state = initialState, { type, payload }) => {
                 error: null, isLogged: false
             }
 
-
         case types.SET_DEVICE:
             return { ...state, isDesktop: payload.isDesktop }
+
+        case types.SET_USER_SONG_PAGE_OPTIONS:
+            return { ...state, config: { ...state.config, songPageOptions: payload.songPageOptions } }
 
         default:
             return state

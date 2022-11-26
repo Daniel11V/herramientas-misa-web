@@ -23,7 +23,7 @@ const SongFormLyric = ({ lyric, setLyric }) => {
 					onChange={(e) => setLyric(e.target.value)}
 					value={lyric || ""}
 				/>
-				<label htmlFor="lyric" className="lab">
+				<label htmlFor="lyric" className={"lab" + (lyric ? " active" : "")}>
 					Copiar y pegar letra con acordes
 				</label>
 			</div>

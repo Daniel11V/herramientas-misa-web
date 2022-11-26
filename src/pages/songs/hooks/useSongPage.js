@@ -63,5 +63,5 @@ export const useSongPage = (songId) => {
         }
     }, [status, songStatus, userId, songId, dispatch]);
 
-    return [currentSong, isLoading, error];
+    return { song: currentSong, isLoading, error };
 };

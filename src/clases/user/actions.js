@@ -21,5 +21,10 @@ export const setDevice = (isDesktop) => ({
     payload: { isDesktop }
 })
 
+export const setSongPageOptions = (songPageOptions) => ({
+    type: types.SET_USER_SONG_PAGE_OPTIONS,
+    payload: { songPageOptions }
+})
+
 
 

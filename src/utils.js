@@ -177,3 +177,16 @@ export const getLyricWithChords = (onlyLyric, chords) => {
 
     return lyric.join("\n");
 }
+
+export const objsAreEqual = (obj1, obj2) => {
+    // Only they first children
+    for (const key in obj1) {
+        if (obj1[key] !== obj2[key]) return false;
+    }
+
+    for (const key in obj2) {
+        if (obj2[key] !== obj1[key]) return false;
+    }
+    
+    return true;
+}

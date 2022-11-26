@@ -5,4 +5,6 @@ export const types = {
     LOGOUT: 'LOGOUT',
 
     SET_DEVICE: 'SET_DEVICE',
+
+    SET_USER_SONG_PAGE_OPTIONS: 'SET_USER_SONG_PAGE_OPTIONS',
 }

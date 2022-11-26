@@ -13,17 +13,24 @@ import { useSongPage } from "./hooks/useSongPage.js";
 import { colors, noSelectableText } from "../../styles/styleUtils.js";
 import MessageModal from "../components/MessageModal.jsx";
 import BottomSheet from "../components/BottomSheet.jsx";
+import { useSongPageOptions } from "./hooks/useSongPageOptions.js";
 
 const SongPage = () => {
 	const history = useHistory();
 	const { id } = useParams();
-	const [song, isLoading, error] = useSongPage(id);
+	const { song, isLoading, error } = useSongPage(id);
+	const {
+		areNewOptions,
+		pageOptions,
+		setFontSize,
+		toggleShowChords,
+		saveOptions,
+	} = useSongPageOptions();
 
 	const user = useSelector((state) => state.user.google);
 
 	const [tone, setTone] = useState(null);
 	const [currentChords, setCurrentChords] = useState({});
-	const [showChords, setShowChords] = useState(true);
 	const [hasChords, sethasChords] = useState(false);
 	const [chordLang, setChordLang] = useState("en");
 	const [onlyLyric, setOnlyLyric] = useState("");
@@ -32,7 +39,7 @@ const SongPage = () => {
 	const [open, setOpen] = useState(false);
 
 	const pageTitle =
-		song.title + " " + (song.author?.name ? " - " + song.author.name : "");
+		song?.title + " " + (song?.author?.name ? " - " + song.author.name : "");
 
 	useEffect(() => {
 		const elems = document.querySelectorAll(".modal");
@@ -181,7 +188,7 @@ const SongPage = () => {
 	if (!!error) return <div>Error - {error}</div>;
 
 	return (
-		<PageContainer>
+		<PageContainer fontSize={pageOptions.fontSize}>
 			{!!song?.labels?.length && (
 				<div
 					style={{
@@ -205,7 +212,7 @@ const SongPage = () => {
 				</SongTitle>
 				<LyricWithChords
 					lyric={onlyLyric}
-					chords={showChords ? currentChords : {}}
+					chords={pageOptions.showChords ? currentChords : {}}
 				/>
 			</div>
 
@@ -219,8 +226,7 @@ const SongPage = () => {
 			</SongActionButton>
 			<BottomSheet open={open} setOpen={setOpen} fullscreen>
 				<div>
-					<br />
-					Detalles:
+					<h5>Detalles</h5>
 					{song.pulse && <SongInfo>Pulso: {song.pulse}</SongInfo>}
 					{song.tempo && <SongInfo>Tempo recomendado: {song.tempo}</SongInfo>}
 					{song.creator?.name && (
@@ -229,56 +235,79 @@ const SongPage = () => {
 						</p>
 					)}
 					<hr />
-					Opciones:
+					<h5>Ajustes de canción</h5>
+					{!!hasChords && !!pageOptions.showChords && (
+						<>
+							<div
+								style={{
+									display: "inline-block",
+									paddingTop: "5px",
+									paddingRight: "5px",
+								}}
+							>
+								Tono:
+							</div>
+							<div
+								style={{
+									display: "inline-block",
+									width: "100px",
+									textAlign: "center",
+								}}
+							>
+								<ChordSelector
+									selectedChord={tone}
+									setSelectedChord={setNewTone}
+									chordLang={chordLang}
+								/>
+							</div>
+						</>
+					)}
+					<hr />
+					<h5>Visualización</h5>
 					<div
 						className="switch"
 						style={{ marginTop: "10px", display: hasChords ? "block" : "none" }}
 					>
-						<label onChange={() => setShowChords(!showChords)}>
-							<input type="checkbox" id="checkAuto" />
+						<label onChange={toggleShowChords}>
+							<input
+								type="checkbox"
+								id="checkAuto"
+								checked={pageOptions.showChords}
+							/>
 							<span className="lever"></span>
 							<span style={{ color: "black" }}>Mostrar acordes</span>
 						</label>
 					</div>
-					{hasChords && (
-						<div>
-							{!!showChords && (
-								<>
-									<div
-										style={{
-											display: "inline-block",
-											paddingTop: "12px",
-											paddingRight: "5px",
-										}}
-									>
-										Tono:
-									</div>
-									<div
-										style={{
-											display: "inline-block",
-											width: "100px",
-											textAlign: "center",
-										}}
-									>
-										<ChordSelector
-											selectedChord={tone}
-											setSelectedChord={setNewTone}
-											chordLang={chordLang}
-										/>
-									</div>
-								</>
-							)}
-						</div>
+					<RangeInputContainer>
+						Tamaño de letra: {pageOptions.fontSize}px
+						<RangeInput>
+							<input
+								type="range"
+								id="fontSize"
+								min="10"
+								max="25"
+								value={pageOptions.fontSize}
+								onChange={setFontSize}
+							/>
+						</RangeInput>
+					</RangeInputContainer>
+					{!!areNewOptions && (
+						<SongButton
+							className="btn waves-effect waves-light blue darken-2"
+							onClick={saveOptions}
+						>
+							<i className="material-icons right">save</i>Guardar configuración
+						</SongButton>
 					)}
 					<hr />
-					Acciones:
+					<h5>Acciones</h5>
 					<br />
-					<SongButton
+					{/* <SongButton
 						className="btn waves-effect waves-light blue darken-2"
 						onClick={handlePrintBtn}
 					>
 						<i className="material-icons right">print</i>Imprimir
-					</SongButton>
+					</SongButton> */}
 					{!!user?.name && (
 						<SongButton
 							className="btn waves-effect waves-light blue darken-2"
@@ -304,7 +333,7 @@ const SongPage = () => {
 };
 
 const PageContainer = styled.div`
-	font-size: 1.1em;
+	font-size: ${(props) => props.fontSize}px;
 	margin: 0 auto 40px auto;
 	max-width: 700px;
 	${noSelectableText}
@@ -335,6 +364,24 @@ const SongLabel = styled.div`
 `;
 const SongInfo = styled.div`
 	vertical-align: center;
+`;
+
+const RangeInputContainer = styled.form.attrs({
+	action: "#",
+})`
+	padding-top: 20px;
+	color: black;
+`;
+const RangeInput = styled.p.attrs({
+	className: "range-field",
+})`
+	margin-top: 0px;
+	margin-bottom: 5px;
+	${noSelectableText}
+
+	input[type="range"]::-webkit-slider-thumb {
+		background: ${colors.primary};
+	}
 `;
 const SongButton = styled.div`
 	margin-top: 15px;

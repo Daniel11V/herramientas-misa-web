@@ -19,7 +19,7 @@ const SongFormExtraDetails = ({
 						type="text"
 						value={tempo || ""}
 					/>
-					<label htmlFor="tempo" className="lab">
+					<label htmlFor="tempo" className={"lab" + (tempo ? " active" : "")}>
 						Tempo
 					</label>
 				</div>
@@ -33,7 +33,7 @@ const SongFormExtraDetails = ({
 						type="text"
 						value={pulse || ""}
 					/>
-					<label htmlFor="pulse" className="lab">
+					<label htmlFor="pulse" className={"lab" + (pulse ? " active" : "")}>
 						Pulso
 					</label>
 				</div>
