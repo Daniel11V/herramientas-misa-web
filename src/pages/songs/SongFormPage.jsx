@@ -17,8 +17,12 @@ const SongFormPage = () => {
 		formStep,
 		nextStep,
 		setField,
+		authorItems,
+		authorForm,
+		setAuthorField,
 		toogleEditOnlyChords,
 		onlyLiric,
+		chords,
 		chordLang,
 		editOnlyChords,
 	} = useSongFormPage(id);
@@ -146,10 +150,15 @@ const SongFormPage = () => {
 						</h4>
 						{formStep === "DESCRIPTION" && (
 							<SongFormDescription
-								author={songForm.author.name}
-								setAuthor={(v) => setField("author", { id: "1", name: v })}
+								author={songForm.author}
+								setAuthor={(v) => setField("author", v)}
+								authorForm={authorForm}
+								setAuthorField={setAuthorField}
+								authorItems={authorItems}
 								title={songForm.title}
 								setTitle={(v) => setField("title", v)}
+								annotations={songForm.annotations}
+								setAnnotations={(v) => setField("annotations", v)}
 							/>
 						)}
 						{formStep === "LYRIC_CHORDS" && (
@@ -169,7 +178,7 @@ const SongFormPage = () => {
 								{editOnlyChords ? (
 									<LyricWithChords
 										lyric={onlyLiric}
-										chords={songForm.chords}
+										chords={chords}
 										setChords={(v) => setField("chords", v)}
 										chordLang={chordLang}
 									/>

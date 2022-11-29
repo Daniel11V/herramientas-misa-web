@@ -4,7 +4,7 @@ export const publicRepertoryModel = {
     id: { type: "String", required: true },
     isPrivate: { type: "Bool", required: true },
     title: { type: "String", required: true },
-    description: { type: "String", required: true },
+    annotations: { type: "String", required: true },
     placeTitle: { type: "String", required: true },
     placeUbication: { type: "String", required: true },
     isMass: { type: "Bool", required: true },

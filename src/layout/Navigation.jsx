@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import M from "materialize-css";
 import { useSelector } from "react-redux";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import LoginLogout from "./components/LoginLogout";
 import { noSelectableText } from "../styles/styleUtils";
 
@@ -75,16 +75,7 @@ const Navigation = () => {
 										<UserName>{user.name}</UserName>
 										<LoginLogout isLogged />
 									</div>
-									<img
-										src={user.imageUrl}
-										alt="profile"
-										className="circle"
-										onError={(e) => {
-											e.target.onerror = null;
-											e.target.src =
-												"https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png";
-										}}
-									/>
+									<UserImage src={user.imageUrl} isDesktop={isDesktop} />
 								</UserProfileNavbar>
 							) : (
 								<UserAnonymousNavbar>
@@ -105,15 +96,7 @@ const Navigation = () => {
 										src="https://images.freecreatives.com/wp-content/uploads/2016/02/Abstract-Bright-Blue-Geometric-Background.jpg"
 									/>
 								</div>
-								<UserImage
-									src={user.imageUrl}
-									alt="profile"
-									onError={(e) => {
-										e.target.onerror = null;
-										e.target.src =
-											"https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png";
-									}}
-								/>
+								<UserImage src={user.imageUrl} />
 								<UserName>{user.name}</UserName>
 								<LoginLogout isLogged />
 							</UserProfileSidebar>
@@ -175,12 +158,24 @@ const BackIcon = styled(Icon)`
 	paddingleft: 10px;
 	display: flex;
 `;
-const UserImage = styled.img.attrs({
-	className: "circle",
-})`
+const UserImage = styled.div`
 	padding: 0 !important;
 	width: 100px !important;
 	height: 100px !important;
+	border-radius: 100%;
+	background-image: url(${(props) => props.src}),
+		url("https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+
+	${(props) =>
+		props.isDesktop &&
+		css`
+			width: 45px !important;
+			height: 45px !important;
+			margin: 0 15px !important;
+		`}
 `;
 const UserName = styled.span.attrs({
 	className: "white-text",
@@ -212,12 +207,6 @@ const UserProfileNavbar = styled.li`
 		margin-top: 3px !important;
 		margin-bottom: 2px !important;
 		transform: scale(0.8) translate(-17px, 0px);
-	}
-
-	img {
-		height: 45px;
-		width: 45px;
-		margin: 0 15px;
 	}
 `;
 const UserAnonymousNavbar = styled.li`

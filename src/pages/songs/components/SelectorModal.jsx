@@ -5,8 +5,11 @@ import styled from "styled-components";
 const SelectorModal = ({
 	selectedItem,
 	setSelectedItem,
-	items = [{value:"1",label:"A"}, {value:"2",label:"B"}],
-	title = ""
+	items = [
+		{ value: "1", label: "A" },
+		{ value: "2", label: "B" },
+	],
+	title = "",
 }) => {
 	const [modalRef, setModalRef] = useState(null);
 
@@ -46,7 +49,11 @@ const SelectorModal = ({
 				<div className="modal-content">
 					{title && <h5>{title}</h5>}
 					{items.map((item) => (
-						<ItemBtn key={item.value} onClick={() => handleItemClick(item)}>
+						<ItemBtn
+							key={item.value}
+							isSelected={item.value === selectedItem.value}
+							onClick={() => handleItemClick(item)}
+						>
 							{item.label}
 						</ItemBtn>
 					))}
@@ -79,7 +86,8 @@ const ItemText = styled.span`
 
 const ItemBtn = styled(ItemText)`
 	padding-top: 10px;
-	cursor: pointer;
+	cursor: ${(props) => (props.isSelected ? "initial" : "pointer")};
+	background-color: ${(props) => (props.isSelected ? "#e4e4e4" : null)};
 
 	&&:hover {
 		background-color: #e4e4e4;
@@ -89,31 +97,28 @@ const ItemBtn = styled(ItemText)`
 const SelectedItemArrow = styled.i`
 	position: absolute;
 	top: 8px;
-	right: 10px;
+	right: 8px;
 	font-size: 17px;
-	color: #000;
+	color: #9e9e9e;
 `;
 
 const SelectedItem = styled.div`
 	position: relative;
 	display: inline-block;
-	/* border: 1px solid gray; */
 	cursor: pointer;
-	padding: 5px 0 12px 0;
+	padding: 5px 0 14px 0;
 	width: 100%;
 	color: #000;
-	/* line-height: 45px;
-	vertical-align: top; */
 
 	&&:after {
 		content: "";
 		display: block;
-		width: 85px;
+		width: 100%;
 		height: 0px;
 		position: absolute;
 
-		border-bottom: 0.5px solid #000;
-		left: 10px;
+		border-bottom: 1px solid #9e9e9e;
+		/* left: 10px; */
 		bottom: 6px;
 	}
 `;

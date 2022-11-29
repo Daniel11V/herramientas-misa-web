@@ -13,7 +13,7 @@ const LoginLogout = ({ children = null, isLogged = false }) => {
 				login({
 					id: response.profileObj.googleId,
 					name: response.profileObj.name,
-					email: response.profileObj.imageUrl,
+					email: response.profileObj.email,
 					imageUrl: response.profileObj.imageUrl,
 					accessToken: response.accessToken,
 				})

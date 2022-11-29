@@ -18,7 +18,7 @@ import { useSongPageOptions } from "./hooks/useSongPageOptions.js";
 const SongPage = () => {
 	const history = useHistory();
 	const { id } = useParams();
-	const { song, isLoading, error, publishSong } = useSongPage(id);
+	const { song, isLoading, error, publishCurrentSong } = useSongPage(id);
 	const {
 		areNewOptions,
 		pageOptions,
@@ -164,6 +164,7 @@ const SongPage = () => {
 			onCancel: () => {},
 			onConfirm: () => {
 				if (user.id === "111418653738749034139") {
+					publishCurrentSong();
 					return;
 				}
 

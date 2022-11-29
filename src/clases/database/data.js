@@ -1,6 +1,6 @@
 
 export const database = {
-    authors: {
+    authorList: {
         123455: {
             id: '123455',
             name: 'Facundo Etcheberry',
@@ -15,7 +15,15 @@ export const database = {
             email: '',
             photoUrl: '',
             creatorId: '111418653738749034139',
-            songTitleIds: ["123", "124"],
+            songTitleIds: [],
+        },
+        123457: {
+            id: '123457',
+            name: 'Maxi Larghi',
+            email: '',
+            photoUrl: '',
+            creatorId: '111418653738749034139',
+            songTitleIds: [],
         },
     },
     userList: {
@@ -41,7 +49,7 @@ export const database = {
                 "name": "Daniel Vinet",
             },
             "title": "Misa 250 Años de la Parroquia",
-            "description": "",
+            "annotations": "",
             "members": [],
             "placeTitle": "Parroquia Ntra. Sra. del Pilar",
             "placeUbication": "",
@@ -65,7 +73,7 @@ export const database = {
                 "name": "Daniel Vinet",
             },
             "title": "Misa Sábado 20hs",
-            "description": "",
+            "annotations": "",
             "members": [],
             "placeTitle": "Parroquia Ntra. Sra. del Pilar",
             "placeUbication": "",

@@ -114,15 +114,17 @@ export const createSong = (songCreated) => {
 
             const { lyric, ...songTitle } = songCreated;
 
+            const realAuthor = songTitle.author.value === "Other" ? ({ value: "-", label: "Desconocido" }) : songTitle.author;
+
             const songTitleCreated = {
                 isPrivate: true,
                 title: songTitle.title,
-                author: songTitle.author,
+                author: realAuthor,
                 creator: songTitle.creator,
                 labels: songTitle.labels,
                 topics: songTitle.topics,
                 rating: songTitle.rating,
-                description: songTitle.description,
+                annotations: songTitle.annotations,
                 pulse: songTitle.pulse,
                 tempo: songTitle.tempo,
                 level: {

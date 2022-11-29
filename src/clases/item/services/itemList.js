@@ -20,7 +20,7 @@ export const getItemDB = async ({ userId, itemId }) => {
 }
 
 export const createItemDB = async ({ itemCreated }) => {
-    if (!itemCreated) throw new Error("Invalid item ID.");
+    if (!itemCreated?.id) throw new Error("Invalid item ID.");
 
     store.getState().database.itemList[itemCreated.id] = itemCreated;
 }

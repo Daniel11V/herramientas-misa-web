@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MAX_RETRYS } from "../../../configs";
-import { getSong, resetSongStatus } from "../../../clases/song/actions";
+import { getSong, publishSong, resetSongStatus } from "../../../clases/song/actions";
 
 export const useSongPage = (songId) => {
     const dispatch = useDispatch();
@@ -70,9 +70,9 @@ export const useSongPage = (songId) => {
         }
     }, [userId, currentSong]);
 
-    const publishSong = () => {
+    const publishCurrentSong = () => {
         dispatch(publishSong());
     }
 
-    return { song: currentSong, isLoading, error, publishSong };
+    return { song: currentSong, isLoading, error, publishCurrentSong };
 };

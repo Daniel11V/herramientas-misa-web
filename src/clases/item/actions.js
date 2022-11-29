@@ -7,6 +7,10 @@ import { getItemListDB, getItemDB, createItemDB, editItemDB, deleteItemDB } from
 import { types } from "./types"
 
 
+export const resetItemStatus = () => ({
+    type: types.RESET_ITEM_STATUS
+})
+
 // Thunks
 
 export const getItemList = ({ userId }) => {
@@ -14,20 +18,20 @@ export const getItemList = ({ userId }) => {
         try {
             dispatch({
                 type: types.SET_ITEM_LIST_STATUS,
-                payload: { itemListStatus: "FETCHING", error: null }
+                payload: { itemStatus: "FETCHING", error: null }
             })
 
             const itemList = await getItemListDB({ userId });
 
             dispatch({
                 type: types.SET_ITEM_LIST,
-                payload: { itemList, itemListStatus: "SUCCESS" }
+                payload: { itemList, itemStatus: "SUCCESS" }
             })
         } catch (error) {
             console.warn(error);
             dispatch({
                 type: types.SET_ITEM_LIST_STATUS,
-                payload: { itemListStatus: "FAILURE", error: error.message }
+                payload: { itemStatus: "FAILURE", error: error.message }
             })
         }
     }

@@ -14,26 +14,27 @@ const defaultItem = {
 }
 
 const initialState = {
-    error: null,
-
-    itemListStatus: "INITIAL",
-    itemList: [],
-
     itemStatus: "INITIAL",
+    itemError: null,
+
+    itemList: [],
     item: defaultItem,
 }
 
 const ItemReducer = (state = initialState, { type, payload }) => {
     switch (type) {
+        case types.RESET_ITEM_STATUS:
+            return { ...state, itemStatus: "INITIAL", itemError: null }
+
         case types.SET_ITEM_LIST:
-            return { ...state, itemList: payload.itemList, itemListStatus: payload.itemListStatus }
+            return { ...state, itemList: payload.itemList, itemStatus: payload.itemStatus }
         case types.SET_ITEM_LIST_STATUS:
-            return { ...state, itemListStatus: payload.itemListStatus, error: payload.error }
+            return { ...state, itemStatus: payload.itemStatus, itemError: payload.error }
 
         case types.SET_ITEM:
             return { ...state, item: { ...payload.item }, itemStatus: payload.itemStatus }
         case types.SET_ITEM_STATUS:
-            return { ...state, itemStatus: payload.itemStatus, error: payload.error }
+            return { ...state, itemStatus: payload.itemStatus, itemError: payload.error }
 
         case types.CREATE_ITEM:
             return {
