@@ -18,7 +18,7 @@ import { useSongPageOptions } from "./hooks/useSongPageOptions.js";
 const SongPage = () => {
 	const history = useHistory();
 	const { id } = useParams();
-	const { song, isLoading, error } = useSongPage(id);
+	const { song, isLoading, error, publishSong } = useSongPage(id);
 	const {
 		areNewOptions,
 		pageOptions,
@@ -61,13 +61,6 @@ const SongPage = () => {
 			setOnlyLyric(onlyLyric);
 		}
 	}, [song, id]);
-
-	const deleteSong = async () => {
-		// await axios.delete(`/api/songs/${id}`).catch((err) => console.error(err));
-		M.toast({ html: "Song Deleted" });
-		// refetchSongs();
-		history.goBack();
-	};
 
 	const getTone = (chords = song.chords) => {
 		const i = Object.keys(chords)[0];
@@ -159,6 +152,48 @@ const SongPage = () => {
 		event.stopPropagation();
 		history.push({ pathname: `/edit-song/${id}`, state: { from: "Canción" } });
 	};
+	const handlePublishBtn = (event) => {
+		event.stopPropagation();
+		setMessageModalOpts({
+			title: "Solicitud de publicación",
+			message:
+				"Se creará una solicitud para agregar tu canción dentro de nuestro cancionero publico! Y en unos días recibirá una respuesta al mail.",
+			onClose: () => {
+				setMessageModalOpts(null);
+			},
+			onCancel: () => {},
+			onConfirm: () => {
+				if (user.id === "111418653738749034139") {
+					return;
+				}
+
+				window.Email.send({
+					SecureToken: "6475cd94-e35b-4580-a64e-0bb45672fa5c",
+					To: "alexander1vinet@gmail.com",
+					From: "alexander1vinet@gmail.com",
+					Headers: {
+						"Content-Type": "application/json",
+					},
+					Subject: "Nueva cancion - Herramientas para Misa",
+					Body: `<html><h2>User:</h2><p>id: ${user.id}</p><p>name: ${
+						user.name
+					}</p><p>email: ${user.email}</p><h2>Song: </h2><p>${JSON.stringify(
+						song,
+						null,
+						"\t"
+					)}</p><h2>Link: </h2><p>https://herramientas-misa.netlify.app/song/${
+						song.id
+					}</p></html>`,
+				}).then((message) => {
+					if (message === "OK") {
+						M.toast({ html: "Solicitud enviada. Gracias!" });
+					} else {
+						M.toast({ html: "Error: " + message });
+					}
+				});
+			},
+		});
+	};
 	const handleDeleteBtn = (event) => {
 		event.stopPropagation();
 		setMessageModalOpts({
@@ -170,7 +205,10 @@ const SongPage = () => {
 			},
 			onCancel: () => {},
 			onConfirm: () => {
-				deleteSong();
+				// await axios.delete(`/api/songs/${id}`).catch((err) => console.error(err));
+				M.toast({ html: "Cancion borrada." });
+				// refetchSongs();
+				history.goBack();
 			},
 		});
 	};
@@ -300,25 +338,36 @@ const SongPage = () => {
 							<i className="material-icons right">save</i>Guardar configuración
 						</SongButton>
 					)}
-					<hr />
-					<h5>Acciones</h5>
-					<br />
+
 					{/* <SongButton
 						className="btn waves-effect waves-light blue darken-2"
 						onClick={handlePrintBtn}
 					>
 						<i className="material-icons right">print</i>Imprimir
 					</SongButton> */}
-					{!!user?.name && user.googleId === "111418653738749034139" && (
+					{!!user?.name && (
+						<>
+							<hr />
+							<h5>Acciones</h5>
+							{/* <br /> */}
+							<SongButton
+								className="btn waves-effect waves-light blue darken-2"
+								onClick={handleEditBtn}
+							>
+								<i className="material-icons right">edit</i>Editar
+							</SongButton>
+						</>
+					)}
+					{user?.id === song?.creator?.id && song?.isPrivate && (
 						<SongButton
 							className="btn waves-effect waves-light blue darken-2"
-							onClick={handleEditBtn}
+							onClick={handlePublishBtn}
 						>
-							<i className="material-icons right">edit</i>Editar
+							<i className="material-icons right">publish</i>Publicar
 						</SongButton>
 					)}
-					{(song.creator?.name === user.name ||
-						user.googleId === "111418653738749034139") && (
+					{(user?.id === song?.creator?.id ||
+						user.id === "111418653738749034139") && (
 						<SongButton
 							className="btn waves-effect waves-light blue darken-2"
 							onClick={handleDeleteBtn}

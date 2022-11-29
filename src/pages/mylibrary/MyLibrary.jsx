@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
+import SongCollection from "../components/SongCollection";
 // import { Link } from "react-router-dom";
 // import LoginLogout from "../../layout/components/LoginLogout";
 // import { useHistory } from "react-router";
-import SongList from "../songs/components/SongCollection";
 
 const MyLibrary = () => {
 	// const history = useHistory();
@@ -34,7 +34,7 @@ const MyLibrary = () => {
 					</LoginLogout>
 				)} */}
 			</div>
-			<SongList searcher={false} />
+			<SongCollection searcher={false} />
 		</Fragment>
 	);
 };

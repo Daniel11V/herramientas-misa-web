@@ -4,6 +4,8 @@ export const publicSongTitleModel = {
     id: { type: "String", required: true },
     versionGroupId: { type: "String", required: true },
     isPrivate: { type: "Bool", required: true },
+    lyricId: { type: "String", required: true },
+    lyricIsPrivate: { type: "Bool", required: true },
     title: { type: "String", required: true },
     author: {
         type: {
@@ -31,9 +33,6 @@ export const publicSongTitleModel = {
     description: { type: "String", required: false },
     pulse: { type: "String", required: false },
     tempo: { type: "String", required: false },
-
-    lyricId: { type: "String", required: true },
-    lyricIsPublic: { type: "Bool", required: true },
 };
 
 /*

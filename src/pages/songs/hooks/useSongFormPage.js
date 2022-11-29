@@ -44,7 +44,7 @@ export const useSongFormPage = (songId) => {
     }, [status])
 
     useEffect(() => {
-        setError(songError);
+        if (songError) setError(songError);
     }, [songError])
 
     useEffect(() => {
@@ -94,7 +94,7 @@ export const useSongFormPage = (songId) => {
         } else if (formStep === "EXTRA_DETAILS") {
 
             // Validate
-            setSongForm(lastSongForm => ({ ...lastSongForm, creator: lastSongForm.creator || userName }))
+            setSongForm(lastSongForm => ({ ...lastSongForm, creator: { name: lastSongForm?.creator?.name || userName, id: lastSongForm?.creator?.id || userId } }))
 
             setFormStep("SUBMIT_SONG_FORM");
         }

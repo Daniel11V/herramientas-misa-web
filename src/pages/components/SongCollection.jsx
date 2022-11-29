@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { arrayIsEmpty } from "../../../utils";
-import { CollectionSearcher } from "../../components/CollectionSearcher.jsx";
-import { Collection, CollectionItem } from "../../../styles/styles";
+import { arrayIsEmpty } from "../../utils";
+import { CollectionSearcher } from "./CollectionSearcher.jsx";
+import { Collection, CollectionItem } from "../../styles/styles";
 import styled, { css } from "styled-components";
 
 const SongCollection = ({

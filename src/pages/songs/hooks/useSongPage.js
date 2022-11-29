@@ -25,7 +25,7 @@ export const useSongPage = (songId) => {
     }, [status])
 
     useEffect(() => {
-        setError(songError);
+        if (songError) setError(songError);
     }, [songError])
 
     useEffect(() => {
@@ -56,6 +56,7 @@ export const useSongPage = (songId) => {
             } else if (songStatus === "SUCCESS") {
                 setStatus("1_SONG");
                 dispatch(resetSongStatus());
+                setError(null);
             } else if (songStatus === "FAILURE") {
                 setStatus("FINISHED");
                 dispatch(resetSongStatus());
@@ -63,5 +64,15 @@ export const useSongPage = (songId) => {
         }
     }, [status, songStatus, userId, songId, dispatch]);
 
-    return { song: currentSong, isLoading, error };
+    useEffect(() => {
+        if (userId && !currentSong.id) {
+            setStatus("1_SONG");
+        }
+    }, [userId, currentSong]);
+
+    const publishSong = () => {
+        dispatch(publishSong());
+    }
+
+    return { song: currentSong, isLoading, error, publishSong };
 };

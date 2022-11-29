@@ -187,6 +187,6 @@ export const objsAreEqual = (obj1, obj2) => {
     for (const key in obj2) {
         if (obj2[key] !== obj1[key]) return false;
     }
-    
+
     return true;
 }

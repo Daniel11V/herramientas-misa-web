@@ -12,6 +12,7 @@ export const useSongListPage = () => {
 
     const userId = useSelector((state) => state.user.google.id);
     const { songList, songStatus, songError, versionGroups } = useSelector((state) => state.song);
+    const [fetchWithoutPrivates, setFetchWithoutPrivates] = useState(false)
 
     useEffect(() => {
         setIsLoading(status !== "FINISHED");
@@ -42,6 +43,7 @@ export const useSongListPage = () => {
         if (status === "1_FETCH_SONG_LIST") {
             if (songStatus === "INITIAL") {
                 dispatch(getSongList({ userId }));
+                if (!userId) setFetchWithoutPrivates(true);
             } else if (songStatus === "SUCCESS") {
                 setStatus("1_SONG_LIST");
                 dispatch(resetSongStatus());
@@ -65,7 +67,7 @@ export const useSongListPage = () => {
             - crea un privateSongTitles de esa que apunta al detalle de la publica, si 
             se edita algo de Lyric se crea nueva Lyric en private
         */
-    }, [status, songStatus, userId, dispatch]);
+    }, [status, songStatus, userId, songList, dispatch]);
 
     useEffect(() => {
         if (status === "2_VERSION_GROUPS") {
@@ -126,6 +128,23 @@ export const useSongListPage = () => {
         }
 
     }, [status, currentSongList, userId, dispatch])
+
+    useEffect(() => {
+        if (fetchWithoutPrivates && userId) {
+            if (songStatus === "INITIAL") {
+                dispatch(getSongList({ userId, onlyAddPrivates: true }));
+            } else if (songStatus === "SUCCESS") {
+                setCurrentSongList(songList);
+                setStatus("2_GET_VERSION_GROUPS");
+                dispatch(resetSongStatus());
+                setFetchWithoutPrivates(false);
+            } else if (songStatus === "FAILURE") {
+                setStatus("FINISHED");
+                dispatch(resetSongStatus());
+                setFetchWithoutPrivates(false);
+            }
+        }
+    }, [fetchWithoutPrivates, userId, songStatus, songList, dispatch]);
 
 
     return [currentSongList, isLoading, songError];

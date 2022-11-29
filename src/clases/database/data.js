@@ -89,6 +89,8 @@ export const database = {
             "id": "6144d6372d6d4f8085af95ee",
             "versionGroupId": "6144d6372d6d4f8085af95ed",
             "isPrivate": true,
+            "lyricId": "6144d6372d6d4f8085af95ee",
+            "lyricIsPrivate": true,
             "title": "Aleluya III",
             "creator": {
                 "id": "111418653738749034139",
@@ -106,14 +108,14 @@ export const database = {
                 guitar: 3,
             },
             "pulse": "4/4 por acorde",
-            "chords": {
-                "5": { "0": "DO", "5": "SOL", "14": "LAm", "25": "MIm" }, "6": { "0": "FA", "5": "DO", "13": "RE7", "17": "SOL" }, "7": { "0": "DO", "5": "SOL", "14": "LAm", "25": "MIm" }, "8": { "0": "FA", "5": "DO", "13": "SOL", "17": "DO" }
-            },
+            // "chords": {
+            //     "5": { "0": "DO", "5": "SOL", "14": "LAm", "25": "MIm" }, "6": { "0": "FA", "5": "DO", "13": "RE7", "17": "SOL" }, "7": { "0": "DO", "5": "SOL", "14": "LAm", "25": "MIm" }, "8": { "0": "FA", "5": "DO", "13": "SOL", "17": "DO" }
+            // },
         }
     },
     privateSongLyricList: {
         "6144d6372d6d4f8085af95ee": {
-            songTitleId: "6144d6372d6d4f8085af95ee",
+            // songTitleId: "6144d6372d6d4f8085af95ee",
             lyric: "Busca primero el Reino de Dios\ny su perfecta justicia,\ny lo demás añadido será.  \nAleluya, aleluuuuuuya.\n\nAleluya,   aleluya, aleluya\nAleluya,  aleluuuya\nAleluya,   aleluya, aleluya\nAleluya,  aleluuuya\n\nOtras antífonas:\nCanto a la vida que Cristo regaló \ncambiando su historia\ncuando en la cruz él murió por nuestro amor.\nAleluya, aleluya.\n\nCanto por Cristo que nos liberará \ncuando él venga en la gloria\ncuando la vida por él renacerá. \nAleluya, aleluya."
         },
     },
@@ -125,6 +127,8 @@ export const database = {
             "id": "123",
             "versionGroupId": "123",
             "isPrivate": false,
+            "lyricId": "123",
+            "lyricIsPrivate": false,
             "title": "Espíritu de Verdad",
             "author": {
                 "id": "123455",
@@ -143,6 +147,8 @@ export const database = {
             "id": "124",
             "versionGroupId": "124",
             "isPrivate": false,
+            "lyricId": "124",
+            "lyricIsPrivate": false,
             "title": "Todo Poder y Gloria",
             "author": {
                 "id": "123455",
@@ -161,6 +167,8 @@ export const database = {
             "id": "125",
             "versionGroupId": "125",
             "isPrivate": false,
+            "lyricId": "125",
+            "lyricIsPrivate": false,
             "title": "Recibe mi corazón",
             "author": {
                 "id": "123454",
@@ -179,6 +187,8 @@ export const database = {
             "id": "613c854ef601f09e344f43bf",
             "versionGroupId": "613c854ef601f09e344f43bf",
             "isPrivate": false,
+            "lyricId": "613c854ef601f09e344f43bf",
+            "lyricIsPrivate": false,
             "title": "A Él la gloria",
             "author": {
                 "id": "123453",
@@ -197,6 +207,8 @@ export const database = {
             "id": "613c8597f601f09e344f43c2",
             "versionGroupId": "613c8597f601f09e344f43c2",
             "isPrivate": false,
+            "lyricId": "613c8597f601f09e344f43c2",
+            "lyricIsPrivate": false,
             "title": "A casa de Zacarí­as",
             "creator": {
                 "id": "111418653738749034139",
@@ -211,6 +223,8 @@ export const database = {
             "id": "6144d3152d6d4f8085af95d9",
             "versionGroupId": "6144d3152d6d4f8085af95d9",
             "isPrivate": false,
+            "lyricId": "6144d3152d6d4f8085af95d9",
+            "lyricIsPrivate": false,
             "title": "Al contemplarte en la Cruz",
             "creator": {
                 "id": "111418653738749034139",
@@ -225,6 +239,8 @@ export const database = {
             "id": "6144d6372d6d4f8085af95ed",
             "versionGroupId": "6144d6372d6d4f8085af95ed",
             "isPrivate": false,
+            "lyricId": "6144d6372d6d4f8085af95ed",
+            "lyricIsPrivate": false,
             "title": "Aleluya II (Busca primero el Reino de Dios)",
             "creator": {
                 "id": "111418653738749034139",
@@ -238,76 +254,88 @@ export const database = {
         '1669486125378': {
             id: "1669486125378",
             versionGroupId: "1669486125378",
-            isPrivate: true,
+            "isPrivate": false,
+            "lyricId": "1669486125376",
+            "lyricIsPrivate": false,
             title: 'Despertemos llega Cristo',
             author: '',
-            creator: 'Daniel Vinet',
+            "creator": {
+                "id": "111418653738749034139",
+                "name": "Daniel Vinet",
+            },
             labels: [
-              'adviento',
-              'navidad'
+                'adviento',
+                'navidad'
             ],
             pulse: '',
             tempo: '',
             level: {
-              main: 1
+                main: 1
             },
-            lyricId: 1669486125376,
-            lyricIsPublic: false
-          },
-          '1669487158543': {
+        },
+        '1669487158543': {
             id: '1669487158543',
             versionGroupId: '1669487158543',
-            isPrivate: true,
+            "isPrivate": false,
+            "lyricId": "1669487158540",
+            "lyricIsPrivate": false,
             title: 'Saber que vendrás',
             author: '',
-            creator: 'Daniel Vinet',
+            "creator": {
+                "id": "111418653738749034139",
+                "name": "Daniel Vinet",
+            },
             labels: [
-              'ofrenda'
+                'ofrenda'
             ],
             pulse: '',
             tempo: '',
             level: {
-              main: 1
+                main: 1
             },
-            lyricId: 1669487158540,
-            lyricIsPublic: false
-          },
-          '1669487612348': {
+        },
+        '1669487612348': {
             id: '1669487612348',
             versionGroupId: '1669487612348',
-            isPrivate: true,
+            "isPrivate": false,
+            "lyricId": "1669487612347",
+            "lyricIsPrivate": false,
             title: 'María de la Esperanza',
             author: '',
-            creator: 'Daniel Vinet',
+            "creator": {
+                "id": "111418653738749034139",
+                "name": "Daniel Vinet",
+            },
             labels: [
-              'comunion'
+                'comunion'
             ],
             pulse: '',
             tempo: '',
             level: {
-              main: 1
+                main: 1
             },
-            lyricId: 1669487612347,
-            lyricIsPublic: false
-          },
-          '1669487992788': {
+        },
+        '1669487992788': {
             id: '1669487992788',
             versionGroupId: '1669487992788',
-            isPrivate: true,
+            "isPrivate": false,
+            "lyricId": "1669487992786",
+            "lyricIsPrivate": false,
             title: 'Toda la tierra',
             author: '',
-            creator: 'Daniel Vinet',
+            "creator": {
+                "id": "111418653738749034139",
+                "name": "Daniel Vinet",
+            },
             labels: [
-              'meditacion'
+                'meditacion'
             ],
             pulse: '',
             tempo: '',
             level: {
-              main: 1
+                main: 1
             },
-            lyricId: 1669487992786,
-            lyricIsPublic: false
-          }
+        }
     },
     publicSongLyricList: {
         "123": {
@@ -475,13 +503,13 @@ Siendo Dios, tomaste mi lugar...`,
         },
         '1669487158540': {
             lyric: 'En este mundo que Cristo nos da,\nhacemos la ofrenda del pan;\nel pan de nuestro trabajo sin fin,\ny el vino de nuestro cantar.\nTraigo ante Ti nuestra justa inquietud:\namar la justicia y la paz.\n\nSABER QUE VENDRÁS,\nSABER QUE ESTARÁS\nPARTIENDO A LOS POBRES TU PAN.\n[Bis todo]\n\nLa sed de todos los hombres sin luz,\nla pena y triste llorar.\nEl odio de los que mueren sin fe,\ncansados de tanto luchar.\nEn la patena de nuestra oblación,\nacepta la vida, Señor.'
-          },
-          '1669487612347': {
+        },
+        '1669487612347': {
             lyric: 'SOL       RE    SOL\nMaría de la esperanza \n     RE    SOL       RE     SOL  RE\npreparanos para recibir a Dios. \nSOL           DO    SOL\nQue tus dos manitos buenas \n      DO     SOL             RE  SOL\nrecuesten al niño en nuestro corazón. (BIS) \n\n\nSOL           SIm   SOL          RE\nMadre de la aurora  traenos al Señor, \nSI7           MIm               LA7\nque nuestra pobreza haga de horizonte \n               RE7\ndonde salga el sol. \nSOL       SIm    SOL             RE\nMadre peregrina, virgencita de Belén, \nSOL        DO    SOL          DO   SOL\ntraenos la buena nueva virgen misionera \n       RE  SOL\nhaznos renacer. \n\n\nSOL            SIm     SOL             RE\nAlegría de los pobres, madrecita del amor, \nSI7        MIm                LA7\namor hecho niño que une en su carne \n               RE7\nal hombre con Dios. \n\nSOL               SIm    SOL              RE\nIlumina nuestra espera, que se haga realidad, \nSOL           DO     SOL            DO      SOL\nven a transformar la noche, nuestra noche oscura \n   RE      SOL\nen Nochebuena.'
-          },
-          '1669487992786': {
+        },
+        '1669487992786': {
             lyric: 'DO        MIm   REm      SOL\nToda la tierra espera al Salvador,\nDO          MIm           FA     SOL\ny el surco abierto, a la obra del Señor;\n      LAm        MIm   FA  DO\nes el mundo que lucha por la libertad,\n   LAm    MIm      SOL      DO\nreclama justicia y busca la verdad.\n\nDice el Profeta al pueblo de Israel:\n"De madre virgen ya viene el Emmanuel";\nserá "Dios con nosotros", hermano será,\ncon él la esperanza al mundo volverá.\n\nCerros y valles habrá que preparar,\nnuevos caminos tenemos que trazar;\nel Señor está cerca, hay que irlo a encontrar,\ny todas las puertas abrir de par en par.\n\nEn un pesebre, Jesús apareció,\npero en el mundo es donde nace hoy;\nvive en nuestros hermanos, con ellos está,\ny vuelve de nuevo a darnos libertad.'
-          }
+        }
     },
 };
 

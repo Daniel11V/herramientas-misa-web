@@ -3,7 +3,7 @@
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
 import { arrayIsEmpty } from "../../utils.js";
-import { createPrivateSongLyricDB, getPrivateSongLyricListDB } from "./services/privateSongLyricList.js";
+import { createPrivateSongLyricDB, getPrivateSongLyricDB, getPrivateSongLyricListDB } from "./services/privateSongLyricList.js";
 import { createPrivateSongTitleDB, getPrivateSongTitleDB, getPrivateSongTitleListDB } from "./services/privateSongTitleList.js";
 import { createPublicSongLyricDB, getPublicSongLyricDB } from "./services/publicSongLyricList.js";
 import { createPublicSongTitleDB, getPublicSongTitleDB, getPublicSongTitleListDB } from "./services/publicSongTitleList.js";
@@ -21,16 +21,20 @@ export const setVersionGroups = (versionGroups) => ({
 
 // Thunks
 
-export const getSongList = ({ userId }) => {
-    return async (dispatch) => {
+export const getSongList = ({ userId, onlyAddPrivates = false }) => {
+    return async (dispatch, getState) => {
         try {
             dispatch({
                 type: types.FETCH_SONG_LIST,
                 payload: { userId }
             })
             //////////////////////////////////////
-
-            const publicSongTitleList = await getPublicSongTitleListDB();
+            let publicSongTitleList;
+            if (onlyAddPrivates) {
+                publicSongTitleList = getState().song.songList.reduce((tO, e) => ({ ...tO, [e.id]: e }), {});
+            } else {
+                publicSongTitleList = await getPublicSongTitleListDB();
+            }
             const userPrivateSongTitleList = await getPrivateSongTitleListDB({ userId });
 
             const songList = [
@@ -64,23 +68,17 @@ export const getSong = ({ userId, songId }) => {
 
             const songList = getState().song.songList;
             let songTitle;
+            if (!arrayIsEmpty(songList)) songTitle = songList.find(i => i.id === songId);
 
-            if (!arrayIsEmpty(songList)) {
-                songTitle = songList.find(i => i.id === songId);
-            } else {
-                songTitle = await getPrivateSongTitleDB({ userId, songId });
-                if (!songTitle) songTitle = await getPublicSongTitleDB({ songId });
-            }
-
+            if (!songTitle) songTitle = await getPrivateSongTitleDB({ userId, songId, hasInvitation: true });
+            if (!songTitle) songTitle = await getPublicSongTitleDB({ songId });
             if (!songTitle) throw new Error("Song not found (Title).");
 
             let songLyric = {};
-            if (songTitle?.publicLyricId) {
-                songLyric = await getPublicSongLyricDB({ songId: songTitle?.publicLyricId });
-            } else if (songTitle?.isPrivate) {
-                songLyric = await getPrivateSongLyricListDB({ songId });
+            if (songTitle?.lyricIsPrivate) {
+                songLyric = await getPrivateSongLyricListDB({ songId: songTitle?.lyricId });
             } else {
-                songLyric = await getPublicSongLyricDB({ songId });
+                songLyric = await getPublicSongLyricDB({ songId: songTitle?.lyricId });
             }
 
             if (!songLyric) throw new Error("Song not found (Lyric).");
@@ -102,7 +100,7 @@ export const getSong = ({ userId, songId }) => {
     }
 }
 
-export const createSong = (songCreated, saveAsPublic = false) => {
+export const createSong = (songCreated) => {
     // Siempre que se cree una canción por el momento se creará como privada y luego se podra publicar
     // Primero se crea el Lyric y luego el Title, colocando acá el id del Lyric y si es publico o privado.
 
@@ -110,7 +108,7 @@ export const createSong = (songCreated, saveAsPublic = false) => {
         try {
             dispatch({
                 type: types.CREATE_SONG,
-                payload: { songCreated, saveAsPublic }
+                payload: { songCreated }
             })
             //////////////////////////////////////
 
@@ -129,23 +127,21 @@ export const createSong = (songCreated, saveAsPublic = false) => {
                 tempo: songTitle.tempo,
                 level: {
                     main: 1,
-                },                
+                },
             }
 
-            let newSongCreatedByDB;
-            if (saveAsPublic) {
-                const res = await createPublicSongTitleDB({ songCreated });
-                songCreated.songId = res.id;
-                await createPublicSongLyricDB({ songCreated });
-            } else {
-                const newSongLyricCreatedByDB = await createPrivateSongLyricDB({ lyric });
-                songTitleCreated.lyricId = newSongLyricCreatedByDB.id;
-                songTitleCreated.lyricIsPublic = false;
-                const newSongTitleCreatedByDB = await createPrivateSongTitleDB({ songTitleCreated });
-                newSongCreatedByDB = {
-                    ...newSongTitleCreatedByDB,
-                    lyric: newSongLyricCreatedByDB.lyric,
-                }
+            // if (saveAsPublic) {
+            //     const res = await createPublicSongTitleDB({ songCreated });
+            //     songCreated.songId = res.id;
+            //     await createPublicSongLyricDB({ songCreated });
+
+            const newSongLyricCreatedByDB = await createPrivateSongLyricDB({ lyric });
+            songTitleCreated.lyricId = newSongLyricCreatedByDB.id;
+            songTitleCreated.lyricIsPrivate = true;
+            const newSongTitleCreatedByDB = await createPrivateSongTitleDB({ songTitleCreated });
+            const newSongCreatedByDB = {
+                ...newSongTitleCreatedByDB,
+                ...newSongLyricCreatedByDB,
             }
 
             //////////////////////////////////////
@@ -189,6 +185,42 @@ export const editSong = (songEdited, saveAsPublic = false) => {
             console.warn(error);
             dispatch({
                 type: types.EDIT_SONG_FAILURE,
+                payload: { error: error.message }
+            })
+        }
+    }
+}
+
+export const publishSong = (songPublicId) => {
+    return async (dispatch) => {
+        try {
+            dispatch({
+                type: types.PUBLISH_SONG,
+                payload: { songPublicId }
+            })
+            //////////////////////////////////////
+
+
+            const oldSongTitleFromDB = await getPrivateSongTitleDB({ songId: songPublicId, hasInvitation: true });
+            oldSongTitleFromDB.isPrivate = false;
+            oldSongTitleFromDB.lyricIsPrivate = false;
+            const newSongTitleCreatedByDB = await createPublicSongTitleDB({ songTitleCreated: oldSongTitleFromDB });
+            const oldSongLyricFromDB = await getPrivateSongLyricDB({ songId: oldSongTitleFromDB.lyricId });
+            const newSongLyricCreatedByDB = await createPublicSongLyricDB({ songLyricCreated: oldSongLyricFromDB.lyric });
+            const newSongCreatedByDB = {
+                ...newSongTitleCreatedByDB,
+                ...newSongLyricCreatedByDB,
+            }
+
+            //////////////////////////////////////
+            dispatch({
+                type: types.PUBLISH_SONG_SUCCESS,
+                payload: { newSongCreatedByDB }
+            })
+        } catch (error) {
+            console.warn(error);
+            dispatch({
+                type: types.PUBLISH_SONG_FAILURE,
                 payload: { error: error.message }
             })
         }

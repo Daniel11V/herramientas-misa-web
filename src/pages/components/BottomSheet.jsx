@@ -4,7 +4,7 @@ import { colors } from "../../styles/styleUtils";
 
 const BottomSheet = ({ children, open, setOpen, fullscreen = false }) => {
 	const [topValue, setTopValue] = useState(null);
-	const [transitionDuration, setTransitionDuration] = useState("0.3");
+	const [transitionDuration, setTransitionDuration] = useState("0.3s");
 	const [openBottonSheet, setOpenBottonSheet] = useState(false);
 
 	const updateTopValue = () => {
@@ -43,6 +43,9 @@ const BottomSheet = ({ children, open, setOpen, fullscreen = false }) => {
 				setTransitionDuration("0.3s");
 			}, 400);
 		}
+		return () => {
+			setTransitionDuration("0.3s");
+		};
 	}, [open]);
 
 	useEffect(() => {
@@ -127,9 +130,10 @@ const BottomSheetStyled = styled.div`
 			`}
 
 		hr {
-			height: 4px;
+			height: 2px;
 			border-radius: 2px;
-			background-color: ${colors.primary}30;
+			/* background-color: ${colors.primary}30; */
+			background-color: #00000017;
 			border: none;
 			margin: 25px 0;
 		}

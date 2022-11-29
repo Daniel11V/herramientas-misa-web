@@ -1,5 +1,6 @@
 import M from "materialize-css";
 import { useState, useEffect } from "react";
+import styled from "styled-components";
 
 const MessageModal = ({ opts }) => {
 	const [modalInstance, setModalInstance] = useState(null);
@@ -29,7 +30,7 @@ const MessageModal = ({ opts }) => {
 	};
 
 	return (
-		<div className="modal message-modal">
+		<MessageModalStyled>
 			<div className="modal-content">
 				{opts?.title && <h4>{opts.title}</h4>}
 				{opts?.message && <p>{opts.message}</p>}
@@ -58,8 +59,18 @@ const MessageModal = ({ opts }) => {
 					</div>
 				)}
 			</div>
-		</div>
+		</MessageModalStyled>
 	);
 };
+
+const MessageModalStyled = styled.div.attrs({
+	className: "modal message-modal",
+})`
+	z-index: 1150 !important;
+
+	+ .modal-overlay {
+		z-index: 1140 !important;
+	}
+`;
 
 export default MessageModal;
