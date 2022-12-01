@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MAX_RETRYS } from "../../../configs";
-import { getSong, publishSong, resetSongStatus } from "../../../clases/song/actions";
+import { getSong, publishSong, resetSongActionStatus } from "../../../clases/song/actions";
 
 export const useSongPage = (songId) => {
     const dispatch = useDispatch();
@@ -12,11 +12,11 @@ export const useSongPage = (songId) => {
     const [error, setError] = useState(false);
 
     const userId = useSelector((state) => state.user.google.id);
-    const { song, songStatus, songError } = useSelector((state) => state.song);
+    const { song, songActionStatus, songError } = useSelector((state) => state.song);
     const [retrys, setRetrys] = useState(0);
 
     const setStatus = (newStatus) => {
-        // console.log("ACA SONG_STATUS: ", newStatus);
+        // console.log("ACA SONG_ACTION_STATUS: ", newStatus);
         setCurrentSongStatus(newStatus);
     }
 
@@ -51,18 +51,18 @@ export const useSongPage = (songId) => {
 
     useEffect(() => {
         if (status === "1_FETCH_SONG") {
-            if (songStatus === "INITIAL") {
+            if (songActionStatus === "INITIAL") {
                 dispatch(getSong({ userId, songId }));
-            } else if (songStatus === "SUCCESS") {
+            } else if (songActionStatus === "SUCCESS") {
                 setStatus("1_SONG");
-                dispatch(resetSongStatus());
+                dispatch(resetSongActionStatus());
                 setError(null);
-            } else if (songStatus === "FAILURE") {
+            } else if (songActionStatus === "FAILURE") {
                 setStatus("FINISHED");
-                dispatch(resetSongStatus());
+                dispatch(resetSongActionStatus());
             }
         }
-    }, [status, songStatus, userId, songId, dispatch]);
+    }, [status, songActionStatus, userId, songId, dispatch]);
 
     useEffect(() => {
         if (userId && !currentSong.id) {

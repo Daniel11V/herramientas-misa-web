@@ -83,7 +83,7 @@ const SongCollection = ({
 			</div>
 		);
 
-	if (arrayIsEmpty(songList) || !!error) return <div>Error - {error}</div>;
+	if (!!error) return <div>Error - {error}</div>;
 
 	return (
 		<Collection>
@@ -110,6 +110,11 @@ const SongCollection = ({
 					)}
 				</Link>
 			))} */}
+			{arrayIsEmpty(songList) && (
+				<CollectionItem
+					withCheck={false}
+				>Sin canciones.</CollectionItem>
+			)}
 			{songList.map((song) => (
 				<CollectionItem
 					key={song.id}

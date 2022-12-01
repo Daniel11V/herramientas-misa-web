@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { createAuthor, getAuthorList, resetAuthorStatus } from "../../../clases/author/actions";
-import { createSong, editSong, getSong, resetSongStatus } from "../../../clases/song/actions";
+import { createSong, editSong, getSong, resetSongActionStatus } from "../../../clases/song/actions";
 import { MAX_RETRYS } from "../../../configs";
 import { arrayIsEmpty, getChordsFromLyric, getLyricWithChords } from "../../../utils";
 
@@ -26,7 +26,7 @@ export const useSongFormPage = (songId) => {
 
     const userId = useSelector((state) => state.user?.google?.id);
     const userName = useSelector((state) => state.user?.google?.name);
-    const { song, songStatus, songError } = useSelector((state) => state.song);
+    const { song, songActionStatus, songError } = useSelector((state) => state.song);
     const [retrys, setRetrys] = useState(0);
     const { authorList, authorStatus, authorError } = useSelector((state) => state.author);
     const [authorItems, setAuthorItems] = useState([])
@@ -85,18 +85,18 @@ export const useSongFormPage = (songId) => {
 
     useEffect(() => {
         if (status === "1_FETCH_SONG") {
-            if (songStatus === "INITIAL") {
+            if (songActionStatus === "INITIAL") {
                 dispatch(getSong({ userId, songId }));
-            } else if (songStatus === "SUCCESS") {
+            } else if (songActionStatus === "SUCCESS") {
                 setStatus("1_SONG");
-                dispatch(resetSongStatus());
+                dispatch(resetSongActionStatus());
                 setError(null);
-            } else if (songStatus === "FAILURE") {
+            } else if (songActionStatus === "FAILURE") {
                 setStatus("FINISHED");
-                dispatch(resetSongStatus());
+                dispatch(resetSongActionStatus());
             }
         }
-    }, [status, songStatus, userId, songId, dispatch]);
+    }, [status, songActionStatus, userId, songId, dispatch]);
 
     useEffect(() => {
         if (status === "2_AUTHOR_LIST") {
@@ -183,44 +183,44 @@ export const useSongFormPage = (songId) => {
             const saveAsPublic = false;
 
             if (songId) {
-                if (songStatus === "INITIAL") {
+                if (songActionStatus === "INITIAL") {
                     dispatch(editSong(songForm, saveAsPublic));
-                } else if (songStatus === "SUCCESS") {
+                } else if (songActionStatus === "SUCCESS") {
                     M.toast({ html: "Canción Actualizada" });
-                    dispatch(resetSongStatus());
+                    dispatch(resetSongActionStatus());
                     if (songForm.author.value === "Other") {
                         setFormStep("SUBMIT_NEW_AUTHOR");
                     } else {
                         setFormStep("FINISHED");
                         history.goBack();
                     }
-                } else if (songStatus === "FAILURE") {
+                } else if (songActionStatus === "FAILURE") {
                     setFormStep("FINISHED");
                     M.toast({ html: "Error actualizando la canción" });
-                    dispatch(resetSongStatus());
+                    dispatch(resetSongActionStatus());
                     history.goBack();
                 }
             } else {
-                if (songStatus === "INITIAL") {
+                if (songActionStatus === "INITIAL") {
                     dispatch(createSong(songForm, saveAsPublic));
-                } else if (songStatus === "SUCCESS") {
+                } else if (songActionStatus === "SUCCESS") {
                     M.toast({ html: "Canción Guardada" });
-                    dispatch(resetSongStatus());
+                    dispatch(resetSongActionStatus());
                     if (songForm.author.value === "Other") {
                         setFormStep("SUBMIT_NEW_AUTHOR");
                     } else {
                         setFormStep("FINISHED");
                         history.goBack();
                     }
-                } else if (songStatus === "FAILURE") {
+                } else if (songActionStatus === "FAILURE") {
                     setFormStep("FINISHED");
                     M.toast({ html: "Error guardando la canción" });
-                    dispatch(resetSongStatus());
+                    dispatch(resetSongActionStatus());
                     history.goBack();
                 }
             }
         }
-    }, [formStep, songForm, userName, songId, songStatus, dispatch, history]);
+    }, [formStep, songForm, userName, songId, songActionStatus, dispatch, history]);
 
     useEffect(() => {
         if (formStep === "SUBMIT_NEW_AUTHOR") {

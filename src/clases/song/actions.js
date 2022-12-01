@@ -10,13 +10,16 @@ import { createPublicSongTitleDB, getPublicSongTitleDB, getPublicSongTitleListDB
 import { types } from "./types"
 
 
-export const resetSongStatus = () => ({
-    type: types.RESET_SONG_STATUS
+export const resetSongActionStatus = () => ({
+    type: types.RESET_SONG_ACTION_STATUS
 })
-
-export const setVersionGroups = (versionGroups) => ({
-    type: types.SET_VERSION_GROUPS,
-    payload: { versionGroups }
+export const setSongListStatus = (songListStatus) => ({
+    type: types.SET_SONG_LIST_STATUS,
+    payload: { songListStatus }
+})
+export const setSongListPageBackup = (songListPageBackup) => ({
+    type: types.SET_SONG_LIST_PAGE_BACKUP,
+    payload: { songListPageBackup }
 })
 
 // Thunks
@@ -45,7 +48,7 @@ export const getSongList = ({ userId, onlyAddPrivates = false }) => {
             //////////////////////////////////////
             dispatch({
                 type: types.FETCH_SONG_LIST_SUCCESS,
-                payload: { songList }
+                payload: { songList, userId }
             })
         } catch (error) {
             console.warn(error);
