@@ -62,7 +62,7 @@ const Navigation = () => {
 						</li>
 						{user.name && (
 							<li>
-								<Link to="/myLibrary">Mi Biblioteca</Link>
+								<Link to="/library">Mi Biblioteca</Link>
 							</li>
 						)}
 						{/* <li>
@@ -132,7 +132,7 @@ const Navigation = () => {
 				</li>
 				{user.name && (
 					<li>
-						<Link to="/mylibrary">Mi Biblioteca</Link>
+						<Link to="/library">Mi Biblioteca</Link>
 					</li>
 				)}
 				{/* <li>

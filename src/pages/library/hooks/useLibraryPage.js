@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSongList, resetSongActionStatus, setSongListStatus } from "../../../clases/song/actions";
-import { setSongListPageBackup } from "../../../clases/page/actions";
+import { setLibraryPageBackup } from "../../../clases/page/actions";
 import { arrayIsEmpty, getRating, objIsEmpty } from "../../../utils";
 
-export const useSongListPage = () => {
+export const useLibraryPage = () => {
     const dispatch = useDispatch();
 
     const userId = useSelector((state) => state.user.google.id);
     const { songList, songListStatus, songListUserId, songActionStatus, songError } = useSelector((state) => state.song);
-    const { songListPageBackup } = useSelector((state) => state.page);
-    const { songList: songListBackup } = songListPageBackup;
+    const { libraryPageBackup } = useSelector((state) => state.page);
+    const { songList: songListBackup } = libraryPageBackup;
 
     const [status, setCurrentSongListStatus] = useState({ step: "INITIAL", opts: {} });
     const [currentSongList, setCurrentSongList] = useState([]);
@@ -103,7 +103,7 @@ export const useSongListPage = () => {
                     versionGroups[versionGroupId].versions.push(lastMoreRatedSongId)
                 }
 
-                currentSongList.forEach(song => {
+                currentSongList.filter(i => i.creator?.id === userId).forEach(song => {
                     if (versionGroups[song.versionGroupId]) {
                         const currentSongVersion = currentSongList[versionGroups[song.versionGroupId].moreRated];
                         const currentMaxLevel = versionGroups[song.versionGroupId].maxLevel || 0;
@@ -137,7 +137,7 @@ export const useSongListPage = () => {
         if (status.step === "FINISHED") {
             setFinalSongList(currentSongList);
             if (!status.opts.isSameBackup) {
-                dispatch(setSongListPageBackup({ songList: currentSongList }))
+                dispatch(setLibraryPageBackup({ songList: currentSongList }))
             }
             setIsLoading(false);
         }

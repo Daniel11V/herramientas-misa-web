@@ -22,11 +22,6 @@ const initialState = {
     songList: [],
     
     song: defaultSong,
-
-    songListPageBackup: {
-        songList: [],
-        filters: [],
-    }
 }
 
 const SongReducer = (state = initialState, { type, payload }) => {
@@ -92,11 +87,6 @@ const SongReducer = (state = initialState, { type, payload }) => {
             }
         case types.DELETE_SONG_FAILURE:
             return { ...state, songActionStatus: "FAILURE", songError: payload.error }
-
-
-        case types.SET_SONG_LIST_PAGE_BACKUP:
-            return { ...state, songListPageBackup: payload.songListPageBackup }
-
 
         default:
             return state

@@ -1,11 +1,13 @@
 import React, { Fragment } from "react";
 import SongCollection from "../components/SongCollection";
+import { useLibraryPage } from "./hooks/useLibraryPage";
 // import { Link } from "react-router-dom";
 // import LoginLogout from "../../layout/components/LoginLogout";
 // import { useHistory } from "react-router";
 
-const MyLibrary = () => {
+const Library = () => {
 	// const history = useHistory();
+	const [songList, loadingSongList, errorSongList] = useLibraryPage();
 
 	// const loginAddSong = (v) => {
 	// 	setUser(v);
@@ -34,9 +36,11 @@ const MyLibrary = () => {
 					</LoginLogout>
 				)} */}
 			</div>
-			<SongCollection searcher={false} />
+			<SongCollection searcher={false} songList={songList}
+				loading={loadingSongList}
+				error={errorSongList} />
 		</Fragment>
 	);
 };
 
-export default MyLibrary;
+export default Library;

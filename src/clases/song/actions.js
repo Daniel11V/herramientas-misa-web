@@ -17,10 +17,6 @@ export const setSongListStatus = (songListStatus) => ({
     type: types.SET_SONG_LIST_STATUS,
     payload: { songListStatus }
 })
-export const setSongListPageBackup = (songListPageBackup) => ({
-    type: types.SET_SONG_LIST_PAGE_BACKUP,
-    payload: { songListPageBackup }
-})
 
 // Thunks
 

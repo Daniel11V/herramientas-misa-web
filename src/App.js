@@ -12,10 +12,10 @@ import SongListPage from "./pages/songs/SongListPage";
 import SongPage from "./pages/songs/SongPage";
 import SongFormPage from "./pages/songs/SongFormPage";
 
-import MyLibrary from "./pages/mylibrary/MyLibrary";
-
 import Repertories from "./pages/repertories/Repertories";
 import Repertory from "./pages/repertories/Repertory";
+
+import Library from "./pages/library/Library";
 
 import UserLoadingScreen from "./layout/UserLoadingScreen.jsx";
 import { useUser } from "./clases/user/useUser";
@@ -44,8 +44,8 @@ const App = () => {
 					<Redirect from="/" exact to="/songs" />
 					<Route path="/songs" component={SongListPage} />
 					<Route path="/song/:id" component={SongPage} />
-					<Route path="/mylibrary">
-						{isLogged ? <MyLibrary /> : <Redirect to="/songs" />}
+					<Route path="/library">
+						{isLogged ? <Library /> : <Redirect to="/songs" />}
 					</Route>
 					<Route path={["/add-song", "/edit-song/:id"]}>
 						{isLogged ? <SongFormPage /> : <Redirect to="/songs" />}
