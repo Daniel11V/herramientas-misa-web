@@ -36,6 +36,11 @@ const Library = () => {
 					</LoginLogout>
 				)} */}
 			</div>
+			{/* <RepertoryList
+				repertoryList={repertoryList}
+				loading={loadingRepertoryList}
+				error={errorRepertoryList}
+				/> */}
 			<SongCollection searcher={false} songList={songList}
 				loading={loadingSongList}
 				error={errorSongList} />

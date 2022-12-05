@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getRepertory } from "./actions";
+import { getRepertory } from "../../../clases/repertory/actions";
 
-export const useRepertory = (repertoryId) => {
+export const useRepertoryPage = (repertoryId) => {
     const dispatch = useDispatch();
     const { repertory, repertoryStatus, error } = useSelector((state) => state.repertory);
     const [isLoading, setIsLoading] = useState(false);

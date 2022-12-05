@@ -5,12 +5,12 @@ import { useHistory } from "react-router";
 import RepertoryList from "./components/RepertoryList";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../clases/user/actions";
-import { useRepertoryList } from "../../clases/repertory/useRepertoryList";
+import { useRepertoryListPage } from "./hooks/useRepertoryListPage";
 import { Header } from "../../styles/styles";
 
-const Repertories = () => {
+const RepertoryListPage = () => {
 	const [repertoryList, loadingRepertoryList, errorRepertoryList] =
-		useRepertoryList();
+		useRepertoryListPage();
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const isLogged = useSelector((state) => state.user.isLogged);
@@ -18,8 +18,8 @@ const Repertories = () => {
 	const loginAddSong = (userData) => {
 		dispatch(login(userData));
 		history.push({
-			pathname: "/add-song",
-			state: { from: "Cancionero" },
+			pathname: "/create-repertory",
+			state: { from: "Repertorios" },
 		});
 	};
 
@@ -29,15 +29,15 @@ const Repertories = () => {
 				<h3>Repertorios</h3>
 				{isLogged ? (
 					<Link
-						to={{ pathname: "/add-song", state: { from: "Cancionero" } }}
+						to={{ pathname: "/create-repertory", state: { from: "Repertorios" } }}
 						className="btn waves-effect waves-light blue darken-2 right"
 					>
-						<i className="material-icons right">add</i>Añadir
+						<i className="material-icons right">add</i>Crear
 					</Link>
 				) : (
 					<LoginLogout update={(v) => loginAddSong(v)}>
 						<div className="btn waves-effect waves-light blue darken-2 right">
-							<i className="material-icons right">add</i>Añadir
+							<i className="material-icons right">add</i>Crear
 						</div>
 					</LoginLogout>
 				)}
@@ -51,4 +51,4 @@ const Repertories = () => {
 	);
 };
 
-export default Repertories;
+export default RepertoryListPage;

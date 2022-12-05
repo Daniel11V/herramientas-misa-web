@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 import { Link, useParams, useHistory } from "react-router-dom";
 import M from "materialize-css";
 import { useDispatch, useSelector } from "react-redux";
-import { useRepertory } from "../../clases/repertory/useRepertory.js";
+import { useRepertoryPage } from "./hooks/useRepertoryPage.js";
 
-const Repertory = () => {
+const RepertoryPage = () => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const { id } = useParams();
-	const [repertory, loading] = useRepertory(id);
+	const [repertory, loading] = useRepertoryPage(id);
 
 	const user = useSelector((state) => state.user.google);
 
@@ -97,4 +97,4 @@ const Repertory = () => {
 	);
 };
 
-export default Repertory;
+export default RepertoryPage;

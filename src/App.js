@@ -12,8 +12,9 @@ import SongListPage from "./pages/songs/SongListPage";
 import SongPage from "./pages/songs/SongPage";
 import SongFormPage from "./pages/songs/SongFormPage";
 
-import Repertories from "./pages/repertories/Repertories";
-import Repertory from "./pages/repertories/Repertory";
+import RepertoryPage from "./pages/repertories/RepertoryPage";
+import RepertoryListPage from "./pages/repertories/RepertoryListPage";
+import RepertoryFormPage from "./pages/repertories/RepertoryFormPage";
 
 import Library from "./pages/library/Library";
 
@@ -51,8 +52,9 @@ const App = () => {
 						{isLogged ? <SongFormPage /> : <Redirect to="/songs" />}
 					</Route>
 					{/* <Route path="/suggestion" component={Suggestion} /> */}
-					<Route path="/repertories" component={Repertories} />
-					<Route path="/repertory/:id" component={Repertory} />
+					<Route path="/repertories" component={RepertoryListPage} />
+					<Route path="/repertory/:id" component={RepertoryPage} />
+					<Route path="/create-repertory" component={RepertoryFormPage} />
 					<Route>
 						<h3>Error 404 - No se encontro la página</h3>
 					</Route>
