@@ -38,9 +38,6 @@ const SongPage = () => {
 	const [messageModalOpts, setMessageModalOpts] = useState(null);
 	const [open, setOpen] = useState(false);
 
-	const pageTitle =
-		song?.title + " " + (song?.author?.name ? " - " + song.author.name : "");
-
 	useEffect(() => {
 		const elems = document.querySelectorAll(".modal");
 		M.Modal.init(elems);
@@ -123,30 +120,30 @@ const SongPage = () => {
 		setOpen(true);
 	};
 
-	const handlePrintBtn = (event) => {
-		event.stopPropagation();
-		const elementToPrint = document.getElementById("to-print");
+	// const handlePrintBtn = (event) => {
+	// 	event.stopPropagation();
+	// 	const elementToPrint = document.getElementById("to-print");
 
-		let content = "<html><head>";
-		content += `<title>${pageTitle}</title>`;
-		const styles = document.querySelectorAll("style");
-		for (const style of styles) {
-			content += "<style>" + style.innerHTML + "</style>";
-		}
-		content +=
-			'</head><body onload="window.print(); setTimeout(window.close, 3000);">';
-		content += elementToPrint.innerHTML;
-		content += "</body>";
-		content += "</html>";
+	// 	let content = "<html><head>";
+	// 	content += `<title>${pageTitle}</title>`;
+	// 	const styles = document.querySelectorAll("style");
+	// 	for (const style of styles) {
+	// 		content += "<style>" + style.innerHTML + "</style>";
+	// 	}
+	// 	content +=
+	// 		'</head><body onload="window.print(); setTimeout(window.close, 3000);">';
+	// 	content += elementToPrint.innerHTML;
+	// 	content += "</body>";
+	// 	content += "</html>";
 
-		const win = window.open(
-			"",
-			"",
-			"left=0,top=0,width=552,height=477,toolbar=0,scrollbars=0,status =0"
-		);
-		win.document.write(content);
-		win.document.close();
-	};
+	// 	const win = window.open(
+	// 		"",
+	// 		"",
+	// 		"left=0,top=0,width=552,height=477,toolbar=0,scrollbars=0,status =0"
+	// 	);
+	// 	win.document.write(content);
+	// 	win.document.close();
+	// };
 
 	const handleEditBtn = (event) => {
 		event.stopPropagation();

@@ -1,18 +1,5 @@
 import { types } from "./types"
 
-const defaultSong = {
-    id: "0",
-    title: "",
-    lyric: "",
-    chords: {},
-    creator: "",
-    author: "",
-    rating: [],
-    tempo: "",
-    pulse: "",
-    labels: [],
-}
-
 const initialState = {
     songPageBackup: {
         songList: [],

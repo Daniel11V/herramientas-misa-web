@@ -14,7 +14,7 @@ export const useSongListPage = () => {
 
     const [status, setCurrentSongListStatus] = useState({ step: "INITIAL", opts: {} });
     const [currentSongList, setCurrentSongList] = useState([]);
-    
+
     const [finalSongList, setFinalSongList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -22,7 +22,7 @@ export const useSongListPage = () => {
     const setStatus = (statusStep, statusOpts = {}) => {
         setIsLoading(true);
         // console.log("ACA SONG_LIST_STATUS: ", statusStep, statusOpts);
-        setCurrentSongListStatus({ step: statusStep, opts: statusOpts});
+        setCurrentSongListStatus({ step: statusStep, opts: statusOpts });
     }
 
     useEffect(() => {
@@ -47,14 +47,14 @@ export const useSongListPage = () => {
                 setStatus("1_FETCH_SONG_LIST");
             }
         }
-    }, [songListStatus, songListUserId, userId, songListBackup, dispatch])
+    }, [songListStatus, songListUserId, status.step, userId, songListBackup, dispatch])
 
     useEffect(() => {
         if (status.step === "1_FETCH_SONG_LIST") {
             if (songActionStatus === "INITIAL") {
                 dispatch(getSongList(status.opts));
             } else if (songActionStatus === "SUCCESS") {
-                setStatus("1_WITH_SONG_LIST", {fromFetch: true});
+                setStatus("1_WITH_SONG_LIST", { fromFetch: true });
                 dispatch(resetSongActionStatus());
             } else if (songActionStatus === "FAILURE") {
                 setStatus("FINISHED");
@@ -132,7 +132,7 @@ export const useSongListPage = () => {
         }
 
     }, [status.step, currentSongList, userId, dispatch])
-    
+
     useEffect(() => {
         if (status.step === "FINISHED") {
             setFinalSongList(currentSongList);
@@ -141,7 +141,7 @@ export const useSongListPage = () => {
             }
             setIsLoading(false);
         }
-    }, [status, currentSongList])
+    }, [status, currentSongList, dispatch])
 
     return [finalSongList, isLoading, songError];
 };
