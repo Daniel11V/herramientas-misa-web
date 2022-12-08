@@ -13,6 +13,7 @@ const SongCollection = ({
 	searcher = false,
 	labelsStart = [],
 	checking = false,
+	pageName = "Cancionero",
 }) => {
 	const userId = useSelector((state) => state.user.google.id);
 	const history = useHistory();
@@ -56,7 +57,7 @@ const SongCollection = ({
 	const handleClickSong = (id) => {
 		history.push({
 			pathname: `/song/${id}`,
-			state: { from: "Cancionero" },
+			state: { from: pageName },
 		});
 	};
 
@@ -111,9 +112,7 @@ const SongCollection = ({
 				</Link>
 			))} */}
 			{arrayIsEmpty(songList) && (
-				<CollectionItem
-					withCheck={false}
-				>Sin canciones.</CollectionItem>
+				<CollectionItem withCheck={false}>Sin canciones.</CollectionItem>
 			)}
 			{songList.map((song) => (
 				<CollectionItem

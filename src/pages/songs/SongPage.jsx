@@ -30,10 +30,7 @@ const SongPage = () => {
 	const user = useSelector((state) => state.user.google);
 
 	const [tone, setTone] = useState(null);
-	const [currentChords, setCurrentChords] = useState({});
-	const [hasChords, sethasChords] = useState(false);
-	const [chordLang, setChordLang] = useState("en");
-	const [onlyLyric, setOnlyLyric] = useState("");
+	const [chordLang, setChordLang] = useState(null);
 
 	const [messageModalOpts, setMessageModalOpts] = useState(null);
 	const [open, setOpen] = useState(false);
@@ -42,78 +39,6 @@ const SongPage = () => {
 		const elems = document.querySelectorAll(".modal");
 		M.Modal.init(elems);
 	}, []);
-
-	useEffect(() => {
-		if (song.id === id) {
-			let elem = document.getElementById("checkAuto");
-			if (elem) elem.checked = true;
-
-			const { chords, chordTone, chordLang, onlyLyric } = getChordsFromLyric(
-				song.lyric
-			);
-			setCurrentChords(chords);
-			setTone(chordTone);
-			sethasChords(!!chordTone);
-			setChordLang(chordLang);
-			setOnlyLyric(onlyLyric);
-		}
-	}, [song, id]);
-
-	const getTone = (chords = song.chords) => {
-		const i = Object.keys(chords)[0];
-		const k = Object.keys(chords[i])[0];
-		return chords[i][k];
-	};
-
-	// const hasChords = (chords = song.chords) =>
-	// 	chords && Object.keys(chords).length !== 0;
-
-	const getChordIndex = (chord) => {
-		// In allChords
-		for (let i = 0; i < allChords[chordLang].length; i++)
-			for (let k = 0; k < allChords[chordLang][i].chords.length; k++)
-				if (!allChords[chordLang][i].chords[k].localeCompare(chord))
-					return [i, k];
-	};
-
-	const getModuleDiference = (a, b) => {
-		const difference = (a - b) * -1;
-		if (difference < 0) return 12 + difference;
-		return difference;
-	};
-
-	const getNewChord = (lastChord, toneDiference) => {
-		const lastChordIndex = getChordIndex(lastChord);
-		let newChordIndex = lastChordIndex[1] + toneDiference;
-		if (newChordIndex > 11) newChordIndex = newChordIndex - 12;
-		return allChords[chordLang][lastChordIndex[0]].chords[newChordIndex];
-	};
-
-	const setNewTone = (newTone) => {
-		const originalTone = getTone(currentChords);
-		if (newTone !== originalTone) {
-			const originalToneIndex = getChordIndex(originalTone);
-			const newToneIndex = getChordIndex(newTone);
-			const toneDiference = getModuleDiference(
-				originalToneIndex[1],
-				newToneIndex[1]
-			);
-
-			let newChords = {};
-			for (const line in currentChords)
-				for (const letterIndex in currentChords[line])
-					newChords[line] = {
-						...newChords[line],
-						[letterIndex]: getNewChord(
-							currentChords[line][letterIndex],
-							toneDiference
-						),
-					};
-
-			setCurrentChords(newChords);
-			setTone(newTone);
-		}
-	};
 
 	const handleFloatingBtn = (event) => {
 		event.stopPropagation();
@@ -247,8 +172,13 @@ const SongPage = () => {
 					{song.title} {song.author?.name && ` - ${song.author.name}`}
 				</SongTitle>
 				<LyricWithChords
-					lyric={onlyLyric}
-					chords={pageOptions.showChords ? currentChords : {}}
+					lyricWithChords={song.lyric}
+					tone={tone}
+					setTone={setTone}
+					chordLang={chordLang}
+					setChordLang={setChordLang}
+					showChords={pageOptions.showChords}
+					isEditable={false}
 				/>
 			</div>
 
@@ -272,7 +202,7 @@ const SongPage = () => {
 					)}
 					<hr />
 					<h5>Ajustes de canción</h5>
-					{!!hasChords && !!pageOptions.showChords && (
+					{!!tone && !!pageOptions.showChords && (
 						<>
 							<div
 								style={{
@@ -292,7 +222,7 @@ const SongPage = () => {
 							>
 								<ChordSelector
 									selectedChord={tone}
-									setSelectedChord={setNewTone}
+									setSelectedChord={setTone}
 									chordLang={chordLang}
 								/>
 							</div>
@@ -302,7 +232,7 @@ const SongPage = () => {
 					<h5>Visualización</h5>
 					<div
 						className="switch"
-						style={{ marginTop: "10px", display: hasChords ? "block" : "none" }}
+						style={{ marginTop: "10px", display: !!tone ? "block" : "none" }}
 					>
 						<label>
 							<input

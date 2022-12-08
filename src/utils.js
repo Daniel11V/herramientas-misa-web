@@ -90,10 +90,10 @@ export const getChordsFromLyric = (lyric) => {
         if (currentLine.replaceAll(" ", "") === "") return;
         let line = " " + currentLine + " ";
 
-        reallyAllChordsEN.forEach((chord) => {
+        reallyAllChordsEN.reverse().forEach((chord) => {
             while (line.includes(` ${chord} `)) line = line.replace(chord, "");
         });
-        reallyAllChordsES.forEach((chord) => {
+        reallyAllChordsES.reverse().forEach((chord) => {
             while (line.includes(` ${chord} `)) line = line.replace(chord, "");
         });
         // reallyAllChordsEN.forEach((chord) => {

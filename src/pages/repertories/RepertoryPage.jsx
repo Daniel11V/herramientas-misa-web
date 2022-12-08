@@ -29,7 +29,7 @@ const RepertoryPage = () => {
 	const deleteRepertory = async () => {
 		// await axios.delete(`/api/songs/${id}`).catch((err) => console.error(err));
 		dispatch(deleteRepertory(id));
-		M.toast({ html: "Repertory Deleted" });
+		M.toast({ html: "Repertorio eliminado." });
 		// refetchRepertorys();
 		history.goBack();
 	};
@@ -59,6 +59,7 @@ const RepertoryPage = () => {
 						songList={repertorySongList?.[list]}
 						loading={loading}
 						error={error}
+						pageName="Repertorio"
 					/>
 				</>
 			))}
