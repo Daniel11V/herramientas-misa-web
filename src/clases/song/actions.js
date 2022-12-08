@@ -17,6 +17,10 @@ export const setSongListStatus = (songListStatus) => ({
     type: types.SET_SONG_LIST_STATUS,
     payload: { songListStatus }
 })
+export const setSongStatus = (songStatus) => ({
+    type: types.SET_SONG_LIST_STATUS,
+    payload: { songStatus }
+})
 
 // Thunks
 
@@ -87,7 +91,7 @@ export const getSong = ({ userId, songId }) => {
             //////////////////////////////
             dispatch({
                 type: types.FETCH_SONG_SUCCESS,
-                payload: { song }
+                payload: { song, userId }
             })
         } catch (error) {
             console.warn(error.message);

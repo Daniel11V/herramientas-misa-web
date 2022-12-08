@@ -17,6 +17,7 @@ export const useSongListPage = () => {
 
     const [finalSongList, setFinalSongList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(false);
 
 
     const setStatus = (statusStep, statusOpts = {}) => {
@@ -24,6 +25,10 @@ export const useSongListPage = () => {
         // console.log("ACA SONG_LIST_STATUS: ", statusStep, statusOpts);
         setCurrentSongListStatus({ step: statusStep, opts: statusOpts });
     }
+
+    useEffect(() => {
+        if (songError) setError(songError);
+    }, [songError])
 
     useEffect(() => {
         if (songListStatus === "INITIAL") {
@@ -143,5 +148,5 @@ export const useSongListPage = () => {
         }
     }, [status, currentSongList, dispatch])
 
-    return [finalSongList, isLoading, songError];
+    return [finalSongList, isLoading, error];
 };

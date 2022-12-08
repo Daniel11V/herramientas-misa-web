@@ -6,7 +6,7 @@ import { types } from "./types"
 
 
 export const setSongPageBackup = (songPageBackup) => ({
-    type: types.SET_SONG_LIST_PAGE_BACKUP,
+    type: types.SET_SONG_PAGE_BACKUP,
     payload: { songPageBackup }
 })
 export const setSongListPageBackup = (songListPageBackup) => ({

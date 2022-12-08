@@ -3,32 +3,52 @@
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
 import { arrayIsEmpty } from "../../utils.js";
-import { getPrivateRepertoryListDB, getPrivateRepertoryDB, createPrivateRepertoryDB, deletePrivateRepertoryDB, editPrivateRepertoryDB } from "./services/privateRepertoryList.js";
+import { getPrivateRepertoryListDB, getPrivateRepertoryDB } from "./services/privateRepertoryList.js";
+import { getPublicRepertoryDB, getPublicRepertoryListDB } from "./services/publicRepertoryList.js";
 import { types } from "./types"
 
 
+export const resetRepertoryActionStatus = () => ({
+    type: types.RESET_REPERTORY_ACTION_STATUS
+})
+export const setRepertoryListStatus = (repertoryListStatus) => ({
+    type: types.SET_REPERTORY_LIST_STATUS,
+    payload: { repertoryListStatus }
+})
+
 // Thunks
 
-export const getRepertoryList = ({ userId }) => {
-    return async (dispatch) => {
+export const getRepertoryList = ({ userId, onlyAddPrivates = false }) => {
+    return async (dispatch, getState) => {
         try {
             dispatch({
-                type: types.SET_REPERTORY_LIST_STATUS,
-                payload: { repertoryListStatus: "FETCHING", error: null }
+                type: types.FETCH_REPERTORY_LIST,
+                payload: { userId }
             })
+            //////////////////////////////////////
+            let publicRepertoryList;
+            if (onlyAddPrivates) {
+                publicRepertoryList = getState().repertory.repertoryList.reduce((tO, e) => ({ ...tO, [e.id]: e }), {});
+            } else {
+                publicRepertoryList = await getPublicRepertoryListDB();
+            }
+            const userPrivateRepertoryList = await getPrivateRepertoryListDB({ userId });
 
-            const privateRepertoryListDB = await getPrivateRepertoryListDB({ userId });
-            const repertoryList = Object.values(privateRepertoryListDB);
+            const repertoryList = [
+                ...Object.values(publicRepertoryList || {}),
+                ...Object.values(userPrivateRepertoryList || {}),
+            ]
 
+            //////////////////////////////////////
             dispatch({
-                type: types.SET_REPERTORY_LIST,
-                payload: { repertoryList, repertoryListStatus: "SUCCESS" }
+                type: types.FETCH_REPERTORY_LIST_SUCCESS,
+                payload: { repertoryList, userId }
             })
         } catch (error) {
             console.warn(error);
             dispatch({
-                type: types.SET_REPERTORY_LIST_STATUS,
-                payload: { repertoryListStatus: "FAILURE", error: error.message }
+                type: types.FETCH_REPERTORY_LIST_FAILURE,
+                payload: { error: error.message }
             })
         }
     }
@@ -38,105 +58,29 @@ export const getRepertory = ({ userId, repertoryId }) => {
     return async (dispatch, getState) => {
         try {
             dispatch({
-                type: types.SET_REPERTORY_STATUS,
-                payload: { repertoryStatus: "FETCHING", error: null }
+                type: types.FETCH_REPERTORY,
+                payload: { userId, repertoryId }
             })
-
-            ///////////////////////////////
+            //////////////////////////////
 
             const repertoryList = getState().repertory.repertoryList;
             let repertory;
-            if (!arrayIsEmpty(repertoryList)) {
-                repertory = repertoryList.find(i => i.id === repertoryId);
-            } else {
-                repertory = await getPrivateRepertoryDB({ userId, repertoryId });
-            }
+            if (!arrayIsEmpty(repertoryList)) repertory = repertoryList.find(i => i.id === repertoryId);
 
-            if (!repertory) throw new Error("Repertory not found.");
+            if (!repertory) repertory = await getPrivateRepertoryDB({ userId, repertoryId, hasInvitation: true });
+            if (!repertory) repertory = await getPublicRepertoryDB({ repertoryId });
+            if (!repertory) throw new Error("Repertory not found (Title).");
 
-            ///////////////////////////////
-
+            //////////////////////////////
             dispatch({
-                type: types.SET_REPERTORY,
-                payload: { repertory, repertoryStatus: "SUCCESS" }
+                type: types.FETCH_REPERTORY_SUCCESS,
+                payload: { repertory }
             })
         } catch (error) {
-            console.warn(error);
+            console.warn(error.message);
             dispatch({
-                type: types.SET_REPERTORY_STATUS,
-                payload: { repertoryStatus: "FAILURE", error: error.message }
-            })
-        }
-    }
-}
-
-export const createRepertory = (repertoryCreated, saveAsPublic = true) => {
-    return async (dispatch) => {
-        try {
-            dispatch({
-                type: types.CREATE_REPERTORY_STATUS,
-                payload: { repertoryStatus: "FETCHING", error: null }
-            })
-
-            await createPrivateRepertoryDB({ repertoryCreated, saveAsPublic });
-
-            dispatch({
-                type: types.CREATE_REPERTORY,
-                payload: { repertoryCreated, repertoryStatus: "SUCCESS" }
-            })
-        } catch (error) {
-            console.warn(error);
-            dispatch({
-                type: types.CREATE_REPERTORY_STATUS,
-                payload: { repertoryStatus: "FAILURE", error: error.message }
-            })
-        }
-    }
-}
-
-export const editRepertory = (repertoryEdited, saveAsPublic = false) => {
-    return async (dispatch) => {
-        try {
-            dispatch({
-                type: types.EDIT_REPERTORY_STATUS,
-                payload: { repertoryStatus: "FETCHING", error: null }
-            })
-
-            await editPrivateRepertoryDB({ repertoryEdited, saveAsPublic });
-
-            dispatch({
-                type: types.EDIT_REPERTORY,
-                payload: { repertoryEdited, repertoryStatus: "SUCCESS" }
-            })
-        } catch (error) {
-            console.warn(error);
-            dispatch({
-                type: types.EDIT_REPERTORY_STATUS,
-                payload: { repertoryStatus: "FAILURE", error: error.message }
-            })
-        }
-    }
-}
-
-export const deleteRepertory = (repertoryDeletedId, saveAsPublic = false) => {
-    return async (dispatch) => {
-        try {
-            dispatch({
-                type: types.DELETE_REPERTORY_STATUS,
-                payload: { repertoryStatus: "FETCHING", error: null }
-            })
-
-            deletePrivateRepertoryDB({ repertoryDeletedId, saveAsPublic });
-
-            dispatch({
-                type: types.DELETE_REPERTORY,
-                payload: { repertoryDeletedId, repertoryStatus: "SUCCESS" }
-            })
-        } catch (error) {
-            console.warn(error);
-            dispatch({
-                type: types.DELETE_REPERTORY_STATUS,
-                payload: { repertoryStatus: "FAILURE", error: error.message }
+                type: types.FETCH_REPERTORY_FAILURE,
+                payload: { error: error.message }
             })
         }
     }

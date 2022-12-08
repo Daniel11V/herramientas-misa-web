@@ -6,8 +6,14 @@ const defaultSong = {
     title: "",
     lyric: "",
     chords: {},
-    creator: "",
-    author: "",
+    creator: {
+        id: "",
+        name: "",
+    },
+    author: {
+        id: "",
+        name: "",
+    },
     rating: [],
     tempo: "",
     pulse: "",
@@ -22,21 +28,22 @@ const initialState = {
     songListUserId: null,
     songList: [],
 
+    songStatus: "INITIAL",
+    songUserId: null,
     song: defaultSong,
 }
 
 const SongReducer = (state = initialState, { type, payload }) => {
     return produce(state, newState => {
         switch (type) {
-            case types.SET_SONG_LIST_STATUS:
-                newState.songListStatus = payload.songListStatus;
-                break;
-            case types.SET_SONG_LIST_USER_ID:
-                newState.songListUserId = payload.songListUserId;
-                break;
             case types.RESET_SONG_ACTION_STATUS:
                 newState.songActionStatus = "INITIAL";
                 newState.songError = null;
+                break;
+
+
+            case types.SET_SONG_LIST_STATUS:
+                newState.songListStatus = payload.songListStatus;
                 break;
 
             case types.FETCH_SONG_LIST:
@@ -54,16 +61,24 @@ const SongReducer = (state = initialState, { type, payload }) => {
                 newState.songListStatus = "FAILURE";
                 break;
 
+
+            case types.SET_SONG_STATUS:
+                newState.songStatus = payload.songStatus;
+                break;
+
             case types.FETCH_SONG:
                 newState.songActionStatus = "FETCHING";
                 break;
             case types.FETCH_SONG_SUCCESS:
                 newState.songActionStatus = "SUCCESS";
                 newState.song = payload.song;
+                newState.songStatus = payload.userId ? "PRIVATE" : "PUBLIC";
+                newState.songUserId = payload.userId;
                 break;
             case types.FETCH_SONG_FAILURE:
                 newState.songActionStatus = "FAILURE";
                 newState.songError = payload.error;
+                newState.songStatus = "FAILURE";
                 break;
 
             case types.CREATE_SONG:

@@ -3,7 +3,7 @@ import { types } from "./types"
 
 const initialState = {
     songPageBackup: {
-        songList: [],
+        songList: {},
     },
     songListPageBackup: {
         songList: [],
@@ -19,7 +19,7 @@ const PageReducer = (state = initialState, { type, payload }) => {
     return produce(state, newState => {
         switch (type) {
             case types.SET_SONG_PAGE_BACKUP:
-                newState.songPageBackup = payload.songPageBackup;
+                newState.songPageBackup.songList[payload.songPageBackup?.id] = payload.songPageBackup;
                 break;
             case types.SET_SONG_LIST_PAGE_BACKUP:
                 newState.songListPageBackup = payload.songListPageBackup;

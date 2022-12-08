@@ -12,18 +12,32 @@ export const privateRepertoryModel = {
 };
 
 export const getPrivateRepertoryListDB = async ({ userId }) => {
+    if (!userId) return null;
 
-    const repertoryList = store.getState().database.privateRepertoryList;
+    const allPrivateRepertoryList = store.getState().database.privateRepertoryList;
 
-    return repertoryList;
+    const userPrivateRepertoryList = Object.values(allPrivateRepertoryList)
+        .reduce((userPrivateRepertoryList, privateRepertory) =>
+            privateRepertory.creator.id === userId ?
+                ({ ...userPrivateRepertoryList, [privateRepertory.id]: privateRepertory })
+                : userPrivateRepertoryList,
+            {}) || {};
+
+    return userPrivateRepertoryList;
 }
 
-export const getPrivateRepertoryDB = async ({ userId, repertoryId }) => {
+export const getPrivateRepertoryDB = async ({ userId, repertoryId, hasInvitation = false }) => {
+    if (!userId && !hasInvitation) return null;
     if (!repertoryId) throw new Error("Invalid repertory ID.");
 
-    const repertory = store.getState().database.privateRepertoryList[repertoryId];
+    const privateRepertory = store.getState().database.privateRepertoryList[repertoryId];
 
-    return repertory;
+    if (!!privateRepertory && !hasInvitation) {
+        const isAuthorized = privateRepertory.creator.id === userId || !!privateRepertory.hasAccess?.[userId]
+        if (!isAuthorized) throw new Error("Unauthorized in getPrivateRepertoryDB.");
+    }
+
+    return privateRepertory;
 }
 
 export const createPrivateRepertoryDB = async ({ repertoryCreated }) => {
