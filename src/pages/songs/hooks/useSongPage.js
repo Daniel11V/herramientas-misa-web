@@ -71,7 +71,7 @@ export const useSongPage = (songId) => {
     }, [userId, currentSong]);
 
     const publishCurrentSong = () => {
-        dispatch(publishSong());
+        dispatch(publishSong(songId));
     }
 
     return { song: currentSong, isLoading, error, publishCurrentSong };

@@ -75,7 +75,7 @@ export const getSong = ({ userId, songId }) => {
 
             let songLyric = {};
             if (songTitle?.lyricIsPrivate) {
-                songLyric = await getPrivateSongLyricListDB({ songId: songTitle?.lyricId });
+                songLyric = await getPrivateSongLyricDB({ songId: songTitle?.lyricId });
             } else {
                 songLyric = await getPublicSongLyricDB({ songId: songTitle?.lyricId });
             }

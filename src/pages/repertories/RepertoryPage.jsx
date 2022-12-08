@@ -2,13 +2,15 @@ import React, { useEffect } from "react";
 import { Link, useParams, useHistory } from "react-router-dom";
 import M from "materialize-css";
 import { useDispatch, useSelector } from "react-redux";
-import { useRepertoryPage } from "./hooks/useRepertoryPage.js";
+// import { useRepertoryPage } from "./hooks/useRepertoryPage.js";
+import SongCollection from "../components/SongCollection";
+import { useRepertoryPage2 } from "./hooks/useRepertoryPage2.js";
 
 const RepertoryPage = () => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const { id } = useParams();
-	const [repertory, loading] = useRepertoryPage(id);
+	const [repertory, loading, error, repertorySongList] = useRepertoryPage2(id);
 
 	const user = useSelector((state) => state.user.google);
 
@@ -50,12 +52,22 @@ const RepertoryPage = () => {
 			</h3>
 
 			<br />
-			{repertory.creator?.name && (
+			{Object.keys(repertorySongList || {})?.map((list) => (
+				<>
+					<h6>{list}</h6>
+					<SongCollection
+						songList={repertorySongList?.[list]}
+						loading={loading}
+						error={error}
+					/>
+				</>
+			))}
+			{/* {repertory.creator?.name && (
 				<span style={{ fontStyle: "italic" }}>
 					Transcripción hecha por {repertory.creator.name}
 				</span>
-			)}
-			<div className="btns">
+			)} */}
+			{/* <div className="btns">
 				<Link
 					to={{ pathname: `/edit-repertory/${id}`, state: { from: "Canción" } }}
 					className="btn btn-repertory waves-effect waves-light blue darken-2"
@@ -71,7 +83,7 @@ const RepertoryPage = () => {
 						<i className={`material-icons ${"right"}`}>delete</i>Eliminar
 					</a>
 				)}
-			</div>
+			</div> */}
 
 			<div id="modal1" className="modal">
 				<div className="modal-content">
