@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { types } from "./types"
 
 const initialState = {
@@ -26,27 +27,36 @@ const initialState = {
 }
 
 const UserReducer = (state = initialState, { type, payload }) => {
-    switch (type) {
-        case types.SET_USER_LOADING:
-            return { ...state, loading: payload.loading }
+    return produce(state, newState => {
+        switch (type) {
+            case types.SET_USER_LOADING:
+                newState.loading = payload.loading;
+                break;
 
-        case types.LOGIN:
-            return { ...state, google: payload.googleInfo, isLogged: true, loading: false }
-        case types.LOGOUT:
-            return {
-                ...state, google: initialState.google, loading: false,
-                error: null, isLogged: false
-            }
+            case types.LOGIN:
+                newState.google = payload.googleInfo;
+                newState.isLogged = true;
+                newState.loading = false;
+                break;
+            case types.LOGOUT:
+                newState.google = initialState.google;
+                newState.loading = false;
+                newState.error = null;
+                newState.isLogged = false;
+                break;
 
-        case types.SET_DEVICE:
-            return { ...state, isDesktop: payload.isDesktop }
+            case types.SET_DEVICE:
+                newState.isDesktop = payload.isDesktop;
+                break;
 
-        case types.SET_USER_SONG_PAGE_OPTIONS:
-            return { ...state, config: { ...state.config, songPageOptions: payload.songPageOptions } }
+            case types.SET_USER_SONG_PAGE_OPTIONS:
+                newState.config.songPageOptions = payload.songPageOptions;
+                break;
 
-        default:
-            return state
-    }
+            default:
+                return state
+        }
+    });
 }
 
 export default UserReducer

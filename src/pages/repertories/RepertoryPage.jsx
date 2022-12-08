@@ -53,7 +53,7 @@ const RepertoryPage = () => {
 
 			<br />
 			{Object.keys(repertorySongList || {})?.map((list) => (
-				<>
+				<div key={list}>
 					<h6>{list}</h6>
 					<SongCollection
 						songList={repertorySongList?.[list]}
@@ -61,7 +61,7 @@ const RepertoryPage = () => {
 						error={error}
 						pageName="Repertorio"
 					/>
-				</>
+				</div>
 			))}
 			{/* {repertory.creator?.name && (
 				<span style={{ fontStyle: "italic" }}>

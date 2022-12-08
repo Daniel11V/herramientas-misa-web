@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { types } from "./types"
 
 const initialState = {
@@ -15,18 +16,22 @@ const initialState = {
 }
 
 const PageReducer = (state = initialState, { type, payload }) => {
-    switch (type) {
-        case types.SET_SONG_PAGE_BACKUP:
-            return { ...state, songPageBackup: payload.songPageBackup }
-        case types.SET_SONG_LIST_PAGE_BACKUP:
-            return { ...state, songListPageBackup: payload.songListPageBackup }
-        case types.SET_LIBRARY_PAGE_BACKUP:
-            return { ...state, libraryPageBackup: payload.libraryPageBackup }
+    return produce(state, newState => {
+        switch (type) {
+            case types.SET_SONG_PAGE_BACKUP:
+                newState.songPageBackup = payload.songPageBackup;
+                break;
+            case types.SET_SONG_LIST_PAGE_BACKUP:
+                newState.songListPageBackup = payload.songListPageBackup;
+                break;
+            case types.SET_LIBRARY_PAGE_BACKUP:
+                newState.libraryPageBackup = payload.libraryPageBackup;
+                break;
 
-
-        default:
-            return state
-    }
+            default:
+                break;
+        }
+    });
 }
 
 export default PageReducer

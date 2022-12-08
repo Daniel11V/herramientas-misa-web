@@ -6,16 +6,6 @@ import { publicSongLyricModel } from "../song/services/publicSongLyricList";
 import { publicSongTitleModel } from "../song/services/publicSongTitleList";
 import { userModel } from "../user/services/userList";
 
-
-
-
-
-
-
-
-
-
-
 export const databaseModel = {
     userList: {
         "$userId": userModel,
