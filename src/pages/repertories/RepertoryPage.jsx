@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { Link, useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import M from "materialize-css";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 // import { useRepertoryPage } from "./hooks/useRepertoryPage.js";
 import SongCollection from "../components/SongCollection";
 import { useRepertoryPage2 } from "./hooks/useRepertoryPage2.js";
@@ -11,8 +11,6 @@ const RepertoryPage = () => {
 	const dispatch = useDispatch();
 	const { id } = useParams();
 	const [repertory, loading, error, repertorySongList] = useRepertoryPage2(id);
-
-	const user = useSelector((state) => state.user.google);
 
 	// const [tone, setTone] = useState(null);
 	// const [currentChords, setCurrentChords] = useState({});

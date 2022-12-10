@@ -1,4 +1,5 @@
 import store from "../../../store";
+import { setDatabaseItem } from "../../database/reducers";
 
 export const publicSongTitleModel = {
     id: { type: "String", required: true },
@@ -66,7 +67,7 @@ export const createPublicSongTitleDB = async ({ songTitleCreated }) => {
 
     if (!songTitleCreated?.id) throw new Error("Invalid song ID.");
 
-    store.getState().database.publicSongTitleList[songTitleCreated.id] = songTitleCreated;
+    await store.dispatch(setDatabaseItem("publicSongTitleList", songTitleCreated.id, songTitleCreated));
     const response = songTitleCreated;
 
     if (!response) throw new Error("Error fetching in createPublicSongTitleDB.");

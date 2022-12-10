@@ -1,4 +1,5 @@
 import store from "../../../store";
+import { setDatabaseItem } from "../../database/reducers";
 
 export const publicRepertoryModel = {
     id: { type: "String", required: true },
@@ -45,7 +46,7 @@ export const getPublicRepertoryDB = async ({ repertoryId }) => {
 export const createPublicRepertoryDB = async ({ repertoryCreated }) => {
     if (!repertoryCreated) throw new Error("Invalid repertory ID.");
 
-    store.getState().database.publicRepertoryList[repertoryCreated.id] = repertoryCreated;
+    await store.dispatch(setDatabaseItem("publicRepertoryList", repertoryCreated.id, repertoryCreated));
 }
 
 export const editPublicRepertoryDB = async ({ repertoryEdited }) => {

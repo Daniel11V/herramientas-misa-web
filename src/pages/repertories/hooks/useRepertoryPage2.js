@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSongList, resetSongActionStatus, setSongListStatus } from "../../../clases/song/actions";
-import { setSongListPageBackup } from "../../../clases/page/actions";
-import { arrayIsEmpty, getRating, objIsEmpty } from "../../../utils";
+import { objIsEmpty } from "../../../utils";
 import { getRepertory } from "../../../clases/repertory/actions";
 
 export const useRepertoryPage2 = (repertoryId) => {
@@ -12,10 +11,10 @@ export const useRepertoryPage2 = (repertoryId) => {
     const { repertory, repertoryStatus, error } = useSelector((state) => state.repertory);
     const { songList, songListStatus, songListUserId, songActionStatus, songError } = useSelector((state) => state.song);
     const { songListPageBackup } = useSelector((state) => state.page);
-    const { songList: songListBackup } = songListPageBackup;
+    const { songList: repertorySongListBackup } = songListPageBackup;
 
     const [status, setCurrentSongListStatus] = useState({ step: "INITIAL", opts: {} });
-    const [currentSongList, setCurrentSongList] = useState([]);
+    const [currentRepertorySongList, setCurrentRepertorySongList] = useState([]);
 
     const [finalSongList, setFinalSongList] = useState({});
     const [isLoading, setIsLoading] = useState(true);
@@ -43,14 +42,14 @@ export const useRepertoryPage2 = (repertoryId) => {
             setStatus("1_FETCH_SONG_LIST");
 
         } else if (status.step === "INITIAL") {
-            if (!objIsEmpty(songListBackup)) {
-                setCurrentSongList(songListBackup);
+            if (!objIsEmpty(repertorySongListBackup)) {
+                setCurrentRepertorySongList(repertorySongListBackup);
                 setStatus("FINISHED", { isSameBackup: true });
             } else {
                 setStatus("1_FETCH_SONG_LIST");
             }
         }
-    }, [songListStatus, songListUserId, status.step, userId, songListBackup, dispatch])
+    }, [songListStatus, songListUserId, status.step, repertoryId, userId, repertorySongListBackup, dispatch])
 
     useEffect(() => {
         if (status.step === "1_FETCH_SONG_LIST") {
@@ -64,43 +63,29 @@ export const useRepertoryPage2 = (repertoryId) => {
                 dispatch(resetSongActionStatus());
             }
         }
-        /* 
-            Cancionero:
-            - Canciones de otros publicas
-            - Si hay varias versiones mostrar la mia publica o privada
-            - Mis canciones publicas
-            - En codigo: publicSongTitles + privateSongTitles, dejando una por versiones
-            Mi Biblioteca:
-            - Mis canciones privadas y publicas
-            - 
-
-            publicSongTitles
-            En Favoritos una:
-            - crea un privateSongTitles de esa que apunta al detalle de la publica, si 
-            se edita algo de Lyric se crea nueva Lyric en private
-        */
     }, [status, songActionStatus, dispatch]);
 
     useEffect(() => {
         if (status.step === "1_WITH_SONG_LIST") {
-            setCurrentSongList(songList);
+            const newRepertorySongList = {};
+            for (const key in repertory?.songs) {
+                for (const songId of repertory?.songs?.[key]) {
+                    const newSong = songList.find(song => song.id === songId)
+                    newRepertorySongList[key] = [...(newRepertorySongList[key] || []), newSong]
+                }
+            }
+
+            setCurrentRepertorySongList(newRepertorySongList);
             setStatus("FINISHED");
         }
-    }, [status, songList]);
+    }, [status, songList, repertory?.songs]);
 
     useEffect(() => {
         if (status.step === "FINISHED") {
-            const newSongList = {};
-            for (const key in repertory?.songs) {
-                for (const songId of repertory?.songs?.[key]) {
-                    const newSong = currentSongList.find(song => song.id === songId)
-                    newSongList[key] = [...(newSongList[key] || []), newSong]
-                }
-            }
-            setFinalSongList(newSongList);
+            setFinalSongList(currentRepertorySongList);
             setIsLoading(false);
         }
-    }, [status, currentSongList, dispatch])
+    }, [status, currentRepertorySongList])
 
     return [repertory, isLoading, songError, finalSongList];
 };

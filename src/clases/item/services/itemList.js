@@ -1,4 +1,5 @@
 import store from "../../../store";
+import { setDatabaseItem } from "../../database/reducers";
 
 export const getItemListDB = async ({ userId }) => {
 
@@ -22,7 +23,7 @@ export const getItemDB = async ({ userId, itemId }) => {
 export const createItemDB = async ({ itemCreated }) => {
     if (!itemCreated?.id) throw new Error("Invalid item ID.");
 
-    store.getState().database.itemList[itemCreated.id] = itemCreated;
+    await store.dispatch(setDatabaseItem("itemList", itemCreated.id, itemCreated));
 }
 
 export const editItemDB = async ({ itemEdited }) => {

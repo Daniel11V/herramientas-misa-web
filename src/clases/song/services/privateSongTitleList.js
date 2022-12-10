@@ -1,4 +1,5 @@
 import store from "../../../store";
+import { deleteDatabaseItem, setDatabaseItem } from "../../database/reducers";
 import { publicSongTitleModel } from "./publicSongTitleList";
 
 export const privateSongTitleModel = {
@@ -47,7 +48,11 @@ export const createPrivateSongTitleDB = async ({ songTitleCreated }) => {
         versionGroupId: newId,
         ...songTitleCreated,
     }
-    store.getState().database.privateSongTitleList[newId] = newSongTitle;
-
+    await store.dispatch(setDatabaseItem("privateSongTitleList", newId, newSongTitle));
     return newSongTitle;
+}
+
+export const deletePrivateSongTitleDB = async ({ songTitleId }) => {
+    await store.dispatch(deleteDatabaseItem("privateSongTitleList", songTitleId));
+    return songTitleId;
 }

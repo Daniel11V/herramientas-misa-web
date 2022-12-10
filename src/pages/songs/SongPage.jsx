@@ -7,8 +7,6 @@ import fullLabels from "../../data/fullLabels.js";
 import LyricWithChords from "./components/LyricWithChords";
 import styled from "styled-components";
 import ChordSelector from "./components/ChordSelector";
-import allChords from "../../data/allChords";
-import { getChordsFromLyric } from "../../utils.js";
 import { useSongPage } from "./hooks/useSongPage.js";
 import { colors, noSelectableText } from "../../styles/styleUtils.js";
 import MessageModal from "../components/MessageModal.jsx";

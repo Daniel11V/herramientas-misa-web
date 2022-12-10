@@ -1,4 +1,5 @@
 import store from "../../../store";
+import { setDatabaseItem } from "../../database/reducers";
 
 export const publicSongLyricModel = {
     // songTitleId: { type: "String", required: true },
@@ -18,7 +19,7 @@ export const createPublicSongLyricDB = async ({ songLyricCreated }) => {
 
     if (!songLyricCreated?.id) throw new Error("Invalid song ID.");
 
-    store.getState().database.publicSongLyricList[songLyricCreated.id] = songLyricCreated;
+    await store.dispatch(setDatabaseItem("publicSongLyricList", songLyricCreated.id, songLyricCreated));
     const response = songLyricCreated;
 
     if (!response) throw new Error("Error in createPublicSongLyricDB.");

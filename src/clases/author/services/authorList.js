@@ -1,4 +1,5 @@
 import store from "../../../store";
+import { setDatabaseItem } from "../../database/reducers";
 
 export const authorModel = {
     id: { type: "String", required: true },
@@ -32,7 +33,7 @@ export const getAuthorDB = async ({ authorId }) => {
 export const createAuthorDB = async ({ authorCreated }) => {
     if (!authorCreated?.id) throw new Error("Invalid author ID.");
 
-    store.getState().database.authorList[authorCreated.id] = authorCreated;
+    await store.dispatch(setDatabaseItem("authorList", authorCreated.id, authorCreated));
 }
 
 export const editAuthorDB = async ({ authorEdited }) => {

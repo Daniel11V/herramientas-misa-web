@@ -1,4 +1,5 @@
 import store from "../../../store";
+import { deleteDatabaseItem, setDatabaseItem } from "../../database/reducers";
 import { publicSongLyricModel } from "./publicSongLyricList";
 
 export const privateSongLyricModel = {
@@ -23,11 +24,16 @@ export const getPrivateSongLyricDB = async ({ songId }) => {
 
 export const createPrivateSongLyricDB = async ({ lyric }) => {
 
-    const newId = new Date().getTime().toString();
-    store.getState().database.privateSongLyricList[newId] = { lyric };
-    const response = { id: newId, lyric };
+    const newId = new Date().getTime()
+    await store.dispatch(setDatabaseItem("privateSongLyricList", newId, { lyric }));
+    const response = { id: newId.toString(), lyric };
 
     if (!response) throw new Error("Error fetching in createPrivateSongLyricDB.");
 
     return response;
+}
+
+export const deletePrivateSongLyricDB = async ({ songLyricId }) => {
+    await store.dispatch(deleteDatabaseItem("privateSongLyricList", songLyricId));
+    return songLyricId;
 }

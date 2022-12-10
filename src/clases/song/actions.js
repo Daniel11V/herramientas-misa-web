@@ -3,8 +3,8 @@
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
 import { arrayIsEmpty } from "../../utils.js";
-import { createPrivateSongLyricDB, getPrivateSongLyricDB, getPrivateSongLyricListDB } from "./services/privateSongLyricList.js";
-import { createPrivateSongTitleDB, getPrivateSongTitleDB, getPrivateSongTitleListDB } from "./services/privateSongTitleList.js";
+import { createPrivateSongLyricDB, deletePrivateSongLyricDB, getPrivateSongLyricDB } from "./services/privateSongLyricList.js";
+import { createPrivateSongTitleDB, deletePrivateSongTitleDB, getPrivateSongTitleDB, getPrivateSongTitleListDB } from "./services/privateSongTitleList.js";
 import { createPublicSongLyricDB, getPublicSongLyricDB } from "./services/publicSongLyricList.js";
 import { createPublicSongTitleDB, getPublicSongTitleDB, getPublicSongTitleListDB } from "./services/publicSongTitleList.js";
 import { types } from "./types"
@@ -145,8 +145,8 @@ export const createSong = (songCreated) => {
             songTitleCreated.lyricIsPrivate = true;
             const newSongTitleCreatedByDB = await createPrivateSongTitleDB({ songTitleCreated });
             const newSongCreatedByDB = {
-                ...newSongTitleCreatedByDB,
                 ...newSongLyricCreatedByDB,
+                ...newSongTitleCreatedByDB,
             }
 
             //////////////////////////////////////
@@ -207,14 +207,21 @@ export const publishSong = (songPublicId) => {
 
 
             const oldSongTitleFromDB = await getPrivateSongTitleDB({ songId: songPublicId, hasInvitation: true });
-            oldSongTitleFromDB.isPrivate = false;
-            oldSongTitleFromDB.lyricIsPrivate = false;
-            const newSongTitleCreatedByDB = await createPublicSongTitleDB({ songTitleCreated: oldSongTitleFromDB });
+            await deletePrivateSongTitleDB({ songTitleId: songPublicId });
             const oldSongLyricFromDB = await getPrivateSongLyricDB({ songId: oldSongTitleFromDB.lyricId });
-            const newSongLyricCreatedByDB = await createPublicSongLyricDB({ songLyricCreated: oldSongLyricFromDB.lyric });
+            await deletePrivateSongLyricDB({ songLyricId: oldSongTitleFromDB.lyricId });
+
+            const newSongLyricCreatedByDB = await createPublicSongLyricDB({ lyric: oldSongLyricFromDB.lyric });
+            const newPublicSongTitle = {
+                ...oldSongTitleFromDB,
+                isPrivate: false,
+                lyricIsPrivate: false,
+                lyricId: newSongLyricCreatedByDB.id,
+            }
+            const newSongTitleCreatedByDB = await createPublicSongTitleDB({ songTitleCreated: newPublicSongTitle });
             const newSongCreatedByDB = {
-                ...newSongTitleCreatedByDB,
                 ...newSongLyricCreatedByDB,
+                ...newSongTitleCreatedByDB,
             }
 
             //////////////////////////////////////

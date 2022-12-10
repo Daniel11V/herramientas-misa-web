@@ -1,4 +1,5 @@
 import store from "../../../store";
+import { setDatabaseItem } from "../../database/reducers";
 import { publicRepertoryModel } from "./publicRepertoryList";
 
 export const privateRepertoryModel = {
@@ -43,7 +44,7 @@ export const getPrivateRepertoryDB = async ({ userId, repertoryId, hasInvitation
 export const createPrivateRepertoryDB = async ({ repertoryCreated }) => {
     if (!repertoryCreated) throw new Error("Invalid repertory ID.");
 
-    store.getState().database.privateRepertoryList[repertoryCreated.id] = repertoryCreated;
+    await store.dispatch(setDatabaseItem("privateRepertoryList", repertoryCreated.id, repertoryCreated));
 }
 
 export const editPrivateRepertoryDB = async ({ repertoryEdited }) => {
