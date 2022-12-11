@@ -25,7 +25,7 @@ const SongListPage = () => {
 	return (
 		<Fragment>
 			<Header>
-				<h3>Cancionero</h3>
+				<h4>Cancionero</h4>
 				{isLogged ? (
 					<Link
 						to={{ pathname: "/add-song", state: { from: "Cancionero" } }}

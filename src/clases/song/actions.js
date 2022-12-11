@@ -54,34 +54,31 @@ export const getSongList = ({ userId, onlyAddPrivates = false }) => {
             console.warn(error);
             dispatch({
                 type: types.FETCH_SONG_LIST_FAILURE,
-                payload: { error: error.message }
+                payload: { error: error.message, userId }
             })
         }
     }
 }
 
-export const getSong = ({ userId, songId }) => {
+export const getSong = ({ userId, songTitleId }) => {
     return async (dispatch, getState) => {
         try {
             dispatch({
                 type: types.FETCH_SONG,
-                payload: { userId, songId }
+                payload: { userId, songTitleId }
             })
             //////////////////////////////
 
-            const songList = getState().song.songList;
-            let songTitle;
-            if (!arrayIsEmpty(songList)) songTitle = songList.find(i => i.id === songId);
-
-            if (!songTitle) songTitle = await getPrivateSongTitleDB({ userId, songId, hasInvitation: true });
-            if (!songTitle) songTitle = await getPublicSongTitleDB({ songId });
+            let songTitle = getState().song.songList.find(i => i.id === songTitleId);
+            if (!songTitle) songTitle = await getPrivateSongTitleDB({ userId, songTitleId, hasInvitation: true });
+            if (!songTitle) songTitle = await getPublicSongTitleDB({ songTitleId });
             if (!songTitle) throw new Error("Song not found (Title).");
 
             let songLyric = {};
             if (songTitle?.lyricIsPrivate) {
-                songLyric = await getPrivateSongLyricDB({ songId: songTitle?.lyricId });
+                songLyric = await getPrivateSongLyricDB({ songLyricId: songTitle?.lyricId });
             } else {
-                songLyric = await getPublicSongLyricDB({ songId: songTitle?.lyricId });
+                songLyric = await getPublicSongLyricDB({ songLyricId: songTitle?.lyricId });
             }
 
             if (!songLyric) throw new Error("Song not found (Lyric).");
@@ -97,7 +94,43 @@ export const getSong = ({ userId, songId }) => {
             console.warn(error.message);
             dispatch({
                 type: types.FETCH_SONG_FAILURE,
-                payload: { error: error.message }
+                payload: { error: error.message, userId }
+            })
+        }
+    }
+}
+
+export const getSongTitle = ({ userId, songTitleId }) => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({
+                type: types.FETCH_SONG_TITLE,
+                payload: { userId, songTitleId }
+            })
+            //////////////////////////////
+
+            let songTitle;
+            const { songList } = getState().page.songListPageBackup;
+            if (!arrayIsEmpty(songList)) songTitle = songList.find(i => i.id === songTitleId);
+
+            if (!songTitle) {
+                const { songList: songPageBackupList } = getState().page.songPageBackup;
+                songTitle = songPageBackupList[songTitleId]
+            }
+            if (!songTitle) songTitle = await getPrivateSongTitleDB({ userId, songTitleId, hasInvitation: true });
+            if (!songTitle) songTitle = await getPublicSongTitleDB({ songTitleId });
+            if (!songTitle) throw new Error("Song not found (Title).");
+
+            //////////////////////////////
+            dispatch({
+                type: types.FETCH_SONG_TITLE_SUCCESS,
+                payload: { songTitle, userId }
+            })
+        } catch (error) {
+            console.warn(error.message);
+            dispatch({
+                type: types.FETCH_SONG_TITLE_FAILURE,
+                payload: { error: error.message, userId }
             })
         }
     }
@@ -206,7 +239,7 @@ export const publishSong = (songPublicId) => {
             //////////////////////////////////////
 
 
-            const oldSongTitleFromDB = await getPrivateSongTitleDB({ songId: songPublicId, hasInvitation: true });
+            const oldSongTitleFromDB = await getPrivateSongTitleDB({ songTitleId: songPublicId, hasInvitation: true });
             await deletePrivateSongTitleDB({ songTitleId: songPublicId });
             const oldSongLyricFromDB = await getPrivateSongLyricDB({ songId: oldSongTitleFromDB.lyricId });
             await deletePrivateSongLyricDB({ songLyricId: oldSongTitleFromDB.lyricId });

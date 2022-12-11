@@ -27,11 +27,11 @@ export const getPrivateSongTitleListDB = async ({ userId }) => {
     return userPrivateSongTitleList;
 }
 
-export const getPrivateSongTitleDB = async ({ userId, songId, hasInvitation = false }) => {
+export const getPrivateSongTitleDB = async ({ userId, songTitleId, hasInvitation = false }) => {
     if (!userId && !hasInvitation) return null;
-    if (!songId) throw new Error("Invalid song ID.");
+    if (!songTitleId) throw new Error("Invalid song title ID.");
 
-    const privateSongTitle = store.getState().database.privateSongTitleList[songId];
+    const privateSongTitle = store.getState().database.privateSongTitleList[songTitleId];
 
     if (!!privateSongTitle && !hasInvitation) {
         const isAuthorized = privateSongTitle.creator.id === userId || !!privateSongTitle.hasAccess?.[userId]

@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSongList, resetSongActionStatus, setSongListStatus } from "../../../clases/song/actions";
 import { setSongListPageBackup } from "../../../clases/page/actions";
-import { arrayIsEmpty, getRating, objIsEmpty } from "../../../utils";
+import { arrayIsEmpty, getRating } from "../../../utils";
+import { MAX_RETRYS } from "../../../configs";
 
 export const useSongListPage = () => {
     const dispatch = useDispatch();
@@ -13,6 +14,7 @@ export const useSongListPage = () => {
     const { songList: songListBackup } = songListPageBackup;
 
     const [status, setCurrentSongListStatus] = useState({ step: "INITIAL", opts: {} });
+    const [retrys, setRetrys] = useState(0);
     const [currentSongList, setCurrentSongList] = useState([]);
 
     const [finalSongList, setFinalSongList] = useState([]);
@@ -31,10 +33,10 @@ export const useSongListPage = () => {
     }, [songError])
 
     useEffect(() => {
-        if (songListStatus === "INITIAL") {
-            setStatus("1_FETCH_SONG_LIST", { isFirst: true, userId });
+        // if (songListStatus === "INITIAL") {
+        //     setStatus("1_FETCH_SONG_LIST", { isFirst: true, userId });
 
-        } else if (songListStatus === "SHOULD_UPDATE") {
+        if (songListStatus === "SHOULD_UPDATE") {
             setStatus("1_WITH_SONG_LIST");
             dispatch(setSongListStatus(songListUserId ? "PRIVATE" : "PUBLIC"))
 
@@ -45,11 +47,11 @@ export const useSongListPage = () => {
             setStatus("1_FETCH_SONG_LIST");
 
         } else if (status.step === "INITIAL") {
-            if (!objIsEmpty(songListBackup)) {
+            if (!arrayIsEmpty(songListBackup)) {
                 setCurrentSongList(songListBackup);
                 setStatus("FINISHED", { isSameBackup: true });
             } else {
-                setStatus("1_FETCH_SONG_LIST");
+                setStatus("1_FETCH_SONG_LIST", { userId });
             }
         }
     }, [songListStatus, songListUserId, status.step, userId, songListBackup, dispatch])
@@ -58,12 +60,18 @@ export const useSongListPage = () => {
         if (status.step === "1_FETCH_SONG_LIST") {
             if (songActionStatus === "INITIAL") {
                 dispatch(getSongList(status.opts));
+                setRetrys(0);
             } else if (songActionStatus === "SUCCESS") {
                 setStatus("1_WITH_SONG_LIST", { fromFetch: true });
                 dispatch(resetSongActionStatus());
             } else if (songActionStatus === "FAILURE") {
-                setStatus("FINISHED");
-                dispatch(resetSongActionStatus());
+                if (retrys === MAX_RETRYS) {
+                    setStatus("FINISHED");
+                    dispatch(resetSongActionStatus());
+                } else {
+                    setRetrys(lastRetrys => lastRetrys + 1);
+                    dispatch(getSongList(status.opts));
+                }
             }
         }
         /* 
@@ -81,7 +89,7 @@ export const useSongListPage = () => {
             - crea un privateSongTitles de esa que apunta al detalle de la publica, si 
             se edita algo de Lyric se crea nueva Lyric en private
         */
-    }, [status, songActionStatus, dispatch]);
+    }, [status, songActionStatus, retrys, dispatch]);
 
     useEffect(() => {
         if (status.step === "1_WITH_SONG_LIST") {
@@ -132,21 +140,21 @@ export const useSongListPage = () => {
                 })
 
                 setCurrentSongList(currentSongList.filter(song => versionGroups[song?.versionGroupId]?.moreRated === song.id));
-                setStatus("FINISHED");
             }
+            setStatus("FINISHED");
         }
 
     }, [status.step, currentSongList, userId, dispatch])
 
     useEffect(() => {
-        if (status.step === "FINISHED") {
+        if (status.step === "FINISHED" && !!isLoading) {
             setFinalSongList(currentSongList);
-            if (!status.opts.isSameBackup) {
+            if (!status.opts.isSameBackup && retrys !== MAX_RETRYS) {
                 dispatch(setSongListPageBackup({ songList: currentSongList }))
             }
             setIsLoading(false);
         }
-    }, [status, currentSongList, dispatch])
+    }, [status, isLoading, currentSongList, retrys, dispatch])
 
     return [finalSongList, isLoading, error];
 };

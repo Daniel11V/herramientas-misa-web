@@ -3,6 +3,8 @@
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
 import { arrayIsEmpty } from "../../utils.js";
+import { getPrivateSongTitleDB } from "../song/services/privateSongTitleList.js";
+import { getPublicSongTitleDB } from "../song/services/publicSongTitleList.js";
 import { getPrivateRepertoryListDB, getPrivateRepertoryDB } from "./services/privateRepertoryList.js";
 import { getPublicRepertoryDB, getPublicRepertoryListDB } from "./services/publicRepertoryList.js";
 import { types } from "./types"
@@ -14,6 +16,10 @@ export const resetRepertoryActionStatus = () => ({
 export const setRepertoryListStatus = (repertoryListStatus) => ({
     type: types.SET_REPERTORY_LIST_STATUS,
     payload: { repertoryListStatus }
+})
+export const setRepertoryStatus = (repertoryStatus) => ({
+    type: types.SET_REPERTORY_STATUS,
+    payload: { repertoryStatus }
 })
 
 // Thunks
@@ -48,7 +54,7 @@ export const getRepertoryList = ({ userId, onlyAddPrivates = false }) => {
             console.warn(error);
             dispatch({
                 type: types.FETCH_REPERTORY_LIST_FAILURE,
-                payload: { error: error.message }
+                payload: { error: error.message, userId }
             })
         }
     }
@@ -71,16 +77,31 @@ export const getRepertory = ({ userId, repertoryId }) => {
             if (!repertory) repertory = await getPublicRepertoryDB({ repertoryId });
             if (!repertory) throw new Error("Repertory not found (Title).");
 
+            const newRepertorySongs = {};
+            for (const key in repertory?.songs) {
+                for (const songTitleId of repertory?.songs?.[key]) {
+
+                    let songTitle = getState().page.songListPageBackup.songList.find(i => i.id === songTitleId);
+                    if (!songTitle) songTitle = getState().page.songPageBackup.songList[songTitleId];
+                    if (!songTitle) songTitle = await getPrivateSongTitleDB({ userId, songTitleId, hasInvitation: true });
+                    if (!songTitle) songTitle = await getPublicSongTitleDB({ songTitleId });
+                    if (!songTitle) throw new Error("Song not found (Title).");
+
+                    newRepertorySongs[key] = [...(newRepertorySongs[key] || []), songTitle];
+                }
+            }
+            const newRepertory = { ...repertory, songs: newRepertorySongs };
+
             //////////////////////////////
             dispatch({
                 type: types.FETCH_REPERTORY_SUCCESS,
-                payload: { repertory }
+                payload: { repertory: newRepertory, userId }
             })
         } catch (error) {
             console.warn(error.message);
             dispatch({
                 type: types.FETCH_REPERTORY_FAILURE,
-                payload: { error: error.message }
+                payload: { error: error.message, userId }
             })
         }
     }

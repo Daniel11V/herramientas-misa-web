@@ -314,7 +314,7 @@ const PageContainer = styled.div`
 	max-width: 700px;
 	${noSelectableText}
 `;
-const SongTitle = styled.h3`
+const SongTitle = styled.h4`
 	@media (max-width: 600px) {
 		font-size: 1.8rem;
 	}

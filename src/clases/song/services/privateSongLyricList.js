@@ -6,18 +6,25 @@ export const privateSongLyricModel = {
     ...publicSongLyricModel,
 };
 
-export const getPrivateSongLyricListDB = async ({ userId }) => {
-    if (!userId) throw new Error("Invalid user ID.");
+export const getPrivateSongLyricListDB = async ({ songLyricId, userId }) => {
+    if (!songLyricId) throw new Error("Invalid user ID.");
 
-    const privateSongLyric = store.getState().database.privateSongLyricList;
+    const allPrivateSongLyricList = store.getState().database.privateSongLyricList;
 
-    return privateSongLyric;
+    const userPrivateSongLyricList = Object.values(allPrivateSongLyricList)
+        .reduce((userPrivateSongLyricList, privateSongLyric) =>
+            privateSongLyric.creator.id === userId ?
+                ({ ...userPrivateSongLyricList, [privateSongLyric.id]: privateSongLyric })
+                : userPrivateSongLyricList,
+            {}) || {};
+
+    return userPrivateSongLyricList;
 }
 
-export const getPrivateSongLyricDB = async ({ songId }) => {
-    if (!songId) throw new Error("Invalid song ID.");
+export const getPrivateSongLyricDB = async ({ songLyricId }) => {
+    if (!songLyricId) throw new Error("Invalid song lyric ID.");
 
-    const privateSongLyric = store.getState().database.privateSongLyricList[songId];
+    const privateSongLyric = store.getState().database.privateSongLyricList[songLyricId];
 
     return privateSongLyric;
 }

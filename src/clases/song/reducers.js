@@ -59,6 +59,7 @@ const SongReducer = (state = initialState, { type, payload }) => {
                 newState.songActionStatus = "FAILURE";
                 newState.songError = payload.error;
                 newState.songListStatus = "FAILURE";
+                newState.songListUserId = payload.userId;
                 break;
 
 

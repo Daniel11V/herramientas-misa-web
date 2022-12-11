@@ -1,91 +1,91 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSongList, resetSongActionStatus, setSongListStatus } from "../../../clases/song/actions";
-import { objIsEmpty } from "../../../utils";
-import { getRepertory } from "../../../clases/repertory/actions";
+import { setRepertoryPageBackup } from "../../../clases/page/actions";
+import { getRepertory, resetRepertoryActionStatus, setRepertoryStatus } from "../../../clases/repertory/actions";
+import { MAX_RETRYS } from "../../../configs";
 
 export const useRepertoryPage2 = (repertoryId) => {
     const dispatch = useDispatch();
 
     const userId = useSelector((state) => state.user.google.id);
-    const { repertory, repertoryStatus, error } = useSelector((state) => state.repertory);
-    const { songList, songListStatus, songListUserId, songActionStatus, songError } = useSelector((state) => state.song);
-    const { songListPageBackup } = useSelector((state) => state.page);
-    const { songList: repertorySongListBackup } = songListPageBackup;
+    const { repertory, repertoryStatus, repertoryError, repertoryUserId, repertoryActionStatus } = useSelector((state) => state.repertory);
+    const { repertoryPageBackup } = useSelector((state) => state.page);
+    const { repertoryList: repertoryListBackup } = repertoryPageBackup;
 
-    const [status, setCurrentSongListStatus] = useState({ step: "INITIAL", opts: {} });
-    const [currentRepertorySongList, setCurrentRepertorySongList] = useState([]);
+    const [status, setCurrentRepertoryStatus] = useState({ step: "INITIAL", opts: {} });
+    const [retrys, setRetrys] = useState(0);
+    const [currentRepertory, setCurrentRepertory] = useState([]);
 
-    const [finalSongList, setFinalSongList] = useState({});
+    const [finalRepertory, setFinalRepertory] = useState({});
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(false);
 
+    useEffect(() => {
+        if (repertoryError) setError(repertoryError);
+    }, [repertoryError])
 
     const setStatus = (statusStep, statusOpts = {}) => {
         setIsLoading(true);
-        // console.log("ACA SONG_LIST_STATUS: ", statusStep, statusOpts);
-        setCurrentSongListStatus({ step: statusStep, opts: statusOpts });
+        // console.log("ACA REPERTORY_STATUS: ", statusStep, statusOpts);
+        setCurrentRepertoryStatus({ step: statusStep, opts: statusOpts });
     }
 
     useEffect(() => {
-        if (songListStatus === "INITIAL") {
-            dispatch(getRepertory({ userId, repertoryId }));
-            setStatus("1_FETCH_SONG_LIST", { isFirst: true, userId });
+        if (repertoryStatus === "SHOULD_UPDATE") {
+            setStatus("1_WITH_REPERTORY");
+            dispatch(setRepertoryStatus(repertoryUserId ? "PRIVATE" : "PUBLIC"))
 
-        } else if (songListStatus === "SHOULD_UPDATE") {
-            setStatus("1_WITH_SONG_LIST");
-            dispatch(setSongListStatus(songListUserId ? "PRIVATE" : "PUBLIC"))
+        } else if (userId && repertoryUserId !== userId) {
+            setStatus("1_FETCH_REPERTORY", { userId, repertoryId });
 
-        } else if (userId && songListUserId !== userId) {
-            setStatus("1_FETCH_SONG_LIST", { userId });
-
-        } else if (!userId && songListStatus === "PRIVATE") {
-            setStatus("1_FETCH_SONG_LIST");
+        } else if (!userId && repertoryStatus === "PRIVATE") {
+            setStatus("1_FETCH_REPERTORY", { repertoryId });
 
         } else if (status.step === "INITIAL") {
-            if (!objIsEmpty(repertorySongListBackup)) {
-                setCurrentRepertorySongList(repertorySongListBackup);
+            if (!!repertoryListBackup[repertoryId]) {
+                setCurrentRepertory(repertoryListBackup[repertoryId]);
                 setStatus("FINISHED", { isSameBackup: true });
             } else {
-                setStatus("1_FETCH_SONG_LIST");
+                setStatus("1_FETCH_REPERTORY", { userId, repertoryId });
             }
         }
-    }, [songListStatus, songListUserId, status.step, repertoryId, userId, repertorySongListBackup, dispatch])
+    }, [repertoryStatus, repertoryUserId, status.step, repertoryId, userId, repertoryListBackup, dispatch])
 
     useEffect(() => {
-        if (status.step === "1_FETCH_SONG_LIST") {
-            if (songActionStatus === "INITIAL") {
-                dispatch(getSongList(status.opts));
-            } else if (songActionStatus === "SUCCESS") {
-                setStatus("1_WITH_SONG_LIST", { fromFetch: true });
-                dispatch(resetSongActionStatus());
-            } else if (songActionStatus === "FAILURE") {
-                setStatus("FINISHED");
-                dispatch(resetSongActionStatus());
-            }
-        }
-    }, [status, songActionStatus, dispatch]);
-
-    useEffect(() => {
-        if (status.step === "1_WITH_SONG_LIST") {
-            const newRepertorySongList = {};
-            for (const key in repertory?.songs) {
-                for (const songId of repertory?.songs?.[key]) {
-                    const newSong = songList.find(song => song.id === songId)
-                    newRepertorySongList[key] = [...(newRepertorySongList[key] || []), newSong]
+        if (status.step === "1_FETCH_REPERTORY") {
+            if (repertoryActionStatus === "INITIAL") {
+                dispatch(getRepertory(status.opts));
+            } else if (repertoryActionStatus === "SUCCESS") {
+                setStatus("1_WITH_REPERTORY", { fromFetch: true });
+                dispatch(resetRepertoryActionStatus());
+            } else if (repertoryActionStatus === "FAILURE") {
+                if (retrys === MAX_RETRYS) {
+                    setStatus("FINISHED");
+                    dispatch(resetRepertoryActionStatus());
+                } else {
+                    setRetrys(lastRetrys => lastRetrys + 1);
+                    dispatch(getRepertory(status.opts));
                 }
             }
-
-            setCurrentRepertorySongList(newRepertorySongList);
-            setStatus("FINISHED");
         }
-    }, [status, songList, repertory?.songs]);
+    }, [status, repertoryActionStatus, retrys, dispatch]);
 
     useEffect(() => {
-        if (status.step === "FINISHED") {
-            setFinalSongList(currentRepertorySongList);
+        if (status.step === "1_WITH_REPERTORY") {
+            setCurrentRepertory(repertory);
+            setStatus("FINISHED");
+        }
+    }, [status, repertory]);
+
+    useEffect(() => {
+        if (status.step === "FINISHED" && !!isLoading) {
+            setFinalRepertory(currentRepertory);
+            if (!status.opts.isSameBackup && retrys !== MAX_RETRYS) {
+                dispatch(setRepertoryPageBackup(currentRepertory))
+            }
             setIsLoading(false);
         }
-    }, [status, currentRepertorySongList])
+    }, [status, isLoading, currentRepertory, retrys, dispatch])
 
-    return [repertory, isLoading, songError, finalSongList];
+    return [finalRepertory, isLoading, error];
 };

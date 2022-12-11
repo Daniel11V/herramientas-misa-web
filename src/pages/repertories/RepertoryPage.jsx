@@ -5,12 +5,13 @@ import { useDispatch } from "react-redux";
 // import { useRepertoryPage } from "./hooks/useRepertoryPage.js";
 import SongCollection from "../components/SongCollection";
 import { useRepertoryPage2 } from "./hooks/useRepertoryPage2.js";
+import { Header } from "../../styles/styles";
 
 const RepertoryPage = () => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const { id } = useParams();
-	const [repertory, loading, error, repertorySongList] = useRepertoryPage2(id);
+	const [repertory, isLoading, error] = useRepertoryPage2(id);
 
 	// const [tone, setTone] = useState(null);
 	// const [currentChords, setCurrentChords] = useState({});
@@ -32,7 +33,7 @@ const RepertoryPage = () => {
 		history.goBack();
 	};
 
-	if (loading)
+	if (isLoading)
 		return (
 			<div className="progress" style={{ backgroundColor: "#9cd1ff" }}>
 				<div
@@ -43,19 +44,19 @@ const RepertoryPage = () => {
 		);
 
 	return (
-		<div className="repertory">
-			<h3 className="header-repertory">
-				{repertory.title}{" "}
-				{repertory.author?.name && ` - ${repertory.author.name}`}
-			</h3>
-
-			<br />
-			{Object.keys(repertorySongList || {})?.map((list) => (
+		<>
+			<Header>
+				<h4>
+					{repertory.title}{" "}
+					{repertory.author?.name && ` - ${repertory.author.name}`}
+				</h4>
+			</Header>
+			{Object.keys(repertory?.songs || {})?.map((list) => (
 				<div key={list}>
 					<h6>{list}</h6>
 					<SongCollection
-						songList={repertorySongList?.[list]}
-						loading={loading}
+						songList={repertory?.songs?.[list]}
+						isLoading={isLoading}
 						error={error}
 						pageName="Repertorio"
 					/>
@@ -104,7 +105,7 @@ const RepertoryPage = () => {
 					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 };
 

@@ -7,13 +7,15 @@ export const Header = styled.div`
 	margin: 20px 0 20px 0;
     ${noSelectableText}
 
-    h3 {
+	h1, h2, h3, h4, h5, h6 {
         flex: 1;
 	    margin: 0;
+    }
 
-        @media (max-width: 800px) {
+    h4 {
+        /* @media (max-width: 800px) {
 		    font-size: 2.6rem;
-        }
+        } */
 
         @media (max-width: 600px) {
             font-size: 2rem;
@@ -22,7 +24,7 @@ export const Header = styled.div`
 `;
 
 export const Collection = styled.div.attrs({
-    className: "collection",
+	className: "collection",
 })`
 	overflow: inherit !important;
 	border-radius: 5px;
@@ -30,7 +32,7 @@ export const Collection = styled.div.attrs({
 `;
 
 export const CollectionItem = styled.div.attrs(props => ({
-    className: "collection-item " + (props.className || ""),
+	className: "collection-item " + (props.className || ""),
 }))`
 	color: #555 !important;
 	font-size: 14px;
@@ -53,9 +55,9 @@ export const CollectionItem = styled.div.attrs(props => ({
 	}
 
 	${(props) =>
-        props.withCheck && css`
+		props.withCheck && css`
 			height: 42px !important;
 			padding: 0 0 0 20px !important;
 		`
-    }
+	}
 `;

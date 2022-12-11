@@ -54,11 +54,11 @@ export const getPublicSongTitleListDB = async () => {
     return publicSongTitleList;
 }
 
-export const getPublicSongTitleDB = async ({ songId }) => {
+export const getPublicSongTitleDB = async ({ songTitleId }) => {
 
-    if (!songId) throw new Error("Invalid song ID.");
+    if (!songTitleId) throw new Error("Invalid song title ID.");
 
-    const publicSongTitle = store.getState().database.publicSongTitleList[songId];
+    const publicSongTitle = store.getState().database.publicSongTitleList[songTitleId];
 
     return publicSongTitle;
 }

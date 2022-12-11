@@ -25,21 +25,22 @@ const initialState = {
     repertoryListUserId: null,
     repertoryList: [],
 
+    repertoryStatus: "INITIAL",
+    repertoryUserId: null,
     repertory: defaultRepertory,
 }
 
 const RepertoryReducer = (state = initialState, { type, payload }) => {
     return produce(state, newState => {
         switch (type) {
-            case types.SET_REPERTORY_LIST_STATUS:
-                newState.repertoryListStatus = payload.repertoryListStatus;
-                break;
-            case types.SET_REPERTORY_LIST_USER_ID:
-                newState.repertoryListUserId = payload.repertoryListUserId;
-                break;
             case types.RESET_REPERTORY_ACTION_STATUS:
                 newState.repertoryActionStatus = "INITIAL";
                 newState.repertoryError = null;
+                break;
+
+
+            case types.SET_REPERTORY_LIST_STATUS:
+                newState.repertoryListStatus = payload.repertoryListStatus;
                 break;
 
             case types.FETCH_REPERTORY_LIST:
@@ -55,6 +56,12 @@ const RepertoryReducer = (state = initialState, { type, payload }) => {
                 newState.repertoryActionStatus = "FAILURE";
                 newState.repertoryError = payload.error;
                 newState.repertoryListStatus = "FAILURE";
+                newState.repertoryListUserId = payload.userId;
+                break;
+
+
+            case types.SET_REPERTORY_STATUS:
+                newState.repertoryStatus = payload.repertoryStatus;
                 break;
 
             case types.FETCH_REPERTORY:
@@ -63,10 +70,13 @@ const RepertoryReducer = (state = initialState, { type, payload }) => {
             case types.FETCH_REPERTORY_SUCCESS:
                 newState.repertoryActionStatus = "SUCCESS";
                 newState.repertory = payload.repertory;
+                newState.repertoryStatus = payload.userId ? "PRIVATE" : "PUBLIC";
+                newState.repertoryUserId = payload.userId;
                 break;
             case types.FETCH_REPERTORY_FAILURE:
                 newState.repertoryActionStatus = "FAILURE";
                 newState.repertoryError = payload.error;
+                newState.repertoryStatus = "FAILURE";
                 break;
 
             case types.CREATE_REPERTORY:

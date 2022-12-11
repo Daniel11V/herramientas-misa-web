@@ -7,10 +7,10 @@ export const publicSongLyricModel = {
     lyric: { type: "String", required: true }
 }
 
-export const getPublicSongLyricDB = async ({ songId }) => {
-    if (!songId) throw new Error("Invalid song ID.");
+export const getPublicSongLyricDB = async ({ songLyricId }) => {
+    if (!songLyricId) throw new Error("Invalid song ID.");
 
-    const publicSongLyric = store.getState().database.publicSongLyricList[songId];
+    const publicSongLyric = store.getState().database.publicSongLyricList[songLyricId];
 
     return publicSongLyric;
 }

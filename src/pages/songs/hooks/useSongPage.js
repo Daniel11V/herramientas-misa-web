@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { MAX_RETRYS } from "../../../configs";
+import { MAX_RETRYS } from "../../../configs";
 import { getSong, publishSong, resetSongActionStatus } from "../../../clases/song/actions";
-import { objIsEmpty } from "../../../utils";
 import { setSongPageBackup } from "../../../clases/page/actions";
 
-export const useSongPage = (songId) => {
+export const useSongPage = (songTitleId) => {
     const dispatch = useDispatch();
 
     const userId = useSelector((state) => state.user.google.id);
@@ -14,9 +13,9 @@ export const useSongPage = (songId) => {
     const { songList: songListBackup } = songPageBackup;
 
     const [status, setCurrentSongListStatus] = useState({ step: "INITIAL", opts: {} });
+    const [retrys, setRetrys] = useState(0);
     const [currentSong, setCurrentSong] = useState({});
 
-    // const [retrys, setRetrys] = useState(0);
 
     const [finalSong, setFinalSong] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -34,34 +33,40 @@ export const useSongPage = (songId) => {
 
     useEffect(() => {
         if (userId && songUserId !== userId) {
-            setStatus("1_FETCH_SONG", { userId, songId });
+            setStatus("1_FETCH_SONG", { userId, songTitleId });
 
         } else if (!userId && songStatus === "PRIVATE") {
-            setStatus("1_FETCH_SONG", { songId });
+            setStatus("1_FETCH_SONG", { songTitleId });
 
         } else if (status.step === "INITIAL") {
-            if (!objIsEmpty(songListBackup) && !!songListBackup[songId]) {
-                setCurrentSong(songListBackup[songId]);
+            if (!!songListBackup[songTitleId]) {
+                setCurrentSong(songListBackup[songTitleId]);
                 setStatus("FINISHED", { isSameBackup: true });
             } else {
-                setStatus("1_FETCH_SONG", { songId });
+                setStatus("1_FETCH_SONG", { userId, songTitleId });
             }
         }
-    }, [songId, songStatus, songUserId, status.step, userId, songListBackup])
+    }, [songTitleId, songStatus, songUserId, status.step, userId, songListBackup])
 
     useEffect(() => {
         if (status.step === "1_FETCH_SONG") {
             if (songActionStatus === "INITIAL") {
                 dispatch(getSong(status.opts));
+                setRetrys(0);
             } else if (songActionStatus === "SUCCESS") {
                 setStatus("1_WITH_SONG", { fromFetch: true });
                 dispatch(resetSongActionStatus());
             } else if (songActionStatus === "FAILURE") {
-                setStatus("FINISHED");
-                dispatch(resetSongActionStatus());
+                if (retrys === MAX_RETRYS) {
+                    setStatus("FINISHED");
+                    dispatch(resetSongActionStatus());
+                } else {
+                    setRetrys(lastRetrys => lastRetrys + 1);
+                    dispatch(getSong(status.opts));
+                }
             }
         }
-    }, [status, songActionStatus, dispatch]);
+    }, [status, songActionStatus, retrys, dispatch]);
 
     useEffect(() => {
         if (status.step === "1_WITH_SONG") {
@@ -71,14 +76,14 @@ export const useSongPage = (songId) => {
     }, [status, song]);
 
     useEffect(() => {
-        if (status.step === "FINISHED") {
+        if (status.step === "FINISHED" && !!isLoading) {
             setFinalSong(currentSong);
-            if (!status.opts.isSameBackup) {
+            if (!status.opts.isSameBackup && retrys !== MAX_RETRYS) {
                 dispatch(setSongPageBackup(currentSong))
             }
             setIsLoading(false);
         }
-    }, [status, currentSong, dispatch])
+    }, [status, isLoading, currentSong, retrys, dispatch])
 
 
     // useEffect(() => {
@@ -87,9 +92,9 @@ export const useSongPage = (songId) => {
 
     // useEffect(() => {
     //     if (status === "1_SONG") {
-    //         if (!songId) {
+    //         if (!songTitleId) {
     //             setStatus("FINISHED");
-    //         } else if (song.id === songId) {
+    //         } else if (song.id === songTitleId) {
     //             setCurrentSong(song);
     //             setStatus("FINISHED");
     //         } else if (retrys < MAX_RETRYS) {
@@ -100,12 +105,12 @@ export const useSongPage = (songId) => {
     //             setStatus("FINISHED");
     //         }
     //     }
-    // }, [status, song, songId, retrys])
+    // }, [status, song, songTitleId, retrys])
 
     // useEffect(() => {
     //     if (status === "1_FETCH_SONG") {
     //         if (songActionStatus === "INITIAL") {
-    //             dispatch(getSong({ userId, songId }));
+    //             dispatch(getSong({ userId, songTitleId }));
     //         } else if (songActionStatus === "SUCCESS") {
     //             setStatus("1_SONG");
     //             dispatch(resetSongActionStatus());
@@ -115,7 +120,7 @@ export const useSongPage = (songId) => {
     //             dispatch(resetSongActionStatus());
     //         }
     //     }
-    // }, [status, songActionStatus, userId, songId, dispatch]);
+    // }, [status, songActionStatus, userId, songTitleId, dispatch]);
 
     // useEffect(() => {
     //     if (userId && !currentSong.id) {
@@ -124,7 +129,7 @@ export const useSongPage = (songId) => {
     // }, [userId, currentSong]);
 
     const publishCurrentSong = () => {
-        dispatch(publishSong(songId));
+        dispatch(publishSong(songTitleId));
     }
 
     return { song: finalSong, isLoading, error, publishCurrentSong };

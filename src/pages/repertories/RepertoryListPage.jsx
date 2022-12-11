@@ -26,10 +26,13 @@ const RepertoryListPage = () => {
 	return (
 		<Fragment>
 			<Header>
-				<h3>Repertorios</h3>
+				<h4>Repertorios</h4>
 				{isLogged ? (
 					<Link
-						to={{ pathname: "/create-repertory", state: { from: "Repertorios" } }}
+						to={{
+							pathname: "/create-repertory",
+							state: { from: "Repertorios" },
+						}}
 						className="btn waves-effect waves-light blue darken-2 right"
 					>
 						<i className="material-icons right">add</i>Crear
