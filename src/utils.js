@@ -75,35 +75,34 @@ export const getChordsFromLyric = (lyric) => {
     const newChords = {};
     let onlyLyric = [...songLines];
 
-    let reallyAllChordsEN = [];
-    allChords["en"].forEach((chordType) => {
-        reallyAllChordsEN = reallyAllChordsEN.concat(chordType.chords);
-    });
-    let reallyAllChordsES = [];
-    allChords["es"].forEach((chordType) => {
-        reallyAllChordsES = reallyAllChordsES.concat(chordType.chords);
-    });
+    const allChordsArrayEN = allChords["en"].reduce((allChordsEN, chordType) => [...allChordsEN, ...chordType.chords], []).reverse();
+    const allChordsArrayES = allChords["es"].reduce((allChordsES, chordType) => [...allChordsES, ...chordType.chords], []).reverse();
 
     let finalLineIndex = -1;
     songLines.forEach((currentLine) => {
         finalLineIndex++;
         if (currentLine.replaceAll(" ", "") === "") return;
-        let line = " " + currentLine + " ";
+        let line = (" " + currentLine + " ").toUpperCase();
 
-        reallyAllChordsEN.reverse().forEach((chord) => {
-            while (line.includes(` ${chord} `)) line = line.replace(chord, "");
+        while (line.includes(`\t`)) line = line.replace('\t', " ");
+        allChordsArrayEN.forEach((chord) => {
+            const upperChord = chord.toUpperCase();
+            while (line.includes(` ${upperChord} `)) line = line.replace(upperChord, "");
         });
-        reallyAllChordsES.reverse().forEach((chord) => {
-            while (line.includes(` ${chord} `)) line = line.replace(chord, "");
+        allChordsArrayES.forEach((chord) => {
+            const upperChord = chord.toUpperCase();
+            while (line.includes(` ${upperChord} `)) line = line.replace(upperChord, "");
         });
-        // reallyAllChordsEN.forEach((chord) => {
+
+        // allChordsArrayEN.forEach((chord) => {
         // 	while (line.toUpperCase().includes(` ${chord.toUpperCase()} `))
         // 		line = line.replace(chord, "").replace(chord.toUpperCase(), "");
         // });
-        // reallyAllChordsES.forEach((chord) => {
+        // allChordsArrayES.forEach((chord) => {
         // 	while (line.toUpperCase().includes(` ${chord.toUpperCase()} `))
         // 		line = line.replace(chord, "").replace(chord.toUpperCase(), "");
         // });
+        console.log("ACA", { line });
         if (line.replaceAll(" ", "") === "") {
             const chordLine = currentLine + " ";
             let newChord = "";
@@ -137,7 +136,7 @@ export const getChordsFromLyric = (lyric) => {
         const k = Object.keys(newChords[i])[0];
 
         chordTone = newChords[i][k];
-        chordLang = reallyAllChordsEN.includes(newChords[i][k]) ? "en" : "es"
+        chordLang = allChordsArrayEN.includes(newChords[i][k]) ? "en" : "es"
 
         // Adjust if chordLine is larger
         for (const lineIndex in newChords) {

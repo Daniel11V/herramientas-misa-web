@@ -57,33 +57,15 @@ export const database = {
       placeUbication: '',
       isMass: true,
       songs: {
-        entrada: [
-          ''
-        ],
-        gloria: [
-          ''
-        ],
-        aleluya: [
-          ''
-        ],
-        ofrenda: [
-          ''
-        ],
-        santo: [
-          ''
-        ],
-        cordero: [
-          ''
-        ],
-        comunion: [
-          ''
-        ],
-        meditacion: [
-          ''
-        ],
-        salida: [
-          ''
-        ]
+        entrada: [],
+        gloria: [],
+        aleluya: [],
+        ofrenda: [],
+        santo: [],
+        cordero: [],
+        comunion: [],
+        meditacion: [],
+        salida: []
       }
     },
     '6144d6373d6d4f8085af95ee': {
@@ -99,33 +81,15 @@ export const database = {
       placeUbication: '',
       isMass: true,
       songs: {
-        entrada: [
-          ''
-        ],
-        gloria: [
-          ''
-        ],
-        aleluya: [
-          ''
-        ],
-        ofrenda: [
-          ''
-        ],
-        santo: [
-          ''
-        ],
-        cordero: [
-          ''
-        ],
-        comunion: [
-          ''
-        ],
-        meditacion: [
-          ''
-        ],
-        salida: [
-          ''
-        ]
+        entrada: [],
+        gloria: [],
+        aleluya: [],
+        ofrenda: [],
+        santo: [],
+        cordero: [],
+        comunion: [],
+        meditacion: [],
+        salida: []
       }
     },
     '1670495920813': {
@@ -351,26 +315,6 @@ export const database = {
       },
       topics: [],
       labels: [],
-      rating: [],
-      level: {
-        main: 1
-      }
-    },
-    '6144d6372d6d4f8085af95ed': {
-      id: '6144d6372d6d4f8085af95ed',
-      versionGroupId: '6144d6372d6d4f8085af95ed',
-      isPrivate: false,
-      lyricId: '6144d6372d6d4f8085af95ed',
-      lyricIsPrivate: false,
-      title: 'Aleluya II (Busca primero el Reino de Dios)',
-      creator: {
-        id: '111418653738749034139',
-        name: 'Daniel Vinet'
-      },
-      topics: [],
-      labels: [
-        'aleluya'
-      ],
       rating: [],
       level: {
         main: 1
@@ -884,9 +828,6 @@ export const database = {
     '6144d3152d6d4f8085af95d9': {
       lyric: 'REm   LA#   FA   DO\n\n         FA\nSiendo Dios\n               DO\nfuiste tan humilde\n                SOLm\nhombre Tú te hiciste\n                    DO\nTraicionado y rechazado\n\n         FA\nSiendo Dios\n               DO\nTomaste mi lugar\n                SOLm\nCargaste en tus hombros \n                 DO\nmis heridas y pecados\n\n         SOLm        REm\nFue por mi, te entregaste\n      LA#         SOLm\nPara darme vida nueva \n        DO \nY rescatarme.\n\n                         FA\nAl contemplarte en la Cruz\n                       DO\nAl contemplar tanto amor\n                     SOLm\nNo puedo más que adorarte\n                LA#  \nY mi vida entregarte. \n                         FA\nAl contemplarte en la Cruz\n                       DO\nAl contemplar tanto amor\n                     SOLm\nNo puedo más que adorarte\n                LA#   DO  REm\nY mi vida entregarte, Jesús. \n\n\nSiendo Dios, tomaste mi lugar...'
     },
-    '6144d6372d6d4f8085af95ed': {
-      lyric: 'Busca primero el Reino de Dios\ny su perfecta justicia,\ny lo demás añadido será.  \nAleluya, aleluuuuuuya.\n\nAleluya,   aleluya, aleluya\nAleluya,  aleluuuya\nAleluya,   aleluya, aleluya\nAleluya,  aleluuuya\n\nOtras antífonas:\nCanto a la vida que Cristo regaló \ncambiando su historia\ncuando en la cruz él murió por nuestro amor.\nAleluya, aleluya.\n\nCanto por Cristo que nos liberará \ncuando él venga en la gloria\ncuando la vida por él renacerá. \nAleluya, aleluya.'
-    },
     '1669486125376': {
       lyric: 'Despertemos, llega Cristo, ven Señor\nAcudamos a su encuentro\nven Señor\n\nLa iglesia espera tu venida ven Señor\ny llena de alegría canta\nven Señor\n\nPalabra eterna y creadora, ven Señor\na renovar todas las cosas\nven Señor\n\nImagen de la luz eterna, ven Señor\na iluminar nuestras tinieblas\nven Señor\n\nVerdad y vida encarnada ven Señor\na responder a nuestras ansias\nven Señor\n\nPastor y rey de nuestro pueblo, ven Señor\na conducirnos a tu Reino\nven Señor'
     },
@@ -945,7 +886,7 @@ export const database = {
       lyric: '      RE                   LA               SIm \nCordeeeeeero de Dios que quitas\n                       SOL         LA\nel pecado del muuuuundo\n SOL    LA       RE FA#m SIm \nten piedad de nosooootros \n SOL    LA       SOL RE \nten piedad de nosotros. (bis)\n\n RE          LA         SIm \nCordero de Dios que quitas\n               SOL LA\nel pecado del mundo\n SOL    LA      RE FA#m SIm \nconcédenos la paaaaaaaaaz\n SOL    LA     SOL SOLm RE \nconcédenos la paz.'
     },
     '1670706522980': {
-      lyric: 'DO        SOL     LAm       MIm    \nBusca primero el Reino de Dios \nFA       DO       RE7 SOL \ny su perfecta justicia,\nDO\tSOL    LAm    MIm  \ny lo demás añadido será. \nFA    DO     FA SOL DO \nAleluya, aleluuuuuuya.\n\nDO   SOL      LAm        MIm\nAleluya,   aleluya, aleluya\nFA    DO      SOL SOL7\nAleluya,  aleluuuya\nDO   SOL      LAm        MIm\nAleluya,   aleluya, aleluya\nFA    DO      SOL DO\nAleluya,  aleluuuya\n\nOtras antífonas:\nCanto a la vida que Cristo regaló \ncambiando su historia\ncuando en la cruz él murió por nuestro amor.\nAleluya, aleluya.\n\nCanto por Cristo que nos liberará \ncuando él venga en la gloria\ncuando la vida por él renacerá. \nAleluya, aleluya.'
+      lyric: 'DO        SOL     LAm       MIm    \nBusca primero el Reino de Dios \nFA       DO       RE7 SOL \ny su perfecta justicia,\nDO       SOL    LAm    MIm  \ny lo demás añadido será. \nFA    DO     FA SOL DO \nAleluya, aleluuuuuuya.\n\nDO   SOL      LAm        MIm\nAleluya,   aleluya, aleluya\nFA    DO      SOL SOL7\nAleluya,  aleluuuya\nDO   SOL      LAm        MIm\nAleluya,   aleluya, aleluya\nFA    DO      SOL DO\nAleluya,  aleluuuya\n\nOtras antífonas:\nCanto a la vida que Cristo regaló \ncambiando su historia\ncuando en la cruz él murió por nuestro amor.\nAleluya, aleluya.\n\nCanto por Cristo que nos liberará \ncuando él venga en la gloria\ncuando la vida por él renacerá. \nAleluya, aleluya.'
     }
   }
 };

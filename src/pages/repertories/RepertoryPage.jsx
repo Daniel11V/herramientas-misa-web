@@ -4,14 +4,14 @@ import M from "materialize-css";
 import { useDispatch } from "react-redux";
 // import { useRepertoryPage } from "./hooks/useRepertoryPage.js";
 import SongCollection from "../components/SongCollection";
-import { useRepertoryPage2 } from "./hooks/useRepertoryPage2.js";
+import { useRepertoryPage } from "./hooks/useRepertoryPage.js";
 import { Header } from "../../styles/styles";
 
 const RepertoryPage = () => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const { id } = useParams();
-	const [repertory, isLoading, error] = useRepertoryPage2(id);
+	const [repertory, isLoading, error] = useRepertoryPage(id);
 
 	// const [tone, setTone] = useState(null);
 	// const [currentChords, setCurrentChords] = useState({});
