@@ -52,6 +52,11 @@ export const createPrivateSongTitleDB = async ({ songTitleCreated }) => {
     return newSongTitle;
 }
 
+export const editPrivateSongTitleDB = async ({ songTitleEdited }) => {
+    await store.dispatch(setDatabaseItem("privateSongTitleList", songTitleEdited.id, songTitleEdited));
+    return;
+}
+
 export const deletePrivateSongTitleDB = async ({ songTitleId }) => {
     await store.dispatch(deleteDatabaseItem("privateSongTitleList", songTitleId));
     return songTitleId;

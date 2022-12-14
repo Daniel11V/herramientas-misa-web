@@ -44,7 +44,7 @@ const ChordSelector = ({ selectedChord, setSelectedChord, chordLang }) => {
 					style={{ padding: 0, paddingTop: "24px" }}
 				>
 					<h5>Elegir Acorde</h5>
-					{allChords[chordLang].map((type, i) => (
+					{allChords[chordLang]?.map((type, i) => (
 						<div key={i}>
 							<ChordText>
 								<b>{type.name}</b>

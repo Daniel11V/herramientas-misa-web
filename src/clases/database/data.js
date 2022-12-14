@@ -200,6 +200,7 @@ export const database = {
       isPrivate: false,
       lyricId: '123',
       lyricIsPrivate: false,
+      tone: "F",
       title: 'Espíritu de Verdad',
       author: {
         id: '123455',

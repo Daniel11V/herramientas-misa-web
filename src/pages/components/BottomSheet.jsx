@@ -73,7 +73,7 @@ const BottomSheet = ({ children, open, setOpen, fullscreen = false }) => {
 
 const FullScreenBackground = styled.div`
 	position: fixed;
-	z-index: 1000;
+	z-index: 980;
 	height: 100vh;
 	width: 100vw;
 	top: 0;
@@ -91,7 +91,7 @@ const BottomSheetStyled = styled.div`
 	left: 0;
 	transition: top ${(props) => props.transitionDuration} ease-in-out;
 	box-shadow: 0px 3px 4px 6px rgb(0 0 0 / 23%);
-	z-index: 1100;
+	z-index: 990;
 	${(props) =>
 		!!props.open &&
 		css`

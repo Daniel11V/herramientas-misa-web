@@ -16,7 +16,18 @@ import { useSongPageOptions } from "./hooks/useSongPageOptions.js";
 const SongPage = () => {
 	const history = useHistory();
 	const { id } = useParams();
-	const { song, isLoading, error, publishCurrentSong } = useSongPage(id);
+	const {
+		song,
+		isLoading,
+		error,
+		publishCurrentSong,
+		tone,
+		setTone,
+		annotations,
+		setAnnotations,
+		areNewSongOptions,
+		saveSongOptions,
+	} = useSongPage(id);
 	const {
 		areNewOptions,
 		pageOptions,
@@ -27,20 +38,26 @@ const SongPage = () => {
 
 	const user = useSelector((state) => state.user.google);
 
-	const [tone, setTone] = useState(null);
-	const [chordLang, setChordLang] = useState(null);
+	const [chordLang, setChordLang] = useState("en");
 
 	const [messageModalOpts, setMessageModalOpts] = useState(null);
-	const [open, setOpen] = useState(false);
+	const [openOptions, setOpenOptions] = useState(false);
 
 	useEffect(() => {
 		const elems = document.querySelectorAll(".modal");
 		M.Modal.init(elems);
 	}, []);
 
+	useEffect(() => {
+		if (!!openOptions) {
+			const textarea = document.querySelector("textarea");
+			M.textareaAutoResize(textarea);
+		}
+	}, [openOptions]);
+
 	const handleFloatingBtn = (event) => {
 		event.stopPropagation();
-		setOpen(true);
+		setOpenOptions((lv) => !lv);
 	};
 
 	// const handlePrintBtn = (event) => {
@@ -59,7 +76,7 @@ const SongPage = () => {
 	// 	content += "</body>";
 	// 	content += "</html>";
 
-	// 	const win = window.open(
+	// 	const win = window.openOptions(
 	// 		"",
 	// 		"",
 	// 		"left=0,top=0,width=552,height=477,toolbar=0,scrollbars=0,status =0"
@@ -134,6 +151,21 @@ const SongPage = () => {
 		});
 	};
 
+	const handleChangeTone = (newTone) => {
+		setTone(newTone, true);
+		// setOpenOptions(false);
+	};
+
+	const handleSaveSongOptions = () => {
+		setOpenOptions(false);
+		saveSongOptions();
+	};
+
+	const handleSaveOptions = () => {
+		setOpenOptions(false);
+		saveOptions();
+	};
+
 	if (!!isLoading)
 		return (
 			<div className="progress" style={{ backgroundColor: "#9cd1ff" }}>
@@ -173,8 +205,8 @@ const SongPage = () => {
 					lyricWithChords={song.lyric}
 					tone={tone}
 					setTone={setTone}
-					chordLang={chordLang}
 					setChordLang={setChordLang}
+					chordLang={chordLang}
 					showChords={pageOptions.showChords}
 					isEditable={false}
 				/>
@@ -185,10 +217,12 @@ const SongPage = () => {
 					className="btn-floating btn-large waves-effect waves-light"
 					onClick={handleFloatingBtn}
 				>
-					<i className="large material-icons">tune</i>
+					<i className="large material-icons">
+						{openOptions ? "arrow_downward" : "tune"}
+					</i>
 				</a>
 			</SongActionButton>
-			<BottomSheet open={open} setOpen={setOpen} fullscreen>
+			<BottomSheet open={openOptions} setOpen={setOpenOptions} fullscreen>
 				<div>
 					<h5>Detalles</h5>
 					{song.pulse && <SongInfo>Pulso: {song.pulse}</SongInfo>}
@@ -216,16 +250,42 @@ const SongPage = () => {
 									display: "inline-block",
 									width: "100px",
 									textAlign: "center",
+									marginBottom: "5px",
 								}}
 							>
 								<ChordSelector
 									selectedChord={tone}
-									setSelectedChord={setTone}
+									setSelectedChord={handleChangeTone}
 									chordLang={chordLang}
 								/>
 							</div>
 						</>
 					)}
+					<br />
+					<div className="input-field">
+						<textarea
+							id="annotations"
+							name="annotations"
+							className="materialize-textarea"
+							onChange={(e) => setAnnotations(e.target.value)}
+							value={annotations}
+						/>
+						<label
+							htmlFor="annotations"
+							className={"lab" + (annotations ? " active" : "")}
+						>
+							Mis Notas
+						</label>
+					</div>
+					{!!areNewSongOptions && (
+						<SongButton
+							className="btn waves-effect waves-light blue darken-2"
+							onClick={handleSaveSongOptions}
+						>
+							<i className="material-icons right">save</i>Guardar
+						</SongButton>
+					)}
+
 					<hr />
 					<h5>Visualización</h5>
 					<div
@@ -259,7 +319,7 @@ const SongPage = () => {
 					{!!areNewOptions && (
 						<SongButton
 							className="btn waves-effect waves-light blue darken-2"
-							onClick={saveOptions}
+							onClick={handleSaveOptions}
 						>
 							<i className="material-icons right">save</i>Guardar configuración
 						</SongButton>

@@ -49,6 +49,22 @@ const allChords = {
                 "SI7",
             ]
         }, {
+            name: "Menores Septimas",
+            chords: [
+                "DOm7",
+                "DO#m7",
+                "REm7",
+                "RE#m7",
+                "MIm7",
+                "FAm7",
+                "FA#m7",
+                "SOLm7",
+                "SOL#m7",
+                "LAm7",
+                "LA#m7",
+                "SIm7",
+            ]
+        }, {
             name: "Mayores Septimas",
             chords: [
                 "DOmaj7",
@@ -63,6 +79,54 @@ const allChords = {
                 "LAmaj7",
                 "LA#maj7",
                 "SImaj7",
+            ]
+        }, {
+            name: "Novenas",
+            chords: [
+                "DO9",
+                "DO#9",
+                "RE9",
+                "RE#9",
+                "MI9",
+                "FA9",
+                "FA#9",
+                "SOL9",
+                "SOL#9",
+                "LA9",
+                "LA#9",
+                "SI9",
+            ]
+        }, {
+            name: "Menores Novenas",
+            chords: [
+                "DOm9",
+                "DO#m9",
+                "REm9",
+                "RE#m9",
+                "MIm9",
+                "FAm9",
+                "FA#m9",
+                "SOLm9",
+                "SOL#m9",
+                "LAm9",
+                "LA#m9",
+                "SIm9",
+            ]
+        }, {
+            name: "Mayores Novenas",
+            chords: [
+                "DOmaj9",
+                "DO#maj9",
+                "REmaj9",
+                "RE#maj9",
+                "MImaj9",
+                "FAmaj9",
+                "FA#maj9",
+                "SOLmaj9",
+                "SOL#maj9",
+                "LAmaj9",
+                "LA#maj9",
+                "SImaj9",
             ]
         }
     ],
@@ -121,6 +185,22 @@ const allChords = {
                 "Bm7",
             ]
         }, {
+            name: "Majors Seventh",
+            chords: [
+                "Cmaj7",
+                "C#maj7",
+                "Dmaj7",
+                "D#maj7",
+                "Emaj7",
+                "Fmaj7",
+                "F#maj7",
+                "Gmaj7",
+                "G#maj7",
+                "Amaj7",
+                "A#maj7",
+                "Bmaj7",
+            ]
+        }, {
             name: "Nineth",
             chords: [
                 "C9",
@@ -153,20 +233,20 @@ const allChords = {
                 "Bm9",
             ]
         }, {
-            name: "Majors Seventh",
+            name: "Majors Nineth",
             chords: [
-                "Cmaj7",
-                "C#maj7",
-                "Dmaj7",
-                "D#maj7",
-                "Emaj7",
-                "Fmaj7",
-                "F#maj7",
-                "Gmaj7",
-                "G#maj7",
-                "Amaj7",
-                "A#maj7",
-                "Bmaj7",
+                "Cmaj9",
+                "C#maj9",
+                "Dmaj9",
+                "D#maj9",
+                "Emaj9",
+                "Fmaj9",
+                "F#maj9",
+                "Gmaj9",
+                "G#maj9",
+                "Amaj9",
+                "A#maj9",
+                "Bmaj9",
             ]
         }
     ]

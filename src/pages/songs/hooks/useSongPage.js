@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MAX_RETRYS } from "../../../configs";
-import { getSong, publishSong, resetSongActionStatus } from "../../../clases/song/actions";
+import { editSong, getSong, publishSong, resetSongActionStatus } from "../../../clases/song/actions";
 import { setSongPageBackup } from "../../../clases/page/actions";
+import M from "materialize-css";
 
 export const useSongPage = (songTitleId) => {
     const dispatch = useDispatch();
@@ -20,6 +21,35 @@ export const useSongPage = (songTitleId) => {
     const [finalSong, setFinalSong] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(false);
+
+    const [areNewSongOptions, setAreNewSongOptions] = useState(false)
+    const [songOptions, setSongOptions] = useState({
+        tone: null,
+        annotations: "",
+        level: { main: null }
+    })
+
+    const setTone = (newTone, changeDefault = false) => {
+        if (newTone !== songOptions.tone) {
+            setSongOptions(lv => ({ ...lv, tone: newTone }));
+            if (changeDefault) setAreNewSongOptions(true);
+        }
+    }
+    const setAnnotations = (newAnnotations) => {
+        if (newAnnotations !== songOptions.annotations) {
+            setSongOptions(lv => ({ ...lv, annotations: newAnnotations }));
+            setAreNewSongOptions(true);
+        }
+    }
+
+    const publishCurrentSong = () => {
+        dispatch(publishSong(songTitleId));
+    }
+
+    const saveSongOptions = () => {
+        setStatus("EDIT_SONG", { ...song, ...songOptions });
+    }
+
 
     useEffect(() => {
         if (songError) setError(songError);
@@ -40,7 +70,9 @@ export const useSongPage = (songTitleId) => {
 
         } else if (status.step === "INITIAL") {
             if (!!songListBackup[songTitleId]) {
-                setCurrentSong(songListBackup[songTitleId]);
+                const selectedSong = songListBackup[songTitleId];
+                setCurrentSong(selectedSong);
+                setSongOptions({ tone: selectedSong.tone, annotations: selectedSong.annotations, level: selectedSong.level })
                 setStatus("FINISHED", { isSameBackup: true });
             } else {
                 setStatus("1_FETCH_SONG", { userId, songTitleId });
@@ -54,7 +86,7 @@ export const useSongPage = (songTitleId) => {
                 dispatch(getSong(status.opts));
                 setRetrys(0);
             } else if (songActionStatus === "SUCCESS") {
-                setStatus("1_WITH_SONG", { fromFetch: true });
+                setStatus("1_WITH_SONG");
                 dispatch(resetSongActionStatus());
             } else if (songActionStatus === "FAILURE") {
                 if (retrys === MAX_RETRYS) {
@@ -71,6 +103,7 @@ export const useSongPage = (songTitleId) => {
     useEffect(() => {
         if (status.step === "1_WITH_SONG") {
             setCurrentSong(song);
+            setSongOptions({ tone: song.tone, annotations: song.annotations, level: song.level })
             setStatus("FINISHED");
         }
     }, [status, song]);
@@ -84,6 +117,37 @@ export const useSongPage = (songTitleId) => {
             setIsLoading(false);
         }
     }, [status, isLoading, currentSong, retrys, dispatch])
+
+    useEffect(() => {
+        if (status.step === "EDIT_SONG") {
+            if (songActionStatus === "INITIAL") {
+                dispatch(editSong(status.opts));
+                setRetrys(0);
+            } else if (songActionStatus === "SUCCESS") {
+                setStatus("EDITED_SONG");
+                dispatch(resetSongActionStatus());
+            } else if (songActionStatus === "FAILURE") {
+                if (retrys === MAX_RETRYS) {
+                    setStatus("FINISHED");
+                    dispatch(resetSongActionStatus());
+                } else {
+                    setRetrys(lastRetrys => lastRetrys + 1);
+                    dispatch(editSong(status.opts));
+                }
+            }
+        }
+    }, [status, songActionStatus, retrys, dispatch]);
+
+    useEffect(() => {
+        if (status.step === "EDITED_SONG") {
+            setCurrentSong(song);
+            // setSongOptions({ tone: song.tone, annotations: song.annotations, level: song.level })
+            setStatus("FINISHED");
+
+            setAreNewSongOptions(false);
+            M.toast({ html: "Guardado con exito." });
+        }
+    }, [status, song]);
 
 
     // useEffect(() => {
@@ -128,9 +192,7 @@ export const useSongPage = (songTitleId) => {
     //     }
     // }, [userId, currentSong]);
 
-    const publishCurrentSong = () => {
-        dispatch(publishSong(songTitleId));
-    }
-
-    return { song: finalSong, isLoading, error, publishCurrentSong };
+    return {
+        song: finalSong, isLoading, error, publishCurrentSong, tone: songOptions.tone, setTone, annotations: songOptions.annotations, setAnnotations, areNewSongOptions, saveSongOptions
+    };
 };

@@ -8,6 +8,7 @@ export const publicSongTitleModel = {
     lyricId: { type: "String", required: true },
     lyricIsPrivate: { type: "Bool", required: true },
     title: { type: "String", required: true },
+    lyricStart: { type: "String", required: true },
     author: {
         type: {
             id: { type: "String", required: true },
@@ -32,6 +33,7 @@ export const publicSongTitleModel = {
         }, required: true
     },
     annotations: { type: "String", required: false },
+    tone: { type: "String", required: false },
     pulse: { type: "String", required: false },
     tempo: { type: "String", required: false },
 };
@@ -73,4 +75,9 @@ export const createPublicSongTitleDB = async ({ songTitleCreated }) => {
     if (!response) throw new Error("Error fetching in createPublicSongTitleDB.");
 
     return response;
+}
+
+export const editPublicSongTitleDB = async ({ songTitleEdited }) => {
+    await store.dispatch(setDatabaseItem("publicSongTitleList", songTitleEdited.id, songTitleEdited));
+    return;
 }

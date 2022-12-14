@@ -78,21 +78,40 @@ export const getChordsFromLyric = (lyric) => {
     const allChordsArrayEN = allChords["en"].reduce((allChordsEN, chordType) => [...allChordsEN, ...chordType.chords], []).reverse();
     const allChordsArrayES = allChords["es"].reduce((allChordsES, chordType) => [...allChordsES, ...chordType.chords], []).reverse();
 
+    let chordLangFound = null;
     let finalLineIndex = -1;
     songLines.forEach((currentLine) => {
         finalLineIndex++;
-        if (currentLine.replaceAll(" ", "") === "") return;
-        let line = (" " + currentLine + " ").toUpperCase();
+        let line = (" " + currentLine + " ").replaceAll('\t', " ").toUpperCase();
+        if (line.replaceAll(" ", "") === "") return;
 
-        while (line.includes(`\t`)) line = line.replace('\t', " ");
-        allChordsArrayEN.forEach((chord) => {
-            const upperChord = chord.toUpperCase();
-            while (line.includes(` ${upperChord} `)) line = line.replace(upperChord, "");
-        });
-        allChordsArrayES.forEach((chord) => {
-            const upperChord = chord.toUpperCase();
-            while (line.includes(` ${upperChord} `)) line = line.replace(upperChord, "");
-        });
+        for (let i = 0; i < allChordsArrayEN.length && line.replaceAll(" ", "") !== ""; i++) {
+            if (chordLangFound !== "es") {
+                const upperChordEN = allChordsArrayEN[i].toUpperCase();
+                while (line.includes(` ${upperChordEN} `)) {
+                    line = line.replace(upperChordEN, "");
+                    if (!chordLangFound) chordLangFound = "en";
+                }
+            }
+            if (chordLangFound !== "en") {
+                const upperChordES = allChordsArrayES[i].toUpperCase();
+                while (line.includes(` ${upperChordES} `)) {
+                    line = line.replace(upperChordES, "");
+                    if (!chordLangFound) chordLangFound = "es";
+                }
+            }
+
+        }
+
+
+        // allChordsArrayEN.forEach((chord) => {
+        //     const upperChord = chord.toUpperCase();
+        //     while (line.includes(` ${upperChord} `)) line = line.replace(upperChord, "");
+        // });
+        // allChordsArrayES.forEach((chord) => {
+        //     const upperChord = chord.toUpperCase();
+        //     while (line.includes(` ${upperChord} `)) line = line.replace(upperChord, "");
+        // });
 
         // allChordsArrayEN.forEach((chord) => {
         // 	while (line.toUpperCase().includes(` ${chord.toUpperCase()} `))
@@ -102,7 +121,7 @@ export const getChordsFromLyric = (lyric) => {
         // 	while (line.toUpperCase().includes(` ${chord.toUpperCase()} `))
         // 		line = line.replace(chord, "").replace(chord.toUpperCase(), "");
         // });
-        console.log("ACA", { line });
+        // console.log("ACA", { line });
         if (line.replaceAll(" ", "") === "") {
             const chordLine = currentLine + " ";
             let newChord = "";

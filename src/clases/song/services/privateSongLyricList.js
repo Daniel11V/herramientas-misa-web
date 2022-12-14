@@ -40,6 +40,11 @@ export const createPrivateSongLyricDB = async ({ lyric }) => {
     return response;
 }
 
+export const editPrivateSongLyricDB = async ({ lyricId, lyric }) => {
+    await store.dispatch(setDatabaseItem("privateSongLyricList", lyricId, { lyric }));
+    return;
+}
+
 export const deletePrivateSongLyricDB = async ({ songLyricId }) => {
     await store.dispatch(deleteDatabaseItem("privateSongLyricList", songLyricId));
     return songLyricId;

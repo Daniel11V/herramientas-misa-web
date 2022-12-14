@@ -26,3 +26,8 @@ export const createPublicSongLyricDB = async ({ lyric }) => {
 
     return response;
 }
+
+export const editPublicSongLyricDB = async ({ lyricId, lyric }) => {
+    await store.dispatch(setDatabaseItem("publicSongLyricList", lyricId, { lyric }));
+    return;
+}

@@ -14,7 +14,7 @@ const LyricWithChords = ({
 	showChords = true,
 	isEditable = false,
 }) => {
-	// const hasChords = !!chordTone;
+	const [lastLyricWithChords, setLastLyricWithChords] = useState(null);
 
 	const [currentChords, setCurrentChords] = useState({});
 	const [currentTone, setCurrentTone] = useState(null);
@@ -22,22 +22,22 @@ const LyricWithChords = ({
 	const [arrayLyric, setArrayLyric] = useState([]);
 	// const [isEditable, setIsEditable] = useState(false);
 	const [selectedLetter, setSelectedLetter] = useState([null, null]);
-	const [selectedChord, setSelectedChord] = useState("DO");
+	const [selectedChord, setSelectedChord] = useState("C");
 
 	useEffect(() => {
-		if (lyricWithChords) {
-			// let elem = document.getElementById("checkAuto");
-			// if (elem) elem.checked = true;
-
+		if (!!lyricWithChords && lyricWithChords !== lastLyricWithChords) {
 			const { chords, chordTone, chordLang, onlyLyric } =
 				getChordsFromLyric(lyricWithChords);
-			setTone(chordTone);
+
+			setCurrentTone(chordTone);
 			setChordLang(chordLang);
 			setCurrentChords(chords);
 			setArrayLyric(onlyLyric.split("\n").map((p) => (p ? p.split("") : [""])));
-			setSelectedChord(chordLang === "en" ? "C" : "DO");
+			// setSelectedChord(chordLang === "en" ? "C" : "DO");
+
+			setLastLyricWithChords(lyricWithChords);
 		}
-	}, [lyricWithChords, setTone, setChordLang]);
+	}, [lyricWithChords, lastLyricWithChords, setChordLang]);
 
 	// const getTone = (chords = song.chords) => {
 	// 	const i = Object.keys(chords)[0];
@@ -67,34 +67,34 @@ const LyricWithChords = ({
 			return allChords[chordLang][lastChordIndex[0]].chords[newChordIndex];
 		};
 
-		if (!currentTone && !!tone && !!chordLang) {
+		if (!!currentTone && !!tone && tone !== currentTone) {
+			const currentToneIndex = getChordIndex(currentTone);
+			const toneIndex = getChordIndex(tone);
+			console.log("ACA", { currentTone, tone, currentToneIndex, toneIndex });
+			const toneDiference = getModuleDiference(
+				currentToneIndex?.[1],
+				toneIndex?.[1]
+			);
+
+			setCurrentChords((lastCurrentChords) => {
+				let newChords = {};
+				for (const line in lastCurrentChords)
+					for (const letterIndex in lastCurrentChords[line])
+						newChords[line] = {
+							...(newChords[line] || {}),
+							[letterIndex]: getNewChord(
+								lastCurrentChords[line][letterIndex],
+								toneDiference
+							),
+						};
+
+				return newChords;
+			});
 			setCurrentTone(tone);
-		} else if (!!currentTone && !!tone) {
-			if (tone !== currentTone) {
-				const currentToneIndex = getChordIndex(currentTone);
-				const toneIndex = getChordIndex(tone);
-				const toneDiference = getModuleDiference(
-					currentToneIndex[1],
-					toneIndex[1]
-				);
-
-				setCurrentChords((lastCurrentChords) => {
-					let newChords = {};
-					for (const line in lastCurrentChords)
-						for (const letterIndex in lastCurrentChords[line])
-							newChords[line] = {
-								...(newChords[line] || {}),
-								[letterIndex]: getNewChord(
-									lastCurrentChords[line][letterIndex],
-									toneDiference
-								),
-							};
-
-					return newChords;
-				});
-			}
+		} else if (!tone && !!currentTone) {
+			setTone(currentTone);
 		}
-	}, [tone, currentTone, chordLang]);
+	}, [tone, currentTone, chordLang, setTone]);
 
 	// useEffect(() => {
 	// 	setHasChords(hasChords);
@@ -161,6 +161,16 @@ const LyricWithChords = ({
 
 		setSelectedLetter([i, k ? k + direction : k]);
 	};
+
+	if (tone !== currentTone)
+		return (
+			<div className="progress" style={{ backgroundColor: "#9cd1ff" }}>
+				<div
+					className="indeterminate"
+					style={{ backgroundColor: "#1976d2" }}
+				></div>
+			</div>
+		);
 
 	return (
 		<div onClick={() => setSelectedLetter([null, null])}>

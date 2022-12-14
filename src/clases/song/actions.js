@@ -3,10 +3,10 @@
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
 import { arrayIsEmpty } from "../../utils.js";
-import { createPrivateSongLyricDB, deletePrivateSongLyricDB, getPrivateSongLyricDB } from "./services/privateSongLyricList.js";
-import { createPrivateSongTitleDB, deletePrivateSongTitleDB, getPrivateSongTitleDB, getPrivateSongTitleListDB } from "./services/privateSongTitleList.js";
-import { createPublicSongLyricDB, getPublicSongLyricDB } from "./services/publicSongLyricList.js";
-import { createPublicSongTitleDB, getPublicSongTitleDB, getPublicSongTitleListDB } from "./services/publicSongTitleList.js";
+import { createPrivateSongLyricDB, deletePrivateSongLyricDB, editPrivateSongLyricDB, getPrivateSongLyricDB } from "./services/privateSongLyricList.js";
+import { createPrivateSongTitleDB, deletePrivateSongTitleDB, editPrivateSongTitleDB, getPrivateSongTitleDB, getPrivateSongTitleListDB } from "./services/privateSongTitleList.js";
+import { createPublicSongLyricDB, editPublicSongLyricDB, getPublicSongLyricDB } from "./services/publicSongLyricList.js";
+import { createPublicSongTitleDB, editPublicSongTitleDB, getPublicSongTitleDB, getPublicSongTitleListDB } from "./services/publicSongTitleList.js";
 import { types } from "./types"
 
 
@@ -206,12 +206,17 @@ export const editSong = (songEdited, saveAsPublic = false) => {
             })
             //////////////////////////////////////
 
-            if (songEdited.isPrivate) {
-                // await editPrivateSongTitleDB({ songEdited });
-                // await editPrivateSongLyricDB({ songEdited });
+            const { lyric, ...songTitleEdited } = songEdited;
+            if (songTitleEdited.isPrivate) {
+                await editPrivateSongTitleDB({ songTitleEdited });
             } else {
-                // await editPublicaSongTitleDB({ songEdited });
-                // await editPublicaSongLyricDB({ songEdited });
+                await editPublicSongTitleDB({ songTitleEdited });
+            }
+
+            if (songTitleEdited.lyricIsPrivate) {
+                await editPrivateSongLyricDB({ lyricId: songTitleEdited.lyricId, lyric });
+            } else {
+                await editPublicSongLyricDB({ lyricId: songTitleEdited.lyricId, lyric });
             }
 
             //////////////////////////////////////
