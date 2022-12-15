@@ -3,8 +3,7 @@ import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { arrayIsEmpty } from "../../utils";
 import { CollectionSearcher } from "./CollectionSearcher.jsx";
-import { Collection, CollectionItem } from "../../styles/styles";
-import styled, { css } from "styled-components";
+import { Collection, CollectionItem, LevelIcon } from "../../styles/styles";
 
 const SongCollection = ({
 	songList = [],
@@ -125,7 +124,7 @@ const SongCollection = ({
 					{userId && song?.creator?.id === userId && (
 						<LevelIcon withCheck={checking}>
 							<i className="material-icons">favorite</i>
-							<span>{song?.level?.main}</span>
+							<span>{song?.level?.voice?.toString()}</span>
 						</LevelIcon>
 					)}
 					{/* <div className="levelIcon">
@@ -153,48 +152,5 @@ const SongCollection = ({
 		</Collection>
 	);
 };
-
-const LevelIcon = styled.div`
-	position: relative;
-	width: 27px;
-	margin-top: 2px;
-
-	> i {
-		position: absolute;
-		color: #006cd7;
-		font-size: 27px;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-	}
-
-	> span {
-		position: absolute;
-		color: white;
-		font-size: 10px;
-		font-weight: bold;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		z-index: 10;
-	}
-
-	${(props) =>
-		props.withCheck &&
-		css`
-			padding-top: 10px;
-			padding-right: 10px;
-
-			> span {
-				flex: 1;
-				padding-top: 10px;
-			}
-
-			> label {
-				margin: 10px 0 0 10px;
-				z-index: 20;
-			}
-		`}
-`;
 
 export default SongCollection;

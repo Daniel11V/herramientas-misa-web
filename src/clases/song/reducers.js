@@ -101,7 +101,7 @@ const SongReducer = (state = initialState, { type, payload }) => {
                 break;
             case types.EDIT_SONG_SUCCESS:
                 newState.songActionStatus = "SUCCESS";
-                const indexToEdit = state.songList.indexOf(song => song.id === payload.songEdited.id);
+                const indexToEdit = state.songList.findIndex(song => song.id === payload.songEdited.id);
                 if (indexToEdit >= 0) {
                     newState.songList[indexToEdit] = payload.songEdited;
                     newState.songListStatus = "SHOULD_UPDATE";

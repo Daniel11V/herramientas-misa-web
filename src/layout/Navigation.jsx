@@ -3,7 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import M from "materialize-css";
 import { useSelector } from "react-redux";
 import styled, { css } from "styled-components";
-import LoginLogout from "./components/LoginLogout";
+import LoginLogoutBtn from "./components/LoginLogoutBtn";
 import { noSelectableText } from "../styles/styleUtils";
 
 const Navigation = () => {
@@ -73,13 +73,13 @@ const Navigation = () => {
 								<UserProfileNavbar>
 									<div>
 										<UserName>{user.name}</UserName>
-										<LoginLogout isLogged />
+										<LoginLogoutBtn isLogged />
 									</div>
 									<UserImage src={user.imageUrl} isDesktop={isDesktop} />
 								</UserProfileNavbar>
 							) : (
 								<UserAnonymousNavbar>
-									<LoginLogout />
+									<LoginLogoutBtn />
 								</UserAnonymousNavbar>
 							))}
 					</ul>
@@ -98,7 +98,7 @@ const Navigation = () => {
 								</div>
 								<UserImage src={user.imageUrl} />
 								<UserName>{user.name}</UserName>
-								<LoginLogout isLogged />
+								<LoginLogoutBtn isLogged />
 							</UserProfileSidebar>
 						) : (
 							<UserAnonymousSidebar>
@@ -113,7 +113,7 @@ const Navigation = () => {
 									alt="profile"
 									className="circle"
 								/>
-								<LoginLogout />
+								<LoginLogoutBtn />
 							</UserAnonymousSidebar>
 						))}
 				</li>

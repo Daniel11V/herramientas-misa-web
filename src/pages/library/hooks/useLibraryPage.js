@@ -97,6 +97,9 @@ export const useLibraryPage = () => {
                     // }
                 };
 
+                const mainLevel = (level) => Object.keys(level || {}).reduce(
+                    (newMainLevel, levelType) => (newMainLevel + level[levelType]), 0)
+
                 const swapMoreRated = (newSongId, versionGroupId) => {
                     const lastMoreRatedSongId = versionGroups[versionGroupId].moreRated;
                     versionGroups[versionGroupId].moreRated = newSongId;
@@ -108,9 +111,9 @@ export const useLibraryPage = () => {
                         const currentSongVersion = currentSongList[versionGroups[song.versionGroupId].moreRated];
                         const currentMaxLevel = versionGroups[song.versionGroupId].maxLevel || 0;
 
-                        if (song.creator.id === userId && song.level.main > currentMaxLevel) {
+                        if (song.creator.id === userId && mainLevel(song.level) > currentMaxLevel) {
                             swapMoreRated(song.id, song.versionGroupId);
-                            versionGroups[song.versionGroupId].maxLevel = song.level.main;
+                            versionGroups[song.versionGroupId].maxLevel = mainLevel(song.level);
                         } else if (getRating(song.rating) > getRating(currentSongVersion.rating)) {
                             swapMoreRated(song.id, song.versionGroupId);
                         } else {
@@ -119,7 +122,7 @@ export const useLibraryPage = () => {
                     } else {
                         versionGroups[song.versionGroupId] = {
                             moreRated: song.id,
-                            maxLevel: song.creator.id === userId ? song.level.main : 0,
+                            maxLevel: song.creator.id === userId ? mainLevel(song.level) : 0,
                             versions: [],
                         }
                     }

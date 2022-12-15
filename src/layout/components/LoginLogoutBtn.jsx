@@ -4,20 +4,24 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { login, logout, setUserLoading } from "../../clases/user/actions";
 
-const LoginLogout = ({ children = null, isLogged = false }) => {
+const LoginLogoutBtn = ({
+	children = null,
+	isLogged = false,
+	update = () => {},
+}) => {
 	const dispatch = useDispatch();
 
 	const loginResponse = (response) => {
 		if (response.googleId) {
-			dispatch(
-				login({
-					id: response.profileObj.googleId,
-					name: response.profileObj.name,
-					email: response.profileObj.email,
-					imageUrl: response.profileObj.imageUrl,
-					accessToken: response.accessToken,
-				})
-			);
+			const newUserDate = {
+				id: response.profileObj.googleId,
+				name: response.profileObj.name,
+				email: response.profileObj.email,
+				imageUrl: response.profileObj.imageUrl,
+				accessToken: response.accessToken,
+			};
+			dispatch(login(newUserDate));
+			update(newUserDate);
 		} else {
 			dispatch(setUserLoading(false));
 		}
@@ -82,4 +86,4 @@ const GoogleLogoutStyled = styled(GoogleLogout)`
 	}
 `;
 
-export default LoginLogout;
+export default LoginLogoutBtn;

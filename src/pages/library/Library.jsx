@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import SongCollection from "../components/SongCollection";
 import { useLibraryPage } from "./hooks/useLibraryPage";
 // import { Link } from "react-router-dom";
-// import LoginLogout from "../../layout/components/LoginLogout";
+// import LoginLogoutBtn from "../../layout/components/LoginLogoutBtn";
 // import { useHistory } from "react-router";
 
 const Library = () => {
@@ -29,11 +29,11 @@ const Library = () => {
 						<i className="material-icons right">add</i>Añadir
 					</Link>
 				) : (
-					<LoginLogout update={(v) => loginAddSong(v)}>
+					<LoginLogoutBtn update={(v) => loginAddSong(v)}>
 						<div className="btn waves-effect waves-light blue darken-2 right">
 							<i className="material-icons right">add</i>Añadir
 						</div>
-					</LoginLogout>
+					</LoginLogoutBtn>
 				)} */}
 			</div>
 			{/* <RepertoryList
@@ -41,9 +41,12 @@ const Library = () => {
 				loading={loadingRepertoryList}
 				error={errorRepertoryList}
 				/> */}
-			<SongCollection searcher={false} songList={songList}
+			<SongCollection
+				searcher={false}
+				songList={songList}
 				loading={loadingSongList}
-				error={errorSongList} />
+				error={errorSongList}
+			/>
 		</Fragment>
 	);
 };

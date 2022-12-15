@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 
 import styled, { css } from "styled-components";
 import allChords from "../../../data/allChords";
-import { getChordsFromLyric } from "../../../utils";
+import {
+	getChordIndex,
+	getChordsFromLyric,
+	getModuleDiference,
+	translateChord,
+	transportChord,
+} from "../../../utils";
 import ChordSelector from "./ChordSelector";
 
 const LyricWithChords = ({
@@ -10,11 +16,11 @@ const LyricWithChords = ({
 	tone,
 	setTone,
 	chordLang,
-	setChordLang,
 	showChords = true,
 	isEditable = false,
 }) => {
 	const [lastLyricWithChords, setLastLyricWithChords] = useState(null);
+	const [lastChordLang, setLastChordLang] = useState(null);
 
 	const [currentChords, setCurrentChords] = useState({});
 	const [currentTone, setCurrentTone] = useState(null);
@@ -26,67 +32,64 @@ const LyricWithChords = ({
 
 	useEffect(() => {
 		if (!!lyricWithChords && lyricWithChords !== lastLyricWithChords) {
-			const { chords, chordTone, chordLang, onlyLyric } =
-				getChordsFromLyric(lyricWithChords);
+			const { chords, chordTone, onlyLyric } = getChordsFromLyric(
+				lyricWithChords,
+				chordLang
+			);
 
 			setCurrentTone(chordTone);
-			setChordLang(chordLang);
+			setLastChordLang(chordLang);
 			setCurrentChords(chords);
 			setArrayLyric(onlyLyric.split("\n").map((p) => (p ? p.split("") : [""])));
-			// setSelectedChord(chordLang === "en" ? "C" : "DO");
 
 			setLastLyricWithChords(lyricWithChords);
 		}
-	}, [lyricWithChords, lastLyricWithChords, setChordLang]);
-
-	// const getTone = (chords = song.chords) => {
-	// 	const i = Object.keys(chords)[0];
-	// 	const k = Object.keys(chords[i])[0];
-	// 	return chords[i][k];
-	// };
+	}, [lyricWithChords, chordLang, lastLyricWithChords]);
 
 	useEffect(() => {
-		const getChordIndex = (chord) => {
-			// In allChords
-			for (let i = 0; i < allChords[chordLang].length; i++)
-				for (let k = 0; k < allChords[chordLang][i].chords.length; k++)
-					if (!allChords[chordLang][i].chords[k].localeCompare(chord))
-						return [i, k];
-		};
+		if (!!chordLang && chordLang !== lastChordLang) {
+			setCurrentChords((lastCurrentChords) => {
+				const newCurrentChords = {};
+				for (const line in lastCurrentChords)
+					for (const chordIndex in lastCurrentChords[line]) {
+						newCurrentChords[line] = {
+							...(newCurrentChords[line] || {}),
+							[chordIndex]: translateChord(
+								lastCurrentChords[line][chordIndex],
+								chordLang
+							),
+						};
+					}
 
-		const getModuleDiference = (a, b) => {
-			const difference = (a - b) * -1;
-			if (difference < 0) return 12 + difference;
-			return difference;
-		};
+				return newCurrentChords;
+			});
 
-		const getNewChord = (lastChord, toneDiference) => {
-			const lastChordIndex = getChordIndex(lastChord);
-			let newChordIndex = lastChordIndex[1] + toneDiference;
-			if (newChordIndex > 11) newChordIndex = newChordIndex - 12;
-			return allChords[chordLang][lastChordIndex[0]].chords[newChordIndex];
-		};
+			setLastChordLang(chordLang);
+		}
+	}, [chordLang, lastChordLang, setCurrentChords, setLastChordLang]);
 
+	useEffect(() => {
 		if (!!currentTone && !!tone && tone !== currentTone) {
 			const currentToneIndex = getChordIndex(currentTone);
 			const toneIndex = getChordIndex(tone);
-			console.log("ACA", { currentTone, tone, currentToneIndex, toneIndex });
 			const toneDiference = getModuleDiference(
 				currentToneIndex?.[1],
 				toneIndex?.[1]
 			);
 
 			setCurrentChords((lastCurrentChords) => {
-				let newChords = {};
+				const newChords = {};
 				for (const line in lastCurrentChords)
-					for (const letterIndex in lastCurrentChords[line])
+					for (const chordIndex in lastCurrentChords[line]) {
 						newChords[line] = {
 							...(newChords[line] || {}),
-							[letterIndex]: getNewChord(
-								lastCurrentChords[line][letterIndex],
-								toneDiference
+							[chordIndex]: transportChord(
+								lastCurrentChords[line][chordIndex],
+								toneDiference,
+								chordLang
 							),
 						};
+					}
 
 				return newChords;
 			});
@@ -115,7 +118,7 @@ const LyricWithChords = ({
 			...lastChords,
 			[selectedLetter[0]]: {
 				...lastChords[selectedLetter[0]],
-				[selectedLetter[1]]: chord,
+				[selectedLetter[1]]: translateChord(chord, chordLang, "en"),
 			},
 		}));
 
@@ -150,8 +153,11 @@ const LyricWithChords = ({
 				setSelectedLetter([null, null]);
 			} else {
 				setSelectedLetter([i, k]);
-				if (hasChord(i, k)) setSelectedChord(currentChords[i][k]);
-				else setSelectedChord(chordLang === "en" ? "C" : "DO");
+				if (hasChord(i, k))
+					setSelectedChord(
+						translateChord(currentChords[i][k], "en", chordLang)
+					);
+				else setSelectedChord("C");
 			}
 		}
 	};
@@ -162,7 +168,7 @@ const LyricWithChords = ({
 		setSelectedLetter([i, k ? k + direction : k]);
 	};
 
-	if (tone !== currentTone)
+	if (tone !== currentTone && !!tone && !!currentTone)
 		return (
 			<div className="progress" style={{ backgroundColor: "#9cd1ff" }}>
 				<div

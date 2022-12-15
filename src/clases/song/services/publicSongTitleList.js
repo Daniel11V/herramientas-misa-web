@@ -26,8 +26,7 @@ export const publicSongTitleModel = {
     rating: { type: "Array", required: false },
     level: {
         type: {
-            main: { type: "Number", required: true },
-            voice: { type: "Number", required: false },
+            voice: { type: "Number", required: true },
             guitar: { type: "Number", required: false },
             //...
         }, required: true

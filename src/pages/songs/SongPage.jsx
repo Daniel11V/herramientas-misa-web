@@ -12,6 +12,8 @@ import { colors, noSelectableText } from "../../styles/styleUtils.js";
 import MessageModal from "../components/MessageModal.jsx";
 import BottomSheet from "../components/BottomSheet.jsx";
 import { useSongPageOptions } from "./hooks/useSongPageOptions.js";
+import ModalSelector from "./components/ModalSelector.jsx";
+import LoggedButton from "../../layout/components/LoggedButton.jsx";
 
 const SongPage = () => {
 	const history = useHistory();
@@ -25,6 +27,9 @@ const SongPage = () => {
 		setTone,
 		annotations,
 		setAnnotations,
+		voiceLevel,
+		setVoiceLevel,
+		voiceLevelOptions,
 		areNewSongOptions,
 		saveSongOptions,
 	} = useSongPage(id);
@@ -33,12 +38,15 @@ const SongPage = () => {
 		pageOptions,
 		setFontSize,
 		toggleShowChords,
+		setChordLang,
+		chordLangOptions,
 		saveOptions,
 	} = useSongPageOptions();
 
 	const user = useSelector((state) => state.user.google);
+	const isCreator = user?.id === song?.creator?.id;
 
-	const [chordLang, setChordLang] = useState("en");
+	// const [chordLang, setChordLang] = useState("en");
 
 	const [messageModalOpts, setMessageModalOpts] = useState(null);
 	const [openOptions, setOpenOptions] = useState(false);
@@ -61,7 +69,7 @@ const SongPage = () => {
 	};
 
 	// const handlePrintBtn = (event) => {
-	// 	event.stopPropagation();
+	// event.stopPropagation();
 	// 	const elementToPrint = document.getElementById("to-print");
 
 	// 	let content = "<html><head>";
@@ -205,8 +213,7 @@ const SongPage = () => {
 					lyricWithChords={song.lyric}
 					tone={tone}
 					setTone={setTone}
-					setChordLang={setChordLang}
-					chordLang={chordLang}
+					chordLang={pageOptions.chordLang}
 					showChords={pageOptions.showChords}
 					isEditable={false}
 				/>
@@ -236,32 +243,17 @@ const SongPage = () => {
 					<h5>Ajustes de canción</h5>
 					{!!tone && !!pageOptions.showChords && (
 						<>
-							<div
-								style={{
-									display: "inline-block",
-									paddingTop: "5px",
-									paddingRight: "5px",
-								}}
-							>
-								Tono:
-							</div>
-							<div
-								style={{
-									display: "inline-block",
-									width: "100px",
-									textAlign: "center",
-									marginBottom: "5px",
-								}}
-							>
-								<ChordSelector
-									selectedChord={tone}
-									setSelectedChord={handleChangeTone}
-									chordLang={chordLang}
-								/>
-							</div>
+							<ChordSelector
+								modalId="tone"
+								label="Tono: "
+								selectedChord={tone}
+								setSelectedChord={handleChangeTone}
+								chordLang={pageOptions.chordLang}
+								onlyChangeTone
+							/>
+							<br />
 						</>
 					)}
-					<br />
 					<div className="input-field">
 						<textarea
 							id="annotations"
@@ -277,7 +269,35 @@ const SongPage = () => {
 							Mis Notas
 						</label>
 					</div>
-					{!!areNewSongOptions && (
+					<h6>
+						<b>Mi Nivel de Progreso con la Canción{!isCreator ? "..." : ""}</b>
+					</h6>
+					{!!isCreator ? (
+						<>
+							<ModalSelector
+								modalId="voiceLevel"
+								label="Voz: "
+								modalTitle="Elegir mi nivel de progreso"
+								selectedItem={voiceLevel.toString() || "0"}
+								setSelectedItem={setVoiceLevel}
+								items={voiceLevelOptions}
+								selectorWidth="450"
+								textAlign="start"
+							/>
+							<br />
+						</>
+					) : (
+						<SongButton
+							className="btn waves-effect waves-light blue darken-2"
+							onClick={handleSaveSongOptions}
+							style={{ marginTop: "5px" }}
+						>
+							<i className="material-icons right">favorite</i>Guardar canción en
+							tu biblioteca para
+							{!!areNewSongOptions ? " mantener ajustes" : " comenzar"}
+						</SongButton>
+					)}
+					{!!areNewSongOptions && !!isCreator && (
 						<SongButton
 							className="btn waves-effect waves-light blue darken-2"
 							onClick={handleSaveSongOptions}
@@ -290,7 +310,11 @@ const SongPage = () => {
 					<h5>Visualización</h5>
 					<div
 						className="switch"
-						style={{ marginTop: "10px", display: !!tone ? "block" : "none" }}
+						style={{
+							marginTop: "10px",
+							marginBottom: "10px",
+							display: !!tone ? "block" : "none",
+						}}
 					>
 						<label>
 							<input
@@ -303,19 +327,28 @@ const SongPage = () => {
 							<span style={{ color: "black" }}>Mostrar acordes</span>
 						</label>
 					</div>
-					<RangeInputContainer>
+					{!!tone && !!pageOptions.showChords && (
+						<ModalSelector
+							modalId="chordLang"
+							label="Cifrado: "
+							modalTitle="Elegir Cifrado"
+							selectedItem={pageOptions.chordLang}
+							setSelectedItem={setChordLang}
+							items={chordLangOptions}
+							selectorWidth="115"
+						/>
+					)}
+					<RangeInput>
 						Tamaño de letra: {pageOptions.fontSize}px
-						<RangeInput>
-							<input
-								type="range"
-								id="fontSize"
-								min="10"
-								max="25"
-								value={pageOptions.fontSize}
-								onChange={setFontSize}
-							/>
-						</RangeInput>
-					</RangeInputContainer>
+						<input
+							type="range"
+							id="fontSize"
+							min="10"
+							max="25"
+							value={pageOptions.fontSize}
+							onChange={setFontSize}
+						/>
+					</RangeInput>
 					{!!areNewOptions && (
 						<SongButton
 							className="btn waves-effect waves-light blue darken-2"
@@ -344,7 +377,7 @@ const SongPage = () => {
 							</SongButton>
 						</>
 					)}
-					{user?.id === song?.creator?.id && song?.isPrivate && (
+					{isCreator && song?.isPrivate && (
 						<SongButton
 							className="btn waves-effect waves-light blue darken-2"
 							onClick={handlePublishBtn}
@@ -352,8 +385,7 @@ const SongPage = () => {
 							<i className="material-icons right">publish</i>Publicar
 						</SongButton>
 					)}
-					{(user?.id === song?.creator?.id ||
-						user.id === "111418653738749034139") && (
+					{(isCreator || user.id === "111418653738749034139") && (
 						<SongButton
 							className="btn waves-effect waves-light blue darken-2"
 							onClick={handleDeleteBtn}
@@ -402,16 +434,10 @@ const SongInfo = styled.div`
 	vertical-align: center;
 `;
 
-const RangeInputContainer = styled.form.attrs({
-	action: "#",
-})`
-	padding-top: 20px;
-	color: black;
-`;
 const RangeInput = styled.p.attrs({
 	className: "range-field",
 })`
-	margin-top: 0px;
+	margin-top: 5px;
 	margin-bottom: 5px;
 	${noSelectableText}
 
@@ -419,7 +445,7 @@ const RangeInput = styled.p.attrs({
 		background: ${colors.primary};
 	}
 `;
-const SongButton = styled.div`
+const SongButton = styled(LoggedButton)`
 	margin-top: 15px;
 	margin-right: 10px;
 `;

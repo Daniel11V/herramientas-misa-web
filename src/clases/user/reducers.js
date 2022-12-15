@@ -20,6 +20,7 @@ const initialState = {
         songPageOptions: {
             fontSize: '16',
             showChords: true,
+            chordLang: 'en',
         }
     },
 

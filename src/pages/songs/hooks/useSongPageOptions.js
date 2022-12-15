@@ -38,11 +38,17 @@ export const useSongPageOptions = () => {
         setPageOptionsField('showChords', !pageOptions.showChords);
     }
 
+    const setChordLang = (newVal) => {
+        setPageOptionsField('chordLang', newVal);
+    }
+
+    const chordLangOptions = { Cifrados: [{ value: "en", label: "Americano" }, { value: "es", label: "Español" }] }
+
     const saveOptions = () => {
         dispatch(setSongPageOptions(pageOptions))
         setAreNewOptions(false);
         M.toast({ html: "Configuración Actualizada." });
     }
 
-    return { areNewOptions, pageOptions, setFontSize, toggleShowChords, saveOptions };
+    return { areNewOptions, pageOptions, setFontSize, toggleShowChords, setChordLang, chordLangOptions, saveOptions };
 };

@@ -181,7 +181,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: 1669864387702,
       lyricIsPrivate: true
@@ -214,7 +214,7 @@ export const database = {
       topics: [],
       rating: [],
       level: {
-        main: 1
+        voice: 0
       }
     },
     '124': {
@@ -236,7 +236,7 @@ export const database = {
       topics: [],
       rating: [],
       level: {
-        main: 1
+        voice: 0
       }
     },
     '125': {
@@ -258,7 +258,7 @@ export const database = {
       topics: [],
       rating: [],
       level: {
-        main: 1
+        voice: 0
       }
     },
     '613c854ef601f09e344f43bf': {
@@ -282,7 +282,7 @@ export const database = {
       topics: [],
       rating: [],
       level: {
-        main: 1
+        voice: 0
       }
     },
     '613c8597f601f09e344f43c2': {
@@ -300,7 +300,7 @@ export const database = {
       labels: [],
       rating: [],
       level: {
-        main: 1
+        voice: 0
       }
     },
     '6144d3152d6d4f8085af95d9': {
@@ -318,7 +318,7 @@ export const database = {
       labels: [],
       rating: [],
       level: {
-        main: 1
+        voice: 0
       }
     },
     '1669486125378': {
@@ -340,7 +340,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       }
     },
     '1669487158543': {
@@ -361,7 +361,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       }
     },
     '1669487612348': {
@@ -382,7 +382,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       }
     },
     '1669487992788': {
@@ -403,7 +403,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       }
     },
     '1670494499043': {
@@ -427,7 +427,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: '1670494499042',
       lyricIsPrivate: false
@@ -453,7 +453,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: '1670494597081',
       lyricIsPrivate: false
@@ -479,7 +479,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: '1670494692775',
       lyricIsPrivate: false
@@ -505,7 +505,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: '1670494760117',
       lyricIsPrivate: false
@@ -531,7 +531,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: '1670494834276',
       lyricIsPrivate: false
@@ -556,7 +556,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: '1670494889387',
       lyricIsPrivate: false
@@ -581,7 +581,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: '1670494958916',
       lyricIsPrivate: false
@@ -606,7 +606,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: '1670495065328',
       lyricIsPrivate: false
@@ -629,7 +629,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: 1670704393313,
       lyricIsPrivate: false
@@ -654,7 +654,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: 1670704620691,
       lyricIsPrivate: false
@@ -677,7 +677,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: 1670704633127,
       lyricIsPrivate: false
@@ -703,7 +703,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: 1670704732978,
       lyricIsPrivate: false
@@ -729,7 +729,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: 1670704810967,
       lyricIsPrivate: false
@@ -754,7 +754,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: 1670705595720,
       lyricIsPrivate: false
@@ -779,7 +779,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: 1670705603544,
       lyricIsPrivate: false
@@ -804,7 +804,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        main: 1
+        voice: 0
       },
       lyricId: 1670706522980,
       lyricIsPrivate: false

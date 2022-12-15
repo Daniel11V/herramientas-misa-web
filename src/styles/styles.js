@@ -61,3 +61,46 @@ export const CollectionItem = styled.div.attrs(props => ({
 		`
 	}
 `;
+
+export const LevelIcon = styled.div`
+	position: relative;
+	width: 27px;
+	margin-top: 2px;
+
+	> i {
+		position: absolute;
+		color: #006cd7;
+		font-size: 27px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	> span {
+		position: absolute;
+		color: white;
+		font-size: 10px;
+		font-weight: bold;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 10;
+	}
+
+	${(props) =>
+		props.withCheck &&
+		css`
+			padding-top: 10px;
+			padding-right: 10px;
+
+			> span {
+				flex: 1;
+				padding-top: 10px;
+			}
+
+			> label {
+				margin: 10px 0 0 10px;
+				z-index: 20;
+			}
+		`}
+`;

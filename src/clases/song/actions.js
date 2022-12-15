@@ -164,7 +164,7 @@ export const createSong = (songCreated) => {
                 pulse: songTitle.pulse,
                 tempo: songTitle.tempo,
                 level: {
-                    main: 1,
+                    voice: 0,
                 },
             }
 

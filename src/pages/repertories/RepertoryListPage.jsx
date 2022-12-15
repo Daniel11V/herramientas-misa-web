@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
-import LoginLogout from "../../layout/components/LoginLogout";
+import LoginLogoutBtn from "../../layout/components/LoginLogoutBtn";
 import { useHistory } from "react-router";
 import RepertoryList from "./components/RepertoryList";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,11 +38,11 @@ const RepertoryListPage = () => {
 						<i className="material-icons right">add</i>Crear
 					</Link>
 				) : (
-					<LoginLogout update={(v) => loginAddSong(v)}>
+					<LoginLogoutBtn update={(v) => loginAddSong(v)}>
 						<div className="btn waves-effect waves-light blue darken-2 right">
 							<i className="material-icons right">add</i>Crear
 						</div>
-					</LoginLogout>
+					</LoginLogoutBtn>
 				)}
 			</Header>
 			<RepertoryList

@@ -70,7 +70,37 @@ export const getRating = (rates = {}) => {
     return finalRating;
 }
 
-export const getChordsFromLyric = (lyric) => {
+export const translateChord = (chord, toLang, currentLang) => {
+    if (currentLang === toLang) return chord;
+    const fromLang = toLang === "en" ? "es" : "en";
+    for (let i = 0; i < allChords[fromLang].length; i++) {
+        const chordIndex = allChords[fromLang][i].chords.findIndex(bookedChord => bookedChord.toUpperCase() === chord.toUpperCase());
+        if (chordIndex >= 0) return allChords[toLang][i].chords[chordIndex];
+    }
+    return chord;
+}
+
+export const getChordIndex = (chord, chordLang = "en") => {
+    // In allChords
+    for (let i = 0; i < allChords[chordLang].length; i++)
+        for (let k = 0; k < allChords[chordLang][i].chords.length; k++)
+            if (!allChords[chordLang][i].chords[k].localeCompare(chord)) return [i, k];
+};
+
+export const getModuleDiference = (a, b) => {
+    const difference = (a - b) * -1;
+    if (difference < 0) return 12 + difference;
+    return difference;
+};
+
+export const transportChord = (lastChord, toneDiference, chordLang) => {
+    const lastChordIndex = getChordIndex(lastChord, chordLang);
+    let newChordIndex = lastChordIndex[1] + toneDiference;
+    if (newChordIndex > 11) newChordIndex = newChordIndex - 12;
+    return allChords[chordLang][lastChordIndex[0]].chords[newChordIndex];
+};
+
+export const getChordsFromLyric = (lyric, chordLang) => {
     const songLines = lyric.split("\n");
     const newChords = {};
     let onlyLyric = [...songLines];
@@ -133,11 +163,18 @@ export const getChordsFromLyric = (lyric) => {
                     newChordIndex = index;
                     newChord += character;
                 } else if (character === " " && !!newChord) {
-                    if (newChords[finalLineIndex]) {
-                        newChords[finalLineIndex][newChordIndex] = newChord;
-                    } else {
-                        newChords[finalLineIndex] = { [newChordIndex]: newChord };
-                    }
+                    newChords[finalLineIndex] = {
+                        ...(newChords[finalLineIndex] || {}),
+                        [newChordIndex]: translateChord(newChord, chordLang, chordLangFound)
+                    };
+                    // if (newChords[finalLineIndex]) {
+                    //     newChords[finalLineIndex][newChordIndex] = translateChord(newChord, "en", chordLangFound);
+                    // } else {
+                    //     newChords[finalLineIndex] = { 
+                    //         ...newChords[finalLineIndex],
+                    //         [newChordIndex]: translateChord(newChord, "en", chordLangFound) 
+                    //     };
+                    // }
                     newChord = "";
                     newChordIndex = null;
                 }
@@ -149,13 +186,12 @@ export const getChordsFromLyric = (lyric) => {
 
     // If has chords, set tone
     let chordTone = "";
-    let chordLang = "";
     if (newChords && Object.keys(newChords).length !== 0) {
-        const i = Object.keys(newChords)[0];
-        const k = Object.keys(newChords[i])[0];
+        const firstLine = Object.values(newChords)[0];
+        const firstChord = Object.values(firstLine)[0];
 
-        chordTone = newChords[i][k];
-        chordLang = allChordsArrayEN.includes(newChords[i][k]) ? "en" : "es"
+        // chordTone = translateChord(firstChord, "en", chordLang);
+        chordTone = allChords.en[0].chords[getChordIndex(firstChord, chordLang)[1]];
 
         // Adjust if chordLine is larger
         for (const lineIndex in newChords) {
@@ -171,7 +207,7 @@ export const getChordsFromLyric = (lyric) => {
         }
     }
 
-    return { chords: newChords, chordTone, chordLang, onlyLyric: onlyLyric.join("\n") };
+    return { chords: newChords, chordTone, onlyLyric: onlyLyric.join("\n") };
 }
 
 export const getLyricWithChords = (onlyLyric, chords) => {
