@@ -93,12 +93,10 @@ const SongPage = () => {
 	// 	win.document.close();
 	// };
 
-	const handleEditBtn = (event) => {
-		event.stopPropagation();
+	const handleEditBtn = () => {
 		history.push({ pathname: `/edit-song/${id}`, state: { from: "Canción" } });
 	};
-	const handlePublishBtn = (event) => {
-		event.stopPropagation();
+	const handlePublishBtn = () => {
 		setMessageModalOpts({
 			title: "Solicitud de publicación",
 			message:
@@ -140,8 +138,7 @@ const SongPage = () => {
 			},
 		});
 	};
-	const handleDeleteBtn = (event) => {
-		event.stopPropagation();
+	const handleDeleteBtn = () => {
 		setMessageModalOpts({
 			title: "¿Esta seguro que desea eliminar esta canción?",
 			message:

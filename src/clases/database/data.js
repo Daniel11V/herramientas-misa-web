@@ -131,19 +131,19 @@ export const database = {
       placeUbication: '',
       isMass: true,
       songs: {
-        'Entrada': [
+        Entrada: [
           '1670704384915'
         ],
-        'Aleluya': [
+        Aleluya: [
           '1670706514121'
         ],
-        'Ofertorio': [
+        Ofertorio: [
           '1670704472033'
         ],
-        'Santo': [
+        Santo: [
           '1670705576812'
         ],
-        'Cordero': [
+        Cordero: [
           '1670705390091'
         ],
         'Comunión': [
@@ -152,8 +152,47 @@ export const database = {
         'Meditación': [
           '1670704724691'
         ],
-        'Salida': [
+        Salida: [
           '1670704798664'
+        ]
+      }
+    },
+    '1670495920815': {
+      id: '1670495920815',
+      creator: {
+        id: '111418653738749034139',
+        name: 'Daniel Vinet'
+      },
+      title: 'Misa de Navidad',
+      annotations: '',
+      members: [],
+      placeTitle: 'Parroquia Ntra Sra del Pilar',
+      placeUbication: '',
+      isMass: true,
+      songs: {
+        Entrada: [
+          '1671906385775'
+        ],
+        Aleluya: [
+          '1671906557535'
+        ],
+        Ofertorio: [
+          '1671906649253'
+        ],
+        Santo: [
+          '1670705576812'
+        ],
+        Cordero: [
+          '1670705390091'
+        ],
+        'Comunión': [
+          '1671908915221',
+          '1671907937211',
+          '1671908198503',
+          '1671908602986'
+        ],
+        Salida: [
+          '1671908886446'
         ]
       }
     }
@@ -200,7 +239,7 @@ export const database = {
       isPrivate: false,
       lyricId: '123',
       lyricIsPrivate: false,
-      tone: "F",
+      tone: 'F',
       title: 'Espíritu de Verdad',
       author: {
         id: '123455',
@@ -808,6 +847,214 @@ export const database = {
       },
       lyricId: 1670706522980,
       lyricIsPrivate: false
+    },
+    '1671906385775': {
+      id: '1671906385775',
+      versionGroupId: '1671906385775',
+      isPrivate: false,
+      title: 'Ya llego la Nochebuena',
+      author: {
+        value: '-',
+        label: 'Desconocido'
+      },
+      creator: {
+        name: 'Daniel Vinet',
+        id: '111418653738749034139'
+      },
+      labels: [
+        'navidad',
+        'entrada'
+      ],
+      annotations: '',
+      pulse: '',
+      tempo: '',
+      level: {
+        voice: 0
+      },
+      lyricId: 1671910143403,
+      lyricIsPrivate: false
+    },
+    '1671906557535': {
+      id: '1671906557535',
+      versionGroupId: '1671906557535',
+      isPrivate: false,
+      title: 'Ha Nacido el Rey del Cielo',
+      author: {
+        value: '-',
+        label: 'Desconocido'
+      },
+      creator: {
+        name: 'Daniel Vinet',
+        id: '111418653738749034139'
+      },
+      labels: [
+        'navidad',
+        'aleluya'
+      ],
+      annotations: '',
+      pulse: '',
+      tempo: '',
+      level: {
+        voice: 0
+      },
+      lyricId: 1671910451180,
+      lyricIsPrivate: false
+    },
+    '1671906649253': {
+      id: '1671906649253',
+      versionGroupId: '1671906649253',
+      isPrivate: false,
+      title: 'Cristianos Vayamos',
+      author: {
+        value: '-',
+        label: 'Desconocido'
+      },
+      creator: {
+        name: 'Daniel Vinet',
+        id: '111418653738749034139'
+      },
+      labels: [
+        'navidad',
+        'ofrenda'
+      ],
+      annotations: '',
+      pulse: '',
+      tempo: '',
+      level: {
+        voice: 0
+      },
+      lyricId: 1671910460223,
+      lyricIsPrivate: false
+    },
+    '1671907937211': {
+      id: '1671907937211',
+      versionGroupId: '1671907937211',
+      isPrivate: false,
+      title: 'Noche Anunciada',
+      author: {
+        value: '-',
+        label: 'Desconocido'
+      },
+      creator: {
+        name: 'Daniel Vinet',
+        id: '111418653738749034139'
+      },
+      labels: [
+        'navidad',
+        'comunion'
+      ],
+      annotations: '',
+      pulse: '',
+      tempo: '',
+      level: {
+        voice: 0
+      },
+      lyricId: 1671910468128,
+      lyricIsPrivate: false
+    },
+    '1671908198503': {
+      id: '1671908198503',
+      versionGroupId: '1671908198503',
+      isPrivate: false,
+      title: 'Noche de paz',
+      author: {
+        value: '-',
+        label: 'Desconocido'
+      },
+      creator: {
+        name: 'Daniel Vinet',
+        id: '111418653738749034139'
+      },
+      labels: [
+        'navidad',
+        'comunion'
+      ],
+      annotations: '',
+      pulse: '',
+      tempo: '',
+      level: {
+        voice: 0
+      },
+      lyricId: 1671910476336,
+      lyricIsPrivate: false
+    },
+    '1671908602986': {
+      id: '1671908602986',
+      versionGroupId: '1671908602986',
+      isPrivate: false,
+      title: 'Campanas Navideñas',
+      author: {
+        value: '-',
+        label: 'Desconocido'
+      },
+      creator: {
+        name: 'Daniel Vinet',
+        id: '111418653738749034139'
+      },
+      labels: [
+        'navidad',
+        'comunion'
+      ],
+      annotations: '',
+      pulse: '',
+      tempo: '',
+      level: {
+        voice: 0
+      },
+      lyricId: 1671910487974,
+      lyricIsPrivate: false
+    },
+    '1671908886446': {
+      id: '1671908886446',
+      versionGroupId: '1671908886446',
+      isPrivate: false,
+      title: 'Vamos Pastorcillos',
+      author: {
+        value: '-',
+        label: 'Desconocido'
+      },
+      creator: {
+        name: 'Daniel Vinet',
+        id: '111418653738749034139'
+      },
+      labels: [
+        'navidad',
+        'salida'
+      ],
+      annotations: '',
+      pulse: '',
+      tempo: '',
+      level: {
+        voice: 0
+      },
+      lyricId: 1671910495058,
+      lyricIsPrivate: false
+    },
+    '1671908915221': {
+      id: '1671908915221',
+      versionGroupId: '1671908915221',
+      isPrivate: false,
+      title: 'La Peregrinación',
+      author: {
+        value: '-',
+        label: 'Desconocido'
+      },
+      creator: {
+        name: 'Daniel Vinet',
+        id: '111418653738749034139'
+      },
+      labels: [
+        'navidad',
+        'comunion'
+      ],
+      annotations: '',
+      pulse: '',
+      tempo: '',
+      level: {
+        voice: 0
+      },
+      lyricId: 1671910502242,
+      lyricIsPrivate: false
     }
   },
   publicSongLyricList: {
@@ -888,6 +1135,30 @@ export const database = {
     },
     '1670706522980': {
       lyric: 'DO        SOL     LAm       MIm    \nBusca primero el Reino de Dios \nFA       DO       RE7 SOL \ny su perfecta justicia,\nDO       SOL    LAm    MIm  \ny lo demás añadido será. \nFA    DO     FA SOL DO \nAleluya, aleluuuuuuya.\n\nDO   SOL      LAm        MIm\nAleluya,   aleluya, aleluya\nFA    DO      SOL SOL7\nAleluya,  aleluuuya\nDO   SOL      LAm        MIm\nAleluya,   aleluya, aleluya\nFA    DO      SOL DO\nAleluya,  aleluuuya\n\nOtras antífonas:\nCanto a la vida que Cristo regaló \ncambiando su historia\ncuando en la cruz él murió por nuestro amor.\nAleluya, aleluya.\n\nCanto por Cristo que nos liberará \ncuando él venga en la gloria\ncuando la vida por él renacerá. \nAleluya, aleluya.'
+    },
+    '1671910143403': {
+      lyric: 'RE LA7    RE        SOL\nYa llegó la Nochebuena.    \nRE    MI7       LA7\nYa llegó la Navidad.\n         \nRE                  SOL\nCantaremos alabanzas         \nRE         LA7     RE\npara el Niño que vendrá.\n \nRE7   SOL             RE\nVamos todos a esperarlo,\nRE7   SOL  LA     RE\nvamos todos a Belén,\n                                \nLA7   RE   SOL \nque Jesús en un Pesebre\nRE    LA    RE    \npara todos va a nacer.\n \nLlevaremos para el Niño\nlo mejor del corazón,\nel deseo de encontrarlo,\nla esperanza del perdón.\n \nRecibamos la enseñanza\nque este Niño hoy nos da,\nsiendo rico se hizo pobre\npor Amor a los demás.'
+    },
+    '1671910451180': {
+      lyric: ' C    G7      C        G7\nHa nacido el Rey del Cielo\n C    F     G7      C\nHa nacido nuestro Dios\n    G7     C       Dm\nElevemos nuestros cantos\n     G      D7   G\nA Jesús el Salvador\n\n    C     G    C    G7\nAleluya, canta el Cielo\n    C     G    C    G7\nAleluya, canta el suelo\n  F        A7      Dm  A7 Dm\nGloria a Cristo, nuestro Rey\n  G7       C   G7    C\nGloria al niño de Belén\nF       A7     Dm  A7 Dm\nEn la Tierra: paz y amor\n G        C      F    G7  C\nY en el cielo: Gloria a Dios\n\n C      G7   C        G7\nCon los ángeles del Cielo\n C    F     G7  C\nCelebremos Navidad\n         G7   C     Dm\nCon sus voces anunciemos\n           G        D7        G\nGloria a Dios y al hombre de paz\n\n    C     G    C    G7\nAleluya, canta el Cielo\n    C     G    C    G7\nAleluya, canta el suelo\n  F        A7      Dm  A7 Dm\nGloria a Cristo, nuestro Rey\n  G7       C   G7    C\nGloria al niño de Belén\nF       A7     Dm  A7 Dm\nEn la Tierra: paz y amor\n G        C      F    G7  C\nY en el cielo: Gloria a Dios\n\nC     G7     C     G7\nEl Señor de los señores\nC     F    G7    C\nEl Ungido celestial\n      G7      C   Dm\nA salvar los corazones\n         G    D7   G\nVino al seno virginal\n\n    C     G    C    G7\nAleluya, canta el Cielo\n    C     G    C    G7\nAleluya, canta el suelo\n  F        A7      Dm  A7 Dm\nGloria a Cristo, nuestro Rey\n  G7       C   G7    C\nGloria al niño de Belén\nF       A7     Dm  A7 Dm\nEn la Tierra: paz y amor\n G        C      F    G7  C\nY en el cielo: Gloria a Dios\n\nC      G7     C   G7\nEs la noche prometida\nC      F     G7     C\nEs la noche del perdón\n         G7   C     Dm\nHoy el Cielo se concilia\n        G     D7  G\nCon el mundo pecador\n\n    C     G    C    G7\nAleluya, canta el Cielo\n    C     G    C    G7\nAleluya, canta el suelo\n  F        A7      Dm  A7 Dm\nGloria a Cristo, nuestro Rey\n  G7       C   G7    C\nGloria al niño de Belén\nF       A7     Dm  A7 Dm\nEn la Tierra: paz y amor\n G        C      F    G7  C\nY en el cielo: Gloria a Dios'
+    },
+    '1671910460223': {
+      lyric: '    SOL      RE     SOL DO     SOL  RE\nCristianos vayamos, jubilosa el al-ma. \n    MIm  LA7     RE  SIm   LA7   RE\nLa estre-lla nos llama junto a Belén. \nSIm LAm  RE SOL RE SIm  MIm  RE LA7 RE\nHoy ha naci-do  el Rey de los Cie-los. \n\n     SOL    RE7 SOL\n¡Cristianos adoremos! \n     SOL   RE7  SOL RE7\n¡Cristianos adore-mos! \n    MI      LAm SOL DO\n¡Cristianos adore-mos \nDO SOL RE7  SOL\na nues-tro Dios! \n\nHumildes pastores dejan su rebaño, \ny llevan sus dones al Niño Dios. \nNuestras ofrendas con amor llevemos. \n\nBendita la noche que nos trajo el Día. \nBendita la noche de Navidad. \nDesde un pesebre el Señor nos llama. \n\nEl Dios invisible vístese de carne. \nEl Rey de la Gloria llorando está. \nViene a la tierra a darnos el Cielo.'
+    },
+    '1671910468128': {
+      lyric: 'SOL  DO   SIm  SOL7  DO       SOL\nNoche anunciada,    noche de amor, \nRE7     SOL  SI7  MIm  LA7  RE7\nDios ha naci  do, péta lo y flor. \nSOL     DO  SIm  SOL  REm  SOL7  DO   MI7\nTodo es silencio    y sere ni   dad \nLAm   RE7 SOL  MI° LAm  RE7 SOL\npaz a los hombres, es Navidad. \n\nSOL   DO SIm SOL7  DO      SOL\nEn el pesebre,     mi Redentor \nRE7    SOL SI7  MIm   LA7  RE7\nes mensajero    de paz y amor; \nSOL    DO SIm SOL  REm   SOL7  DO  MI7\ncuando sonríe      se hace la luz \nLAm     RE7 SOL MI° LAm   RE7 SOL\ny en sus bracitos   crece una cruz. \n\nRE      SOL    MI          LAm\nÁngeles canten sobre el portal \nSI        MIm   MI7    LA7 RE7\nDios ha nacido, es Navidad \n\nSOL     DO SIm SOL7  DO      SOL\nEsta es la noche     que prometió \nRE7    SOL SI7    MIm   LA7 RE7\nDios a los hombres y ya llegó. \nSOL  DO SIm SOL  REm       SOL7  DO  MI7\nEs nochebuena,   no hay que dormir; \nLAm     RE7 SOL MI° LAm    RE7   SOL\nDios ha nacido,     Dios está aquí. '
+    },
+    '1671910476336': {
+      lyric: 'A\nNoche de paz, noche de amor\nE           A        A7\nTodo duerme en derredor\nD                 A            A7\nEntre los astros que esparcen su luz\nD                A\nBella anunciando al niño Jesús\nE                  A\nBrilla la estrella de paz\nA         E         A\nBrilla la estrella de amor\n\nA\nNoche de paz, noche de amor\n\nE        A\nVed, que bello resplandor\nD                A         A7\nLuz en el rostro del niño Jesus\nD             A\nEn el pesebre del mundo la luz\nE               A\nAstro de eterno fulgor,\nA        E      A\nastro de eterno fulgor\n\nA\nNoche de paz, noche de amor\nE           A          A7\nOye humilde el fiel pastor\nD              A\nCoros celestes que aclaman salud\nD                    A\nGracias y glorias en gran plenitud\nE           A\nPor nuestro buen redentor\nA           E    A\nPor nuestro buen redentor'
+    },
+    '1671910487974': {
+      lyric: '  D                 A7                   D\nEn la capilla hay repique de campanas navideñas\n                     A7                       D\ny en el pesebre una Virgen desvelada sufre y sueña.\n                    A7                     D\nContempla al niño dormido, besa su frente serena\n  G             D         A7          D\ny una sonrisa ilumina su carita de azucena.\n\n           A7                          D\nDin, don, dan las campanitas sonando están.\n           G         D         A7        D\nDin, don, dan las campanitas sonando están.\n\n\nCada mañana en la torre de la iglesia campesina\nlas campanas se despiertan, a pesar de la neblina.\nLlegando la nochebuena, lanzan alegres al viento\nuna plegaria amorosa anunciando al Rey del Cielo\n\nDin, don, dan, las campanitas sonando están.\nDin, don, dan, las campanitas sonando están.'
+    },
+    '1671910495058': {
+      lyric: 'DO                 FA         DO\nVamos pastorcitos, vamos a Belén \nFA            DO     SOL7      DO\nque en Belén acaba Jesús de nacer, \nFA            DO     SOL7      DO\nque en Belén acaba Jesús de nacer. \n\nVamos pastorcitos, vamos a Belén \nque Dios ha nacido para nuestro bien, \nque Dios ha nacido para nuestro bien. \n\nÉsta feliz nueva debemos honrar \ny llenos de gozo a Dios alabar, \ny llenos de gozo a Dios alabar. \n\nPobre, humilde nace nuestro Redentor \ntemblando de frío por el pecador, \ntemblando de frío por el pecador. \n\nSuenen las campanas, cante el corazón, \ntodos a ser buenos que Cristo nació, \ntodos a ser buenos que Cristo nació.'
+    },
+    '1671910502242': {
+      lyric: 'SOL7            DOm      FA7     SIb\nA la huella, la huella José y María, \nSOLm             DOm       RE        SOLm\npor las pampas heladas, cardos y ortigas. \nSOL7            DOm       FA7      SIb  SOLm\nA la huella, la huella cortando campos, \n                 SOL#     RE7      SOL\nno hay cobijo ni fonda, sigan andando. \n\nFlorecita del campo, clavel del aire \nsi ninguno te aloja adónde naces. \nDónde naces florcita que estás creciendo \npalomita asustada, grillo sin sueño. \n\nSOL7            DOm      FA7     SIb  SOLm\nA la huella, la huella José y María \n                 DOm      RE7  SOLm\ncon un Dios escondido, nadie sabía. \n\nA la huella, la huella los peregrinos \npréstenme una tapera para mi niño. \nA la huella, la huella soles y lunas, \nlos ojitos de almendra, piel de aceituna. \n\nAy burrito del campo, ay buey barcino, \nmi niño está viniendo, háganle sitio. \nUn ranchito de quinchas sólo te ampara, \ndos alientos amigos, la luna clara.'
     }
   }
 };
