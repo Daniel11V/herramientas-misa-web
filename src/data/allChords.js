@@ -252,4 +252,21 @@ const allChords = {
     ]
 };
 
+export const replaceBemols = {
+    es: {
+        "REB": "DO#",
+        "MIB": "RE#",
+        "SOLB": "FA#",
+        "LAB": "SOL#",
+        "SIB": "LA#",
+    },
+    en: {
+        "DB": "DO#",
+        "EB": "D#",
+        "GB": "FA#",
+        "AB": "G#",
+        "BB": "A#",
+    }
+}
+
 export default allChords;

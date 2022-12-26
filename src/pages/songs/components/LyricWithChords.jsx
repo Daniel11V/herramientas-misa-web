@@ -39,7 +39,11 @@ const LyricWithChords = ({
 			setCurrentTone(chordTone);
 			setLastChordLang(chordLang);
 			setCurrentChords(chords);
-			setArrayLyric(onlyLyric.split("\n").map((p) => (p ? p.split("") : [""])));
+			setArrayLyric(
+				onlyLyric
+					.split("\n")
+					.map((p) => (p ? p.split(" ").map((word) => word.split("")) : [[""]]))
+			);
 
 			setLastLyricWithChords(lyricWithChords);
 		}
@@ -177,69 +181,88 @@ const LyricWithChords = ({
 			</div>
 		);
 
+	const getRowCharIndex = (rowIndex, wordIndex, charIndex) => {
+		let rowCharIndex = 0;
+		for (
+			let currentWordIndex = 0;
+			currentWordIndex < wordIndex;
+			currentWordIndex++
+		) {
+			rowCharIndex += arrayLyric[rowIndex][currentWordIndex]?.length + 1 || 0;
+		}
+		return rowCharIndex + charIndex;
+	};
+
 	return (
 		<div onClick={() => setSelectedLetter([null, null])}>
-			{arrayLyric.map((row, i) => (
-				<div
-					key={i}
-					style={{
-						display: "block",
-						marginBottom: 0,
-					}}
-				>
-					{row.map((char, k) => (
-						<Letter
-							key={k}
-							isEditable={isEditable}
-							isSpace={char === " "}
-							hasChord={hasChord(i)}
-						>
-							{hasChord(i, k) && !isLetterSelected(i, k) && (
-								<>
-									<span
-										className="chord"
-										onClick={(e) => handleLetterClick(i, k, e)}
+			{arrayLyric.map((sentence, i) => (
+				<Sentence key={i}>
+					{sentence.map((word, j) => (
+						<Word>
+							{word.map((char, k) => {
+								const charIndex = getRowCharIndex(i, j, k);
+								return (
+									<Letter
+										key={charIndex}
+										isEditable={isEditable}
+										hasChord={hasChord(i)}
 									>
-										{currentChords[i][k]}
-									</span>
-									<span className="chord-space"></span>
-								</>
-							)}
-							<span
-								className="char"
-								onClick={(e) => handleLetterClick(i, k, e)}
-							>
-								{char}
-							</span>
-							{isEditable && isLetterSelected(i, k) && (
-								<Tooltip>
-									<ChordSelector
-										selectedChord={selectedChord}
-										setSelectedChord={addChord}
-										chordLang={chordLang}
-									/>
-									<TooltipFooter>
-										<TooltipBtn onClick={(e) => handleArrowBtns(e, i, k, -1)}>
-											<i className="material-icons">chevron_left</i>
-										</TooltipBtn>
-										{hasChord(i, k) ? (
-											<TooltipBtn onClick={removeChord}>
-												<i className="material-icons">remove</i>
-											</TooltipBtn>
-										) : (
-											<TooltipBtn onClick={() => addChord(selectedChord)}>
-												<i className="material-icons">add</i>
-											</TooltipBtn>
+										{hasChord(i, charIndex) &&
+											!isLetterSelected(i, charIndex) && (
+												<>
+													<span
+														className="chord"
+														onClick={(e) => handleLetterClick(i, charIndex, e)}
+													>
+														{currentChords[i][charIndex]}
+													</span>
+													<span className="chord-space"></span>
+												</>
+											)}
+										<span
+											className="char"
+											onClick={(e) => handleLetterClick(i, charIndex, e)}
+										>
+											{char}
+										</span>
+										{isEditable && isLetterSelected(i, charIndex) && (
+											<Tooltip>
+												<ChordSelector
+													selectedChord={selectedChord}
+													setSelectedChord={addChord}
+													chordLang={chordLang}
+												/>
+												<TooltipFooter>
+													<TooltipBtn
+														onClick={(e) =>
+															handleArrowBtns(e, i, charIndex, -1)
+														}
+													>
+														<i className="material-icons">chevron_left</i>
+													</TooltipBtn>
+													{hasChord(i, charIndex) ? (
+														<TooltipBtn onClick={removeChord}>
+															<i className="material-icons">remove</i>
+														</TooltipBtn>
+													) : (
+														<TooltipBtn onClick={() => addChord(selectedChord)}>
+															<i className="material-icons">add</i>
+														</TooltipBtn>
+													)}
+													<TooltipBtn
+														onClick={(e) => handleArrowBtns(e, i, charIndex, 1)}
+													>
+														<i className="material-icons">chevron_right</i>
+													</TooltipBtn>
+												</TooltipFooter>
+											</Tooltip>
 										)}
-										<TooltipBtn onClick={(e) => handleArrowBtns(e, i, k, 1)}>
-											<i className="material-icons">chevron_right</i>
-										</TooltipBtn>
-									</TooltipFooter>
-								</Tooltip>
-							)}
-						</Letter>
+									</Letter>
+								);
+							})}
+						</Word>
 					))}
-				</div>
+				</Sentence>
 			))}
 		</div>
 	);
@@ -297,10 +320,21 @@ const Tooltip = styled.div`
 	}
 `;
 
+const Sentence = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	margin-bottom: 0;
+`;
+
+const Word = styled.div`
+	margin-left: 6px;
+	white-space: nowrap;
+`;
+
 const Letter = styled.div`
 	display: inline-block;
 	position: relative;
-	margin-left: ${(props) => (props.isSpace ? "6px" : 0)};
+	margin-left: 2px;
 	margin-top: ${(props) => (props.hasChord ? "15px" : 0)};
 
 	.char {

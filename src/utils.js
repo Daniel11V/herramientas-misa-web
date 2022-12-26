@@ -1,4 +1,4 @@
-import allChords from "./data/allChords.js";
+import allChords, { replaceBemols } from "./data/allChords.js";
 import searchLabels from "./data/searchLabels.js";
 
 
@@ -116,18 +116,34 @@ export const getChordsFromLyric = (lyric, chordLang) => {
         if (line.replaceAll(" ", "") === "") return;
 
         for (let i = 0; i < allChordsArrayEN.length && line.replaceAll(" ", "") !== ""; i++) {
-            if (chordLangFound !== "es") {
+            if (chordLangFound === null || chordLangFound === "en") {
                 const upperChordEN = allChordsArrayEN[i].toUpperCase();
                 while (line.includes(` ${upperChordEN} `)) {
                     line = line.replace(upperChordEN, "");
                     if (!chordLangFound) chordLangFound = "en";
                 }
+                // Also check bemols
+                if (upperChordEN.includes("#")) {
+                    const upperChordENbemol = Object.keys(replaceBemols.en).find(bemolChord => replaceBemols.en[bemolChord].slice(0, -1) === upperChordEN.split('#')[0]);
+                    while (line.includes(` ${upperChordENbemol} `)) {
+                        line = line.replace(upperChordENbemol, "");
+                        if (!chordLangFound) chordLangFound = "en";
+                    }
+                }
             }
-            if (chordLangFound !== "en") {
+            if (chordLangFound === null || chordLangFound === "es") {
                 const upperChordES = allChordsArrayES[i].toUpperCase();
                 while (line.includes(` ${upperChordES} `)) {
-                    line = line.replace(upperChordES, "");
+                    line = line.replace(` ${upperChordES} `, " ");
                     if (!chordLangFound) chordLangFound = "es";
+                }
+                // Also check bemols
+                if (upperChordES.includes("#")) {
+                    const upperChordESbemol = Object.keys(replaceBemols.es).find(bemolChord => replaceBemols.es[bemolChord].slice(0, -1) === upperChordES.split('#')[0]);
+                    while (line.includes(` ${upperChordESbemol} `)) {
+                        line = line.replace(upperChordESbemol, "");
+                        if (!chordLangFound) chordLangFound = "es";
+                    }
                 }
             }
 
@@ -163,6 +179,13 @@ export const getChordsFromLyric = (lyric, chordLang) => {
                     newChordIndex = index;
                     newChord += character;
                 } else if (character === " " && !!newChord) {
+                    // Replace bemol
+                    for (const bemolChord of Object.keys(replaceBemols[chordLangFound])) {
+                        if (newChord.toUpperCase().includes(bemolChord)) {
+                            newChord = newChord.toUpperCase().replace(bemolChord, replaceBemols[chordLangFound][bemolChord])
+                            break;
+                        }
+                    }
                     newChords[finalLineIndex] = {
                         ...(newChords[finalLineIndex] || {}),
                         [newChordIndex]: translateChord(newChord, chordLang, chordLangFound)

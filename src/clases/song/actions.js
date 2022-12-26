@@ -246,7 +246,6 @@ export const publishSong = (songPublicId) => {
 
             const oldSongTitleFromDB = await getPrivateSongTitleDB({ songTitleId: songPublicId, hasInvitation: true });
             await deletePrivateSongTitleDB({ songTitleId: songPublicId });
-            console.log("ACA", { oldSongTitleFromDB, songPublicId })
             const oldSongLyricFromDB = await getPrivateSongLyricDB({ songLyricId: oldSongTitleFromDB.lyricId });
             await deletePrivateSongLyricDB({ songLyricId: oldSongTitleFromDB.lyricId });
 
