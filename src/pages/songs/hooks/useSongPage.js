@@ -51,7 +51,6 @@ export const useSongPage = (songTitleId) => {
                     annotations: finalSong.annotations,
                     level: finalSong.level,
                 }
-                // console.log("ACA5", { finalSongOptions, newSongOptions })
                 setAreNewSongOptions(!objsAreEqual(finalSongOptions, newSongOptions))
 
                 return newSongOptions

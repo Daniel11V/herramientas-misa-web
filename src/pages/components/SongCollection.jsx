@@ -123,8 +123,10 @@ const SongCollection = ({
 					{song?.author?.name && ` - ${song.author.name}`}
 					{userId && song?.creator?.id === userId && (
 						<LevelIcon withCheck={checking}>
-							<i className="material-icons">favorite</i>
-							<span>{song?.level?.voice?.toString()}</span>
+							<i className="material-icons">favorite_border</i>
+							<span>
+								{song?.level?.voice ? song?.level?.voice?.toString() : ""}
+							</span>
 						</LevelIcon>
 					)}
 					{/* <div className="levelIcon">

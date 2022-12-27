@@ -100,7 +100,7 @@ export const transportChord = (lastChord, toneDiference, chordLang) => {
     return allChords[chordLang][lastChordIndex[0]].chords[newChordIndex];
 };
 
-export const getChordsFromLyric = (lyric, chordLang) => {
+export const getChordsFromLyric = (lyric, chordLang, alsoFormatLyricWithChords = false) => {
     const songLines = lyric.split("\n");
     const newChords = {};
     let onlyLyric = [...songLines];
@@ -115,6 +115,7 @@ export const getChordsFromLyric = (lyric, chordLang) => {
         let line = (" " + currentLine + " ").replaceAll('\t', " ").toUpperCase();
         if (line.replaceAll(" ", "") === "") return;
 
+        // Quita los acordes para ver si es una linea solo de acordes, y obtiene el chordLangFound
         for (let i = 0; i < allChordsArrayEN.length && line.replaceAll(" ", "") !== ""; i++) {
             if (chordLangFound === null || chordLangFound === "en") {
                 const upperChordEN = allChordsArrayEN[i].toUpperCase();
@@ -149,24 +150,7 @@ export const getChordsFromLyric = (lyric, chordLang) => {
 
         }
 
-
-        // allChordsArrayEN.forEach((chord) => {
-        //     const upperChord = chord.toUpperCase();
-        //     while (line.includes(` ${upperChord} `)) line = line.replace(upperChord, "");
-        // });
-        // allChordsArrayES.forEach((chord) => {
-        //     const upperChord = chord.toUpperCase();
-        //     while (line.includes(` ${upperChord} `)) line = line.replace(upperChord, "");
-        // });
-
-        // allChordsArrayEN.forEach((chord) => {
-        // 	while (line.toUpperCase().includes(` ${chord.toUpperCase()} `))
-        // 		line = line.replace(chord, "").replace(chord.toUpperCase(), "");
-        // });
-        // allChordsArrayES.forEach((chord) => {
-        // 	while (line.toUpperCase().includes(` ${chord.toUpperCase()} `))
-        // 		line = line.replace(chord, "").replace(chord.toUpperCase(), "");
-        // });
+        // Si es linea de acordes, la revisa y los agrega a newChords
         // console.log("ACA", { line });
         if (line.replaceAll(" ", "") === "") {
             const chordLine = currentLine + " ";
@@ -188,7 +172,7 @@ export const getChordsFromLyric = (lyric, chordLang) => {
                     }
                     newChords[finalLineIndex] = {
                         ...(newChords[finalLineIndex] || {}),
-                        [newChordIndex]: translateChord(newChord, chordLang, chordLangFound)
+                        [newChordIndex]: { chord: translateChord(newChord, chordLang, chordLangFound) }
                     };
                     // if (newChords[finalLineIndex]) {
                     //     newChords[finalLineIndex][newChordIndex] = translateChord(newChord, "en", chordLangFound);
@@ -204,14 +188,40 @@ export const getChordsFromLyric = (lyric, chordLang) => {
             });
             onlyLyric.splice(finalLineIndex, 1);
             finalLineIndex--;
+
+            // Si no es linea de acorde revisa los acordes incrustrados como [chord 2|SOL]
+        } else {
+            if (onlyLyric[finalLineIndex].includes("[chord ")) {
+                const bracketsRegex = /\[[^[]]*\]/g;
+                while (onlyLyric[finalLineIndex].includes("[chord ") && bracketsRegex.test(onlyLyric[finalLineIndex])) {
+                    const newChordIndex = onlyLyric.indexOf("[chord ")
+                    const content = line.split("[CHORD ")[1].split("]")[0];
+                    let [newChord, newChordDuration] = content.split("|");
+
+                    for (const bemolChord of Object.keys(replaceBemols[chordLangFound])) {
+                        if (newChord.toUpperCase().includes(bemolChord)) {
+                            newChord = newChord.toUpperCase().replace(bemolChord, replaceBemols[chordLangFound][bemolChord])
+                            break;
+                        }
+                    }
+                    newChords[finalLineIndex] = {
+                        ...(newChords[finalLineIndex] || {}),
+                        [newChordIndex]: { chord: translateChord(newChord, chordLang, chordLangFound), duration: newChordDuration }
+                    };
+
+                    onlyLyric[finalLineIndex].replace(bracketsRegex, '')
+                }
+            }
         }
     });
+
+
 
     // If has chords, set tone
     let chordTone = "";
     if (newChords && Object.keys(newChords).length !== 0) {
         const firstLine = Object.values(newChords)[0];
-        const firstChord = Object.values(firstLine)[0];
+        const firstChord = Object.values(firstLine)[0]?.chord;
 
         // chordTone = translateChord(firstChord, "en", chordLang);
         chordTone = allChords.en[0].chords[getChordIndex(firstChord, chordLang)[1]];
@@ -222,7 +232,7 @@ export const getChordsFromLyric = (lyric, chordLang) => {
             for (const charIndex in newChords[lineIndex]) {
                 const lineLength = onlyLyric[lineIndex].length;
                 if (lineLength < charIndex) {
-                    for (let j = 0; j <= charIndex - lineLength; j++) {
+                    for (let j = 0; j <= Number(charIndex) - lineLength; j++) {
                         onlyLyric[lineIndex] += " ";
                     }
                 }
@@ -230,7 +240,18 @@ export const getChordsFromLyric = (lyric, chordLang) => {
         }
     }
 
-    return { chords: newChords, chordTone, onlyLyric: onlyLyric.join("\n") };
+    const newLyricFormatted = onlyLyric.slice().map(line => line.split(""));
+    if (alsoFormatLyricWithChords) {
+        for (const lineIndex in newChords) {
+            for (const charIndex of Object.keys(newChords[lineIndex]).reverse()) {
+                const chordDuration = newChords[lineIndex][charIndex]?.duration ? ("|" + newChords[lineIndex][charIndex]?.duration) : "";
+                const chordString = `[chord ${newChords[lineIndex][charIndex].chord}${chordDuration}]`;
+
+                newLyricFormatted[lineIndex].splice(charIndex, 0, chordString);
+            }
+        }
+    }
+    return { chords: newChords, chordTone, onlyLyric: onlyLyric.join("\n"), newLyricFormatted: newLyricFormatted.map(line => line.join("")).join("\n") };
 }
 
 export const getLyricWithChords = (onlyLyric, chords) => {

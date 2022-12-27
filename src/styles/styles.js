@@ -78,7 +78,7 @@ export const LevelIcon = styled.div`
 
 	> span {
 		position: absolute;
-		color: white;
+		color: #006cd7;
 		font-size: 10px;
 		font-weight: bold;
 		top: 50%;

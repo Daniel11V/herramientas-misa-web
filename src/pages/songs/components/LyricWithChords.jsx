@@ -33,7 +33,8 @@ const LyricWithChords = ({
 		if (!!lyricWithChords && lyricWithChords !== lastLyricWithChords) {
 			const { chords, chordTone, onlyLyric } = getChordsFromLyric(
 				lyricWithChords,
-				chordLang
+				chordLang,
+				true
 			);
 
 			setCurrentTone(chordTone);
@@ -42,7 +43,11 @@ const LyricWithChords = ({
 			setArrayLyric(
 				onlyLyric
 					.split("\n")
-					.map((p) => (p ? p.split(" ").map((word) => word.split("")) : [[""]]))
+					.map((line) =>
+						line
+							? line.split(" ").map((word) => (word ? word.split("") : [" "]))
+							: [[""]]
+					)
 			);
 
 			setLastLyricWithChords(lyricWithChords);
@@ -57,10 +62,13 @@ const LyricWithChords = ({
 					for (const chordIndex in lastCurrentChords[line]) {
 						newCurrentChords[line] = {
 							...(newCurrentChords[line] || {}),
-							[chordIndex]: translateChord(
-								lastCurrentChords[line][chordIndex],
-								chordLang
-							),
+							[chordIndex]: {
+								...lastCurrentChords[line][chordIndex],
+								chord: translateChord(
+									lastCurrentChords[line][chordIndex].chord,
+									chordLang
+								),
+							},
 						};
 					}
 
@@ -86,11 +94,14 @@ const LyricWithChords = ({
 					for (const chordIndex in lastCurrentChords[line]) {
 						newChords[line] = {
 							...(newChords[line] || {}),
-							[chordIndex]: transportChord(
-								lastCurrentChords[line][chordIndex],
-								toneDiference,
-								chordLang
-							),
+							[chordIndex]: {
+								...lastCurrentChords[line][chordIndex],
+								chord: transportChord(
+									lastCurrentChords[line][chordIndex].chord,
+									toneDiference,
+									chordLang
+								),
+							},
 						};
 					}
 
@@ -121,7 +132,10 @@ const LyricWithChords = ({
 			...lastChords,
 			[selectedLetter[0]]: {
 				...lastChords[selectedLetter[0]],
-				[selectedLetter[1]]: translateChord(chord, chordLang, "en"),
+				[selectedLetter[1]]: {
+					duration: lastChords[selectedLetter[0]][selectedLetter[1]].duration,
+					chord: translateChord(chord, chordLang, "en"),
+				},
 			},
 		}));
 
@@ -146,7 +160,7 @@ const LyricWithChords = ({
 	const hasChord = (i, k) =>
 		showChords &&
 		!!currentChords?.[i] &&
-		(k >= 0 ? !!currentChords[i][k] : true);
+		(k >= 0 ? !!currentChords[i][k]?.chord : true);
 
 	const handleLetterClick = (i, k, event) => {
 		event.stopPropagation();
@@ -158,7 +172,7 @@ const LyricWithChords = ({
 				setSelectedLetter([i, k]);
 				if (hasChord(i, k))
 					setSelectedChord(
-						translateChord(currentChords[i][k], "en", chordLang)
+						translateChord(currentChords[i][k].chord, "en", chordLang)
 					);
 				else setSelectedChord("C");
 			}
@@ -193,13 +207,25 @@ const LyricWithChords = ({
 		return rowCharIndex + charIndex;
 	};
 
+	const spaceIndex = (rowIndex, wordIndex) => {
+		let rowSpaceIndex = 0;
+		for (
+			let currentWordIndex = 0;
+			currentWordIndex < wordIndex + 1;
+			currentWordIndex++
+		) {
+			rowSpaceIndex += arrayLyric[rowIndex][currentWordIndex]?.length + 1 || 0;
+		}
+		return rowSpaceIndex;
+	};
+
 	return (
 		<div onClick={() => setSelectedLetter([null, null])}>
 			{arrayLyric.map((sentence, i) => (
 				<Sentence key={i}>
 					{sentence.map((word, j) => (
 						<Word>
-							{word.map((char, k) => {
+							{[...word, " "].map((char, k) => {
 								const charIndex = getRowCharIndex(i, j, k);
 								return (
 									<Letter
@@ -214,7 +240,7 @@ const LyricWithChords = ({
 														className="chord"
 														onClick={(e) => handleLetterClick(i, charIndex, e)}
 													>
-														{currentChords[i][charIndex]}
+														{currentChords[i][charIndex].chord}
 													</span>
 													<span className="chord-space"></span>
 												</>
@@ -260,6 +286,20 @@ const LyricWithChords = ({
 									</Letter>
 								);
 							})}
+							{/* <SpaceAfterWord isEditable={isEditable} hasChord={hasChord(i)}>
+								{hasChord(i, spaceIndex(i, j)) &&
+									!isLetterSelected(i, spaceIndex(i, j)) && (
+										<>
+											<span
+												className="chord"
+												onClick={(e) => handleLetterClick(i, spaceIndex(i, j), e)}
+											>
+												{currentChords[i][spaceIndex(i, j)].chord}
+											</span>
+											<span className="chord-space"></span>
+										</>
+									)}
+							</SpaceAfterWord> */}
 						</Word>
 					))}
 				</Sentence>
@@ -327,14 +367,14 @@ const Sentence = styled.div`
 `;
 
 const Word = styled.div`
-	margin-left: 6px;
+	margin-right: 3px;
 	white-space: nowrap;
 `;
 
 const Letter = styled.div`
 	display: inline-block;
 	position: relative;
-	margin-left: 2px;
+	margin-left: 1px;
 	margin-top: ${(props) => (props.hasChord ? "15px" : 0)};
 
 	.char {
@@ -387,5 +427,7 @@ const Letter = styled.div`
 			}
 		`}
 `;
+
+const SpaceAfterWord = styled(Letter)``;
 
 export default LyricWithChords;
