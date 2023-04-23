@@ -1,6 +1,7 @@
 import M from "materialize-css";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
+import { colors } from "../../../styles/styleUtils";
 
 const SelectorModal = ({
 	selectedItem,
@@ -99,7 +100,7 @@ const SelectedItemArrow = styled.i`
 	top: 8px;
 	right: 8px;
 	font-size: 17px;
-	color: #9e9e9e;
+	color: ${colors.gray};
 `;
 
 const SelectedItem = styled.div`
@@ -117,7 +118,7 @@ const SelectedItem = styled.div`
 		height: 0px;
 		position: absolute;
 
-		border-bottom: 1px solid #9e9e9e;
+		border-bottom: 1px solid ${colors.gray};
 		/* left: 10px; */
 		bottom: 6px;
 	}

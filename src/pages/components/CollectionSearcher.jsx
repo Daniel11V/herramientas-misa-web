@@ -3,6 +3,7 @@ import M from "materialize-css";
 import styled from "styled-components";
 import LabelsInput from "./LabelsInput";
 import { CollectionItem } from "../../styles/styles";
+import { colors } from "../../styles/styleUtils";
 
 export const CollectionSearcher = ({ labelsStart = [] }) => {
 	const [showFilters, setShowFilters] = useState(false);
@@ -100,7 +101,7 @@ const CollectionSearcherStyle = styled(CollectionItem).attrs({
 			align-items: center;
 			justify-content: center;
 			transform: none;
-			color: #9e9e9e;
+			color: ${colors.gray};
 			font-size: 1rem;
 			-webkit-transition: color 0.2s ease-out, -webkit-transform 0.2s ease-out;
 			transition: color 0.2s ease-out, -webkit-transform 0.2s ease-out;
@@ -144,7 +145,7 @@ const CollectionSearcherStyle = styled(CollectionItem).attrs({
 		align-items: center;
 		justify-content: center;
 		transform: none;
-		color: #9e9e9e;
+		color: ${colors.gray};
 		font-size: 1rem;
 		-webkit-transition: color 0.2s ease-out, -webkit-transform 0.2s ease-out;
 		transition: color 0.2s ease-out, -webkit-transform 0.2s ease-out;

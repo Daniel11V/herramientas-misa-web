@@ -220,11 +220,19 @@ export const getChordsFromLyric = (lyric, chordLang, alsoFormatLyricWithChords =
     // If has chords, set tone
     let chordTone = "";
     if (newChords && Object.keys(newChords).length !== 0) {
-        const firstLine = Object.values(newChords)[0];
-        const firstChord = Object.values(firstLine)[0]?.chord;
+        let lineToSearchChordNumber = 0;
+        let firstChord;
+        do {
+            const lineToSearchChord = Object.values(newChords)[lineToSearchChordNumber];
+            firstChord = Object.values(lineToSearchChord)[0]?.chord;
+            lineToSearchChordNumber++;
+        } while (!firstChord && lineToSearchChordNumber < Object.values(newChords).length)
 
-        // chordTone = translateChord(firstChord, "en", chordLang);
-        chordTone = allChords.en[0].chords[getChordIndex(firstChord, chordLang)[1]];
+        if (!!firstChord) {
+            // chordTone = translateChord(firstChord, "en", chordLangFound);
+            const chordIndex = getChordIndex(firstChord, chordLang);
+            chordTone = allChords?.[chordLang]?.[0]?.chords?.[chordIndex[1]];
+        }
 
         // Adjust if chordLine is larger
         for (const lineIndex in newChords) {

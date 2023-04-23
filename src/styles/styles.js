@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { noSelectableText } from "./styleUtils";
+import { noSelectableText, colors } from "./styleUtils";
 
 export const Header = styled.div`
 	display: flex;
@@ -29,6 +29,10 @@ export const Collection = styled.div.attrs({
 	overflow: inherit !important;
 	border-radius: 5px;
 	${noSelectableText}
+`;
+
+export const CollectionContent = styled.div`
+	/* border: 1px solid red; */
 `;
 
 export const CollectionItem = styled.div.attrs(props => ({
@@ -62,23 +66,26 @@ export const CollectionItem = styled.div.attrs(props => ({
 	}
 `;
 
-export const LevelIcon = styled.div`
-	position: relative;
-	width: 27px;
+export const CollectionItemIcons = styled.div`
 	margin-top: 2px;
+	display: flex;
 
-	> i {
+	> div {
+		position: relative;
+		width: 27px;
+	}
+
+	i {
 		position: absolute;
-		color: #006cd7;
+		left: 50%;
 		font-size: 27px;
 		top: 50%;
-		left: 50%;
 		transform: translate(-50%, -50%);
 	}
 
-	> span {
+	span {
 		position: absolute;
-		color: #006cd7;
+		color: ${colors.blue};
 		font-size: 10px;
 		font-weight: bold;
 		top: 50%;
@@ -103,4 +110,20 @@ export const LevelIcon = styled.div`
 				z-index: 20;
 			}
 		`}
+`;
+export const PrivacyIcon = styled.div`
+	position: relative;
+
+	> i {
+		font-size: 22px;
+		color: ${colors.gray};
+	}
+`;
+
+export const LevelIcon = styled.div`
+	margin-left: 10px;
+
+	> i {
+		color: ${colors.blue};
+	}
 `;

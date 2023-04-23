@@ -3,6 +3,8 @@ import { css } from "styled-components";
 export const colors = {
     primary: "#1976d2",
     secondary: "#1976d280",
+    gray: "#9e9e9e",
+    blue: "#006cd7",
 }
 
 export const noSelectableText = css`

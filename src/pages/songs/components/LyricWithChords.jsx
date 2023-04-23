@@ -207,18 +207,6 @@ const LyricWithChords = ({
 		return rowCharIndex + charIndex;
 	};
 
-	const spaceIndex = (rowIndex, wordIndex) => {
-		let rowSpaceIndex = 0;
-		for (
-			let currentWordIndex = 0;
-			currentWordIndex < wordIndex + 1;
-			currentWordIndex++
-		) {
-			rowSpaceIndex += arrayLyric[rowIndex][currentWordIndex]?.length + 1 || 0;
-		}
-		return rowSpaceIndex;
-	};
-
 	return (
 		<div onClick={() => setSelectedLetter([null, null])}>
 			{arrayLyric.map((sentence, i) => (
@@ -427,7 +415,5 @@ const Letter = styled.div`
 			}
 		`}
 `;
-
-const SpaceAfterWord = styled(Letter)``;
 
 export default LyricWithChords;

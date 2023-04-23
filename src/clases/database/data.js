@@ -157,8 +157,8 @@ export const database = {
         ]
       }
     },
-    '1670495920815': {
-      id: '1670495920815',
+    '1670495920816': {
+      id: '1670495920816',
       creator: {
         id: '111418653738749034139',
         name: 'Daniel Vinet'
@@ -195,7 +195,31 @@ export const database = {
           '1671908886446'
         ]
       }
-    }
+    },
+    '6144d6373d6d4f8085af96ee': {
+      id: '6144d6373d6d4f8085af96ee',
+      creator: {
+        id: '111418653738749034139',
+        name: 'Daniel Vinet'
+      },
+      title: 'Misas para Comuniones 2023',
+      annotations: '',
+      members: [],
+      placeTitle: 'Parroquia Ntra. Sra. del Pilar',
+      placeUbication: '',
+      isMass: true,
+      songs: {
+        entrada: [],
+        // gloria: [],
+        aleluya: ['1671906557535'],
+        ofrenda: [],
+        santo: ['1670705576812'],
+        cordero: ['1670705390091'],
+        comunion: ["1669864387705"],
+        meditacion: [],
+        salida: ["1670704798664"]
+      }
+    },
   },
   privateSongTitleList: {
     '1669864387705': {
