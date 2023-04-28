@@ -119,7 +119,7 @@ const RepertoryFormPage = () => {
 	// 			chords: chordsNew,
 	// 			chordLang: chordLangNew,
 	// 			onlyLyric: onlyLyricNew,
-	// 		} = getChordsFromLyric(songForm.lyric);
+	// 		} = getDataFromLyric(songForm.lyric);
 	// 		setChords(chordsNew);
 	// 		setChordLang(chordLangNew);
 	// 		setOnlyLyric(onlyLyricNew);

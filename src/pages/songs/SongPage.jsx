@@ -335,17 +335,30 @@ const SongPage = () => {
 							selectorWidth="115"
 						/>
 					)}
-					<RangeInput>
-						Tamaño de letra: {pageOptions.fontSize}px
-						<input
+					<FontSizeSection>
+						Tamaño de letra:
+						<FontSizeInput>
+							<FontSizeButtonLeft
+								onClick={() => setFontSize(Number(pageOptions.fontSize) - 1)}
+							>
+								keyboard_arrow_left
+							</FontSizeButtonLeft>
+							{pageOptions.fontSize}px
+							<FontSizeButtonRight
+								onClick={() => setFontSize(Number(pageOptions.fontSize) + 1)}
+							>
+								keyboard_arrow_right
+							</FontSizeButtonRight>
+						</FontSizeInput>
+						{/* <input
 							type="range"
 							id="fontSize"
 							min="10"
 							max="25"
 							value={pageOptions.fontSize}
-							onChange={setFontSize}
-						/>
-					</RangeInput>
+							onChange={e => setFontSize(e.target.value)}
+						/> */}
+					</FontSizeSection>
 					{!!areNewOptions && (
 						<SongButton
 							className="btn waves-effect waves-light blue darken-2"
@@ -431,16 +444,41 @@ const SongInfo = styled.div`
 	vertical-align: center;
 `;
 
-const RangeInput = styled.p.attrs({
-	className: "range-field",
-})`
+// const RangeInput = styled.p.attrs({
+// 	className: "range-field",
+// })`
+// 	margin-top: 5px;
+// 	margin-bottom: 5px;
+// 	${noSelectableText}
+
+// 	input[type="range"]::-webkit-slider-thumb {
+// 		background: ${colors.primary};
+// 	}
+// `;
+const FontSizeSection = styled.p`
 	margin-top: 5px;
 	margin-bottom: 5px;
+	display: flex;
 	${noSelectableText}
-
-	input[type="range"]::-webkit-slider-thumb {
-		background: ${colors.primary};
-	}
+`;
+const FontSizeInput = styled.p`
+	margin: 0 1.5rem;
+	padding: 0 2rem;
+	position: relative;
+`;
+const FontSizeButton = styled.div.attrs({
+	className: "material-icons",
+})`
+	cursor: pointer;
+	position: absolute;
+	font-size: inherit;
+	bottom: 3px;
+`;
+const FontSizeButtonLeft = styled(FontSizeButton)`
+	left: 0;
+`;
+const FontSizeButtonRight = styled(FontSizeButton)`
+	right: 0;
 `;
 const SongButton = styled(LoggedButton)`
 	margin-top: 15px;

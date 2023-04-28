@@ -19,7 +19,7 @@ export const getPrivateSongTitleListDB = async ({ userId }) => {
 
     const userPrivateSongTitleList = Object.values(allPrivateSongTitleList)
         .reduce((userPrivateSongTitleList, privateSongTitle) =>
-            privateSongTitle.creator.id === userId ?
+            privateSongTitle?.creator?.id === userId ?
                 ({ ...userPrivateSongTitleList, [privateSongTitle.id]: privateSongTitle })
                 : userPrivateSongTitleList,
             {}) || {};

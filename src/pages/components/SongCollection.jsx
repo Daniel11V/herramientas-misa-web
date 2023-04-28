@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { arrayIsEmpty } from "../../utils";
@@ -7,9 +7,11 @@ import {
 	Collection,
 	CollectionContent,
 	CollectionItem,
+	CollectionItemDescription,
 	CollectionItemIcons,
 	PrivacyIcon,
 	LevelIcon,
+	CollectionItemLyric,
 } from "../../styles/styles";
 
 const SongCollection = ({
@@ -25,6 +27,39 @@ const SongCollection = ({
 	const history = useHistory();
 
 	const [songChoose, setSongChoose] = useState(null);
+	const [lirycStartList, setLirycStartList] = useState([]);
+
+	const containerContentRef = useRef(null);
+
+	useEffect(() => {
+		if (!!containerContentRef.current && !!songList.length) {
+			const lyricStartMaxWidth = containerContentRef?.current?.offsetWidth - 90;
+
+			if (lyricStartMaxWidth) {
+				const canvasContext = document.createElement("canvas").getContext("2d");
+				canvasContext.font = "12px Arial";
+
+				setLirycStartList(
+					songList.map((song) => {
+						if (!song.lyricStart) return "";
+
+						let newLyricStart = song.lyricStart;
+						while (
+							canvasContext.measureText(newLyricStart).width >
+							lyricStartMaxWidth
+						) {
+							newLyricStart = newLyricStart.split(" ").slice(0, -1).join(" ");
+						}
+
+						if (newLyricStart?.[newLyricStart?.length - 1] === ",")
+							newLyricStart = newLyricStart?.slice(0, -1);
+
+						return "| " + newLyricStart + "...";
+					})
+				);
+			}
+		}
+	}, [containerContentRef, songList]);
 
 	// useEffect(() => {
 	// 	if (allSongDetails) {
@@ -117,51 +152,60 @@ const SongCollection = ({
 					)}
 				</Link>
 			))} */}
-			<CollectionContent>
+			<CollectionContent ref={containerContentRef}>
 				{arrayIsEmpty(songList) && (
 					<CollectionItem withCheck={false}>Sin canciones.</CollectionItem>
 				)}
-				{songList.map((song) => (
+				{songList.map((song, songIndex) => (
 					<CollectionItem
 						key={song.id}
 						onClick={() => handleClickSong(song.id)}
 						withCheck={checking}
 					>
-						{song.title}
-						{song?.author?.name && ` - ${song.author.name}`}
-						{userId && (
-							<CollectionItemIcons>
-								{song?.creator?.id === userId && (
-									<PrivacyIcon withCheck={checking}>
-										<i className="material-icons">
-											{!!song?.isPrivate === userId ? "lock" : "public"}
-										</i>
-									</PrivacyIcon>
-								)}
-								{!!song?.level?.voice && (
-									<LevelIcon withCheck={checking}>
-										<i className="material-icons">favorite_border</i>
-										<span>
-											{song?.level?.voice ? song?.level?.voice?.toString() : ""}
-										</span>
-									</LevelIcon>
-								)}
-							</CollectionItemIcons>
-						)}
-						{/* <div className="levelIcon">
-								<i className="material-icons" style={{ color: "#5a5a5a" }}>
-									favorite_border
-								</i>
-							</div> */}
-						{checking && (
-							<label onClick={(e) => handleCheck(e, song.id)}>
-								<input
-									type="checkbox"
-									id={song.id}
-									className="filled-in checkbox-blue"
-								/>
-								<span />
-							</label>
+						<CollectionItemDescription>
+							{song.title}
+							{song?.author?.name && ` - ${song.author.name}`}
+							{userId && (
+								<CollectionItemIcons>
+									{!!song?.level?.voice && (
+										<LevelIcon withCheck={checking}>
+											<i className="material-icons">favorite_border</i>
+											<span>
+												{song?.level?.voice
+													? song?.level?.voice?.toString()
+													: ""}
+											</span>
+										</LevelIcon>
+									)}
+									{song?.creator?.id === userId && (
+										<PrivacyIcon withCheck={checking}>
+											<i className="material-icons">
+												{!!song?.isPrivate === userId ? "lock" : "public"}
+											</i>
+										</PrivacyIcon>
+									)}
+								</CollectionItemIcons>
+							)}
+							{/* <div className="levelIcon">
+									<i className="material-icons" style={{ color: "#5a5a5a" }}>
+										favorite_border
+									</i>
+								</div> */}
+							{checking && (
+								<label onClick={(e) => handleCheck(e, song.id)}>
+									<input
+										type="checkbox"
+										id={song.id}
+										className="filled-in checkbox-blue"
+									/>
+									<span />
+								</label>
+							)}
+						</CollectionItemDescription>
+						{!!lirycStartList?.[songIndex] && (
+							<CollectionItemLyric>
+								{lirycStartList[songIndex]}
+							</CollectionItemLyric>
 						)}
 					</CollectionItem>
 				))}

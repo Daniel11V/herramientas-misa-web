@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { createAuthor, getAuthorList, resetAuthorStatus } from "../../../clases/author/actions";
 import { createSong, editSong, getSong, resetSongActionStatus } from "../../../clases/song/actions";
 import { MAX_RETRYS } from "../../../configs";
-import { arrayIsEmpty, getChordsFromLyric, getLyricWithChords } from "../../../utils";
+import { arrayIsEmpty, getDataFromLyric, getLyricWithChords, getStartLyric } from "../../../utils";
 
 export const useSongFormPage = (songId) => {
     const dispatch = useDispatch();
@@ -38,10 +38,22 @@ export const useSongFormPage = (songId) => {
 
     const [formStep, setFormStep] = useState("INITIAL");
     const [onlyLiric, setOnlyLyric] = useState("");
+    const [formattedLyric, setFormattedLyric] = useState("");
     const [chords, setChords] = useState("")
     const [chordLang, setChordLang] = useState({});
     const [editOnlyChords, setEditOnlyChords] = useState(false);
     const history = useHistory();
+
+    /* 
+    - Se agrega la letra con los acordes en forma de texto
+    - Se presiona editar solo acordes. Esta edición de los acordes es la misma vista que la final
+        - Se agarra el texto y se buscan las lineas solo de acordes puestos sensillamente sin formato.
+        Solo deben ser en mayusculas y puede ser en español o cifrado americano. 
+        El programa detecta el idioma y crea un objeto con la info de los acordes, su tiempo y 
+        usando de id la posición dentro del renglon. Tambien devuelve string solo con la letra
+    - Se hace un ajuste de los acordes o se agregan ahí
+    
+    */
 
     const setStatus = (newStatus) => {
         // console.log("ACA SONG_FORM_STATUS: ", newStatus);
@@ -131,6 +143,16 @@ export const useSongFormPage = (songId) => {
         }
     }, [status, authorStatus, dispatch]);
 
+    const backStep = (e) => {
+        e.preventDefault();
+
+        if (formStep === "LYRIC_CHORDS") {
+            setFormStep("DESCRIPTION");
+        } else if (formStep === "EXTRA_DETAILS") {
+            setFormStep("LYRIC_CHORDS");
+        }
+    }
+
     const nextStep = (e) => {
         e.preventDefault();
 
@@ -139,10 +161,6 @@ export const useSongFormPage = (songId) => {
         } else if (formStep === "LYRIC_CHORDS") {
             setFormStep("EXTRA_DETAILS");
         } else if (formStep === "EXTRA_DETAILS") {
-
-            // Validate
-            setSongForm(lastSongForm => ({ ...lastSongForm, creator: { name: lastSongForm?.creator?.name || userName, id: lastSongForm?.creator?.id || userId } }))
-
             setFormStep("SUBMIT_SONG_FORM");
         }
     }
@@ -156,16 +174,27 @@ export const useSongFormPage = (songId) => {
 
     const toogleEditOnlyChords = () => {
         if (editOnlyChords === true) {
-            setField("lyric", getLyricWithChords(onlyLiric, chords));
+            console.log("ACA", { onlyLiric, chords })
+            // setField("lyric", getLyricWithChords(onlyLiric, chords));
+            setField("lyric", formattedLyric);
         } else {
             const {
                 chords: chordsNew,
-                chordLang: chordLangNew,
+                chordLangFound: chordLangNew,
                 onlyLyric: onlyLyricNew,
-            } = getChordsFromLyric(songForm.lyric);
+                formattedLyric: formattedLyricNew,
+            } = getDataFromLyric(songForm.lyric);
+            console.log("ACA1", {
+                chordsNew,
+                chordLangNew,
+                onlyLyricNew,
+                formattedLyricNew,
+                startLyric: getStartLyric(formattedLyricNew)
+            })
             setChords(chordsNew);
             setChordLang(chordLangNew);
             setOnlyLyric(onlyLyricNew);
+            setFormattedLyric(formattedLyricNew);
         }
 
         setEditOnlyChords(!editOnlyChords);
@@ -182,13 +211,22 @@ export const useSongFormPage = (songId) => {
         if (formStep === "SUBMIT_SONG_FORM") {
             const saveAsPublic = false;
 
+            // Validate
+            const finalSongForm = {
+                ...songForm,
+                creator: {
+                    name: songForm?.creator?.name || userName,
+                    id: songForm?.creator?.id || userId
+                }
+            }
+
             if (songId) {
                 if (songActionStatus === "INITIAL") {
-                    dispatch(editSong(songForm, saveAsPublic));
+                    dispatch(editSong(finalSongForm, saveAsPublic));
                 } else if (songActionStatus === "SUCCESS") {
                     M.toast({ html: "Canción Actualizada" });
                     dispatch(resetSongActionStatus());
-                    if (songForm.author.value === "Other") {
+                    if (finalSongForm.author.value === "Other") {
                         setFormStep("SUBMIT_NEW_AUTHOR");
                     } else {
                         setFormStep("FINISHED");
@@ -202,11 +240,11 @@ export const useSongFormPage = (songId) => {
                 }
             } else {
                 if (songActionStatus === "INITIAL") {
-                    dispatch(createSong(songForm, saveAsPublic));
+                    dispatch(createSong(finalSongForm, saveAsPublic));
                 } else if (songActionStatus === "SUCCESS") {
                     M.toast({ html: "Canción Guardada" });
                     dispatch(resetSongActionStatus());
-                    if (songForm.author.value === "Other") {
+                    if (finalSongForm.author.value === "Other") {
                         setFormStep("SUBMIT_NEW_AUTHOR");
                     } else {
                         setFormStep("FINISHED");
@@ -220,7 +258,7 @@ export const useSongFormPage = (songId) => {
                 }
             }
         }
-    }, [formStep, songForm, userName, songId, songActionStatus, dispatch, history]);
+    }, [formStep, songForm, userName, userId, songId, songActionStatus, dispatch, history]);
 
     useEffect(() => {
         if (formStep === "SUBMIT_NEW_AUTHOR") {
@@ -228,7 +266,7 @@ export const useSongFormPage = (songId) => {
                 id: new Date().getTime().toString(),
                 ...authorForm,
                 creatorId: userId,
-                songTitleIds: "",
+                songTitleIds: [],
             }
 
             if (userId === "") {
@@ -271,5 +309,5 @@ export const useSongFormPage = (songId) => {
     }, [formStep, authorForm, userId, authorStatus, dispatch, history]);
 
 
-    return { songForm, isLoading, error, formStep, nextStep, setField, authorItems, authorForm, setAuthorField, toogleEditOnlyChords, chords, onlyLiric, chordLang, editOnlyChords };
+    return { songForm, isLoading, error, formStep, backStep, nextStep, setField, authorItems, authorForm, setAuthorField, toogleEditOnlyChords, chords, onlyLiric, formattedLyric, chordLang, editOnlyChords };
 };

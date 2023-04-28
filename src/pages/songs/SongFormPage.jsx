@@ -16,12 +16,14 @@ const SongFormPage = () => {
 		error,
 		formStep,
 		nextStep,
+		backStep,
 		setField,
 		authorItems,
 		authorForm,
 		setAuthorField,
 		toogleEditOnlyChords,
 		onlyLiric,
+		formattedLyric,
 		chords,
 		chordLang,
 		editOnlyChords,
@@ -119,7 +121,7 @@ const SongFormPage = () => {
 	// 			chords: chordsNew,
 	// 			chordLang: chordLangNew,
 	// 			onlyLyric: onlyLyricNew,
-	// 		} = getChordsFromLyric(songForm.lyric);
+	// 		} = getDataFromLyric(songForm.lyric);
 	// 		setChords(chordsNew);
 	// 		setChordLang(chordLangNew);
 	// 		setOnlyLyric(onlyLyricNew);
@@ -179,6 +181,7 @@ const SongFormPage = () => {
 									<LyricWithChords
 										lyric={onlyLiric}
 										chords={chords}
+										formattedLyric={formattedLyric}
 										setChords={(v) => setField("chords", v)}
 										chordLang={chordLang}
 									/>
@@ -201,14 +204,31 @@ const SongFormPage = () => {
 							/>
 						)}
 						<div className="row">
-							<div className="input-field">
+							{formStep !== "DESCRIPTION" && (
 								<button
-									onClick={nextStep}
-									className="btn light-blue darken-4 col s12"
+									onClick={backStep}
+									className="btn btn-small col"
+									style={{
+										backgroundColor: "white",
+										border: "1px solid #01579b",
+										color: "#01579b",
+										fontWeight: 600,
+										marginRight: "2%",
+										width: "47%",
+									}}
 								>
-									{formStep === "EXTRA_DETAILS" ? "Guardar" : "Siguiente"}
+									Atras
 								</button>
-							</div>
+							)}
+							<button
+								onClick={nextStep}
+								className={
+									"btn btn-small light-blue darken-4 col s" +
+									(formStep !== "DESCRIPTION" ? "6" : "12")
+								}
+							>
+								{formStep === "EXTRA_DETAILS" ? "Guardar" : "Siguiente"}
+							</button>
 						</div>
 					</form>
 				</div>

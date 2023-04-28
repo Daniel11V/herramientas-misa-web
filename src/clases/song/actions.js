@@ -2,7 +2,7 @@
 // import { db } from "../../database/firebase"
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
-import { arrayIsEmpty } from "../../utils.js";
+import { arrayIsEmpty, getStartLyric } from "../../utils.js";
 import { createPrivateSongLyricDB, deletePrivateSongLyricDB, editPrivateSongLyricDB, getPrivateSongLyricDB } from "./services/privateSongLyricList.js";
 import { createPrivateSongTitleDB, deletePrivateSongTitleDB, editPrivateSongTitleDB, getPrivateSongTitleDB, getPrivateSongTitleListDB } from "./services/privateSongTitleList.js";
 import { createPublicSongLyricDB, editPublicSongLyricDB, getPublicSongLyricDB } from "./services/publicSongLyricList.js";
@@ -151,6 +151,7 @@ export const createSong = (songCreated) => {
             const { lyric, ...songTitle } = songCreated;
 
             const realAuthor = songTitle.author.value === "Other" ? ({ value: "-", label: "Desconocido" }) : songTitle.author;
+            const startLyric = getStartLyric(lyric);
 
             const songTitleCreated = {
                 isPrivate: true,
@@ -166,6 +167,7 @@ export const createSong = (songCreated) => {
                 level: {
                     voice: 0,
                 },
+                startLyric,
             }
 
             // if (saveAsPublic) {

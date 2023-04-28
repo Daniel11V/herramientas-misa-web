@@ -102,6 +102,7 @@ export const useSongListPage = () => {
         if (status.step === "2_FORMAT_BY_VERSION_GROUPS") {
             if (!arrayIsEmpty(currentSongList)) {
 
+                // FORMAT_BY_VERSION_GROUPS"
                 const versionGroups = {
                     // $versionGroupId: {
                     //     moreRated: $songId,
@@ -141,8 +142,12 @@ export const useSongListPage = () => {
                     }
 
                 })
+                const finalSongList = currentSongList.filter(song => versionGroups[song?.versionGroupId]?.moreRated === song.id)
 
-                setCurrentSongList(currentSongList.filter(song => versionGroups[song?.versionGroupId]?.moreRated === song.id));
+                // ORDER_ALPHABETICALLY
+                finalSongList.sort((a, b) => a.title.localeCompare(b.title));
+
+                setCurrentSongList(finalSongList);
             }
             setStatus("FINISHED");
         }

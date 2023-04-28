@@ -29,8 +29,7 @@ export const useSongPageOptions = () => {
         })
     }
 
-    const setFontSize = (event) => {
-        const newVal = event.target.value;
+    const setFontSize = (newVal) => {
         setPageOptionsField('fontSize', newVal);
     }
 

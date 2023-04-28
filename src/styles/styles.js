@@ -41,7 +41,7 @@ export const CollectionItem = styled.div.attrs(props => ({
 	color: #555 !important;
 	font-size: 14px;
 	display: flex !important;
-	justify-content: space-between;
+	flex-direction: column;
     cursor: pointer;
 
     &:hover {
@@ -64,6 +64,19 @@ export const CollectionItem = styled.div.attrs(props => ({
 			padding: 0 0 0 20px !important;
 		`
 	}
+`;
+
+export const CollectionItemDescription = styled.div`
+	display: flex !important;
+	justify-content: space-between;
+	font-weight: 500;
+`;
+
+export const CollectionItemLyric = styled.div`
+	font-style: italic;
+	font-size: 12px;
+    line-height: 1rem;
+	padding-top: 4px;
 `;
 
 export const CollectionItemIcons = styled.div`
@@ -113,6 +126,7 @@ export const CollectionItemIcons = styled.div`
 `;
 export const PrivacyIcon = styled.div`
 	position: relative;
+	margin-left: 10px;
 
 	> i {
 		font-size: 22px;
@@ -121,7 +135,6 @@ export const PrivacyIcon = styled.div`
 `;
 
 export const LevelIcon = styled.div`
-	margin-left: 10px;
 
 	> i {
 		color: ${colors.blue};

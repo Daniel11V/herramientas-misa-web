@@ -27,6 +27,14 @@ export const database = {
       photoUrl: '',
       creatorId: '111418653738749034139',
       songTitleIds: []
+    },
+    '123458': {
+      id: '123458',
+      name: 'Hakuna Group Music',
+      email: '',
+      photoUrl: 'https://cdn.shopify.com/s/files/1/0023/8360/9916/files/Captura_de_pantalla_2020-11-23_a_las_14.59.22.png?v=1606139985&width=2048',
+      creatorId: '111418653738749034139',
+      songTitleIds: ['1682512333508']
     }
   },
   userList: {
@@ -247,12 +255,40 @@ export const database = {
         voice: 0
       },
       lyricId: 1669864387702,
-      lyricIsPrivate: true
+      lyricIsPrivate: true,
+      lyricStart: '',
+    },
+    '1682248649895': {
+      id: "1682248649895",
+      versionGroupId: "1682248649895",
+      isPrivate: true,
+      title: "Al altar del Señor",
+      author: {
+        value: '-',
+        label: 'Desconocido'
+      },
+      creator: {
+        name: 'Daniel Vinet',
+        id: '111418653738749034139'
+      },
+      labels: [],
+      annotations: "",
+      pulse: "",
+      tempo: "",
+      level: {
+        voice: 0
+      },
+      lyricId: "1682248649882",
+      lyricIsPrivate: true,
+      lyricStart: '',
     }
   },
   privateSongLyricList: {
     '1669864387702': {
       lyric: '     G               C                D\nLos lirios del campo   y las aves del cielo\nG               C                      D\nNo se preocupan   por que están en mis manos\n  Em              C\nTené confianza en mí\n      G           D\nAcá estoy junto a vos\n\n[Verso]\n\n G             C             D\nAmá lo que sos   y tus circunstancias\n  G            C                     D\nEstoy con vos,   con tu cruz en mi espalda\n Em           C\nTodo terminará bien\n         G                D\nYo hago nuevas todas las cosas\n\n[Pré-Refrão]\n\n   Em  C            G  D\nYo vengo a traerte vida\n            Em  C\nVida en abundancia\n       D\nEn abundancia\n\n[Refrão]\n\n          Em  C\nYo soy el camino\n               G  D\nLa verdad y la vida\n            Em  C\nVida en abundancia\n       D\nEn abundancia\n\n( G  C  D  D )\n( G  C  D  D )\n( Em  C  D  D )\n\n[Verso]\n\n    G             C                D\nNo hice al hombre   para que esté solo\n  G            C         D\nCaminen juntos   como hermanos\n   Em            C\nSopórtense mutuamente\n    G         D\nÁmense unos a otros\n\n    G        C              D\nLa felicidad   de la vida eterna\n   G      C                 D\nEmpie..za   conmigo en la tierra\n   Em      C\nSenti..te vivo\n    G                   D       \nLa fiesta del reino comienza acá\n\n[Pré-Refrão]\n\n   Em  C            G  D\nYo vengo a traerte vida\n            Em  C\nVida en abundancia\n       D\nEn abundancia\n\n[Refrão]\n\n          Em  C\nYo soy el camino\n               G  D\nLa verdad y la vida\n            Em  C\nVida en abundancia\n       D\nEn abundancia\n\n[Pré-Refrão]\n\n   Em  C            G  D\nYo vengo a traerte vida\n            Em  C\nVida en abundancia\n       D\nEn abundancia\n\n[Refrão]\n\n          Em  C\nYo soy el camino\n               G  D\nLa verdad y la vida\n            Em  C\nVida en abundancia\n       D\nEn abundancia'
+    },
+    '1682248649882': {
+      lyric: "RE7 SOL SI7 MIm Al altar del Señor vamos con amor a entregar al Señor lo que Él nos dio. DO SOL LA SOL Pan le traemos, trigo de Dios, DO SOL SI7 MIm para la cena que Él nos preparó. Vino traemos, viña de Dios, para la fiesta de la comunión. DO SOL LA SOL Luces traemos para alumbrar DO SOL SI7 MIm la mesa santa de nuestro altar. Flores traemos para alegrar esta comida de la amistad. DO SOL LA SOL Ropa y comida, juguetes también, DO SOL SI7 MIm libros, remedios, son para Él. En los que sufren, Cristo está; darle queremos lo que Él nos da."
     }
   },
   publicRepertoryList: {},
@@ -263,6 +299,7 @@ export const database = {
       isPrivate: false,
       lyricId: '123',
       lyricIsPrivate: false,
+      lyricStart: 'En tormentas, en mi oscuridad, Infunde tu luz, trae la calma, Purifícame y lávame de aquello, que me aleja de ti',
       tone: 'F',
       title: 'Espíritu de Verdad',
       author: {
@@ -286,6 +323,7 @@ export const database = {
       isPrivate: false,
       lyricId: '124',
       lyricIsPrivate: false,
+      lyricStart: 'Tu presencia es real, todo Dios en el altar, Seas bendito y alabado, Jesús sacramentado',
       title: 'Todo Poder y Gloria',
       author: {
         id: '123455',
@@ -308,6 +346,7 @@ export const database = {
       isPrivate: false,
       lyricId: '125',
       lyricIsPrivate: false,
+      lyricStart: 'En la intimidad de tu presencia, Te rindo hoy mi ser y mi corazón, No hay lugar mejor, que ha tus pies Señor, En ti encuentro paz, encuentro amor.',
       title: 'Recibe mi corazón',
       author: {
         id: '123454',
@@ -330,6 +369,7 @@ export const database = {
       isPrivate: false,
       lyricId: '613c854ef601f09e344f43bf',
       lyricIsPrivate: false,
+      lyricStart: '',
       title: 'A Él la gloria',
       author: {
         id: '123453',
@@ -354,6 +394,7 @@ export const database = {
       isPrivate: false,
       lyricId: '613c8597f601f09e344f43c2',
       lyricIsPrivate: false,
+      lyricStart: '',
       title: 'A casa de Zacarí\u00adas',
       creator: {
         id: '111418653738749034139',
@@ -372,6 +413,7 @@ export const database = {
       isPrivate: false,
       lyricId: '6144d3152d6d4f8085af95d9',
       lyricIsPrivate: false,
+      lyricStart: '',
       title: 'Al contemplarte en la Cruz',
       creator: {
         id: '111418653738749034139',
@@ -390,6 +432,7 @@ export const database = {
       isPrivate: false,
       lyricId: '1669486125376',
       lyricIsPrivate: false,
+      lyricStart: '',
       title: 'Despertemos llega Cristo',
       author: '',
       creator: {
@@ -412,6 +455,7 @@ export const database = {
       isPrivate: false,
       lyricId: '1669487158540',
       lyricIsPrivate: false,
+      lyricStart: '',
       title: 'Saber que vendrás',
       author: '',
       creator: {
@@ -433,6 +477,7 @@ export const database = {
       isPrivate: false,
       lyricId: '1669487612347',
       lyricIsPrivate: false,
+      lyricStart: '',
       title: 'María de la Esperanza',
       author: '',
       creator: {
@@ -454,6 +499,7 @@ export const database = {
       isPrivate: false,
       lyricId: '1669487992786',
       lyricIsPrivate: false,
+      lyricStart: '',
       title: 'Toda la tierra',
       author: '',
       creator: {
@@ -493,7 +539,8 @@ export const database = {
         voice: 0
       },
       lyricId: '1670494499042',
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670494597083': {
       id: '1670494597083',
@@ -519,7 +566,8 @@ export const database = {
         voice: 0
       },
       lyricId: '1670494597081',
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670494692776': {
       id: '1670494692776',
@@ -545,7 +593,8 @@ export const database = {
         voice: 0
       },
       lyricId: '1670494692775',
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670494760118': {
       id: '1670494760118',
@@ -571,7 +620,8 @@ export const database = {
         voice: 0
       },
       lyricId: '1670494760117',
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670494834277': {
       id: '1670494834277',
@@ -597,7 +647,8 @@ export const database = {
         voice: 0
       },
       lyricId: '1670494834276',
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670494889388': {
       id: '1670494889388',
@@ -622,7 +673,8 @@ export const database = {
         voice: 0
       },
       lyricId: '1670494889387',
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670494958918': {
       id: '1670494958918',
@@ -647,7 +699,8 @@ export const database = {
         voice: 0
       },
       lyricId: '1670494958916',
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670495065329': {
       id: '1670495065329',
@@ -672,7 +725,8 @@ export const database = {
         voice: 0
       },
       lyricId: '1670495065328',
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670704384915': {
       id: '1670704384915',
@@ -695,7 +749,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1670704393313,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670704472033': {
       id: '1670704472033',
@@ -720,7 +775,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1670704620691,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670704557067': {
       id: '1670704557067',
@@ -743,7 +799,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1670704633127,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670704724691': {
       id: '1670704724691',
@@ -769,7 +826,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1670704732978,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670704798664': {
       id: '1670704798664',
@@ -795,7 +853,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1670704810967,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670705576812': {
       id: '1670705576812',
@@ -820,7 +879,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1670705595720,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670705390091': {
       id: '1670705390091',
@@ -845,7 +905,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1670705603544,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1670706514121': {
       id: '1670706514121',
@@ -870,7 +931,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1670706522980,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1671906385775': {
       id: '1671906385775',
@@ -896,7 +958,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1671910143403,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1671906557535': {
       id: '1671906557535',
@@ -922,7 +985,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1671910451180,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1671906649253': {
       id: '1671906649253',
@@ -948,7 +1012,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1671910460223,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1671907937211': {
       id: '1671907937211',
@@ -974,7 +1039,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1671910468128,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1671908198503': {
       id: '1671908198503',
@@ -1000,7 +1066,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1671910476336,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1671908602986': {
       id: '1671908602986',
@@ -1026,7 +1093,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1671910487974,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1671908886446': {
       id: '1671908886446',
@@ -1052,7 +1120,8 @@ export const database = {
         voice: 0
       },
       lyricId: 1671910495058,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
     },
     '1671908915221': {
       id: '1671908915221',
@@ -1078,12 +1147,39 @@ export const database = {
         voice: 0
       },
       lyricId: 1671910502242,
-      lyricIsPrivate: false
+      lyricIsPrivate: false,
+      lyricStart: '',
+    },
+    '1682512333508': {
+      id: '1682512333508',
+      versionGroupId: '1682512333508',
+      isPrivate: true,
+      title: 'Siempre Imaginé',
+      author: {
+        id: '123458',
+        name: 'Hakuna Group Music'
+      },
+      creator: {
+        name: 'Daniel Vinet',
+        id: '111418653738749034139'
+      },
+      labels: [
+        'padre'
+      ],
+      annotations: 'Capo en 1er traste en C',
+      pulse: '',
+      tempo: '',
+      level: {
+        voice: 0
+      },
+      lyricId: '1682512333506',
+      lyricIsPrivate: false,
+      lyricStart: 'Siempre imaginé la felicidad ligada al poder y a la comodidad. Siempre imaginé la felicidad ligada a mis sueños cumplidos.',
     }
   },
   publicSongLyricList: {
     '123': {
-      lyric: 'D                                      Em7\nEn tormentas, en mi oscuridad\n             G                     D\nInfunde tu luz, trae la calma\nD                                      Em7\nPurifícame y lávame de aquello\n               G                   D\nque me aleja de ti\n\nG     A           Bm7\nVen Santo Espíritu\nEm              A\nVen con tu unción\n\n[Estribillo]\nD                             Em7\nEspíritu de verdad, Espíritu de vida\nG                        D\nConsolador ven a mi vida   x2\n\n          Em7                            A\nVen Espíritu de amor, sopla en mi corazón\nBm7  A               G              D\n                Ven Espíritu de amor\n\nD                                           Em7\nHazme mirar con tus ojos Señor\n               G                     D\nTambién amar como tú amas\nD                                             Bm7\nQuiero agradarte en todo lo que yo haga\n               Em7                     A\nQuiero anunciar como me amas\n\n          G       A          Bm7\nY por eso recurro a ti,\nC                         A\nya que de mi no salen las palabras\n\nEstribillo --\nEm7               A\nVen Espíritu de amor\n\n   E                              F#m7\nEspíritu de Verdad, Espíritu de vida\nA                                E\nConsolador ven a mí vida  x4\n\n           A           \nVen Espíritu de amor, \n          Am               E9\nsopla en mi corazón'
+      lyric: 'D                                      Em7\nEn tormentas, en mi oscuridad\n             G                     D\nInfunde tu luz, trae la calma, Purifícame y lávame de aquello, que me aleja de ti\nD                                      Em7\nPurifícame y lávame de aquello\n               G                   D\nque me aleja de ti\n\nG     A           Bm7\nVen Santo Espíritu\nEm              A\nVen con tu unción\n\n[Estribillo]\nD                             Em7\nEspíritu de verdad, Espíritu de vida\nG                        D\nConsolador ven a mi vida   x2\n\n          Em7                            A\nVen Espíritu de amor, sopla en mi corazón\nBm7  A               G              D\n                Ven Espíritu de amor\n\nD                                           Em7\nHazme mirar con tus ojos Señor\n               G                     D\nTambién amar como tú amas\nD                                             Bm7\nQuiero agradarte en todo lo que yo haga\n               Em7                     A\nQuiero anunciar como me amas\n\n          G       A          Bm7\nY por eso recurro a ti,\nC                         A\nya que de mi no salen las palabras\n\nEstribillo --\nEm7               A\nVen Espíritu de amor\n\n   E                              F#m7\nEspíritu de Verdad, Espíritu de vida\nA                                E\nConsolador ven a mí vida  x4\n\n           A           \nVen Espíritu de amor, \n          Am               E9\nsopla en mi corazón'
     },
     '124': {
       lyric: '           E                B\nTu presencia es real\n         F#m             A\ntodo Dios en el altar\n               A            E\nSeas bendito y alabado\n   F#m               B\nJesús sacramentado\n\nRey eterno presente estás\npor amor a la humanidad\nSeas por siempre alabado\nmi Dios sacramentado\n\n                 C#m  G#m\nTodo el poder y gloria\n       A                     Am\npor siempre sea a ti.\n               F#m       E\nSeas bendito y alabado\n   F#m               B\nJesús sacramentado'
@@ -1183,6 +1279,9 @@ export const database = {
     },
     '1671910502242': {
       lyric: 'SOL7            DOm      FA7     SIb\nA la huella, la huella José y María, \nSOLm             DOm       RE        SOLm\npor las pampas heladas, cardos y ortigas. \nSOL7            DOm       FA7      SIb  SOLm\nA la huella, la huella cortando campos, \n                 SOL#     RE7      SOL\nno hay cobijo ni fonda, sigan andando. \n\nFlorecita del campo, clavel del aire \nsi ninguno te aloja adónde naces. \nDónde naces florcita que estás creciendo \npalomita asustada, grillo sin sueño. \n\nSOL7            DOm      FA7     SIb  SOLm\nA la huella, la huella José y María \n                 DOm      RE7  SOLm\ncon un Dios escondido, nadie sabía. \n\nA la huella, la huella los peregrinos \npréstenme una tapera para mi niño. \nA la huella, la huella soles y lunas, \nlos ojitos de almendra, piel de aceituna. \n\nAy burrito del campo, ay buey barcino, \nmi niño está viniendo, háganle sitio. \nUn ranchito de quinchas sólo te ampara, \ndos alientos amigos, la luna clara.'
+    },
+    '1682512333506': {
+      lyric: '  C                                    F \nSiempre imaginé la felicidad ligada al \n        C                              F \npoder y a la comodidad. \nC                                       F        \nSiempre imaginé la felicidad ligada a mis \n C                                  F \nsueños cumplidos. \nDm                     Am                       G \nNo sabía que la felicidad era así. \n\n                                 C                        F \nMiembro de un pueblo, tengo familia, \n             C                             F \nCiudadano del cielo y de estirpe elegida, \n             C                             F            \nDe nación, piedra de iglesia, \n           C                              F \nque habita en Jerusalem. \nDm                      Am                          \nOveja del divino redil \n     G \na quien el pastor señala y susurra: \n\n/* Estribillo */\n F                           G \n¡Estos son mi madre y mis hermanos, \n C         Em   Am \nsoy de tu familia, \nF                      G          G \nqué bonita es, tu Iglesia! \nF  \nMmmmmmm  \n\nSiempre imaginé la felicidad ligada al \npoder y a la comodidad. \nSiempre imaginé la felicidad ligada a \nmis sueños cumplidos. \nNo sabía que la felicidad está aquí:\n\nAquí y no allí, ahora y no mañana, \nEn lo que hago y no en lo que queda por hacer,  \nDentro de mí, en saber que me amas \nEn serte fiel y no entender o poseer. \nAllí la noche es clara como el día \nlugar en desde el que miras y me susurras:  \n\n¡Cuánto te he esperado! \n¡Soy de tu familia! \n¡Qué bonita es tu Iglesia!  \n\nRiéndome de mi autosuficiencia, \ncontigo pan blanco que me susurras:  \n\n¡Sed uno, como el Padre y yo! \n¡Porque soy de tu familia! \n¡Qué bonita es…! \n¡Estos son mi Madre y mis hermanos! \n¡Soy de tu familia! \n¡Qué bonita es tu Iglesia!',
     }
   }
 };

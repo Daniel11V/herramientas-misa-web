@@ -48,7 +48,7 @@ const Navigation = () => {
 						<i className="material-icons">menu</i>
 					</Icon>
 					{lastPage && (
-						<BackIcon onClick={history.goBack} className="brand-logo">
+						<BackIcon onClick={history.goBack}>
 							<i className="material-icons">chevron_left</i>
 							{lastPage}
 						</BackIcon>
@@ -150,13 +150,22 @@ const NavBar = styled.nav.attrs({
 `;
 const Icon = styled.div`
 	cursor: pointer;
-	flexwrap: nowrap;
+	flex-wrap: nowrap;
 	${noSelectableText}
 `;
-const BackIcon = styled(Icon)`
-	fontsize: 25px;
-	paddingleft: 10px;
+const BackIcon = styled(Icon).attrs({
+	className: "brand-logo",
+})`
+	font-size: 1.5rem !important;
+	padding-left: 10px;
 	display: flex;
+	min-width: max-content;
+
+	i {
+		margin-right: 5px !important;
+		height: 58px !important;
+		line-height: 58px !important;
+	}
 `;
 const UserImage = styled.div`
 	padding: 0 !important;

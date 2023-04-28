@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { createAuthor, getAuthorList, resetAuthorStatus } from "../../../clases/author/actions";
 import { createSong, editSong, getSong, resetSongActionStatus } from "../../../clases/song/actions";
 import { MAX_RETRYS } from "../../../configs";
-import { arrayIsEmpty, getChordsFromLyric, getLyricWithChords } from "../../../utils";
+import { arrayIsEmpty, getDataFromLyric, getLyricWithChords } from "../../../utils";
 
 export const useRepertoryFormPage = (songId) => {
     const dispatch = useDispatch();
@@ -160,9 +160,9 @@ export const useRepertoryFormPage = (songId) => {
         } else {
             const {
                 chords: chordsNew,
-                chordLang: chordLangNew,
+                chordLangFound: chordLangNew,
                 onlyLyric: onlyLyricNew,
-            } = getChordsFromLyric(songForm.lyric);
+            } = getDataFromLyric(songForm.lyric);
             setChords(chordsNew);
             setChordLang(chordLangNew);
             setOnlyLyric(onlyLyricNew);

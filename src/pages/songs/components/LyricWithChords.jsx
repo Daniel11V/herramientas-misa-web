@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import {
 	getChordIndex,
-	getChordsFromLyric,
+	getDataFromLyric,
 	getModuleDiference,
 	translateChord,
 	transportChord,
@@ -31,7 +31,7 @@ const LyricWithChords = ({
 
 	useEffect(() => {
 		if (!!lyricWithChords && lyricWithChords !== lastLyricWithChords) {
-			const { chords, chordTone, onlyLyric } = getChordsFromLyric(
+			const { chords, chordTone, onlyLyric } = getDataFromLyric(
 				lyricWithChords,
 				chordLang,
 				true
@@ -212,7 +212,7 @@ const LyricWithChords = ({
 			{arrayLyric.map((sentence, i) => (
 				<Sentence key={i}>
 					{sentence.map((word, j) => (
-						<Word>
+						<Word key={j}>
 							{[...word, " "].map((char, k) => {
 								const charIndex = getRowCharIndex(i, j, k);
 								return (
