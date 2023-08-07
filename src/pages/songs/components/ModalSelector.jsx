@@ -11,7 +11,7 @@ const ModalSelector = ({
 	modalTitle,
 	hasCategories,
 	modalId,
-	selectorWidth = "85",
+	selectorWidth = "85px",
 	textAlign = "center",
 }) => {
 	const [modalInstance, setModalInstance] = useState(null);
@@ -94,10 +94,13 @@ const Label = styled.span`
 
 const Selector = styled.div`
 	display: inline-block;
-	width: ${(props) => props.selectorWidth + "px"};
 	text-align: ${(props) => props.textAlign};
 	margin-bottom: 5px;
 	margin-top: 5px;
+	${(props) =>
+		props.selectorWidth === "flex" ?
+		css`width: 100%;`:
+		css`width: ${(props) => props.selectorWidth};`}
 `;
 
 const StyledModal = styled.div.attrs((props) => ({

@@ -9,124 +9,21 @@ import { useRepertoryFormPage } from "./hooks/useRepertoryFormPage";
 
 const RepertoryFormPage = () => {
 	const { id } = useParams();
-	// const [songForm, loading, error, formStep, nextStep] = useRepertoryFormPage(id);
+	// const [repertoryForm, loading, error, formStep, nextStep] = useRepertoryFormPage(id);
 	const {
-		songForm,
+		repertoryForm,
 		isLoading,
 		error,
 		formStep,
 		nextStep,
+		isNextDisabled,
 		setField,
-		authorItems,
-		authorForm,
-		setAuthorField,
 		toogleEditOnlyChords,
 		onlyLiric,
 		chords,
 		chordLang,
 		editOnlyChords,
 	} = useRepertoryFormPage(id);
-
-	// const [creator, setCreator] = useState(null);
-	// const [title, setTitle] = useState("");
-	// const [author, setAuthor] = useState(""); // name, id
-	// const [lyric, setLyric] = useState("");
-	// const [onlyLiric, setOnlyLyric] = useState("");
-	// const [chords, setChords] = useState({});
-	// const [chordLang, setChordLang] = useState({});
-	// const [tempo, setTempo] = useState("");
-	// const [pulse, setPulse] = useState("");
-	// const [labels, setLabels] = useState([]);
-
-	// const [editOnlyChords, setEditOnlyChords] = useState(false);
-
-	// useEffect(() => {
-	// 	if (id && song.id === id) {
-	// 		setCreator(song.creator);
-	// 		setTitle(song.title);
-	// 		setAuthor(song.author.name);
-	// 		setTempo(song.tempo);
-	// 		setPulse(song.pulse);
-	// 		setLabels(song.labels);
-	// 		setLyric(song.lyric);
-
-	// 		// Autoresize
-	// 		// let inputs = document.querySelectorAll(".lab");
-	// 		// for (let i = 0; i < inputs.length; i++) {
-	// 		// 	inputs[i].classList.add("active");
-	// 		// }
-	// 	} else if (id) {
-	// 		dispatch(getSong(id));
-	// 	}
-	// }, [id, song, dispatch]);
-
-	// const saveSong = async () => {
-	// 	const creatorSend = !creator ? user.name : creator;
-
-	// 	const songEdited = {
-	// 		...song,
-	// 		creator: creatorSend,
-	// 		title,
-	// 		author,
-	// 		lyric,
-	// 		tempo,
-	// 		pulse,
-	// 		labels,
-	// 	};
-
-	// 	if (id) {
-	// 		// await axios
-	// 		// 	.put(`/api/songs/${id}`, { ...songToSend, _id: id })
-	// 		// 	.catch((err) => console.error(err));
-	// 		dispatch(editSong(songEdited));
-	// 		M.toast({ html: "Canción Actualizada" });
-	// 	} else {
-	// 		// await axios
-	// 		// 	.post("/api/songs", songToSend)
-	// 		// 	.catch((err) => console.error(err));
-	// 		// res ? console.log(res.data) : console.log("No response");
-	// 		dispatch(editSong(songEdited));
-	// 		M.toast({ html: "Canción Guardada" });
-	// 	}
-	// };
-
-	// const next = async (e) => {
-	// 	e.preventDefault();
-
-	// 	// Validations
-
-	// 	// Safe & Prepare Date
-	// 	if (formStep === LAST_STEP) {
-	// 		await saveSong();
-	// 		// refetchSongs();
-	// 		history.goBack();
-	// 	} else if (formStep === 2) {
-	// 		if (editOnlyChords === true)
-	// 			setLyric(getLyricWithChords(onlyLiric, chords));
-
-	// 		setFormStep(3);
-	// 	} else {
-	// 		// Next Step
-	// 		setFormStep((lastStep) => lastStep + 1);
-	// 	}
-	// };
-
-	// const toogleEditOnlyChords = () => {
-	// 	if (editOnlyChords === true) {
-	// 		setLyric(getLyricWithChords(onlyLiric, chords));
-	// 	} else {
-	// 		const {
-	// 			chords: chordsNew,
-	// 			chordLang: chordLangNew,
-	// 			onlyLyric: onlyLyricNew,
-	// 		} = getDataFromLyric(songForm.lyric);
-	// 		setChords(chordsNew);
-	// 		setChordLang(chordLangNew);
-	// 		setOnlyLyric(onlyLyricNew);
-	// 	}
-
-	// 	setEditOnlyChords(!editOnlyChords);
-	// };
 
 	if (isLoading)
 		return (
@@ -150,14 +47,13 @@ const RepertoryFormPage = () => {
 						</h4>
 						{formStep === "DESCRIPTION" && (
 							<RepertoryFormDescription
-								author={songForm.author}
-								setAuthor={(v) => setField("author", v)}
-								authorForm={authorForm}
-								setAuthorField={setAuthorField}
-								authorItems={authorItems}
-								title={songForm.title}
+								title={repertoryForm.title}
 								setTitle={(v) => setField("title", v)}
-								annotations={songForm.annotations}
+								placeTitle={repertoryForm.placeTitle}
+								setPlaceTitle={(v) => setField("placeTitle", v)}
+								placeUbication={repertoryForm.placeUbication}
+								setPlaceUbication={(v) => setField("placeUbication", v)}
+								annotations={repertoryForm.annotations}
 								setAnnotations={(v) => setField("annotations", v)}
 							/>
 						)}
@@ -184,7 +80,7 @@ const RepertoryFormPage = () => {
 									/>
 								) : (
 									<SongFormLyric
-										lyric={songForm.lyric}
+										lyric={repertoryForm.lyric}
 										setLyric={(v) => setField("lyric", v)}
 									/>
 								)}
@@ -192,11 +88,11 @@ const RepertoryFormPage = () => {
 						)}
 						{formStep === "EXTRA_DETAILS" && (
 							<SongFormExtraDetails
-								tempo={songForm.tempo}
+								tempo={repertoryForm.tempo}
 								setTempo={(v) => setField("tempo", v)}
-								pulse={songForm.pulse}
+								pulse={repertoryForm.pulse}
 								setPulse={(v) => setField("pulse", v)}
-								labels={songForm.labels}
+								labels={repertoryForm.labels}
 								setLabels={(v) => setField("labels", v)}
 							/>
 						)}
@@ -205,6 +101,7 @@ const RepertoryFormPage = () => {
 								<button
 									onClick={nextStep}
 									className="btn light-blue darken-4 col s12"
+									disabled={isNextDisabled()}
 								>
 									{formStep === "EXTRA_DETAILS" ? "Guardar" : "Siguiente"}
 								</button>

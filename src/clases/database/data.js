@@ -64,17 +64,12 @@ export const database = {
       placeTitle: 'Parroquia Ntra. Sra. del Pilar',
       placeUbication: '',
       isMass: true,
-      songs: {
-        entrada: [],
-        gloria: [],
-        aleluya: [],
-        ofrenda: [],
-        santo: [],
-        cordero: [],
-        comunion: [],
-        meditacion: [],
-        salida: []
-      }
+      songSections: [
+        {
+          name: "Entrada",
+          songs: []
+        },
+      ],
     },
     '6144d6373d6d4f8085af95ee': {
       id: '6144d6373d6d4f8085af95ee',
@@ -88,17 +83,44 @@ export const database = {
       placeTitle: 'Parroquia Ntra. Sra. del Pilar',
       placeUbication: '',
       isMass: true,
-      songs: {
-        entrada: [],
-        gloria: [],
-        aleluya: [],
-        ofrenda: [],
-        santo: [],
-        cordero: [],
-        comunion: [],
-        meditacion: [],
-        salida: []
-      }
+      songSections: [
+        {
+          name: "Entrada",
+          songs: []
+        },
+        {
+          name: "Gloria",
+          songs: []
+        },
+        {
+          name: "Aleluya",
+          songs: []
+        },
+        {
+          name: "Ofrenda",
+          songs: []
+        },
+        {
+          name: "Santo",
+          songs: []
+        },
+        {
+          name: "Cordero",
+          songs: []
+        },
+        {
+          name: "Comunion",
+          songs: []
+        },
+        {
+          name: "Meditacion",
+          songs: []
+        },
+        {
+          name: "Salida",
+          songs: []
+        },
+      ]
     },
     '1670495920813': {
       id: '1670495920813',
@@ -112,9 +134,10 @@ export const database = {
       placeTitle: 'Parroquia Ntra. Sra. del Pilar',
       placeUbication: '',
       isMass: true,
-      songs: {
-        Lista: [
-          '1670494499043',
+      songSections: [
+        {
+          name: "Lista",
+          songs: ['1670494499043',
           '1670494597083',
           '1670494692776',
           '1670494760118',
@@ -122,9 +145,9 @@ export const database = {
           '1670494889388',
           '1670494958918',
           '613c8597f601f09e344f43c2',
-          '1670495065329'
-        ]
-      }
+          '1670495065329']
+        },
+      ],
     },
     '1670495920815': {
       id: '1670495920815',
@@ -138,32 +161,40 @@ export const database = {
       placeTitle: 'Capilla "Sagrado Corazón de Jesús"',
       placeUbication: '',
       isMass: true,
-      songs: {
-        Entrada: [
-          '1670704384915'
-        ],
-        Aleluya: [
-          '1670706514121'
-        ],
-        Ofertorio: [
-          '1670704472033'
-        ],
-        Santo: [
-          '1670705576812'
-        ],
-        Cordero: [
-          '1670705390091'
-        ],
-        'Comunión': [
-          '1670704557067'
-        ],
-        'Meditación': [
-          '1670704724691'
-        ],
-        Salida: [
-          '1670704798664'
-        ]
-      }
+      songSections: [
+        {
+          name: "Entrada",
+          songs: ['1670704384915']
+        },
+        {
+          name: "Aleluya",
+          songs: ['1670706514121']
+        },
+        {
+          name: "Ofertorio",
+          songs: ['1670704472033']
+        },
+        {
+          name: "Santo",
+          songs: ['1670705576812']
+        },
+        {
+          name: "Cordero",
+          songs: ['1670705390091']
+        },
+        {
+          name: "Comunión",
+          songs: ['1670704557067']
+        },
+        {
+          name: "Meditación",
+          songs: ['1670704724691']
+        },
+        {
+          name: "Salida",
+          songs: ['1670704798664']
+        },
+      ],
     },
     '1670495920816': {
       id: '1670495920816',
@@ -177,32 +208,39 @@ export const database = {
       placeTitle: 'Parroquia Ntra Sra del Pilar',
       placeUbication: '',
       isMass: true,
-      songs: {
-        Entrada: [
-          '1671906385775'
-        ],
-        Aleluya: [
-          '1671906557535'
-        ],
-        Ofertorio: [
-          '1671906649253'
-        ],
-        Santo: [
-          '1670705576812'
-        ],
-        Cordero: [
-          '1670705390091'
-        ],
-        'Comunión': [
-          '1671908915221',
+      songSections: [
+        {
+          name: "Entrada",
+          songs: ['1671906385775']
+        },
+        {
+          name: "Aleluya",
+          songs: ['1671906557535']
+        },
+        {
+          name: "Ofertorio",
+          songs: ['1671906649253']
+        },
+        {
+          name: "Santo",
+          songs: ['1670705576812']
+        },
+        {
+          name: "Cordero",
+          songs: ['1670705390091']
+        },
+        {
+          name: "Comunión",
+          songs: ['1671908915221',
           '1671907937211',
           '1671908198503',
-          '1671908602986'
-        ],
-        Salida: [
-          '1671908886446'
-        ]
-      }
+          '1671908602986']
+        },
+        {
+          name: "Salida",
+          songs: ['1671908886446']
+        },
+      ],
     },
     '6144d6373d6d4f8085af96ee': {
       id: '6144d6373d6d4f8085af96ee',
@@ -216,17 +254,40 @@ export const database = {
       placeTitle: 'Parroquia Ntra. Sra. del Pilar',
       placeUbication: '',
       isMass: true,
-      songs: {
-        entrada: [],
-        // gloria: [],
-        aleluya: ['1671906557535'],
-        ofrenda: [],
-        santo: ['1670705576812'],
-        cordero: ['1670705390091'],
-        comunion: ["1669864387705"],
-        meditacion: [],
-        salida: ["1670704798664"]
-      }
+      songSections: [
+        {
+          name: "Entrada",
+          songs: []
+        },
+        {
+          name: "Aleluya",
+          songs: ['1671906557535']
+        },
+        {
+          name: "Ofertorio",
+          songs: []
+        },
+        {
+          name: "Santo",
+          songs: ['1670705576812']
+        },
+        {
+          name: "Cordero",
+          songs: ['1670705390091']
+        },
+        {
+          name: "Comunión",
+          songs: ['1669864387705']
+        },
+        {
+          name: "Meditación",
+          songs: []
+        },
+        {
+          name: "Salida",
+          songs: ['1670704798664']
+        },
+      ],
     },
   },
   privateSongTitleList: {

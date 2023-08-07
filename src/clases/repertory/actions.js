@@ -77,9 +77,11 @@ export const getRepertory = ({ userId, repertoryId }) => {
             if (!repertory) repertory = await getPublicRepertoryDB({ repertoryId });
             if (!repertory) throw new Error("Repertory not found (Title).");
 
-            const newRepertorySongs = {};
-            for (const key in repertory?.songs) {
-                for (const songTitleId of repertory?.songs?.[key]) {
+            const returnRepertorySongSections = [];
+            for (const [key, section] of repertory?.songSections) {
+                returnRepertorySongSections.push({name: section?.name, songs: []});
+
+                for (const songTitleId of section?.songs) {
 
                     let songTitle = getState().page.songListPageBackup.songList.find(i => i.id === songTitleId);
                     if (!songTitle) songTitle = getState().page.songPageBackup.songList[songTitleId];
@@ -87,15 +89,15 @@ export const getRepertory = ({ userId, repertoryId }) => {
                     if (!songTitle) songTitle = await getPublicSongTitleDB({ songTitleId });
                     if (!songTitle) throw new Error("Song not found (Title).");
 
-                    newRepertorySongs[key] = [...(newRepertorySongs[key] || []), songTitle];
+                    returnRepertorySongSections[key]?.songs?.push(songTitle);
                 }
             }
-            const newRepertory = { ...repertory, songs: newRepertorySongs };
+            const returnRepertory = { ...repertory, songSections: returnRepertorySongSections };
 
             //////////////////////////////
             dispatch({
                 type: types.FETCH_REPERTORY_SUCCESS,
-                payload: { repertory: newRepertory, userId }
+                payload: { repertory: returnRepertory, userId }
             })
         } catch (error) {
             console.warn(error.message);

@@ -14,6 +14,7 @@ import BottomSheet from "../components/BottomSheet.jsx";
 import { useSongPageOptions } from "./hooks/useSongPageOptions.js";
 import ModalSelector from "./components/ModalSelector.jsx";
 import LoggedButton from "../../layout/components/LoggedButton.jsx";
+import LyricContainerZoom from "./components/LyricContainerZoom.jsx";
 
 const SongPage = () => {
 	const history = useHistory();
@@ -206,39 +207,7 @@ const SongPage = () => {
 				<SongTitle>
 					{song.title} {song.author?.name && ` - ${song.author.name}`}
 				</SongTitle>
-				<LyricWithChords
-					lyricWithChords={song.lyric}
-					tone={tone}
-					setTone={setTone}
-					chordLang={pageOptions.chordLang}
-					showChords={pageOptions.showChords}
-					isEditable={false}
-				/>
-			</div>
-
-			<SongActionButton>
-				<a
-					className="btn-floating btn-large waves-effect waves-light"
-					onClick={handleFloatingBtn}
-				>
-					<i className="large material-icons">
-						{openOptions ? "arrow_downward" : "tune"}
-					</i>
-				</a>
-			</SongActionButton>
-			<BottomSheet open={openOptions} setOpen={setOpenOptions} fullscreen>
-				<div>
-					<h5>Detalles</h5>
-					{song.pulse && <SongInfo>Pulso: {song.pulse}</SongInfo>}
-					{song.tempo && <SongInfo>Tempo recomendado: {song.tempo}</SongInfo>}
-					{song.creator?.name && (
-						<p>
-							<i>Transcripción hecha por {song.creator.name}</i>
-						</p>
-					)}
-					<hr />
-					<h5>Ajustes de canción</h5>
-					{!!tone && !!pageOptions.showChords && (
+				{!!tone && !!pageOptions.showChords && (
 						<>
 							<ChordSelector
 								modalId="tone"
@@ -266,6 +235,28 @@ const SongPage = () => {
 							Mis Notas
 						</label>
 					</div>
+					{song.pulse && <SongInfo>Pulso: {song.pulse}</SongInfo>}
+					{song.tempo && <SongInfo>Tempo recomendado: {song.tempo}</SongInfo>}
+				<LyricContainerZoom>
+					<LyricWithChords
+						lyricWithChords={song.lyric}
+						tone={tone}
+						setTone={setTone}
+						chordLang={pageOptions.chordLang}
+						showChords={pageOptions.showChords}
+						isEditable={false}
+					/>
+				</LyricContainerZoom>
+				{song.creator?.name && (
+						<p>
+							<i>Transcripción hecha por {song.creator.name} ({song.isPrivate ? "Privada" : "Publica"})</i>
+						</p>
+					)}
+				{/* <h5>Detalles</h5> */}
+					
+					{/* <hr /> */}
+					{/* <h5>Ajustes de canción</h5> */}
+					
 					<h6>
 						<b>Mi Nivel de Progreso con la Canción{!isCreator ? "..." : ""}</b>
 					</h6>
@@ -273,15 +264,15 @@ const SongPage = () => {
 						<>
 							<ModalSelector
 								modalId="voiceLevel"
-								label="Voz: "
+								// label="Voz: "
 								modalTitle="Elegir mi nivel de progreso"
 								selectedItem={voiceLevel.toString() || "0"}
 								setSelectedItem={setVoiceLevel}
 								items={voiceLevelOptions}
-								selectorWidth="450"
 								textAlign="start"
+								selectorWidth="flex"
 							/>
-							<br />
+							{/* <br /> */}
 						</>
 					) : (
 						<SongButton
@@ -301,9 +292,51 @@ const SongPage = () => {
 						>
 							<i className="material-icons right">save</i>Guardar
 						</SongButton>
+					)}	
+					{!!user?.name && (
+						<>
+							{/* <hr />
+							<h5>Acciones</h5> */}
+							<br />
+							<SongButton
+								className="btn waves-effect waves-light blue darken-2"
+								onClick={handleEditBtn}
+							>
+								<i className="material-icons right">edit</i>Editar
+							</SongButton>
+						</>
 					)}
+					{isCreator && song?.isPrivate && (
+						<SongButton
+							className="btn waves-effect waves-light blue darken-2"
+							onClick={handlePublishBtn}
+						>
+							<i className="material-icons right">publish</i>Publicar
+						</SongButton>
+					)}
+					{(isCreator || user.id === "111418653738749034139") && (
+						<SongButton
+							className="btn waves-effect waves-light blue darken-2"
+							onClick={handleDeleteBtn}
+						>
+							<i className={`material-icons ${"right"}`}>delete</i>Eliminar
+						</SongButton>
+					)}				
+			</div>
 
-					<hr />
+			<SongActionButton>
+				<a
+					className="btn-floating btn-large waves-effect waves-light"
+					onClick={handleFloatingBtn}
+				>
+					<i className="large material-icons">
+						{openOptions ? "arrow_downward" : "tune"}
+					</i>
+				</a>
+			</SongActionButton>
+			<BottomSheet open={openOptions} setOpen={setOpenOptions} fullscreen>
+				<div>
+					{/* <hr /> */}
 					<h5>Visualización</h5>
 					<div
 						className="switch"
@@ -332,7 +365,7 @@ const SongPage = () => {
 							selectedItem={pageOptions.chordLang}
 							setSelectedItem={setChordLang}
 							items={chordLangOptions}
-							selectorWidth="115"
+							selectorWidth="115px"
 						/>
 					)}
 					<FontSizeSection>
@@ -374,35 +407,6 @@ const SongPage = () => {
 					>
 						<i className="material-icons right">print</i>Imprimir
 					</SongButton> */}
-					{!!user?.name && (
-						<>
-							<hr />
-							<h5>Acciones</h5>
-							{/* <br /> */}
-							<SongButton
-								className="btn waves-effect waves-light blue darken-2"
-								onClick={handleEditBtn}
-							>
-								<i className="material-icons right">edit</i>Editar
-							</SongButton>
-						</>
-					)}
-					{isCreator && song?.isPrivate && (
-						<SongButton
-							className="btn waves-effect waves-light blue darken-2"
-							onClick={handlePublishBtn}
-						>
-							<i className="material-icons right">publish</i>Publicar
-						</SongButton>
-					)}
-					{(isCreator || user.id === "111418653738749034139") && (
-						<SongButton
-							className="btn waves-effect waves-light blue darken-2"
-							onClick={handleDeleteBtn}
-						>
-							<i className={`material-icons ${"right"}`}>delete</i>Eliminar
-						</SongButton>
-					)}
 				</div>
 			</BottomSheet>
 			<MessageModal opts={messageModalOpts} />

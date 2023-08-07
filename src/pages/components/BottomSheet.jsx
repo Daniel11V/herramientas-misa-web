@@ -14,12 +14,12 @@ const BottomSheet = ({ children, open, setOpen, fullscreen = false }) => {
 		if (!!bottomSheetHeight && !!screenHeight) {
 			const newTopValue = 94 - bottomSheetHeight / (screenHeight / 100);
 
-			if (newTopValue < 15) {
+			if (newTopValue < 50) {
 				const newSheetHeight = screenHeight - (screenHeight / 100) * 10;
 				document.querySelector(
 					"#bottom-sheet > div:nth-child(2)"
 				).style.height = newSheetHeight + "px";
-				setTopValue("15");
+				setTopValue("50");
 			} else {
 				setTopValue((newTopValue + 12).toFixed(0));
 			}
@@ -95,7 +95,7 @@ const BottomSheetStyled = styled.div`
 	${(props) =>
 		!!props.open &&
 		css`
-			top: ${!!props.fullscreen ? 15 : props.topValue}%;
+			top: ${!!props.fullscreen ? 50 : props.topValue}%;
 		`}
 
 	> div:first-child {

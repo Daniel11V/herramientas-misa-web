@@ -51,11 +51,11 @@ const RepertoryPage = () => {
 					{repertory.author?.name && ` - ${repertory.author.name}`}
 				</h4>
 			</Header>
-			{Object.keys(repertory?.songs || {})?.map((list) => (
-				<div key={list}>
-					<h6>{list}</h6>
+			{repertory?.songSections?.map(({name, songs}) => (
+				<div key={name}>
+					<h6>{name}</h6>
 					<SongCollection
-						songList={repertory?.songs?.[list]}
+						songList={songs}
 						isLoading={isLoading}
 						error={error}
 						pageName="Repertorio"

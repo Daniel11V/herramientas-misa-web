@@ -14,7 +14,12 @@ const defaultRepertory = {
         name: "",
     },
     members: [],
-    songs: {},
+    songSections: [
+        {
+          name: "",
+          songs: []
+        },
+    ]
 }
 
 const initialState = {

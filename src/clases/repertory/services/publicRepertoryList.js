@@ -16,9 +16,10 @@ export const publicRepertoryModel = {
         }, required: true
     },
     members: { type: "Array", required: false },
-    songs: {
+    songSections: {
         type: {
-            $subtitle: { type: "Array of songId", required: true },
+            name: { type: "String", required: true },
+            songs: { type: "Array of songIds", required: true },
         }, required: true
     },
 };
