@@ -52,8 +52,23 @@ const BottomSheet = ({ children, open, setOpen, fullscreen = false }) => {
 		if (!fullscreen) updateTopValue();
 	}, [children, fullscreen]);
 
+	const handleClickActionButton = (event) => {
+		event.stopPropagation();
+		setOpen((lv) => !lv);
+	};
+
 	return (
 		<>
+			<BottomSheetActionButton>
+				<a
+					className="btn-floating btn-large waves-effect waves-light"
+					onClick={handleClickActionButton}
+				>
+					<i className="large material-icons">
+						{open ? "arrow_downward" : "tune"}
+					</i>
+				</a>
+			</BottomSheetActionButton>
 			{open && <FullScreenBackground onClick={() => setOpen(false)} />}
 			<BottomSheetStyled
 				topValue={topValue}
@@ -70,6 +85,14 @@ const BottomSheet = ({ children, open, setOpen, fullscreen = false }) => {
 		</>
 	);
 };
+
+const BottomSheetActionButton = styled.div.attrs({
+	className: "fixed-action-btn",
+})`
+	> a {
+		background-color: ${colors.primary} !important;
+	}
+`;
 
 const FullScreenBackground = styled.div`
 	position: fixed;

@@ -12,8 +12,9 @@ import ChordSelector from "./ChordSelector";
 
 const LyricWithChords = ({
 	lyricWithChords = "",
+	setLyricWithChords = () => {},
 	tone,
-	setTone,
+	setTone = () => {},
 	chordLang,
 	showChords = true,
 	isEditable = false,
@@ -25,20 +26,23 @@ const LyricWithChords = ({
 	const [currentTone, setCurrentTone] = useState(null);
 
 	const [arrayLyric, setArrayLyric] = useState([]);
-	// const [isEditable, setIsEditable] = useState(false);
 	const [selectedLetter, setSelectedLetter] = useState([null, null]);
-	const [selectedChord, setSelectedChord] = useState("C");
+	const [selectedChord, setSelectedChord] = useState({
+		chord: "C",
+		duration: "",
+	});
 
 	useEffect(() => {
 		if (!!lyricWithChords && lyricWithChords !== lastLyricWithChords) {
-			const { chords, chordTone, onlyLyric } = getDataFromLyric(
+			console.log("useEffect lastLyricWithChords", {
 				lyricWithChords,
-				chordLang,
-				true
-			);
+				lastLyricWithChords,
+			});
+			const { chords, chordLangFound, chordTone, onlyLyric, formattedLyric } =
+				getDataFromLyric(lyricWithChords);
 
 			setCurrentTone(chordTone);
-			setLastChordLang(chordLang);
+			setLastChordLang(chordLang || chordLangFound);
 			setCurrentChords(chords);
 			setArrayLyric(
 				onlyLyric
@@ -50,9 +54,10 @@ const LyricWithChords = ({
 					)
 			);
 
-			setLastLyricWithChords(lyricWithChords);
+			setLyricWithChords(formattedLyric);
+			setLastLyricWithChords(formattedLyric);
 		}
-	}, [lyricWithChords, chordLang, lastLyricWithChords]);
+	}, [lyricWithChords, chordLang, lastLyricWithChords, setLyricWithChords]);
 
 	useEffect(() => {
 		if (!!chordLang && chordLang !== lastChordLang) {
@@ -127,15 +132,25 @@ const LyricWithChords = ({
 	// 	else setIsEditable(false);
 	// }, [setCurrentChords]);
 
-	const addChord = (chord) => {
+	const editSelectedChord = (newSelectedChord, hasChord) => {
+		if (!!hasChord) {
+			setCurrentChords((lastChords = {}) => ({
+				...lastChords,
+				[selectedLetter[0]]: {
+					...lastChords[selectedLetter[0]],
+					[selectedLetter[1]]: selectedChord,
+				},
+			}));
+		}
+		setSelectedChord(newSelectedChord);
+	};
+
+	const addChord = () => {
 		setCurrentChords((lastChords = {}) => ({
 			...lastChords,
 			[selectedLetter[0]]: {
 				...lastChords[selectedLetter[0]],
-				[selectedLetter[1]]: {
-					duration: lastChords[selectedLetter[0]][selectedLetter[1]].duration,
-					chord: translateChord(chord, chordLang, "en"),
-				},
+				[selectedLetter[1]]: selectedChord,
 			},
 		}));
 
@@ -170,11 +185,27 @@ const LyricWithChords = ({
 				setSelectedLetter([null, null]);
 			} else {
 				setSelectedLetter([i, k]);
-				if (hasChord(i, k))
-					setSelectedChord(
-						translateChord(currentChords[i][k].chord, "en", chordLang)
-					);
-				else setSelectedChord("C");
+				if (hasChord(i, k)) {
+					setSelectedChord({
+						chord: translateChord(currentChords[i][k].chord, "en", chordLang),
+						duration: currentChords[i][k]?.duration || "",
+					});
+				} else setSelectedChord({ chord: "C", duration: "" });
+
+				setTimeout(() => {
+					const tooltipBody = document.getElementById("tooltip-body");
+					const coords = tooltipBody?.getBoundingClientRect();
+					if (coords) {
+						const { left: leftCoords, right: rightCoords } = coords;
+						tooltipBody?.getBoundingClientRect();
+						if (leftCoords < 20) {
+							tooltipBody.style.marginLeft = 20 - leftCoords + "px";
+						} else if (rightCoords > window.innerWidth - 20) {
+							tooltipBody.style.marginRight =
+								rightCoords - window.innerWidth - 20 + "px";
+						}
+					}
+				}, 200);
 			}
 		}
 	};
@@ -208,7 +239,12 @@ const LyricWithChords = ({
 	};
 
 	return (
-		<div onClick={() => setSelectedLetter([null, null])}>
+		<div
+			onClick={() => {
+				console.log("ACA close");
+				setSelectedLetter([null, null]);
+			}}
+		>
 			{arrayLyric.map((sentence, i) => (
 				<Sentence key={i}>
 					{sentence.map((word, j) => (
@@ -224,11 +260,25 @@ const LyricWithChords = ({
 										{hasChord(i, charIndex) &&
 											!isLetterSelected(i, charIndex) && (
 												<>
+													{!!currentChords[i][charIndex].duration && (
+														<span
+															className="chord-duration"
+															onClick={(e) =>
+																handleLetterClick(i, charIndex, e)
+															}
+														>
+															{currentChords[i][charIndex].duration}
+														</span>
+													)}
 													<span
 														className="chord"
 														onClick={(e) => handleLetterClick(i, charIndex, e)}
 													>
-														{currentChords[i][charIndex].chord}
+														{translateChord(
+															currentChords[i][charIndex].chord,
+															lastChordLang,
+															"en"
+														)}
 													</span>
 													<span className="chord-space"></span>
 												</>
@@ -241,34 +291,41 @@ const LyricWithChords = ({
 										</span>
 										{isEditable && isLetterSelected(i, charIndex) && (
 											<Tooltip>
-												<ChordSelector
-													selectedChord={selectedChord}
-													setSelectedChord={addChord}
-													chordLang={chordLang}
-												/>
-												<TooltipFooter>
-													<TooltipBtn
-														onClick={(e) =>
-															handleArrowBtns(e, i, charIndex, -1)
+												<TooltipBody id="tooltip-body">
+													<ChordSelector
+														selectedChord={selectedChord}
+														setSelectedChord={(v) =>
+															editSelectedChord(v, hasChord(i, charIndex))
 														}
-													>
-														<i className="material-icons">chevron_left</i>
-													</TooltipBtn>
-													{hasChord(i, charIndex) ? (
-														<TooltipBtn onClick={removeChord}>
-															<i className="material-icons">remove</i>
+														chordLang={chordLang || lastChordLang}
+														modalId="chord"
+													/>
+													<TooltipFooter>
+														<TooltipBtn
+															onClick={(e) =>
+																handleArrowBtns(e, i, charIndex, -1)
+															}
+														>
+															<i className="material-icons">chevron_left</i>
 														</TooltipBtn>
-													) : (
-														<TooltipBtn onClick={() => addChord(selectedChord)}>
-															<i className="material-icons">add</i>
+														{hasChord(i, charIndex) ? (
+															<TooltipBtn onClick={removeChord}>
+																<i className="material-icons">remove</i>
+															</TooltipBtn>
+														) : (
+															<TooltipBtn onClick={addChord}>
+																<i className="material-icons">add</i>
+															</TooltipBtn>
+														)}
+														<TooltipBtn
+															onClick={(e) =>
+																handleArrowBtns(e, i, charIndex, 1)
+															}
+														>
+															<i className="material-icons">chevron_right</i>
 														</TooltipBtn>
-													)}
-													<TooltipBtn
-														onClick={(e) => handleArrowBtns(e, i, charIndex, 1)}
-													>
-														<i className="material-icons">chevron_right</i>
-													</TooltipBtn>
-												</TooltipFooter>
+													</TooltipFooter>
+												</TooltipBody>
 											</Tooltip>
 										)}
 									</Letter>
@@ -296,30 +353,15 @@ const LyricWithChords = ({
 	);
 };
 
-const TooltipBtn = styled.div`
-	height: 25px;
-	padding: 0 5px;
-	cursor: pointer;
-`;
-
-const TooltipFooter = styled.div`
-	display: flex;
-	justify-content: space-between;
-`;
-
 const Tooltip = styled.div`
-	width: 105px;
-	background-color: black;
-	color: #fff;
-	text-align: center;
-	border-radius: 6px;
-	padding: 5px 0;
-
 	/* Position the tooltip */
 	position: absolute;
-	top: -82px;
-	left: -53px;
+	width: 1px;
+	top: -86px;
+	/* left: 20px; */
 	z-index: 5;
+	display: flex;
+	justify-content: center;
 
 	&::before {
 		content: "";
@@ -331,7 +373,7 @@ const Tooltip = styled.div`
 		border-left: 8px solid transparent;
 		border-right: 8px solid transparent;
 		border-top: 8px solid black;
-		left: 45px;
+		left: -8px;
 		bottom: -8px;
 	}
 
@@ -343,9 +385,29 @@ const Tooltip = styled.div`
 		position: absolute;
 
 		background-color: blue;
-		left: 52px;
+		left: -1px;
 		bottom: -27px;
 	}
+`;
+const TooltipBody = styled.div`
+	/* min-width: 145px; */
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 0;
+	transition: all 0.3s;
+`;
+
+const TooltipFooter = styled.div`
+	display: flex;
+	justify-content: space-between;
+`;
+
+const TooltipBtn = styled.div`
+	height: 25px;
+	padding: 0 5px;
+	cursor: pointer;
 `;
 
 const Sentence = styled.div`
@@ -374,6 +436,15 @@ const Letter = styled.div`
 		content: "";
 		display: inline-block;
 		width: 3px;
+	}
+
+	.chord-duration {
+		color: #1869ff;
+		position: absolute;
+		top: -17px;
+		left: -10px;
+		cursor: default;
+		font-weight: bold;
 	}
 
 	.chord {
@@ -410,7 +481,8 @@ const Letter = styled.div`
 				border: 1px solid #1869ff;
 			}
 
-			.chord {
+			.chord,
+			.chord-duration {
 				cursor: pointer;
 			}
 		`}

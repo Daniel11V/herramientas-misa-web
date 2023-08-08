@@ -25,7 +25,7 @@ const LoggedButton = ({ children = null, onClick = () => {}, className }) => {
 
 	return isLogged ? (
 		<div
-			className={className}
+			class={className}
 			onClick={(e) => {
 				e.stopPropagation();
 				onClick();

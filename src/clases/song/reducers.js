@@ -21,7 +21,7 @@ const defaultSong = {
 }
 
 const initialState = {
-    songActionStatus: "INITIAL",
+    songRequestStatus: "INITIAL",
     songError: null,
 
     songListStatus: "INITIAL",
@@ -36,8 +36,8 @@ const initialState = {
 const SongReducer = (state = initialState, { type, payload }) => {
     return produce(state, newState => {
         switch (type) {
-            case types.RESET_SONG_ACTION_STATUS:
-                newState.songActionStatus = "INITIAL";
+            case types.RESET_SONG_REQUEST_STATUS:
+                newState.songRequestStatus = "INITIAL";
                 newState.songError = null;
                 break;
 
@@ -47,16 +47,16 @@ const SongReducer = (state = initialState, { type, payload }) => {
                 break;
 
             case types.FETCH_SONG_LIST:
-                newState.songActionStatus = "FETCHING";
+                newState.songRequestStatus = "FETCHING";
                 break;
             case types.FETCH_SONG_LIST_SUCCESS:
-                newState.songActionStatus = "SUCCESS";
+                newState.songRequestStatus = "SUCCESS";
                 newState.songList = payload.songList;
                 newState.songListStatus = payload.userId ? "PRIVATE" : "PUBLIC";
                 newState.songListUserId = payload.userId;
                 break;
             case types.FETCH_SONG_LIST_FAILURE:
-                newState.songActionStatus = "FAILURE";
+                newState.songRequestStatus = "FAILURE";
                 newState.songError = payload.error;
                 newState.songListStatus = "FAILURE";
                 newState.songListUserId = payload.userId;
@@ -68,39 +68,39 @@ const SongReducer = (state = initialState, { type, payload }) => {
                 break;
 
             case types.FETCH_SONG:
-                newState.songActionStatus = "FETCHING";
+                newState.songRequestStatus = "FETCHING";
                 break;
             case types.FETCH_SONG_SUCCESS:
-                newState.songActionStatus = "SUCCESS";
+                newState.songRequestStatus = "SUCCESS";
                 newState.song = payload.song;
                 newState.songStatus = payload.userId ? "PRIVATE" : "PUBLIC";
                 newState.songUserId = payload.userId;
                 break;
             case types.FETCH_SONG_FAILURE:
-                newState.songActionStatus = "FAILURE";
+                newState.songRequestStatus = "FAILURE";
                 newState.songError = payload.error;
                 newState.songStatus = "FAILURE";
                 break;
 
             case types.CREATE_SONG:
-                newState.songActionStatus = "FETCHING";
+                newState.songRequestStatus = "FETCHING";
                 break;
             case types.CREATE_SONG_SUCCESS:
-                newState.songActionStatus = "SUCCESS";
+                newState.songRequestStatus = "SUCCESS";
                 newState.songList.push(payload.songCreated);
                 newState.songListStatus = "SHOULD_UPDATE";
                 newState.song = payload.songCreated;
                 break;
             case types.CREATE_SONG_FAILURE:
-                newState.songActionStatus = "FAILURE";
+                newState.songRequestStatus = "FAILURE";
                 newState.songError = payload.error;
                 break;
 
             case types.EDIT_SONG:
-                newState.songActionStatus = "FETCHING";
+                newState.songRequestStatus = "FETCHING";
                 break;
             case types.EDIT_SONG_SUCCESS:
-                newState.songActionStatus = "SUCCESS";
+                newState.songRequestStatus = "SUCCESS";
                 const indexToEdit = state.songList.findIndex(song => song.id === payload.songEdited.id);
                 if (indexToEdit >= 0) {
                     newState.songList[indexToEdit] = payload.songEdited;
@@ -109,21 +109,21 @@ const SongReducer = (state = initialState, { type, payload }) => {
                 newState.song = payload.songEdited;
                 break;
             case types.EDIT_SONG_FAILURE:
-                newState.songActionStatus = "FAILURE";
+                newState.songRequestStatus = "FAILURE";
                 newState.songError = payload.error;
                 break;
 
             case types.DELETE_SONG:
-                newState.songActionStatus = "FETCHING";
+                newState.songRequestStatus = "FETCHING";
                 break;
             case types.DELETE_SONG_SUCCESS:
-                newState.songActionStatus = "SUCCESS";
+                newState.songRequestStatus = "SUCCESS";
                 delete newState.songList[payload.songDeletedId];
                 newState.songListStatus = "SHOULD_UPDATE";
                 newState.song = defaultSong;
                 break;
             case types.DELETE_SONG_FAILURE:
-                newState.songActionStatus = "FAILURE";
+                newState.songRequestStatus = "FAILURE";
                 newState.songError = payload.error;
                 break;
 

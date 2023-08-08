@@ -10,8 +10,8 @@ import { createPublicSongTitleDB, editPublicSongTitleDB, getPublicSongTitleDB, g
 import { types } from "./types"
 
 
-export const resetSongActionStatus = () => ({
-    type: types.RESET_SONG_ACTION_STATUS
+export const resetSongRequestStatus = () => ({
+    type: types.RESET_SONG_REQUEST_STATUS
 })
 export const setSongListStatus = (songListStatus) => ({
     type: types.SET_SONG_LIST_STATUS,

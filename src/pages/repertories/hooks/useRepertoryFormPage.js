@@ -2,7 +2,7 @@ import M from "materialize-css";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { createSong, editSong, getSong, resetSongActionStatus } from "../../../clases/song/actions";
+import { createSong, editSong, getSong, resetSongRequestStatus } from "../../../clases/song/actions";
 import { MAX_RETRYS } from "../../../configs";
 import { getDataFromLyric, getLyricWithChords } from "../../../utils";
 
@@ -30,7 +30,7 @@ export const useRepertoryFormPage = (songId) => {
 
     const userId = useSelector((state) => state.user?.google?.id);
     const userName = useSelector((state) => state.user?.google?.name);
-    const { song, songActionStatus, songError } = useSelector((state) => state.song);
+    const { song, songRequestStatus, songError } = useSelector((state) => state.song);
     const [retrys, setRetrys] = useState(0);
 
     const [formStep, setFormStep] = useState("INITIAL");
@@ -79,18 +79,18 @@ export const useRepertoryFormPage = (songId) => {
 
     useEffect(() => {
         if (status === "1_FETCH_SONG") {
-            if (songActionStatus === "INITIAL") {
+            if (songRequestStatus === "INITIAL") {
                 dispatch(getSong({ userId, songId }));
-            } else if (songActionStatus === "SUCCESS") {
+            } else if (songRequestStatus === "SUCCESS") {
                 setStatus("1_SONG");
-                dispatch(resetSongActionStatus());
+                dispatch(resetSongRequestStatus());
                 setError(null);
-            } else if (songActionStatus === "FAILURE") {
+            } else if (songRequestStatus === "FAILURE") {
                 setStatus("FINISHED");
-                dispatch(resetSongActionStatus());
+                dispatch(resetSongRequestStatus());
             }
         }
-    }, [status, songActionStatus, userId, songId, dispatch]);
+    }, [status, songRequestStatus, userId, songId, dispatch]);
 
     const nextStep = (e) => {
         e.preventDefault();
@@ -149,38 +149,38 @@ export const useRepertoryFormPage = (songId) => {
             const saveAsPublic = false;
 
             if (songId) {
-                if (songActionStatus === "INITIAL") {
+                if (songRequestStatus === "INITIAL") {
                     dispatch(editSong(repertoryForm, saveAsPublic));
-                } else if (songActionStatus === "SUCCESS") {
+                } else if (songRequestStatus === "SUCCESS") {
                     M.toast({ html: "Canción Actualizada" });
-                    dispatch(resetSongActionStatus());
-                        setFormStep("FINISHED");
-                        history.goBack();
-                } else if (songActionStatus === "FAILURE") {
+                    dispatch(resetSongRequestStatus());
+                    setFormStep("FINISHED");
+                    history.goBack();
+                } else if (songRequestStatus === "FAILURE") {
                     setFormStep("FINISHED");
                     M.toast({ html: "Error actualizando la canción" });
-                    dispatch(resetSongActionStatus());
+                    dispatch(resetSongRequestStatus());
                     history.goBack();
                 }
             } else {
-                if (songActionStatus === "INITIAL") {
+                if (songRequestStatus === "INITIAL") {
                     dispatch(createSong(repertoryForm, saveAsPublic));
-                } else if (songActionStatus === "SUCCESS") {
+                } else if (songRequestStatus === "SUCCESS") {
                     M.toast({ html: "Canción Guardada" });
-                    dispatch(resetSongActionStatus());
-                  
-                        setFormStep("FINISHED");
-                        history.goBack();
-                    
-                } else if (songActionStatus === "FAILURE") {
+                    dispatch(resetSongRequestStatus());
+
+                    setFormStep("FINISHED");
+                    history.goBack();
+
+                } else if (songRequestStatus === "FAILURE") {
                     setFormStep("FINISHED");
                     M.toast({ html: "Error guardando la canción" });
-                    dispatch(resetSongActionStatus());
+                    dispatch(resetSongRequestStatus());
                     history.goBack();
                 }
             }
         }
-    }, [formStep, repertoryForm, userName, songId, songActionStatus, dispatch, history]);
+    }, [formStep, repertoryForm, userName, songId, songRequestStatus, dispatch, history]);
 
     return { repertoryForm, isLoading, error, formStep, nextStep, isNextDisabled, setField, toogleEditOnlyChords, chords, onlyLiric, chordLang, editOnlyChords };
 };

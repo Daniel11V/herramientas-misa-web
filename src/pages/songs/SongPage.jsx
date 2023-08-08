@@ -15,15 +15,46 @@ import { useSongPageOptions } from "./hooks/useSongPageOptions.js";
 import ModalSelector from "./components/ModalSelector.jsx";
 import LoggedButton from "../../layout/components/LoggedButton.jsx";
 import LyricContainerZoom from "./components/LyricContainerZoom.jsx";
+import { usePublishSong } from "./hooks/usePublishSong.js";
+import LabelsInput from "../components/LabelsInput.jsx";
+import SongFormLyric from "./components/SongFormLyric.jsx";
+import { getDataFromLyric } from "../../utils.js";
 
 const SongPage = () => {
+	// const [chordLang, setChordLang] = useState("en");
+	const [messageModalOpts, setMessageModalOpts] = useState(null);
+	const [openOptions, setOpenOptions] = useState(false);
+	const [editingSong, setEditingSong] = useState(false);
+	const [editOnlyChords, setEditOnlyChords] = useState(false);
+	const toogleEditOnlyChords = () => {
+		if (editOnlyChords === true) {
+			// console.log("ACA", { onlyLiric, chords });
+			// setField("lyric", getLyricWithChords(onlyLiric, chords));
+			// setField("lyric", formattedLyric);
+		} else {
+			// const {
+			// 	chords: chordsNew,
+			// 	chordLangFound: chordLangNew,
+			// 	onlyLyric: onlyLyricNew,
+			// 	formattedLyric: formattedLyricNew,
+			// } = getDataFromLyric(songForm.lyric);
+			// const resp = getDataFromLyric(songForm.lyric);
+			// console.log("ACA Resp", resp);
+			// setChords(chordsNew);
+			// setChordLang(chordLangNew);
+			// setOnlyLyric(onlyLyricNew);
+			// setFormattedLyric(formattedLyricNew);
+		}
+
+		setEditOnlyChords(!editOnlyChords);
+	};
+
 	const history = useHistory();
 	const { id } = useParams();
 	const {
 		song,
-		isLoading,
-		error,
-		publishCurrentSong,
+		isLoadingPage,
+		errorPage,
 		tone,
 		setTone,
 		annotations,
@@ -33,6 +64,8 @@ const SongPage = () => {
 		voiceLevelOptions,
 		areNewSongOptions,
 		saveSongOptions,
+		songForm,
+		editForm,
 	} = useSongPage(id);
 	const {
 		areNewOptions,
@@ -46,99 +79,37 @@ const SongPage = () => {
 
 	const user = useSelector((state) => state.user.google);
 	const isCreator = user?.id === song?.creator?.id;
-
-	// const [chordLang, setChordLang] = useState("en");
-
-	const [messageModalOpts, setMessageModalOpts] = useState(null);
-	const [openOptions, setOpenOptions] = useState(false);
+	// const { handleClickPrint, isLoadingPrint, PagePrint } = usePrint();
+	const { handleClickPublish, isLoadingPublish, PagePublish } = usePublishSong(
+		song,
+		user,
+		setMessageModalOpts
+	);
 
 	useEffect(() => {
 		const elems = document.querySelectorAll(".modal");
 		M.Modal.init(elems);
 	}, []);
 
-	useEffect(() => {
-		if (!!openOptions) {
-			const textarea = document.querySelector("textarea");
-			M.textareaAutoResize(textarea);
-		}
-	}, [openOptions]);
-
-	const handleFloatingBtn = (event) => {
-		event.stopPropagation();
-		setOpenOptions((lv) => !lv);
-	};
-
-	// const handlePrintBtn = (event) => {
-	// event.stopPropagation();
-	// 	const elementToPrint = document.getElementById("to-print");
-
-	// 	let content = "<html><head>";
-	// 	content += `<title>${pageTitle}</title>`;
-	// 	const styles = document.querySelectorAll("style");
-	// 	for (const style of styles) {
-	// 		content += "<style>" + style.innerHTML + "</style>";
+	// useEffect(() => {
+	// 	if (!!openOptions) {
+	// 		const textarea = document.querySelector("textarea");
+	// 		M.textareaAutoResize(textarea);
 	// 	}
-	// 	content +=
-	// 		'</head><body onload="window.print(); setTimeout(window.close, 3000);">';
-	// 	content += elementToPrint.innerHTML;
-	// 	content += "</body>";
-	// 	content += "</html>";
-
-	// 	const win = window.openOptions(
-	// 		"",
-	// 		"",
-	// 		"left=0,top=0,width=552,height=477,toolbar=0,scrollbars=0,status =0"
-	// 	);
-	// 	win.document.write(content);
-	// 	win.document.close();
-	// };
+	// }, [openOptions]);
 
 	const handleEditBtn = () => {
-		history.push({ pathname: `/edit-song/${id}`, state: { from: "Canción" } });
+		editForm("annotations", annotations);
+		setEditingSong(true);
+		let textarea = document.querySelector("textarea");
+		setTimeout(() => M.textareaAutoResize(textarea), 500);
+		// history.push({ pathname: `/edit-song/${id}`, state: { from: "Canción" } });
 	};
-	const handlePublishBtn = () => {
-		setMessageModalOpts({
-			title: "Solicitud de publicación",
-			message:
-				"Se creará una solicitud para agregar tu canción dentro de nuestro cancionero publico! Y en unos días recibirá una respuesta al mail.",
-			onClose: () => {
-				setMessageModalOpts(null);
-			},
-			onCancel: () => {},
-			onConfirm: () => {
-				if (user.id === "111418653738749034139") {
-					publishCurrentSong();
-					return;
-				}
 
-				window.Email.send({
-					SecureToken: "6475cd94-e35b-4580-a64e-0bb45672fa5c",
-					To: "alexander1vinet@gmail.com",
-					From: "alexander1vinet@gmail.com",
-					Headers: {
-						"Content-Type": "application/json",
-					},
-					Subject: "Nueva cancion - Herramientas para Misa",
-					Body: `<html><h2>User:</h2><p>id: ${user.id}</p><p>name: ${
-						user.name
-					}</p><p>email: ${user.email}</p><h2>Song: </h2><p>${JSON.stringify(
-						song,
-						null,
-						"\t"
-					)}</p><h2>Link: </h2><p>https://herramientas-misa.netlify.app/song/${
-						song.id
-					}</p></html>`,
-				}).then((message) => {
-					if (message === "OK") {
-						M.toast({ html: "Solicitud enviada. Gracias!" });
-					} else {
-						M.toast({ html: "Error: " + message });
-					}
-				});
-			},
-		});
+	const handleClickSaveSongForm = () => {
+		setAnnotations(songForm.annotations);
 	};
+
 	const handleDeleteBtn = () => {
 		setMessageModalOpts({
 			title: "¿Esta seguro que desea eliminar esta canción?",
@@ -149,7 +120,7 @@ const SongPage = () => {
 			},
 			onCancel: () => {},
 			onConfirm: () => {
-				// await axios.delete(`/api/songs/${id}`).catch((err) => console.error(err));
+				// await axios.delete(`/api/songs/${id}`).catch((err) => console.Page(err));
 				M.toast({ html: "Cancion borrada." });
 				// refetchSongs();
 				history.goBack();
@@ -172,17 +143,156 @@ const SongPage = () => {
 		saveOptions();
 	};
 
-	if (!!isLoading)
+	if (!!isLoadingPage)
 		return (
-			<div className="progress" style={{ backgroundColor: "#9cd1ff" }}>
-				<div
-					className="indeterminate"
-					style={{ backgroundColor: "#1976d2" }}
-				></div>
+			<div class="progress" style={{ backgroundColor: "#9cd1ff" }}>
+				<div class="indeterminate" style={{ backgroundColor: "#1976d2" }}></div>
 			</div>
 		);
 
-	if (!!error) return <div>Error - {error}</div>;
+	if (!!errorPage) return <div>Error - {errorPage}</div>;
+
+	if (!editingSong) {
+		return (
+			<PageContainer fontSize={pageOptions.fontSize}>
+				<SongTitle>
+					<div className="input-field">
+						<input
+							id="title"
+							name="title"
+							onChange={(e) => editForm("title", e.target.value)}
+							type="text"
+							value={songForm?.title || ""}
+							// placeholder="Titulo*"
+						/>
+						<label
+							htmlFor="title"
+							className={"lab" + (songForm?.title ? " active" : "")}
+						>
+							Titulo*
+						</label>
+					</div>
+					{/* {song.title} {song.author?.name && ` - ${song.author.name}`} */}
+				</SongTitle>
+				<div className="input-field">
+					<input
+						id="authorName"
+						name="authorName"
+						onChange={(e) =>
+							editForm("author", {
+								name: e.target.value,
+								id: new Date().getTime(),
+							})
+						}
+						type="text"
+						value={songForm?.author?.name || ""}
+						className="autocomplete"
+						// placeholder="Autor"
+					/>
+					<label
+						htmlFor="authorName"
+						className={"lab" + (songForm?.author?.name ? " active" : "")}
+					>
+						Autor
+					</label>
+				</div>
+				<div className="input-field">
+					<input
+						id="tempo"
+						name="tempo"
+						onChange={(e) => editForm("tempo", e.target.value)}
+						type="text"
+						value={songForm?.tempo || ""}
+						// placeholder="Tempo"
+					/>
+					<label
+						htmlFor="tempo"
+						className={"lab" + (songForm?.tempo ? " active" : "")}
+					>
+						Tempo
+					</label>
+				</div>
+				<div className="input-field">
+					<input
+						id="pulse"
+						name="pulse"
+						onChange={(e) => editForm("pulse", e.target.value)}
+						type="text"
+						value={songForm?.pulse || ""}
+						// placeholder="Pulso"
+					/>
+					<label
+						htmlFor="pulse"
+						className={"lab" + (songForm?.pulse ? " active" : "")}
+					>
+						Pulso
+					</label>
+				</div>
+				<div className="input-field">
+					<textarea
+						id="annotations"
+						name="annotations"
+						className="materialize-textarea"
+						onChange={(e) => editForm("annotations", e.target.value)}
+						style={{ marginTop: 0 }}
+						value={songForm?.annotations}
+						// placeholder="Mis Notas"
+					/>
+					<label
+						htmlFor="annotations"
+						className={"lab" + (songForm?.annotations ? " active" : "")}
+					>
+						Mis Notas
+					</label>
+				</div>
+				<LabelsInput
+					labels={songForm.labels}
+					updateLabels={(lb) => editForm("labels", lb)}
+				/>
+				<div
+					className="switch"
+					style={{
+						marginBottom: "40px",
+					}}
+				>
+					<label onChange={toogleEditOnlyChords}>
+						<input type="checkbox" id="checkAuto" />
+						<span className="lever"></span>
+						<span style={{ color: "black" }}>Editar solo acordes</span>
+					</label>
+				</div>
+				{editOnlyChords ? (
+					<LyricWithChords
+						lyricWithChords={songForm.lyric}
+						setLyricWithChords={(v) => editForm("lyric", v)}
+						tone={songForm?.tone}
+						setTone={(v) => editForm("tone", v)}
+						isEditable
+					/>
+				) : (
+					// <LyricWithChords
+					// 	lyricWithChords={song.lyric}
+					// 	tone={tone}
+					// 	setTone={setTone}
+					// 	chordLang={pageOptions.chordLang}
+					// 	showChords={pageOptions.showChords}
+					// 	isEditable={false}
+					// />
+					<SongFormLyric
+						lyric={songForm.lyric}
+						setLyric={(v) => editForm("lyric", v)}
+					/>
+				)}
+				<SongButton
+					className="btn waves-effect waves-light blue darken-2"
+					onClick={handleClickSaveSongForm}
+					style={{ marginTop: "5px" }}
+				>
+					Listo
+				</SongButton>
+			</PageContainer>
+		);
+	}
 
 	return (
 		<PageContainer fontSize={pageOptions.fontSize}>
@@ -207,36 +317,44 @@ const SongPage = () => {
 				<SongTitle>
 					{song.title} {song.author?.name && ` - ${song.author.name}`}
 				</SongTitle>
-				{!!tone && !!pageOptions.showChords && (
-						<>
-							<ChordSelector
-								modalId="tone"
-								label="Tono: "
-								selectedChord={tone}
-								setSelectedChord={handleChangeTone}
-								chordLang={pageOptions.chordLang}
-								onlyChangeTone
-							/>
-							<br />
-						</>
-					)}
-					<div className="input-field">
-						<textarea
-							id="annotations"
-							name="annotations"
-							className="materialize-textarea"
-							onChange={(e) => setAnnotations(e.target.value)}
-							value={annotations}
-						/>
-						<label
-							htmlFor="annotations"
-							className={"lab" + (annotations ? " active" : "")}
-						>
-							Mis Notas
-						</label>
-					</div>
-					{song.pulse && <SongInfo>Pulso: {song.pulse}</SongInfo>}
-					{song.tempo && <SongInfo>Tempo recomendado: {song.tempo}</SongInfo>}
+				{!!pageOptions.showChords && (
+					<>
+						{!!tone && (
+							<div>
+								<ChordSelector
+									modalId="tone"
+									label="Tono: "
+									selectedChord={tone}
+									setSelectedChord={handleChangeTone}
+									chordLang={pageOptions.chordLang}
+									onlyChangeTone
+								/>
+							</div>
+						)}
+						<SongInfoBox>
+							{song.pulse && <div>Pulso: {song.pulse}</div>}
+							<SongInfoSpacer />
+							{song.tempo && <div>Tempo recomendado: {song.tempo}</div>}
+						</SongInfoBox>
+					</>
+				)}
+				<AnnotationField>
+					<textarea
+						id="annotations"
+						name="annotations"
+						className="materialize-textarea"
+						onChange={(e) => setAnnotations(e.target.value)}
+						style={{ marginTop: 0, marginBottom: 0 }}
+						value={annotations}
+						placeholder="Mis Notas"
+					/>
+					{/* <label
+						htmlFor="annotations"
+						class={"lab" + (annotations ? " active" : "")}
+					>
+						Mis Notas
+					</label> */}
+				</AnnotationField>
 				<LyricContainerZoom>
 					<LyricWithChords
 						lyricWithChords={song.lyric}
@@ -248,98 +366,94 @@ const SongPage = () => {
 					/>
 				</LyricContainerZoom>
 				{song.creator?.name && (
-						<p>
-							<i>Transcripción hecha por {song.creator.name} ({song.isPrivate ? "Privada" : "Publica"})</i>
-						</p>
-					)}
+					<p>
+						<i>
+							Transcripción hecha por {song.creator.name} (
+							{song.isPrivate ? "Privada" : "Publica"})
+						</i>
+					</p>
+				)}
 				{/* <h5>Detalles</h5> */}
-					
-					{/* <hr /> */}
-					{/* <h5>Ajustes de canción</h5> */}
-					
-					<h6>
-						<b>Mi Nivel de Progreso con la Canción{!isCreator ? "..." : ""}</b>
-					</h6>
-					{!!isCreator ? (
-						<>
-							<ModalSelector
-								modalId="voiceLevel"
-								// label="Voz: "
-								modalTitle="Elegir mi nivel de progreso"
-								selectedItem={voiceLevel.toString() || "0"}
-								setSelectedItem={setVoiceLevel}
-								items={voiceLevelOptions}
-								textAlign="start"
-								selectorWidth="flex"
-							/>
-							{/* <br /> */}
-						</>
-					) : (
+
+				{/* <hr /> */}
+				{/* <h5>Ajustes de canción</h5> */}
+
+				<h6>
+					<b>Mi Nivel de Progreso con la Canción{!isCreator ? "..." : ""}</b>
+				</h6>
+				{!!isCreator ? (
+					<>
+						<ModalSelector
+							modalId="voiceLevel"
+							// label="Voz: "
+							modalTitle="Elegir mi nivel de progreso"
+							selectedItem={voiceLevel.toString() || "0"}
+							setSelectedItem={setVoiceLevel}
+							items={voiceLevelOptions}
+							textAlign="start"
+							selectorWidth="flex"
+						/>
+						{/* <br /> */}
+					</>
+				) : (
+					<SongButton
+						className="btn waves-effect waves-light blue darken-2"
+						onClick={handleSaveSongOptions}
+						style={{ marginTop: "5px" }}
+					>
+						<i className="material-icons right">favorite</i>Guardar canción en
+						tu biblioteca para
+						{!!areNewSongOptions ? " mantener ajustes" : " comenzar"}
+					</SongButton>
+				)}
+				{!!areNewSongOptions && !!isCreator && (
+					<SongButton
+						className="btn waves-effect waves-light blue darken-2"
+						onClick={handleSaveSongOptions}
+					>
+						<i className="material-icons right">save</i>Guardar
+					</SongButton>
+				)}
+				{!!user?.name && (
+					<>
+						<br />
 						<SongButton
 							className="btn waves-effect waves-light blue darken-2"
-							onClick={handleSaveSongOptions}
-							style={{ marginTop: "5px" }}
+							onClick={handleEditBtn}
 						>
-							<i className="material-icons right">favorite</i>Guardar canción en
-							tu biblioteca para
-							{!!areNewSongOptions ? " mantener ajustes" : " comenzar"}
+							<i className="material-icons right">edit</i>Editar
 						</SongButton>
-					)}
-					{!!areNewSongOptions && !!isCreator && (
-						<SongButton
-							className="btn waves-effect waves-light blue darken-2"
-							onClick={handleSaveSongOptions}
-						>
-							<i className="material-icons right">save</i>Guardar
-						</SongButton>
-					)}	
-					{!!user?.name && (
-						<>
-							{/* <hr />
-							<h5>Acciones</h5> */}
-							<br />
-							<SongButton
-								className="btn waves-effect waves-light blue darken-2"
-								onClick={handleEditBtn}
-							>
-								<i className="material-icons right">edit</i>Editar
-							</SongButton>
-						</>
-					)}
-					{isCreator && song?.isPrivate && (
-						<SongButton
-							className="btn waves-effect waves-light blue darken-2"
-							onClick={handlePublishBtn}
-						>
-							<i className="material-icons right">publish</i>Publicar
-						</SongButton>
-					)}
-					{(isCreator || user.id === "111418653738749034139") && (
-						<SongButton
-							className="btn waves-effect waves-light blue darken-2"
-							onClick={handleDeleteBtn}
-						>
-							<i className={`material-icons ${"right"}`}>delete</i>Eliminar
-						</SongButton>
-					)}				
+					</>
+				)}
+				{isCreator && song?.isPrivate && (
+					<SongButton
+						className="btn waves-effect waves-light blue darken-2"
+						onClick={handleClickPublish}
+					>
+						<i className="material-icons right">publish</i>Publicar
+					</SongButton>
+				)}
+				{(isCreator || user.id === "111418653738749034139") && (
+					<SongButton
+						className="btn waves-effect waves-light blue darken-2"
+						onClick={handleDeleteBtn}
+					>
+						<i className={`material-icons ${"right"}`}>delete</i>Eliminar
+					</SongButton>
+				)}
+				{/* <SongButton
+						className="btn waves-effect waves-light blue darken-2"
+						onClick={handleClickPrint}
+					>
+						<i className="material-icons right">print</i>Imprimir
+					</SongButton> */}
 			</div>
 
-			<SongActionButton>
-				<a
-					className="btn-floating btn-large waves-effect waves-light"
-					onClick={handleFloatingBtn}
-				>
-					<i className="large material-icons">
-						{openOptions ? "arrow_downward" : "tune"}
-					</i>
-				</a>
-			</SongActionButton>
 			<BottomSheet open={openOptions} setOpen={setOpenOptions} fullscreen>
 				<div>
-					{/* <hr /> */}
 					<h5>Visualización</h5>
 					<div
-						className="switch"
+						class="switch"
 						style={{
 							marginTop: "10px",
 							marginBottom: "10px",
@@ -400,13 +514,6 @@ const SongPage = () => {
 							<i className="material-icons right">save</i>Guardar configuración
 						</SongButton>
 					)}
-
-					{/* <SongButton
-						className="btn waves-effect waves-light blue darken-2"
-						onClick={handlePrintBtn}
-					>
-						<i className="material-icons right">print</i>Imprimir
-					</SongButton> */}
 				</div>
 			</BottomSheet>
 			<MessageModal opts={messageModalOpts} />
@@ -444,8 +551,18 @@ const SongLabel = styled.div`
 	margin-right: 5px;
 	cursor: default;
 `;
-const SongInfo = styled.div`
-	vertical-align: center;
+const SongInfoBox = styled.div`
+	display: flex;
+	align-items: center;
+`;
+const SongInfoSpacer = styled.div`
+	flex: 1;
+`;
+const AnnotationField = styled.div.attrs({
+	className: "input-field",
+})`
+	margin-top: 0;
+	margin-bottom: 0.5rem;
 `;
 
 // const RangeInput = styled.p.attrs({
@@ -459,13 +576,13 @@ const SongInfo = styled.div`
 // 		background: ${colors.primary};
 // 	}
 // `;
-const FontSizeSection = styled.p`
+const FontSizeSection = styled.div`
 	margin-top: 5px;
 	margin-bottom: 5px;
 	display: flex;
 	${noSelectableText}
 `;
-const FontSizeInput = styled.p`
+const FontSizeInput = styled.div`
 	margin: 0 1.5rem;
 	padding: 0 2rem;
 	position: relative;
@@ -487,13 +604,6 @@ const FontSizeButtonRight = styled(FontSizeButton)`
 const SongButton = styled(LoggedButton)`
 	margin-top: 15px;
 	margin-right: 10px;
-`;
-const SongActionButton = styled.div.attrs({
-	className: "fixed-action-btn",
-})`
-	> a {
-		background-color: ${colors.primary} !important;
-	}
 `;
 
 export default SongPage;

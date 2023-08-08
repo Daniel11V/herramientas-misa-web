@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSongList, resetSongActionStatus, setSongListStatus } from "../../../clases/song/actions";
+import { getSongList, resetSongRequestStatus, setSongListStatus } from "../../../clases/song/actions";
 import { setLibraryPageBackup } from "../../../clases/page/actions";
 import { arrayIsEmpty, getRating, objIsEmpty } from "../../../utils";
 
@@ -8,7 +8,7 @@ export const useLibraryPage = () => {
     const dispatch = useDispatch();
 
     const userId = useSelector((state) => state.user.google.id);
-    const { songList, songListStatus, songListUserId, songActionStatus, songError } = useSelector((state) => state.song);
+    const { songList, songListStatus, songListUserId, songRequestStatus, songError } = useSelector((state) => state.song);
     const { libraryPageBackup } = useSelector((state) => state.page);
     const { songList: songListBackup } = libraryPageBackup;
 
@@ -51,14 +51,14 @@ export const useLibraryPage = () => {
 
     useEffect(() => {
         if (status.step === "1_FETCH_SONG_LIST") {
-            if (songActionStatus === "INITIAL") {
+            if (songRequestStatus === "INITIAL") {
                 dispatch(getSongList(status.opts));
-            } else if (songActionStatus === "SUCCESS") {
+            } else if (songRequestStatus === "SUCCESS") {
                 setStatus("1_WITH_SONG_LIST", { fromFetch: true });
-                dispatch(resetSongActionStatus());
-            } else if (songActionStatus === "FAILURE") {
+                dispatch(resetSongRequestStatus());
+            } else if (songRequestStatus === "FAILURE") {
                 setStatus("FINISHED");
-                dispatch(resetSongActionStatus());
+                dispatch(resetSongRequestStatus());
             }
         }
         /* 
@@ -76,7 +76,7 @@ export const useLibraryPage = () => {
             - crea un privateSongTitles de esa que apunta al detalle de la publica, si 
             se edita algo de Lyric se crea nueva Lyric en private
         */
-    }, [status, songActionStatus, dispatch]);
+    }, [status, songRequestStatus, dispatch]);
 
     useEffect(() => {
         if (status.step === "1_WITH_SONG_LIST") {

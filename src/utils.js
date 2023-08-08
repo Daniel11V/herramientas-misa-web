@@ -1,4 +1,4 @@
-import allChords, { replaceBemols } from "./data/allChords.js";
+import allChords, { replaceBemols, chordToEs } from "./data/allChords.js";
 import searchLabels from "./data/searchLabels.js";
 
 
@@ -72,6 +72,7 @@ export const getRating = (rates = {}) => {
 
 export const translateChord = (chord, toLang, currentLang) => {
     if (currentLang === toLang) return chord;
+    if (!!chord && toLang === "es") return chordToEs[chord];
     const fromLang = toLang === "en" ? "es" : "en";
     for (let i = 0; i < allChords?.[fromLang]?.length; i++) {
         const chordIndex = allChords[fromLang][i].chords.findIndex(bookedChord => bookedChord.toUpperCase() === chord.toUpperCase());

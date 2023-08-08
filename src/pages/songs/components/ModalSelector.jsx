@@ -49,7 +49,8 @@ const ModalSelector = ({
 		modalInstance?.open();
 	};
 
-	const handleItemClick = (itemValue) => {
+	const handleItemClick = (event, itemValue) => {
+		event.stopPropagation();
 		setSelectedItem(itemValue);
 		modalInstance.close();
 	};
@@ -74,7 +75,7 @@ const ModalSelector = ({
 									<ItemBtn
 										key={item.value}
 										selected={item.value === selectedItem}
-										onClick={() => handleItemClick(item.value)}
+										onClick={(e) => handleItemClick(e, item.value)}
 									>
 										{item.label}
 									</ItemBtn>
@@ -98,9 +99,13 @@ const Selector = styled.div`
 	margin-bottom: 5px;
 	margin-top: 5px;
 	${(props) =>
-		props.selectorWidth === "flex" ?
-		css`width: 100%;`:
-		css`width: ${(props) => props.selectorWidth};`}
+		props.selectorWidth === "flex"
+			? css`
+					width: 100%;
+			  `
+			: css`
+					width: ${(props) => props.selectorWidth};
+			  `}
 `;
 
 const StyledModal = styled.div.attrs((props) => ({
@@ -151,7 +156,9 @@ const SelectedItemArrow = styled.i`
 	color: #000;
 `;
 
-const SelectedItem = styled.div`
+const SelectedItem = styled.div.attrs({
+	className: "selected-item",
+})`
 	position: relative;
 	display: inline-block;
 	/* border: 1px solid gray; */

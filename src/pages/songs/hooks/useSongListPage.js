@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSongList, resetSongActionStatus, setSongListStatus } from "../../../clases/song/actions";
+import { getSongList, resetSongRequestStatus, setSongListStatus } from "../../../clases/song/actions";
 import { setSongListPageBackup } from "../../../clases/page/actions";
 import { arrayIsEmpty, getRating } from "../../../utils";
 import { MAX_RETRYS } from "../../../configs";
@@ -9,7 +9,7 @@ export const useSongListPage = () => {
     const dispatch = useDispatch();
 
     const userId = useSelector((state) => state.user.google.id);
-    const { songList, songListStatus, songListUserId, songActionStatus, songError } = useSelector((state) => state.song);
+    const { songList, songListStatus, songListUserId, songRequestStatus, songError } = useSelector((state) => state.song);
     const { songListPageBackup } = useSelector((state) => state.page);
     const { songList: songListBackup } = songListPageBackup;
 
@@ -58,16 +58,16 @@ export const useSongListPage = () => {
 
     useEffect(() => {
         if (status.step === "1_FETCH_SONG_LIST") {
-            if (songActionStatus === "INITIAL") {
+            if (songRequestStatus === "INITIAL") {
                 dispatch(getSongList(status.opts));
                 setRetrys(0);
-            } else if (songActionStatus === "SUCCESS") {
+            } else if (songRequestStatus === "SUCCESS") {
                 setStatus("1_WITH_SONG_LIST", { fromFetch: true });
-                dispatch(resetSongActionStatus());
-            } else if (songActionStatus === "FAILURE") {
+                dispatch(resetSongRequestStatus());
+            } else if (songRequestStatus === "FAILURE") {
                 if (retrys === MAX_RETRYS) {
                     setStatus("FINISHED");
-                    dispatch(resetSongActionStatus());
+                    dispatch(resetSongRequestStatus());
                 } else {
                     setRetrys(lastRetrys => lastRetrys + 1);
                     dispatch(getSongList(status.opts));
@@ -89,7 +89,7 @@ export const useSongListPage = () => {
             - crea un privateSongTitles de esa que apunta al detalle de la publica, si 
             se edita algo de Lyric se crea nueva Lyric en private
         */
-    }, [status, songActionStatus, retrys, dispatch]);
+    }, [status, songRequestStatus, retrys, dispatch]);
 
     useEffect(() => {
         if (status.step === "1_WITH_SONG_LIST") {
