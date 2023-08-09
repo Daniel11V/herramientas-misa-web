@@ -4,7 +4,7 @@ import { useParams, useHistory } from "react-router-dom";
 import M from "materialize-css";
 import { useSelector } from "react-redux";
 import fullLabels from "../../data/fullLabels.js";
-import LyricWithChords from "./components/LyricWithChords";
+import LyricWithChords from "./components/LyricWithChords2.jsx";
 import styled from "styled-components";
 import ChordSelector from "./components/ChordSelector";
 import { useSongPage } from "./hooks/useSongPage.js";

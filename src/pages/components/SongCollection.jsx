@@ -28,8 +28,21 @@ const SongCollection = ({
 
 	const [songChoose, setSongChoose] = useState(null);
 	const [lirycStartList, setLirycStartList] = useState([]);
+	const [labels, setLabels] = useState(labelsStart);
+	const [searchInput, setSearchInput] = useState("");
+	const [filteredSongList, setFilteredSongList] = useState([]);
 
 	const containerContentRef = useRef(null);
+
+	useEffect(() => {
+		if (!!songList.length) {
+			let newFilteredSongList = [...songList];
+			if (!!searchInput && !!searcher) {
+				newFilteredSongList = newFilteredSongList.filter(song => song.title.toUpperCase().includes(searchInput.toUpperCase()))
+			}
+			setFilteredSongList(newFilteredSongList);
+		}
+	}, [songList, searcher, searchInput])
 
 	useEffect(() => {
 		if (!!containerContentRef.current && !!songList.length) {
@@ -40,8 +53,8 @@ const SongCollection = ({
 				canvasContext.font = "12px Arial";
 
 				setLirycStartList(
-					songList.map((song) => {
-						if (!song.lyricStart) return "";
+					songList.reduce((prev, song) => {
+						if (!song.lyricStart) return prev;
 
 						let newLyricStart = song.lyricStart;
 						while (
@@ -54,8 +67,8 @@ const SongCollection = ({
 						if (newLyricStart?.[newLyricStart?.length - 1] === ",")
 							newLyricStart = newLyricStart?.slice(0, -1);
 
-						return "| " + newLyricStart + "...";
-					})
+						return ({...prev, [song.id]: "| " + newLyricStart + "..."})
+					}, {})
 				);
 			}
 		}
@@ -95,6 +108,10 @@ const SongCollection = ({
 	// 	}
 	// }, [allSongDetails, search, labels, songChoose]);
 
+	const handleClickSearchLyric = () => {
+
+	}
+
 	const handleClickSong = (id) => {
 		history.push({
 			pathname: `/song/${id}`,
@@ -129,7 +146,7 @@ const SongCollection = ({
 
 	return (
 		<Collection>
-			{searcher && <CollectionSearcher labelsStart={labelsStart} />}
+			{searcher && <CollectionSearcher searchInput={searchInput} setSearchInput={setSearchInput} labels={labels} setLabels={setLabels} handleClickSearchLyric={handleClickSearchLyric} />}
 			{/* {filteredSongs.map((song) => (
 				<Link
 					to={{ pathname: `/song/${song.id}`, state: { from: "Cancionero" } }}
@@ -153,10 +170,10 @@ const SongCollection = ({
 				</Link>
 			))} */}
 			<CollectionContent ref={containerContentRef}>
-				{arrayIsEmpty(songList) && (
+				{arrayIsEmpty(filteredSongList) && (
 					<CollectionItem withCheck={false}>Sin canciones.</CollectionItem>
 				)}
-				{songList.map((song, songIndex) => (
+				{filteredSongList.map((song, songIndex) => (
 					<CollectionItem
 						key={song.id}
 						onClick={() => handleClickSong(song.id)}
@@ -202,9 +219,9 @@ const SongCollection = ({
 								</label>
 							)}
 						</CollectionItemDescription>
-						{!!lirycStartList?.[songIndex] && (
+						{!!lirycStartList?.[song.id] && (
 							<CollectionItemLyric>
-								{lirycStartList[songIndex]}
+								{lirycStartList?.[song.id]}
 							</CollectionItemLyric>
 						)}
 					</CollectionItem>

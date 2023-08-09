@@ -5,10 +5,8 @@ import LabelsInput from "./LabelsInput";
 import { CollectionItem } from "../../styles/styles";
 import { colors } from "../../styles/styleUtils";
 
-export const CollectionSearcher = ({ labelsStart = [] }) => {
+export const CollectionSearcher = ({ searchInput, setSearchInput, labels, setLabels, handleClickSearchLyric  }) => {
 	const [showFilters, setShowFilters] = useState(false);
-	const [labels, setLabels] = useState(labelsStart);
-	const [search, setSearch] = useState("");
 	const [filterSelectors, setFilterSelectors] = useState(null);
 	// const [filteredSongs, setFilteredSongs] = useState(allSongLyric);
 
@@ -33,15 +31,15 @@ export const CollectionSearcher = ({ labelsStart = [] }) => {
 	return (
 		<CollectionSearcherStyle showFilters={showFilters}>
 			<div>
-				<SearchIcon htmlFor="search-input">
+				<SearchIcon htmlFor="search-input" onClick={handleClickSearchLyric}>
 					<i className="material-icons">search</i>
 				</SearchIcon>
 				<input
-					onChange={(e) => setSearch(e.target.value)}
+					onChange={(e) => setSearchInput(e.target.value)}
 					id="search-input"
 					type="search"
 					placeholder="Buscar canción..."
-					value={search}
+					value={searchInput}
 				/>
 				<FilterBtn onClick={() => setShowFilters(!showFilters)}>
 					Filtros
