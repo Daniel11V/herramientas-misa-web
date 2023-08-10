@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { createSong, editSong, getSong, resetSongRequestStatus } from "../../../clases/song/actions";
 import { MAX_RETRYS } from "../../../configs";
-import { getDataFromLyric, getLyricWithChords } from "../../../utils";
+import { getDataFromRandomLyric, getFormattedLyric } from "../../../utils";
 
 export const useRepertoryFormPage = (songId) => {
     const dispatch = useDispatch();
@@ -129,13 +129,13 @@ export const useRepertoryFormPage = (songId) => {
 
     const toogleEditOnlyChords = () => {
         if (editOnlyChords === true) {
-            setField("lyric", getLyricWithChords(onlyLiric, chords));
+            setField("lyric", getFormattedLyric(onlyLiric, chords));
         } else {
             const {
                 chords: chordsNew,
                 chordLangFound: chordLangNew,
                 onlyLyric: onlyLyricNew,
-            } = getDataFromLyric(repertoryForm.lyric);
+            } = getDataFromRandomLyric(repertoryForm.lyric);
             setChords(chordsNew);
             setChordLang(chordLangNew);
             setOnlyLyric(onlyLyricNew);

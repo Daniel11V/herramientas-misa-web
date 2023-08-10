@@ -17,8 +17,6 @@ import LoggedButton from "../../layout/components/LoggedButton.jsx";
 import LyricContainerZoom from "./components/LyricContainerZoom.jsx";
 import { usePublishSong } from "./hooks/usePublishSong.js";
 import LabelsInput from "../components/LabelsInput.jsx";
-import SongFormLyric from "./components/SongFormLyric.jsx";
-import { getDataFromLyric } from "../../utils.js";
 
 const SongPage = () => {
 	// const [chordLang, setChordLang] = useState("en");
@@ -37,8 +35,8 @@ const SongPage = () => {
 			// 	chordLangFound: chordLangNew,
 			// 	onlyLyric: onlyLyricNew,
 			// 	formattedLyric: formattedLyricNew,
-			// } = getDataFromLyric(songForm.lyric);
-			// const resp = getDataFromLyric(songForm.lyric);
+			// } = getDataFromRandomLyric(songForm.lyric);
+			// const resp = getDataFromRandomLyric(songForm.lyric);
 			// console.log("ACA Resp", resp);
 			// setChords(chordsNew);
 			// setChordLang(chordLangNew);
@@ -80,7 +78,7 @@ const SongPage = () => {
 	const user = useSelector((state) => state.user.google);
 	const isCreator = user?.id === song?.creator?.id;
 	// const { handleClickPrint, isLoadingPrint, PagePrint } = usePrint();
-	const { handleClickPublish, isLoadingPublish, PagePublish } = usePublishSong(
+	const { handleClickPublish, isLoadingPublish, errorPublish } = usePublishSong(
 		song,
 		user,
 		setMessageModalOpts
@@ -100,6 +98,7 @@ const SongPage = () => {
 
 	const handleEditBtn = () => {
 		editForm("annotations", annotations);
+		editForm("tone", tone);
 		setEditingSong(true);
 		let textarea = document.querySelector("textarea");
 		setTimeout(() => M.textareaAutoResize(textarea), 500);
@@ -261,28 +260,15 @@ const SongPage = () => {
 						<span style={{ color: "black" }}>Editar solo acordes</span>
 					</label>
 				</div>
-				{editOnlyChords ? (
-					<LyricWithChords
-						lyricWithChords={songForm.lyric}
-						setLyricWithChords={(v) => editForm("lyric", v)}
-						tone={songForm?.tone}
-						setTone={(v) => editForm("tone", v)}
-						isEditable
-					/>
-				) : (
-					// <LyricWithChords
-					// 	lyricWithChords={song.lyric}
-					// 	tone={tone}
-					// 	setTone={setTone}
-					// 	chordLang={pageOptions.chordLang}
-					// 	showChords={pageOptions.showChords}
-					// 	isEditable={false}
-					// />
-					<SongFormLyric
-						lyric={songForm.lyric}
-						setLyric={(v) => editForm("lyric", v)}
-					/>
-				)}
+				<LyricWithChords
+					lyricWithChords={songForm.lyric}
+					setLyricWithChords={(v) => editForm("lyric", v)}
+					userTone={songForm?.tone}
+					setUserTone={(v) => editForm("tone", v)}
+					userChordLang={pageOptions.chordLang}
+					isEditable
+					onlyInputText={!editOnlyChords}
+				/>
 				<SongButton
 					className="btn waves-effect waves-light blue darken-2"
 					onClick={handleClickSaveSongForm}
@@ -358,8 +344,9 @@ const SongPage = () => {
 				<LyricContainerZoom>
 					<LyricWithChords
 						lyricWithChords={song.lyric}
-						tone={tone}
-						setTone={setTone}
+						setLyricWithChords={(v) => editForm("lyric", v)}
+						userTone={tone}
+						setUserTone={setTone}
 						chordLang={pageOptions.chordLang}
 						showChords={pageOptions.showChords}
 						isEditable={false}

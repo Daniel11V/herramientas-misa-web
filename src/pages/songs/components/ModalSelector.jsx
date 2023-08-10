@@ -15,7 +15,7 @@ const ModalSelector = ({
 	textAlign = "center",
 }) => {
 	const [modalInstance, setModalInstance] = useState(null);
-	const [selectedItemLabel, setSelectedItemLabel] = useState("C");
+	const [selectedItemLabel, setSelectedItemLabel] = useState("");
 	const [modalInstanceId] = useState(
 		modalId + "-modal-" + new Date().getTime().toString()
 	);
@@ -29,6 +29,7 @@ const ModalSelector = ({
 				);
 				if (selectedItemFound) break;
 			}
+			console.log("ACA ", { selectedItemFound });
 			setSelectedItemLabel(selectedItemFound?.label);
 		}
 	}, [items, selectedItem, setSelectedItemLabel]);

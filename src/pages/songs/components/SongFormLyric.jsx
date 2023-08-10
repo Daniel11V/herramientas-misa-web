@@ -22,6 +22,7 @@ const SongFormLyric = ({ lyric, setLyric }) => {
 					className="materialize-textarea"
 					onChange={(e) => setLyric(e.target.value)}
 					value={lyric || ""}
+					spellCheck="false"
 				/>
 				<label htmlFor="lyric" className={"lab" + (lyric ? " active" : "")}>
 					Copiar y pegar letra con acordes

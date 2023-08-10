@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { createAuthor, getAuthorList, resetAuthorStatus } from "../../../clases/author/actions";
 import { createSong, editSong, getSong, resetSongRequestStatus } from "../../../clases/song/actions";
 import { MAX_RETRYS } from "../../../configs";
-import { arrayIsEmpty, getDataFromLyric, getLyricWithChords, getStartLyric } from "../../../utils";
+import { arrayIsEmpty, getDataFromRandomLyric, getLyricWithChords, getStartLyric } from "../../../utils";
 
 export const useSongFormPage = (songId) => {
     const dispatch = useDispatch();
@@ -183,7 +183,7 @@ export const useSongFormPage = (songId) => {
                 chordLangFound: chordLangNew,
                 onlyLyric: onlyLyricNew,
                 formattedLyric: formattedLyricNew,
-            } = getDataFromLyric(songForm.lyric);
+            } = getDataFromRandomLyric(songForm.lyric);
             console.log("ACA1", {
                 chordsNew,
                 chordLangNew,

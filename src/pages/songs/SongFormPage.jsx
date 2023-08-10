@@ -121,7 +121,7 @@ const SongFormPage = () => {
 	// 			chords: chordsNew,
 	// 			chordLang: chordLangNew,
 	// 			onlyLyric: onlyLyricNew,
-	// 		} = getDataFromLyric(songForm.lyric);
+	// 		} = getDataFromRandomLyric(songForm.lyric);
 	// 		setChords(chordsNew);
 	// 		setChordLang(chordLangNew);
 	// 		setOnlyLyric(onlyLyricNew);

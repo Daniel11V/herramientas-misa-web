@@ -64,7 +64,7 @@ export const useSongPage = (songTitleId) => {
             setAuthorInstance(M.Autocomplete.init(document.querySelectorAll(".autocomplete"))[0])
             dispatch(getAuthorList({ userId }));
         }
-        console.log("ACA editForm: ", { value, songForm })
+        console.log("ACA editForm: ", { key, value, songForm })
     }
 
     useEffect(() => {
@@ -83,8 +83,8 @@ export const useSongPage = (songTitleId) => {
                     [field]: newVal,
                 }
                 const finalSongOptions = {
-                    tone: song.tone,
-                    annotations: song.annotations,
+                    tone: song.tone || "",
+                    annotations: song.annotations || "",
                     level: song.level,
                 }
                 setAreNewSongOptions(!objsAreEqual(finalSongOptions, newSongOptions))

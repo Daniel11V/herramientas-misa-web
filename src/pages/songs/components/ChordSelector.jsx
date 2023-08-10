@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import allChords from "../../../data/allChords";
-import { translateChord } from "../../../utils";
 import ModalSelector from "./ModalSelector";
 import styled from "styled-components";
 
@@ -15,40 +14,48 @@ const ChordSelector = ({
 	const [chordList, setChordList] = useState({});
 
 	useEffect(() => {
-		const newItems = {};
-		if (onlyChangeTone) {
-			newItems.Mayores = [];
-			allChords[chordLang][0].chords.forEach((chord, i) => {
-				newItems.Mayores.push({
-					value: allChords["en"][0].chords[i],
-					label: chord,
-				});
-			});
-		} else {
-			allChords[chordLang].forEach((chordCategory, i) => {
-				newItems[chordCategory.name] = [];
-				chordCategory.chords.forEach((chord, k) => {
-					newItems[chordCategory.name].push({
-						value: allChords["en"][i].chords[k],
+		// const newItems = {};
+		// if (onlyChangeTone) {
+		// 	newItems.Mayores = [];
+		// 	allChords[chordLang][0].chords.forEach((chord, i) => {
+		// 		newItems.Mayores.push({
+		// 			value: allChords["en"][0].chords[i],
+		// 			label: chord,
+		// 		});
+		// 	});
+		// } else {
+		// 	allChords[chordLang].forEach((chordCategory, i) => {
+		// 		newItems[chordCategory.name] = [];
+		// 		chordCategory.chords.forEach((chord, k) => {
+		// 			newItems[chordCategory.name].push({
+		// 				value: allChords["en"][i].chords[k],
+		// 				label: chord,
+		// 			});
+		// 		});
+		// 	});
+		// }
+		setChordList(
+			allChords[chordLang].reduce(
+				(all, chordType) => ({
+					...all,
+					[chordType.name]: chordType.chords.map((chord) => ({
 						label: chord,
-					});
-				});
-			});
-		}
-		setChordList(newItems);
+						value: chord,
+					})),
+				}),
+				{}
+			)
+		);
 	}, [chordLang, onlyChangeTone]);
 
 	const setSelectedModalChord = (chord) => {
-		console.log("change chord");
-
 		setSelectedChord({
-			chord: translateChord(chord, "en", chordLang),
-			duration: selectedChord?.duration,
+			chord,
+			duration: selectedChord?.duration || "",
 		});
 	};
 
 	const setSelectedModalDuration = (duration) => {
-		console.log("change duration");
 		setSelectedChord({ chord: selectedChord.chord, duration });
 	};
 

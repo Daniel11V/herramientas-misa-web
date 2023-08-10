@@ -1,171 +1,73 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import styled, { css } from "styled-components";
-import {
-	getChordIndex,
-	getDataFromLyric,
-	getModuleDiference,
-	translateChord,
-	transportChord,
-} from "../../../utils";
 import ChordSelector from "./ChordSelector";
+import { useFormattedLyric } from "../hooks/useFormattedLyric";
+import SongFormLyric from "./SongFormLyric";
 
 const LyricWithChords = ({
 	lyricWithChords = "",
-	setLyricWithChords = () => {},
-	tone,
-	setTone = () => {},
-	chordLang,
+	setLyricWithChords,
+	setLyricWithChordsEN,
+	userTone,
+	setUserTone = () => {},
+	userChordLang,
 	showChords = true,
 	isEditable = false,
+	onlyInputText = false,
 }) => {
-	const [lastLyricWithChords, setLastLyricWithChords] = useState(null);
-	const [lastChordLang, setLastChordLang] = useState(null);
-
-	const [currentChords, setCurrentChords] = useState({});
-	const [currentTone, setCurrentTone] = useState(null);
-
-	const [arrayLyric, setArrayLyric] = useState([]);
-	const [selectedLetter, setSelectedLetter] = useState([null, null]);
-	const [selectedChord, setSelectedChord] = useState({
-		chord: "C",
-		duration: "",
+	const {
+		arrayLyric,
+		chords,
+		chordLang,
+		tone,
+		addChord,
+		removeChord,
+		saveLyricWithChords,
+	} = useFormattedLyric({
+		lyricWithChords,
+		setLyricWithChords,
+		setLyricWithChordsEN,
+		userTone,
+		setUserTone,
+		userChordLang,
+		isEditable,
+		onlyInputText,
 	});
 
-	useEffect(() => {
-		if (!!lyricWithChords && lyricWithChords !== lastLyricWithChords) {
-			console.log("useEffect lastLyricWithChords", {
-				lyricWithChords,
-				lastLyricWithChords,
-			});
-			const { chords, chordLangFound, chordTone, onlyLyric, formattedLyric } =
-				getDataFromLyric(lyricWithChords);
+	const [selectedLetter, setSelectedLetter] = useState([null, null]);
+	const [selectedChord, setSelectedChord] = useState({
+		chord: userChordLang === "es" ? "DO" : "C",
+		duration: "",
+	});
+	const defaultChord = chordLang === "es" ? "DO" : "C";
 
-			setCurrentTone(chordTone);
-			setLastChordLang(chordLang || chordLangFound);
-			setCurrentChords(chords);
-			setArrayLyric(
-				onlyLyric
-					.split("\n")
-					.map((line) =>
-						line
-							? line.split(" ").map((word) => (word ? word.split("") : [" "]))
-							: [[""]]
-					)
-			);
-
-			setLyricWithChords(formattedLyric);
-			setLastLyricWithChords(formattedLyric);
-		}
-	}, [lyricWithChords, chordLang, lastLyricWithChords, setLyricWithChords]);
+	const handleClickWindow = () => {
+		setSelectedLetter([null, null]);
+	};
 
 	useEffect(() => {
-		if (!!chordLang && chordLang !== lastChordLang) {
-			setCurrentChords((lastCurrentChords) => {
-				const newCurrentChords = {};
-				for (const line in lastCurrentChords)
-					for (const chordIndex in lastCurrentChords[line]) {
-						newCurrentChords[line] = {
-							...(newCurrentChords[line] || {}),
-							[chordIndex]: {
-								...lastCurrentChords[line][chordIndex],
-								chord: translateChord(
-									lastCurrentChords[line][chordIndex].chord,
-									chordLang
-								),
-							},
-						};
-					}
+		window.addEventListener("click", handleClickWindow);
+		return () => {
+			window.removeEventListener("click", handleClickWindow);
+		};
+	}, []);
 
-				return newCurrentChords;
-			});
-
-			setLastChordLang(chordLang);
-		}
-	}, [chordLang, lastChordLang, setCurrentChords, setLastChordLang]);
-
-	useEffect(() => {
-		if (!!currentTone && !!tone && tone !== currentTone) {
-			const currentToneIndex = getChordIndex(currentTone);
-			const toneIndex = getChordIndex(tone);
-			const toneDiference = getModuleDiference(
-				currentToneIndex?.[1],
-				toneIndex?.[1]
-			);
-
-			setCurrentChords((lastCurrentChords) => {
-				const newChords = {};
-				for (const line in lastCurrentChords)
-					for (const chordIndex in lastCurrentChords[line]) {
-						newChords[line] = {
-							...(newChords[line] || {}),
-							[chordIndex]: {
-								...lastCurrentChords[line][chordIndex],
-								chord: transportChord(
-									lastCurrentChords[line][chordIndex].chord,
-									toneDiference,
-									chordLang
-								),
-							},
-						};
-					}
-
-				return newChords;
-			});
-			setCurrentTone(tone);
-		} else if (!tone && !!currentTone) {
-			setTone(currentTone);
-		}
-	}, [tone, currentTone, chordLang, setTone]);
-
-	// useEffect(() => {
-	// 	setHasChords(hasChords);
-	// }, [hasChords, setHasChords]);
-
-	// useEffect(() => {
-	// 	setArrayLyric(onlyLyric.split("\n").map((p) => (p ? p.split("") : [""])));
-	// 	setSelectedChord(chordLang === "en" ? "C" : "DO");
-	// }, [onlyLyric, chordLang]);
-
-	// useEffect(() => {
-	// 	if (setCurrentChords !== null) setIsEditable(true);
-	// 	else setIsEditable(false);
-	// }, [setCurrentChords]);
-
-	const editSelectedChord = (newSelectedChord, hasChord) => {
-		if (!!hasChord) {
-			setCurrentChords((lastChords = {}) => ({
-				...lastChords,
-				[selectedLetter[0]]: {
-					...lastChords[selectedLetter[0]],
-					[selectedLetter[1]]: selectedChord,
-				},
-			}));
+	const editSelectedChord = (newSelectedChord, alreadyHasChord) => {
+		console.log("ACA 2", { newSelectedChord, alreadyHasChord });
+		if (!!alreadyHasChord) {
+			addChord(selectedLetter, newSelectedChord);
 		}
 		setSelectedChord(newSelectedChord);
 	};
 
-	const addChord = () => {
-		setCurrentChords((lastChords = {}) => ({
-			...lastChords,
-			[selectedLetter[0]]: {
-				...lastChords[selectedLetter[0]],
-				[selectedLetter[1]]: selectedChord,
-			},
-		}));
-
+	const handleAddChord = () => {
+		addChord(selectedLetter, selectedChord);
 		setSelectedLetter([null, null]);
 	};
 
-	const removeChord = () => {
-		setCurrentChords((lastChords) => {
-			delete lastChords[selectedLetter[0]][selectedLetter[1]];
-			if (!Object.keys(lastChords[selectedLetter[0]]).length)
-				delete lastChords[selectedLetter[0]];
-
-			return lastChords;
-		});
-
+	const handleRemoveChord = () => {
+		removeChord(selectedLetter);
 		setSelectedLetter([null, null]);
 	};
 
@@ -173,24 +75,22 @@ const LyricWithChords = ({
 		selectedLetter[0] === i && selectedLetter[1] === k;
 
 	const hasChord = (i, k) =>
-		showChords &&
-		!!currentChords?.[i] &&
-		(k >= 0 ? !!currentChords[i][k]?.chord : true);
+		showChords && !!chords?.[i] && (k >= 0 ? !!chords[i][k]?.chord : true);
 
 	const handleLetterClick = (i, k, event) => {
 		event.stopPropagation();
 
-		if (isEditable) {
+		if (isEditable && !onlyInputText) {
 			if (isLetterSelected(i, k)) {
 				setSelectedLetter([null, null]);
 			} else {
 				setSelectedLetter([i, k]);
 				if (hasChord(i, k)) {
 					setSelectedChord({
-						chord: translateChord(currentChords[i][k].chord, "en", chordLang),
-						duration: currentChords[i][k]?.duration || "",
+						chord: chords[i][k].chord,
+						duration: chords[i][k]?.duration || "",
 					});
-				} else setSelectedChord({ chord: "C", duration: "" });
+				} else setSelectedChord({ chord: defaultChord, duration: "" });
 
 				setTimeout(() => {
 					const tooltipBody = document.getElementById("tooltip-body");
@@ -216,7 +116,7 @@ const LyricWithChords = ({
 		setSelectedLetter([i, k ? k + direction : k]);
 	};
 
-	if (tone !== currentTone && !!tone && !!currentTone)
+	if (userTone !== tone && !!userTone && !!tone)
 		return (
 			<div className="progress" style={{ backgroundColor: "#9cd1ff" }}>
 				<div
@@ -238,14 +138,17 @@ const LyricWithChords = ({
 		return rowCharIndex + charIndex;
 	};
 
-	return (
+	return !!onlyInputText ? (
+		<SongFormLyric lyric={lyricWithChords} setLyric={saveLyricWithChords} />
+	) : (
 		<div
+			id="lyric-with-chords"
 			onClick={() => {
 				console.log("ACA close");
 				setSelectedLetter([null, null]);
 			}}
 		>
-			{arrayLyric.map((sentence, i) => (
+			{arrayLyric?.map((sentence, i) => (
 				<Sentence key={i}>
 					{sentence.map((word, j) => (
 						<Word key={j}>
@@ -260,25 +163,23 @@ const LyricWithChords = ({
 										{hasChord(i, charIndex) &&
 											!isLetterSelected(i, charIndex) && (
 												<>
-													{!!currentChords[i][charIndex].duration && (
-														<span
-															className="chord-duration"
-															onClick={(e) =>
-																handleLetterClick(i, charIndex, e)
-															}
-														>
-															{currentChords[i][charIndex].duration}
-														</span>
+													{!!chords[i][charIndex].duration && (
+														<div className="chord-duration-box">
+															<span
+																className="chord-duration"
+																onClick={(e) =>
+																	handleLetterClick(i, charIndex, e)
+																}
+															>
+																{chords[i][charIndex].duration}
+															</span>
+														</div>
 													)}
 													<span
 														className="chord"
 														onClick={(e) => handleLetterClick(i, charIndex, e)}
 													>
-														{translateChord(
-															currentChords[i][charIndex].chord,
-															lastChordLang,
-															"en"
-														)}
+														{chords[i][charIndex].chord}
 													</span>
 													<span className="chord-space"></span>
 												</>
@@ -297,7 +198,7 @@ const LyricWithChords = ({
 														setSelectedChord={(v) =>
 															editSelectedChord(v, hasChord(i, charIndex))
 														}
-														chordLang={chordLang || lastChordLang}
+														chordLang={chordLang}
 														modalId="chord"
 													/>
 													<TooltipFooter>
@@ -309,11 +210,11 @@ const LyricWithChords = ({
 															<i className="material-icons">chevron_left</i>
 														</TooltipBtn>
 														{hasChord(i, charIndex) ? (
-															<TooltipBtn onClick={removeChord}>
+															<TooltipBtn onClick={handleRemoveChord}>
 																<i className="material-icons">remove</i>
 															</TooltipBtn>
 														) : (
-															<TooltipBtn onClick={addChord}>
+															<TooltipBtn onClick={handleAddChord}>
 																<i className="material-icons">add</i>
 															</TooltipBtn>
 														)}
@@ -339,7 +240,7 @@ const LyricWithChords = ({
 												className="chord"
 												onClick={(e) => handleLetterClick(i, spaceIndex(i, j), e)}
 											>
-												{currentChords[i][spaceIndex(i, j)].chord}
+												{chords[i][spaceIndex(i, j)].chord}
 											</span>
 											<span className="chord-space"></span>
 										</>
@@ -438,12 +339,15 @@ const Letter = styled.div`
 		width: 3px;
 	}
 
-	.chord-duration {
-		color: #1869ff;
+	.chord-duration-box {
 		position: absolute;
 		top: -17px;
-		left: -10px;
+		right: 17px;
 		cursor: default;
+	}
+
+	.chord-duration {
+		color: #1869ff;
 		font-weight: bold;
 	}
 
