@@ -13,9 +13,12 @@ const ModalSelector = ({
 	modalId,
 	selectorWidth = "85px",
 	textAlign = "center",
+	initialSelectedItemLabel,
 }) => {
 	const [modalInstance, setModalInstance] = useState(null);
-	const [selectedItemLabel, setSelectedItemLabel] = useState("");
+	const [selectedItemLabel, setSelectedItemLabel] = useState(
+		initialSelectedItemLabel || ""
+	);
 	const [modalInstanceId] = useState(
 		modalId + "-modal-" + new Date().getTime().toString()
 	);
@@ -61,7 +64,7 @@ const ModalSelector = ({
 			{!!label && <Label>{label}</Label>}
 			<Selector selectorWidth={selectorWidth} textAlign={textAlign}>
 				<SelectedItem onClick={handleSelectorClick}>
-					{selectedItemLabel}
+					<SelectedItemLabel>{selectedItemLabel}</SelectedItemLabel>
 					<SelectedItemArrow className="material-icons">
 						keyboard_arrow_down
 					</SelectedItemArrow>
@@ -147,6 +150,10 @@ const ItemBtn = styled(ItemText)`
 	&&:hover {
 		background-color: #e4e4e4;
 	}
+`;
+
+const SelectedItemLabel = styled.span`
+	display: inline-flex;
 `;
 
 const SelectedItemArrow = styled.i`

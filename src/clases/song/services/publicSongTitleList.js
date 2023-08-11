@@ -2,39 +2,33 @@ import store from "../../../store";
 import { setDatabaseItem } from "../../database/reducers";
 
 export const publicSongTitleModel = {
-    id: { type: "String", required: true },
-    versionGroupId: { type: "String", required: true },
-    isPrivate: { type: "Bool", required: true },
-    lyricId: { type: "String", required: true },
-    lyricIsPrivate: { type: "Bool", required: true },
-    title: { type: "String", required: true },
-    lyricStart: { type: "String", required: true },
+    id: "string", // Required
+    versionGroupId: "string", // Required
+    isPrivate: [true, false], // Required
+    lyricId: "string", // Required
+    lyricIsPrivate: [true, false], // Required
+    title: "string", // Required
+    lyricStart: "string", // Required
     author: {
-        type: {
-            id: { type: "String", required: true },
-            name: { type: "String", required: true },
-        }, required: false
+        id: "string", // Required
+        name: "string", // Required
     },
     creator: {
-        type: {
-            id: { type: "String", required: true },
-            name: { type: "String", required: true },
-        }, required: true
-    },
-    labels: { type: "Array", required: false },
-    topics: { type: "Array", required: false },
-    rating: { type: "Array", required: false },
+        id: "string", // Required
+        name: "string", // Required
+    }, // Required
+    labels: [],
+    topics: [],
+    rating: [],
     level: {
-        type: {
-            voice: { type: "Number", required: true },
-            guitar: { type: "Number", required: false },
-            //...
-        }, required: true
-    },
-    annotations: { type: "String", required: false },
-    tone: { type: "String", required: false },
-    pulse: { type: "String", required: false },
-    tempo: { type: "String", required: false },
+        general: "number", // Required
+        guitar: "number",
+        //...
+    }, // Required
+    annotations: "string",
+    tone: "string",
+    pulse: "string",
+    tempo: "string",
 };
 
 /*

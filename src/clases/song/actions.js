@@ -2,7 +2,8 @@
 // import { db } from "../../database/firebase"
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
-import { arrayIsEmpty, getStartLyric } from "../../utils.js";
+import { arrayIsEmpty, getStartLyric, objsAreEqual } from "../../utils.js";
+import { setSongPageBackupSong } from "../page/actions.js";
 import { createPrivateSongLyricDB, deletePrivateSongLyricDB, editPrivateSongLyricDB, getPrivateSongLyricDB } from "./services/privateSongLyricList.js";
 import { createPrivateSongTitleDB, deletePrivateSongTitleDB, editPrivateSongTitleDB, getPrivateSongTitleDB, getPrivateSongTitleListDB } from "./services/privateSongTitleList.js";
 import { createPublicSongLyricDB, editPublicSongLyricDB, getPublicSongLyricDB } from "./services/publicSongLyricList.js";
@@ -150,7 +151,7 @@ export const createSong = (songCreated) => {
 
             const { lyric, ...songTitle } = songCreated;
 
-            const realAuthor = songTitle.author.value === "Other" ? ({ value: "-", label: "Desconocido" }) : songTitle.author;
+            const realAuthor = ({ value: songTitle?.author?.id || "-", label: songTitle?.author?.name });
             const startLyric = getStartLyric(lyric);
 
             const songTitleCreated = {
@@ -165,7 +166,7 @@ export const createSong = (songCreated) => {
                 pulse: songTitle.pulse,
                 tempo: songTitle.tempo,
                 level: {
-                    voice: 0,
+                    general: 0,
                 },
                 startLyric,
             }
@@ -200,6 +201,10 @@ export const createSong = (songCreated) => {
 }
 
 export const editSong = (songEdited, saveAsPublic = false) => {
+    // Siempre que se edite una canción publica (incluso si es propia) 
+    // ... se creará una version privada privada que luego se podra publicar
+    // Si ya era privada simplemente se actualiza
+
     return async (dispatch) => {
         try {
             dispatch({
@@ -226,6 +231,47 @@ export const editSong = (songEdited, saveAsPublic = false) => {
                 type: types.EDIT_SONG_SUCCESS,
                 payload: { songEdited }
             })
+        } catch (error) {
+            console.warn(error);
+            dispatch({
+                type: types.EDIT_SONG_FAILURE,
+                payload: { error: error.message }
+            })
+        }
+    }
+}
+export const saveSongOptions = () => {
+    return async (dispatch, getState) => {
+        try {
+
+            const userId = getState().user.google.id;
+            const { lyric, ...songTitle } = getState().song.song;
+
+            if (songTitle.creator.id === userId) {
+                const { tone, annotations, level } = getState().page.songPageBackup;
+                const levelsInNumbers = {}
+                for (const levelType in level) {
+                    levelsInNumbers[levelType] = Number(level[levelType]);
+                }
+
+                const songOptionsToSave = {}
+                if (!!tone && songTitle?.tone !== tone) songOptionsToSave.tone = tone;
+                if (annotations !== null && songTitle?.annotations !== annotations) songOptionsToSave.annotations = annotations;
+                if (!!level?.general && !objsAreEqual(songTitle?.level, levelsInNumbers)) songOptionsToSave.level = levelsInNumbers;
+
+                if (!!Object.keys(songOptionsToSave)?.length) {
+                    const songTitleEdited = { ...songTitle, ...songOptionsToSave }
+                    await editPrivateSongTitleDB({ songTitleEdited });
+
+                    dispatch({
+                        type: types.EDIT_SONG_SUCCESS,
+                        payload: { songEdited: { ...songTitleEdited, lyric } }
+                    })
+                    dispatch(setSongPageBackupSong({ ...songTitleEdited, lyric }))
+                }
+            }
+
+            //////////////////////////////////////
         } catch (error) {
             console.warn(error);
             dispatch({

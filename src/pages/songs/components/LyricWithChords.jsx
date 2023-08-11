@@ -63,12 +63,12 @@ const LyricWithChords = ({
 
 	const handleAddChord = () => {
 		addChord(selectedLetter, selectedChord);
-		setSelectedLetter([null, null]);
+		// setSelectedLetter([null, null]);
 	};
 
 	const handleRemoveChord = () => {
 		removeChord(selectedLetter);
-		setSelectedLetter([null, null]);
+		// setSelectedLetter([null, null]);
 	};
 
 	const isLetterSelected = (i, k) =>
@@ -82,7 +82,7 @@ const LyricWithChords = ({
 
 		if (isEditable && !onlyInputText) {
 			if (isLetterSelected(i, k)) {
-				setSelectedLetter([null, null]);
+				// setSelectedLetter([null, null]);
 			} else {
 				setSelectedLetter([i, k]);
 				if (hasChord(i, k)) {
@@ -141,13 +141,7 @@ const LyricWithChords = ({
 	return !!onlyInputText ? (
 		<SongFormLyric lyric={lyricWithChords} setLyric={saveLyricWithChords} />
 	) : (
-		<div
-			id="lyric-with-chords"
-			onClick={() => {
-				console.log("ACA close");
-				setSelectedLetter([null, null]);
-			}}
-		>
+		<div id="lyric-with-chords">
 			{arrayLyric?.map((sentence, i) => (
 				<Sentence key={i}>
 					{sentence.map((word, j) => (

@@ -14,20 +14,18 @@ const SongFormLyric = ({ lyric, setLyric }) => {
 	}, [resizeForPreviousLyric]);
 
 	return (
-		<div className="row">
-			<div className="input-field">
-				<textarea
-					id="lyric"
-					name="lyric"
-					className="materialize-textarea"
-					onChange={(e) => setLyric(e.target.value)}
-					value={lyric || ""}
-					spellCheck="false"
-				/>
-				<label htmlFor="lyric" className={"lab" + (lyric ? " active" : "")}>
-					Copiar y pegar letra con acordes
-				</label>
-			</div>
+		<div className="input-field" style={{ marginBottom: 0 }}>
+			<textarea
+				id="lyric"
+				name="lyric"
+				className="materialize-textarea"
+				onChange={(e) => setLyric(e.target.value)}
+				value={lyric || ""}
+				spellCheck="false"
+			/>
+			<label htmlFor="lyric" className={"lab" + (lyric ? " active" : "")}>
+				Copiar y pegar letra con acordes
+			</label>
 		</div>
 	);
 };

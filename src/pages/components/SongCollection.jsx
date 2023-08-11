@@ -38,11 +38,13 @@ const SongCollection = ({
 		if (!!songList.length) {
 			let newFilteredSongList = [...songList];
 			if (!!searchInput && !!searcher) {
-				newFilteredSongList = newFilteredSongList.filter(song => song.title.toUpperCase().includes(searchInput.toUpperCase()))
+				newFilteredSongList = newFilteredSongList.filter((song) =>
+					song.title.toUpperCase().includes(searchInput.toUpperCase())
+				);
 			}
 			setFilteredSongList(newFilteredSongList);
 		}
-	}, [songList, searcher, searchInput])
+	}, [songList, searcher, searchInput]);
 
 	useEffect(() => {
 		if (!!containerContentRef.current && !!songList.length) {
@@ -67,7 +69,7 @@ const SongCollection = ({
 						if (newLyricStart?.[newLyricStart?.length - 1] === ",")
 							newLyricStart = newLyricStart?.slice(0, -1);
 
-						return ({...prev, [song.id]: "| " + newLyricStart + "..."})
+						return { ...prev, [song.id]: "| " + newLyricStart + "..." };
 					}, {})
 				);
 			}
@@ -108,9 +110,7 @@ const SongCollection = ({
 	// 	}
 	// }, [allSongDetails, search, labels, songChoose]);
 
-	const handleClickSearchLyric = () => {
-
-	}
+	const handleClickSearchLyric = () => {};
 
 	const handleClickSong = (id) => {
 		history.push({
@@ -146,7 +146,15 @@ const SongCollection = ({
 
 	return (
 		<Collection>
-			{searcher && <CollectionSearcher searchInput={searchInput} setSearchInput={setSearchInput} labels={labels} setLabels={setLabels} handleClickSearchLyric={handleClickSearchLyric} />}
+			{searcher && (
+				<CollectionSearcher
+					searchInput={searchInput}
+					setSearchInput={setSearchInput}
+					labels={labels}
+					setLabels={setLabels}
+					handleClickSearchLyric={handleClickSearchLyric}
+				/>
+			)}
 			{/* {filteredSongs.map((song) => (
 				<Link
 					to={{ pathname: `/song/${song.id}`, state: { from: "Cancionero" } }}
@@ -184,12 +192,12 @@ const SongCollection = ({
 							{song?.author?.name && ` - ${song.author.name}`}
 							{userId && (
 								<CollectionItemIcons>
-									{!!song?.level?.voice && (
+									{!!song?.level?.general && (
 										<LevelIcon withCheck={checking}>
 											<i className="material-icons">favorite_border</i>
 											<span>
-												{song?.level?.voice
-													? song?.level?.voice?.toString()
+												{song?.level?.general
+													? song?.level?.general?.toString()
 													: ""}
 											</span>
 										</LevelIcon>

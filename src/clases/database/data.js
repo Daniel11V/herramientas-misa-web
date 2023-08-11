@@ -42,13 +42,27 @@ export const database = {
       id: '123457',
       name: 'Alex Vinet',
       email: '',
-      photoUrl: ''
+      photoUrl: '',
+      config: {
+        songPageOptions: {
+          fontSize: '16',
+          showChords: true,
+          chordLang: 'en',
+        }
+      },
     },
     '111418653738749034139': {
       id: '111418653738749034139',
       name: 'Daniel Vinet',
       email: '',
-      photoUrl: ''
+      photoUrl: '',
+      config: {
+        songPageOptions: {
+          fontSize: '16',
+          showChords: true,
+          chordLang: 'es',
+        }
+      },
     }
   },
   privateRepertoryList: {
@@ -138,14 +152,14 @@ export const database = {
         {
           name: "Lista",
           songs: ['1670494499043',
-          '1670494597083',
-          '1670494692776',
-          '1670494760118',
-          '1670494834277',
-          '1670494889388',
-          '1670494958918',
-          '613c8597f601f09e344f43c2',
-          '1670495065329']
+            '1670494597083',
+            '1670494692776',
+            '1670494760118',
+            '1670494834277',
+            '1670494889388',
+            '1670494958918',
+            '613c8597f601f09e344f43c2',
+            '1670495065329']
         },
       ],
     },
@@ -232,9 +246,9 @@ export const database = {
         {
           name: "Comunión",
           songs: ['1671908915221',
-          '1671907937211',
-          '1671908198503',
-          '1671908602986']
+            '1671907937211',
+            '1671908198503',
+            '1671908602986']
         },
         {
           name: "Salida",
@@ -297,8 +311,8 @@ export const database = {
       isPrivate: true,
       title: 'Vida en Abundancia',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -313,7 +327,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1669864387702,
       lyricIsPrivate: true,
@@ -325,8 +339,8 @@ export const database = {
       isPrivate: true,
       title: "Al altar del Señor",
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -337,7 +351,7 @@ export const database = {
       pulse: "",
       tempo: "",
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: "1682248649882",
       lyricIsPrivate: true,
@@ -375,7 +389,7 @@ export const database = {
       topics: [],
       rating: [],
       level: {
-        voice: 0
+        general: 0
       }
     },
     '124': {
@@ -398,7 +412,7 @@ export const database = {
       topics: [],
       rating: [],
       level: {
-        voice: 0
+        general: 0
       }
     },
     '125': {
@@ -421,7 +435,7 @@ export const database = {
       topics: [],
       rating: [],
       level: {
-        voice: 0
+        general: 0
       }
     },
     '613c854ef601f09e344f43bf': {
@@ -446,7 +460,7 @@ export const database = {
       topics: [],
       rating: [],
       level: {
-        voice: 0
+        general: 0
       }
     },
     '613c8597f601f09e344f43c2': {
@@ -457,6 +471,10 @@ export const database = {
       lyricIsPrivate: false,
       lyricStart: '',
       title: 'A casa de Zacarí\u00adas',
+      author: {
+        id: '',
+        name: ''
+      },
       creator: {
         id: '111418653738749034139',
         name: 'Daniel Vinet'
@@ -465,7 +483,7 @@ export const database = {
       labels: [],
       rating: [],
       level: {
-        voice: 0
+        general: 0
       }
     },
     '6144d3152d6d4f8085af95d9': {
@@ -476,6 +494,10 @@ export const database = {
       lyricIsPrivate: false,
       lyricStart: '',
       title: 'Al contemplarte en la Cruz',
+      author: {
+        id: '',
+        name: ''
+      },
       creator: {
         id: '111418653738749034139',
         name: 'Daniel Vinet'
@@ -484,7 +506,7 @@ export const database = {
       labels: [],
       rating: [],
       level: {
-        voice: 0
+        general: 0
       }
     },
     '1669486125378': {
@@ -495,7 +517,10 @@ export const database = {
       lyricIsPrivate: false,
       lyricStart: '',
       title: 'Despertemos llega Cristo',
-      author: '',
+      author: {
+        id: '',
+        name: ''
+      },
       creator: {
         id: '111418653738749034139',
         name: 'Daniel Vinet'
@@ -507,7 +532,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       }
     },
     '1669487158543': {
@@ -518,7 +543,10 @@ export const database = {
       lyricIsPrivate: false,
       lyricStart: '',
       title: 'Saber que vendrás',
-      author: '',
+      author: {
+        id: '',
+        name: ''
+      },
       creator: {
         id: '111418653738749034139',
         name: 'Daniel Vinet'
@@ -529,7 +557,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       }
     },
     '1669487612348': {
@@ -540,7 +568,10 @@ export const database = {
       lyricIsPrivate: false,
       lyricStart: '',
       title: 'María de la Esperanza',
-      author: '',
+      author: {
+        id: '',
+        name: ''
+      },
       creator: {
         id: '111418653738749034139',
         name: 'Daniel Vinet'
@@ -551,7 +582,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       }
     },
     '1669487992788': {
@@ -562,7 +593,10 @@ export const database = {
       lyricIsPrivate: false,
       lyricStart: '',
       title: 'Toda la tierra',
-      author: '',
+      author: {
+        id: '',
+        name: ''
+      },
       creator: {
         id: '111418653738749034139',
         name: 'Daniel Vinet'
@@ -573,7 +607,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       }
     },
     '1670494499043': {
@@ -582,8 +616,8 @@ export const database = {
       isPrivate: false,
       title: 'Dulce Doncella',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -597,7 +631,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: '1670494499042',
       lyricIsPrivate: false,
@@ -609,8 +643,8 @@ export const database = {
       isPrivate: false,
       title: 'Magnificat',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -624,7 +658,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: '1670494597081',
       lyricIsPrivate: false,
@@ -636,8 +670,8 @@ export const database = {
       isPrivate: false,
       title: 'Bendita sea tu pureza',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -651,7 +685,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: '1670494692775',
       lyricIsPrivate: false,
@@ -663,8 +697,8 @@ export const database = {
       isPrivate: false,
       title: 'María, mírame',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -678,7 +712,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: '1670494760117',
       lyricIsPrivate: false,
@@ -690,8 +724,8 @@ export const database = {
       isPrivate: false,
       title: 'Jesús está pasando por aquí',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -705,7 +739,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: '1670494834276',
       lyricIsPrivate: false,
@@ -717,8 +751,8 @@ export const database = {
       isPrivate: false,
       title: 'Una entre todas',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -731,7 +765,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: '1670494889387',
       lyricIsPrivate: false,
@@ -743,8 +777,8 @@ export const database = {
       isPrivate: false,
       title: 'Santa María del camino',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -757,7 +791,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: '1670494958916',
       lyricIsPrivate: false,
@@ -769,8 +803,8 @@ export const database = {
       isPrivate: false,
       title: 'Virgen Morenita',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -783,7 +817,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: '1670495065328',
       lyricIsPrivate: false,
@@ -795,8 +829,8 @@ export const database = {
       isPrivate: false,
       title: 'Dios de la vida',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -807,7 +841,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1670704393313,
       lyricIsPrivate: false,
@@ -819,8 +853,8 @@ export const database = {
       isPrivate: false,
       title: 'Cinco panes y dos peces',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -833,7 +867,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1670704620691,
       lyricIsPrivate: false,
@@ -845,8 +879,8 @@ export const database = {
       isPrivate: false,
       title: 'Ángeles de Dios',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -857,7 +891,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1670704633127,
       lyricIsPrivate: false,
@@ -869,8 +903,8 @@ export const database = {
       isPrivate: false,
       title: 'Ven y sígueme',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -884,7 +918,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1670704732978,
       lyricIsPrivate: false,
@@ -896,8 +930,8 @@ export const database = {
       isPrivate: false,
       title: 'Junto a Ti, María',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -911,7 +945,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1670704810967,
       lyricIsPrivate: false,
@@ -923,8 +957,8 @@ export const database = {
       isPrivate: false,
       title: 'Santo II - Daniel Poli',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -937,7 +971,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1670705595720,
       lyricIsPrivate: false,
@@ -949,8 +983,8 @@ export const database = {
       isPrivate: false,
       title: 'Cordero III',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -963,7 +997,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1670705603544,
       lyricIsPrivate: false,
@@ -975,8 +1009,8 @@ export const database = {
       isPrivate: false,
       title: 'Aleluya II',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -989,7 +1023,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1670706522980,
       lyricIsPrivate: false,
@@ -1001,8 +1035,8 @@ export const database = {
       isPrivate: false,
       title: 'Ya llego la Nochebuena',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -1016,7 +1050,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1671910143403,
       lyricIsPrivate: false,
@@ -1028,8 +1062,8 @@ export const database = {
       isPrivate: false,
       title: 'Ha Nacido el Rey del Cielo',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -1043,7 +1077,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1671910451180,
       lyricIsPrivate: false,
@@ -1055,8 +1089,8 @@ export const database = {
       isPrivate: false,
       title: 'Cristianos Vayamos',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -1070,7 +1104,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1671910460223,
       lyricIsPrivate: false,
@@ -1082,8 +1116,8 @@ export const database = {
       isPrivate: false,
       title: 'Noche Anunciada',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -1097,7 +1131,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1671910468128,
       lyricIsPrivate: false,
@@ -1109,8 +1143,8 @@ export const database = {
       isPrivate: false,
       title: 'Noche de paz',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -1124,7 +1158,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1671910476336,
       lyricIsPrivate: false,
@@ -1136,8 +1170,8 @@ export const database = {
       isPrivate: false,
       title: 'Campanas Navideñas',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -1151,7 +1185,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1671910487974,
       lyricIsPrivate: false,
@@ -1163,8 +1197,8 @@ export const database = {
       isPrivate: false,
       title: 'Vamos Pastorcillos',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -1178,7 +1212,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1671910495058,
       lyricIsPrivate: false,
@@ -1190,8 +1224,8 @@ export const database = {
       isPrivate: false,
       title: 'La Peregrinación',
       author: {
-        value: '-',
-        label: 'Desconocido'
+        id: '',
+        name: ''
       },
       creator: {
         name: 'Daniel Vinet',
@@ -1205,7 +1239,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: 1671910502242,
       lyricIsPrivate: false,
@@ -1231,7 +1265,7 @@ export const database = {
       pulse: '',
       tempo: '',
       level: {
-        voice: 0
+        general: 0
       },
       lyricId: '1682512333506',
       lyricIsPrivate: false,

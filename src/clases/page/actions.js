@@ -9,6 +9,10 @@ export const setSongPageBackup = (songPageBackup) => ({
     type: types.SET_SONG_PAGE_BACKUP,
     payload: { songPageBackup }
 })
+export const setSongPageBackupSong = (song) => ({
+    type: types.SET_SONG_PAGE_BACKUP_SONG,
+    payload: { song }
+})
 export const setSongListPageBackup = (songListPageBackup) => ({
     type: types.SET_SONG_LIST_PAGE_BACKUP,
     payload: { songListPageBackup }

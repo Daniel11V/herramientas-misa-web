@@ -18,7 +18,7 @@ const emptySong = {
     rating: { type: "Array", required: false },
     level: {
         type: {
-            voice: { type: "Number", required: true }, // Required
+            general: { type: "Number", required: true }, // Required
             guitar: { type: "Number", required: false },
             //...
         }, required: true

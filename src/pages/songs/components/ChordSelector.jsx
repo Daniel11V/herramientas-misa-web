@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import allChords from "../../../data/allChords";
+import allChords, { allChordsOptions } from "../../../data/allChords";
 import ModalSelector from "./ModalSelector";
 import styled from "styled-components";
 
@@ -59,6 +59,13 @@ const ChordSelector = ({
 		setSelectedChord({ chord: selectedChord.chord, duration });
 	};
 
+	const listItems = onlyChangeTone
+		? {
+				mayores:
+					allChordsOptions[chordLang][chordLang === "es" ? "Mayores" : "Mayor"],
+		  }
+		: allChordsOptions[chordLang];
+
 	return (
 		<SelectorBox>
 			<DurationField>
@@ -82,8 +89,9 @@ const ChordSelector = ({
 				selectedItem={selectedChord.chord}
 				setSelectedItem={setSelectedModalChord}
 				hasCategories={!onlyChangeTone}
-				items={chordList}
+				items={listItems}
 				selectorWidth="flex"
+				initialSelectedItemLabel={selectedChord.chord}
 			/>
 		</SelectorBox>
 	);

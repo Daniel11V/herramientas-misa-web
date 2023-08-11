@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MAX_RETRYS } from "../../../configs";
 import { editSong as editSongAction, getSong, resetSongRequestStatus } from "../../../clases/song/actions";
-import { setSongPageBackup } from "../../../clases/page/actions";
+import { setSongPageBackupSong } from "../../../clases/page/actions";
 
 export const useSong = (songTitleId, userId) => {
     const dispatch = useDispatch();
@@ -40,7 +40,7 @@ export const useSong = (songTitleId, userId) => {
             if (!!songListBackup[songTitleId]) {
                 const selectedSong = songListBackup[songTitleId];
                 setCurrentSong(selectedSong);
-                dispatch(setSongPageBackup(selectedSong))
+                dispatch(setSongPageBackupSong(selectedSong))
                 setStatus("FINISHED");
             } else {
                 setStatus("1_FETCH_SONG", { userId, songTitleId });

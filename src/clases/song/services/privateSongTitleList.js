@@ -5,11 +5,9 @@ import { publicSongTitleModel } from "./publicSongTitleList";
 export const privateSongTitleModel = {
     ...publicSongTitleModel,
     hasAccess: {
-        type: {
-            $userId: { type: "String", required: true }, // name
-            // ...
-        }, required: true
-    },
+        $userId: "string", // Required, is name
+        // ...
+    } // Required
 };
 
 export const getPrivateSongTitleListDB = async ({ userId }) => {
