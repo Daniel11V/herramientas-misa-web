@@ -26,6 +26,8 @@ const LyricContainerBox = styled.div`
 	transition: all.3s;
 	box-shadow: inset 0 -100px 50px -50px rgba(0, 0, 0, 0.2);
 	::-webkit-scrollbar { display: none; }
+	display: flex;
+	flex-direction: column;
 
 	${(props) =>
 		props.hasZoom &&
@@ -42,6 +44,10 @@ const LyricContainerBox = styled.div`
 		left: 0;
 		z-index: 10000;
 		`}
+
+	> div:nth-child(1) {
+		flex: 1;
+	}
 `;
 const LyricContainerButton = styled.div.attrs({
 	className: "material-icons",
@@ -53,6 +59,7 @@ const LyricContainerButton = styled.div.attrs({
     transition: all.3s;
     font-size: 1.6rem;
     position: sticky;
+    min-height: 45px;
     height: 45px;
     width: 45px;
     bottom: 0px;
