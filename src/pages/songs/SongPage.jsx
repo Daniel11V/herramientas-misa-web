@@ -84,11 +84,6 @@ const SongPage = () => {
 		setMessageModalOpts
 	);
 
-	useEffect(() => {
-		const elems = document.querySelectorAll(".modal");
-		M.Modal.init(elems);
-	}, []);
-
 	// useEffect(() => {
 	// 	if (!!openOptions) {
 	// 		const textarea = document.querySelector("textarea");
@@ -96,12 +91,28 @@ const SongPage = () => {
 	// 	}
 	// }, [openOptions]);
 
+	const handleChangeAuthor = (e) => {
+		editForm("author", e.target.value);
+	}
+
+	useEffect(() => {
+		const elems = document.querySelectorAll(".modal");
+		M.Modal.init(elems);
+
+		return () => {
+			document.getElementById("authorName")?.removeEventListener("input", handleChangeAuthor);
+		}
+	}, []);
+
 	const handleEditBtn = () => {
 		editForm("annotations", annotations);
 		editForm("tone", tone);
 		setEditingSong(true);
-		let textarea = document.querySelector("textarea");
-		setTimeout(() => M.textareaAutoResize(textarea), 500);
+		setTimeout(() => {
+			let textarea = document.querySelector("textarea");
+			M.textareaAutoResize(textarea)
+			document.getElementById("authorName")?.addEventListener("input", handleChangeAuthor);
+		}, 500);
 		// history.push({ pathname: `/edit-song/${id}`, state: { from: "Canción" } });
 	};
 
@@ -151,7 +162,7 @@ const SongPage = () => {
 
 	if (!!errorPage) return <div>Error - {errorPage}</div>;
 
-	if (!editingSong) {
+	if (editingSong) {
 		return (
 			<PageContainer fontSize={pageOptions.fontSize}>
 				<SongTitle>
@@ -177,14 +188,8 @@ const SongPage = () => {
 					<input
 						id="authorName"
 						name="authorName"
-						onChange={(e) =>
-							editForm("author", {
-								name: e.target.value,
-								id: new Date().getTime(),
-							})
-						}
 						type="text"
-						value={songForm?.author?.name || ""}
+						defaultValue={songForm?.author?.name || ""}
 						className="autocomplete"
 						// placeholder="Autor"
 					/>
@@ -374,7 +379,7 @@ const SongPage = () => {
 							modalId="voiceLevel"
 							// label="Voz: "
 							modalTitle="Elegir mi nivel de progreso"
-							selectedItem={voiceLevel.toString() || "0"}
+							selectedItem={voiceLevel?.toString() || "0"}
 							setSelectedItem={setVoiceLevel}
 							items={voiceLevelOptions}
 							textAlign="start"

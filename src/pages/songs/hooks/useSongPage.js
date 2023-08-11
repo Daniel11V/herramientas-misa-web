@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import M from "materialize-css";
 import { objsAreEqual } from "../../../utils";
 import { useSong } from "./useSong";
@@ -57,15 +57,27 @@ export const useSongPage = (songTitleId) => {
         if (!!song?.title) setSongForm(song);
     }, [song])
 
-    const editForm = (key, value) => {
-        setSongForm(v => ({ ...v, [key]: value }));
+    const editForm = useCallback((key, value) => {
+        if (key === "author") {
+            setSongForm(v => ({ ...v, [key]: { 
+                name: value, 
+                id: authorList?.find(authorSearch => authorSearch.name === value)?.id || new Date().getTime()
+            }}));
+        } else {
+            setSongForm(v => ({ ...v, [key]: value }));
+        }
 
         if (key === "author" && !authorInstance) {
-            setAuthorInstance(M.Autocomplete.init(document.querySelectorAll(".autocomplete"))[0])
+            setAuthorInstance(M.Autocomplete.init(document.querySelectorAll(".autocomplete"), {
+                onAutocomplete: (authorName) => {
+                    editForm("author", authorName)
+                },
+                limit: 20
+            })[0])
             dispatch(getAuthorList({ userId }));
         }
         console.log("ACA editForm: ", { key, value, songForm })
-    }
+    }, [authorList])
 
     useEffect(() => {
         if (authorList?.length && !!authorInstance) {
