@@ -2,8 +2,14 @@
 // import { db } from "../../database/firebase"
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
-import { types } from "./types"
-
+export const types = {
+    SET_SONG_PAGE_BACKUP: 'SET_SONG_PAGE_BACKUP',
+    SET_SONG_PAGE_BACKUP_SONG: 'SET_SONG_PAGE_BACKUP_SONG',
+    SET_SONG_LIST_PAGE_BACKUP: 'SET_SONG_LIST_PAGE_BACKUP',
+    SET_REPERTORY_PAGE_BACKUP: 'SET_REPERTORY_PAGE_BACKUP',
+    SET_REPERTORY_LIST_PAGE_BACKUP: 'SET_REPERTORY_LIST_PAGE_BACKUP',
+    SET_LIBRARY_PAGE_BACKUP: 'SET_LIBRARY_PAGE_BACKUP',
+}
 
 export const setSongPageBackup = (songPageBackup) => ({
     type: types.SET_SONG_PAGE_BACKUP,

@@ -1,11 +1,16 @@
 import produce from "immer";
 import { types } from "./actions";
+import { ISongDB } from "./types";
 
-const defaultSong = {
-	id: "0",
+const defaultSong: ISongDB = {
+	id: "",
+	versionGroupId: "",
+	isPrivate: true,
+	lyricId: "",
+	lyricIsPrivate: true,
 	title: "",
 	lyric: "",
-	chords: {},
+	lyricStart: "",
 	creator: {
 		id: "",
 		name: "",

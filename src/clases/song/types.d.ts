@@ -1,11 +1,16 @@
 import { type Author } from "../author/types";
 
-export interface Creator {
+export interface ICreator {
 	id: string;
 	name: string;
 }
 
-export interface Song {
+export interface IRate {
+	userId: string;
+	userRate: number;
+}
+
+export interface ISongDB {
 	id: string;
 	versionGroupId: string;
 	isPrivate: boolean;
@@ -14,15 +19,27 @@ export interface Song {
 	title: string;
 	lyricStart: string;
 	author: Author;
-	creator: Creator;
+	creator: ICreator;
 	labels: Array<string>;
 	topics?: Array<string>;
-	rating?: [];
+	rating?: IRate[];
 	level: {
 		general: number;
 		guitar?: number;
 		//...
 	};
+	annotations?: string;
+	tone?: string;
+	pulse?: string;
+	tempo?: string;
+	lyric: string;
+}
+
+export interface ISongForm {
+	title: string;
+	author: Author;
+	labels: Array<string>;
+	topics?: Array<string>;
 	annotations?: string;
 	tone?: string;
 	pulse?: string;
@@ -50,15 +67,15 @@ export const songLevels = {
 }
 */
 
-export type PublicSongTitle = Omit<Song, "lyric">;
-export type PublicSongLyric = Pick<Song, "lyric">;
+export type IPublicSongTitleDB = Omit<ISongDB, "lyric">;
+export type IPublicSongLyricDB = Pick<ISongDB, "lyric">;
 // songTitleId: { type: "String", required: true },
 // id: { type: "String", required: true },
 
-export interface PrivateSongTitle extends PublicSongTitle {
+export interface IPrivateSongTitleDB extends IPublicSongTitleDB {
 	hasAccess: {
 		$userId: "string"; // is name
 	};
 }
 
-export interface PrivateSongLyric extends PublicSongLyric {}
+export interface IPrivateSongLyricDB extends IPublicSongLyricDB {}

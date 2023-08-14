@@ -1,5 +1,29 @@
 import produce from 'immer';
-import { types } from "./types"
+import { types } from './actions';
+
+export interface PageState {
+	songPageBackup: {
+        songList: {},
+        tone: null,
+        annotations: null,
+        level: null
+    },
+    songListPageBackup: {
+        songList: [],
+        filters: [],
+    },
+    repertoryPageBackup: {
+        repertoryList: {},
+    },
+    repertoryListPageBackup: {
+        repertoryList: [],
+    },
+    libraryPageBackup: {
+        songList: [],
+        repertoryList: [],
+    }
+};
+
 
 const initialState = {
     songPageBackup: {

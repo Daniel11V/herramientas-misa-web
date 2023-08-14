@@ -1,7 +1,10 @@
 import store from "../../../store";
 import { deleteDatabaseItem, setDatabaseItem } from "../../database/reducers";
+import { IPrivateSongLyricDB } from "../types";
 
-export const getPrivateSongLyricListDB = async ({ songLyricId, userId }) => {
+export const getPrivateSongLyricListDB = async (p: { songLyricId: string, userId: string }): Promise<IPrivateSongLyricDB[]> => {
+    const { songLyricId, userId } = p;
+    
     if (!songLyricId) throw new Error("Invalid user ID.");
 
     const allPrivateSongLyricList = store.getState().database.privateSongLyricList;
@@ -16,7 +19,8 @@ export const getPrivateSongLyricListDB = async ({ songLyricId, userId }) => {
     return userPrivateSongLyricList;
 }
 
-export const getPrivateSongLyricDB = async ({ songLyricId }) => {
+export const getPrivateSongLyricDB = async (p: { songLyricId: string }): Promise<IPrivateSongLyricDB> => {
+    const { songLyricId } = p;
     if (!songLyricId) throw new Error("Invalid song lyric ID.");
 
     const privateSongLyric = store.getState().database.privateSongLyricList[songLyricId];
@@ -24,8 +28,8 @@ export const getPrivateSongLyricDB = async ({ songLyricId }) => {
     return privateSongLyric;
 }
 
-export const createPrivateSongLyricDB = async ({ lyric }) => {
-
+export const createPrivateSongLyricDB = async (p: { lyric: string }): Promise<{ id: string, lyric: string}> => {
+    const { lyric } = p;
     const newId = new Date().getTime()
     await store.dispatch(setDatabaseItem("privateSongLyricList", newId, { lyric }));
     const response = { id: newId.toString(), lyric };
@@ -35,12 +39,14 @@ export const createPrivateSongLyricDB = async ({ lyric }) => {
     return response;
 }
 
-export const editPrivateSongLyricDB = async ({ lyricId, lyric }) => {
+export const editPrivateSongLyricDB = async (p: { lyricId: string, lyric: string }): Promise<void> => {
+    const { lyricId, lyric } = p;
     await store.dispatch(setDatabaseItem("privateSongLyricList", lyricId, { lyric }));
     return;
 }
 
-export const deletePrivateSongLyricDB = async ({ songLyricId }) => {
+export const deletePrivateSongLyricDB = async (p: { songLyricId: string }): Promise<string> => {
+    const { songLyricId } = p;
     await store.dispatch(deleteDatabaseItem("privateSongLyricList", songLyricId));
     return songLyricId;
 }

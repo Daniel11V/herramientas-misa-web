@@ -1,3 +1,4 @@
+import { Rate } from "../clases/song/types";
 import allChords from "../data/allChords";
 import searchLabels from "../data/searchLabels";
 
@@ -54,25 +55,11 @@ export const automaticLabels = (lyric, labels) => {
 	}
 };
 
-export const objIsEmpty = (object) =>
+export const objIsEmpty = (object: object): boolean =>
 	!object || Object.keys(object)?.length === 0;
-export const arrayIsEmpty = (arr) => !arr || arr.length === 0;
+export const arrayIsEmpty = (arr: Array<any>): boolean => !arr || arr.length === 0;
 
-export const getRating = (rates = {}) => {
-	let sumatory = 0;
-	Object.values(rates).forEach((rate) => {
-		sumatory += rate;
-	});
-	const floatRating = sumatory / (Object.values(rates).length || 1);
-
-	const fixedRating = Math.floor(floatRating);
-	let finalRating = fixedRating;
-	if (floatRating - fixedRating >= 0.5) finalRating += 0.5;
-
-	return finalRating;
-};
-
-export const objsAreEqual = (obj1, obj2) => {
+export const objsAreEqual = (obj1: {[index: string]:any}, obj2: {[index: string]:any}) => {
 	// Only they first children
 	for (const key in obj1) {
 		if (obj1[key] !== obj2[key]) return false;
@@ -83,4 +70,18 @@ export const objsAreEqual = (obj1, obj2) => {
 	}
 
 	return true;
+};
+
+export const getRating = (rates: Rate[] = []): number => {
+	let sumatory = 0;
+	rates.forEach((rate) => {
+		sumatory += rate.userRate;
+	});
+	const floatRating = sumatory / (Object.values(rates).length || 1);
+
+	const fixedRating = Math.floor(floatRating);
+	let finalRating = fixedRating;
+	if (floatRating - fixedRating >= 0.5) finalRating += 0.5;
+
+	return finalRating;
 };
