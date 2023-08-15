@@ -1,0 +1,42 @@
+// import { child, ref, get, set, remove, push, onValue } from "firebase/database";
+// import { db } from "../../database/firebase"
+// import * as FileSystem from 'expo-file-system'
+
+import { IActionType } from "../../utils/types";
+
+// import { database } from "../../data/database.js";
+export const types = {
+	SET_SONG_PAGE_BACKUP: "SET_SONG_PAGE_BACKUP",
+	SET_SONG_PAGE_BACKUP_SONG: "SET_SONG_PAGE_BACKUP_SONG",
+	SET_SONG_LIST_PAGE_BACKUP: "SET_SONG_LIST_PAGE_BACKUP",
+	SET_REPERTORY_PAGE_BACKUP: "SET_REPERTORY_PAGE_BACKUP",
+	SET_REPERTORY_LIST_PAGE_BACKUP: "SET_REPERTORY_LIST_PAGE_BACKUP",
+	SET_LIBRARY_PAGE_BACKUP: "SET_LIBRARY_PAGE_BACKUP",
+};
+
+export const setSongPageBackup = (songPageBackup): IActionType => ({
+	type: types.SET_SONG_PAGE_BACKUP,
+	payload: { songPageBackup },
+});
+export const setSongPageBackupSong = (song): IActionType => ({
+	type: types.SET_SONG_PAGE_BACKUP_SONG,
+	payload: { song },
+});
+export const setSongListPageBackup = (songListPageBackup): IActionType => ({
+	type: types.SET_SONG_LIST_PAGE_BACKUP,
+	payload: { songListPageBackup },
+});
+export const setRepertoryPageBackup = (repertoryPageBackup): IActionType => ({
+	type: types.SET_REPERTORY_PAGE_BACKUP,
+	payload: { repertoryPageBackup },
+});
+export const setRepertoryListPageBackup = (
+	repertoryListPageBackup
+): IActionType => ({
+	type: types.SET_REPERTORY_LIST_PAGE_BACKUP,
+	payload: { repertoryListPageBackup },
+});
+export const setLibraryPageBackup = (libraryPageBackup): IActionType => ({
+	type: types.SET_LIBRARY_PAGE_BACKUP,
+	payload: { libraryPageBackup },
+});

@@ -1,91 +1,128 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setRepertoryPageBackup } from "../../../clases/page/actions";
-import { getRepertory, resetRepertoryActionStatus, setRepertoryStatus } from "../../../clases/repertory/actions";
+import { setRepertoryPageBackup } from "../../../classes/page/actions";
+import {
+	getRepertory,
+	resetRepertoryActionStatus,
+	setRepertoryStatus,
+} from "../../../classes/repertory/actions";
 import { MAX_RETRYS } from "../../../configs";
+import { IStoreState } from "../../../store";
+import { fetchStatus, securityStatus } from "../../../utils/types";
 
 export const useRepertoryPage = (repertoryId) => {
-    const dispatch = useDispatch();
+	const dispatch = useDispatch();
 
-    const userId = useSelector((state) => state.user.google.id);
-    const { repertory, repertoryStatus, repertoryError, repertoryUserId, repertoryActionStatus } = useSelector((state) => state.repertory);
-    const { repertoryPageBackup } = useSelector((state) => state.page);
-    const { repertoryList: repertoryListBackup } = repertoryPageBackup;
+	const userId = useSelector((state: IStoreState) => state.user.google.id);
+	const {
+		repertory,
+		repertoryStatus,
+		repertoryError,
+		repertoryUserId,
+		repertoryActionStatus,
+	} = useSelector((state: IStoreState) => state.repertory);
+	const { repertoryPageBackup } = useSelector(
+		(state: IStoreState) => state.page
+	);
+	const { repertoryList: repertoryListBackup } = repertoryPageBackup;
 
-    const [status, setCurrentRepertoryStatus] = useState({ step: "INITIAL", opts: {} });
-    const [retrys, setRetrys] = useState(0);
-    const [currentRepertory, setCurrentRepertory] = useState([]);
+	type IStep =
+		| "INITIAL"
+		| "FETCH_REPERTORY_1"
+		| "WITH_REPERTORY_1"
+		| "FINISHED";
+	const steps: Record<IStep, IStep> = {
+		INITIAL: "INITIAL",
+		FETCH_REPERTORY_1: "FETCH_REPERTORY_1",
+		WITH_REPERTORY_1: "WITH_REPERTORY_1",
+		FINISHED: "FINISHED",
+	};
+	const [status, setCurrentRepertoryStatus] = useState({
+		step: steps.INITIAL,
+		opts: {},
+	});
+	const [retrys, setRetrys] = useState(0);
+	const [currentRepertory, setCurrentRepertory] = useState([]);
 
-    const [finalRepertory, setFinalRepertory] = useState({});
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(false);
+	const [finalRepertory, setFinalRepertory] = useState({});
+	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState(false);
 
-    useEffect(() => {
-        if (repertoryError) setError(repertoryError);
-    }, [repertoryError])
+	useEffect(() => {
+		if (repertoryError) setError(repertoryError);
+	}, [repertoryError]);
 
-    const setStatus = (statusStep, statusOpts = {}) => {
-        setIsLoading(true);
-        // console.log("ACA REPERTORY_STATUS: ", statusStep, statusOpts);
-        setCurrentRepertoryStatus({ step: statusStep, opts: statusOpts });
-    }
+	const setStatus = (statusStep: IStep, statusOpts = {}) => {
+		setIsLoading(true);
+		// console.log("ACA REPERTORY_STATUS: ", statusStep, statusOpts);
+		setCurrentRepertoryStatus({ step: statusStep, opts: statusOpts });
+	};
 
-    useEffect(() => {
-        if (repertoryStatus === "SHOULD_UPDATE") {
-            setStatus("1_WITH_REPERTORY");
-            dispatch(setRepertoryStatus(repertoryUserId ? "PRIVATE" : "PUBLIC"))
+	useEffect(() => {
+		if (repertoryStatus === securityStatus.SHOULD_UPDATE) {
+			setStatus(steps.WITH_REPERTORY_1);
+			dispatch(
+				setRepertoryStatus(
+					repertoryUserId ? securityStatus.PRIVATE : securityStatus.PUBLIC
+				)
+			);
+		} else if (userId && repertoryUserId !== userId) {
+			setStatus(steps.FETCH_REPERTORY_1, { userId, repertoryId });
+		} else if (!userId && repertoryStatus === securityStatus.PRIVATE) {
+			setStatus(steps.FETCH_REPERTORY_1, { repertoryId });
+		} else if (status.step === steps.INITIAL) {
+			if (!!repertoryListBackup[repertoryId]) {
+				setCurrentRepertory(repertoryListBackup[repertoryId]);
+				setStatus(steps.FINISHED, { isSameBackup: true });
+			} else {
+				setStatus(steps.FETCH_REPERTORY_1, { userId, repertoryId });
+			}
+		}
+	}, [
+		repertoryStatus,
+		repertoryUserId,
+		status.step,
+		repertoryId,
+		userId,
+		repertoryListBackup,
+		dispatch,
+	]);
 
-        } else if (userId && repertoryUserId !== userId) {
-            setStatus("1_FETCH_REPERTORY", { userId, repertoryId });
+	useEffect(() => {
+		if (status.step === steps.FETCH_REPERTORY_1) {
+			if (repertoryActionStatus === fetchStatus.INITIAL) {
+				dispatch(getRepertory(status.opts));
+			} else if (repertoryActionStatus === fetchStatus.SUCCESS) {
+				setStatus(steps.WITH_REPERTORY_1, { fromFetch: true });
+				dispatch(resetRepertoryActionStatus());
+			} else if (repertoryActionStatus === fetchStatus.FAILURE) {
+				if (retrys === MAX_RETRYS) {
+					setStatus(steps.FINISHED);
+					dispatch(resetRepertoryActionStatus());
+				} else {
+					setRetrys((lastRetrys) => lastRetrys + 1);
+					dispatch(getRepertory(status.opts));
+				}
+			}
+		}
+	}, [status, repertoryActionStatus, retrys, dispatch]);
 
-        } else if (!userId && repertoryStatus === "PRIVATE") {
-            setStatus("1_FETCH_REPERTORY", { repertoryId });
+	useEffect(() => {
+		if (status.step === steps.WITH_REPERTORY_1) {
+			setCurrentRepertory(repertory);
+			setStatus(steps.FINISHED);
+		}
+	}, [status, repertory]);
 
-        } else if (status.step === "INITIAL") {
-            if (!!repertoryListBackup[repertoryId]) {
-                setCurrentRepertory(repertoryListBackup[repertoryId]);
-                setStatus("FINISHED", { isSameBackup: true });
-            } else {
-                setStatus("1_FETCH_REPERTORY", { userId, repertoryId });
-            }
-        }
-    }, [repertoryStatus, repertoryUserId, status.step, repertoryId, userId, repertoryListBackup, dispatch])
+	useEffect(() => {
+		if (status.step === steps.FINISHED && !!isLoading) {
+			setFinalRepertory(currentRepertory);
+			if (!status.opts.isSameBackup && retrys !== MAX_RETRYS) {
+				dispatch(setRepertoryPageBackup(currentRepertory));
+			}
+			setIsLoading(false);
+		}
+	}, [status, isLoading, currentRepertory, retrys, dispatch]);
 
-    useEffect(() => {
-        if (status.step === "1_FETCH_REPERTORY") {
-            if (repertoryActionStatus === "INITIAL") {
-                dispatch(getRepertory(status.opts));
-            } else if (repertoryActionStatus === "SUCCESS") {
-                setStatus("1_WITH_REPERTORY", { fromFetch: true });
-                dispatch(resetRepertoryActionStatus());
-            } else if (repertoryActionStatus === "FAILURE") {
-                if (retrys === MAX_RETRYS) {
-                    setStatus("FINISHED");
-                    dispatch(resetRepertoryActionStatus());
-                } else {
-                    setRetrys(lastRetrys => lastRetrys + 1);
-                    dispatch(getRepertory(status.opts));
-                }
-            }
-        }
-    }, [status, repertoryActionStatus, retrys, dispatch]);
-
-    useEffect(() => {
-        if (status.step === "1_WITH_REPERTORY") {
-            setCurrentRepertory(repertory);
-            setStatus("FINISHED");
-        }
-    }, [status, repertory]);
-
-    useEffect(() => {
-        if (status.step === "FINISHED" && !!isLoading) {
-            setFinalRepertory(currentRepertory);
-            if (!status.opts.isSameBackup && retrys !== MAX_RETRYS) {
-                dispatch(setRepertoryPageBackup(currentRepertory))
-            }
-            setIsLoading(false);
-        }
-    }, [status, isLoading, currentRepertory, retrys, dispatch])
-
-    return [finalRepertory, isLoading, error];
+	return [finalRepertory, isLoading, error];
 };

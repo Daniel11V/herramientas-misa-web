@@ -14,7 +14,7 @@ import RepertoryFormPage from "./pages/repertories/RepertoryFormPage";
 import Library from "./pages/library/Library";
 
 import UserLoadingScreen from "./layout/UserLoadingScreen.jsx";
-import { useUser } from "./clases/user/useUser";
+import { useUser } from "./classes/user/useUser";
 // import Suggestion from './pages/suggestions/Suggestion';
 
 const App = () => {

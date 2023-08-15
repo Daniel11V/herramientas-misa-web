@@ -2,21 +2,14 @@ import { Store, applyMiddleware, combineReducers, createStore } from "redux";
 
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
-import DatabaseReducer from "./clases/database/reducers";
-import PageReducer from "./clases/page/reducers";
-import UserReducer from "./clases/user/reducers";
-import SongReducer from "./clases/song/reducers";
-import AuthorReducer, { AuthorState } from "./clases/author/reducers";
-import RepertoryReducer from "./clases/repertory/reducers";
-
-interface StoreState = {
-	database: DatabaseState;
-	page: PageState;
-	user: UserState;
-	song: SongState;
-	author: AuthorState;
-	repertory: RepertoryState;
-};
+import DatabaseReducer, { IDatabaseState } from "./classes/database/reducers";
+import PageReducer, { IPageState } from "./classes/page/reducers";
+import UserReducer, { IUserState } from "./classes/user/reducers";
+import SongReducer, { ISongState } from "./classes/song/reducers";
+import AuthorReducer, { IAuthorState } from "./classes/author/reducers";
+import RepertoryReducer, {
+	IRepertoryState,
+} from "./classes/repertory/reducers";
 
 // https://typescript.hotexamples.com/examples/redux/-/combineReducers/typescript-combinereducers-function-examples.html
 // import { syncHistoryWithStore, routerReducer, routerMiddleware, push, replace } from 'react-router-redux';
@@ -49,6 +42,15 @@ interface StoreState = {
 //     store.dispatch(replace(path));
 // };
 
+export interface IStoreState {
+	database: IDatabaseState;
+	page: IPageState;
+	user: IUserState;
+	song: ISongState;
+	author: IAuthorState;
+	repertory: IRepertoryState;
+}
+
 const RootReducer = combineReducers({
 	database: DatabaseReducer,
 	page: PageReducer,
@@ -58,7 +60,9 @@ const RootReducer = combineReducers({
 	repertory: RepertoryReducer,
 });
 
-const store = createStore<StoreState>(
+// export type IRootState = ReturnType<typeof RootReducer>;
+
+const store = createStore(
 	RootReducer,
 	composeWithDevTools(applyMiddleware(thunk))
 );

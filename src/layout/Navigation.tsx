@@ -5,13 +5,14 @@ import { useSelector } from "react-redux";
 import styled, { css } from "styled-components";
 import LoginLogoutBtn from "./components/LoginLogoutBtn";
 import { noSelectableText } from "../styles/styleUtils";
+import { IStoreState } from "../store";
 
 const Navigation = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const [lastPage, setLastPage] = useState("");
-	const user = useSelector((state) => state.user.google);
-	const isDesktop = useSelector((state) => state.user.isDesktop);
+	const user = useSelector((state: IStoreState) => state.user.google);
+	const isDesktop = useSelector((state: IStoreState) => state.user.isDesktop);
 
 	useEffect(() => {
 		let elem = document.querySelector(".sidenav");
@@ -48,7 +49,7 @@ const Navigation = () => {
 						<i className="material-icons">menu</i>
 					</Icon>
 					{lastPage && (
-						<BackIcon onClick={navigate.goBack}>
+						<BackIcon onClick={navigate(-1)}>
 							<i className="material-icons">chevron_left</i>
 							{lastPage}
 						</BackIcon>

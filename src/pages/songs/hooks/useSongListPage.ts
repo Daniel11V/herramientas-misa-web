@@ -4,27 +4,44 @@ import {
 	getSongList,
 	resetSongRequestStatus,
 	setSongListStatus,
-} from "../../../clases/song/actions";
-import { setSongListPageBackup } from "../../../clases/page/actions";
-import { arrayIsEmpty, getRating } from "../../../utils/lyricsAndChordsUtils";
+} from "../../../classes/song/actions";
+import { setSongListPageBackup } from "../../../classes/page/actions";
 import { MAX_RETRYS } from "../../../configs";
+import { IStoreState } from "../../../store";
+import { fetchStatus, securityStatus } from "../../../utils/types";
+import { arrayIsEmpty, getRating } from "../../../utils/generalUtils";
 
 export const useSongListPage = () => {
 	const dispatch = useDispatch();
 
-	const userId = useSelector((state) => state.user.google.id);
+	const userId = useSelector((state: IStoreState) => state.user.google.id);
 	const {
 		songList,
 		songListStatus,
 		songListUserId,
 		songRequestStatus,
 		songError,
-	} = useSelector((state) => state.song);
-	const { songListPageBackup } = useSelector((state) => state.page);
+	} = useSelector((state: IStoreState) => state.song);
+	const { songListPageBackup } = useSelector(
+		(state: IStoreState) => state.page
+	);
 	const { songList: songListBackup } = songListPageBackup;
 
+	type IStep =
+		| "INITIAL"
+		| "FETCH_SONG_LIST_1"
+		| "WITH_SONG_LIST_1"
+		| "FORMAT_BY_VERSION_GROUPS_2"
+		| "FINISHED";
+	const steps: Record<IStep, IStep> = {
+		INITIAL: "INITIAL",
+		FETCH_SONG_LIST_1: "FETCH_SONG_LIST_1",
+		WITH_SONG_LIST_1: "WITH_SONG_LIST_1",
+		FORMAT_BY_VERSION_GROUPS_2: "FORMAT_BY_VERSION_GROUPS_2",
+		FINISHED: "FINISHED",
+	};
 	const [status, setCurrentSongListStatus] = useState({
-		step: "INITIAL",
+		step: steps.INITIAL,
 		opts: {},
 	});
 	const [retrys, setRetrys] = useState(0);
@@ -34,7 +51,7 @@ export const useSongListPage = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState(false);
 
-	const setStatus = (statusStep, statusOpts = {}) => {
+	const setStatus = (statusStep: IStep, statusOpts = {}) => {
 		setIsLoading(true);
 		// console.log("ACA SONG_LIST_STATUS: ", statusStep, statusOpts);
 		setCurrentSongListStatus({ step: statusStep, opts: statusOpts });
@@ -46,21 +63,25 @@ export const useSongListPage = () => {
 
 	useEffect(() => {
 		// if (songListStatus === "INITIAL") {
-		//     setStatus("1_FETCH_SONG_LIST", { isFirst: true, userId });
+		//     setStatus("FETCH_SONG_LIST_1", { isFirst: true, userId });
 
-		if (songListStatus === "SHOULD_UPDATE") {
-			setStatus("1_WITH_SONG_LIST");
-			dispatch(setSongListStatus(songListUserId ? "PRIVATE" : "PUBLIC"));
+		if (songListStatus === securityStatus.SHOULD_UPDATE) {
+			setStatus(steps.WITH_SONG_LIST_1);
+			dispatch(
+				setSongListStatus(
+					songListUserId ? securityStatus.PRIVATE : securityStatus.PUBLIC
+				)
+			);
 		} else if (userId && songListUserId !== userId) {
-			setStatus("1_FETCH_SONG_LIST", { userId });
-		} else if (!userId && songListStatus === "PRIVATE") {
-			setStatus("1_FETCH_SONG_LIST");
-		} else if (status.step === "INITIAL") {
+			setStatus(steps.FETCH_SONG_LIST_1, { userId });
+		} else if (!userId && songListStatus === securityStatus.PRIVATE) {
+			setStatus(steps.FETCH_SONG_LIST_1);
+		} else if (status.step === steps.INITIAL) {
 			if (!arrayIsEmpty(songListBackup)) {
 				setCurrentSongList(songListBackup);
-				setStatus("FINISHED", { isSameBackup: true });
+				setStatus(steps.FINISHED, { isSameBackup: true });
 			} else {
-				setStatus("1_FETCH_SONG_LIST", { userId });
+				setStatus(steps.FETCH_SONG_LIST_1, { userId });
 			}
 		}
 	}, [
@@ -73,16 +94,16 @@ export const useSongListPage = () => {
 	]);
 
 	useEffect(() => {
-		if (status.step === "1_FETCH_SONG_LIST") {
-			if (songRequestStatus === "INITIAL") {
+		if (status.step === steps.FETCH_SONG_LIST_1) {
+			if (songRequestStatus === fetchStatus.INITIAL) {
 				dispatch(getSongList(status.opts));
 				setRetrys(0);
-			} else if (songRequestStatus === "SUCCESS") {
-				setStatus("1_WITH_SONG_LIST", { fromFetch: true });
+			} else if (songRequestStatus === fetchStatus.SUCCESS) {
+				setStatus(steps.WITH_SONG_LIST_1, { fromFetch: true });
 				dispatch(resetSongRequestStatus());
-			} else if (songRequestStatus === "FAILURE") {
+			} else if (songRequestStatus === fetchStatus.FAILURE) {
 				if (retrys === MAX_RETRYS) {
-					setStatus("FINISHED");
+					setStatus(steps.FINISHED);
 					dispatch(resetSongRequestStatus());
 				} else {
 					setRetrys((lastRetrys) => lastRetrys + 1);
@@ -108,14 +129,14 @@ export const useSongListPage = () => {
 	}, [status, songRequestStatus, retrys, dispatch]);
 
 	useEffect(() => {
-		if (status.step === "1_WITH_SONG_LIST") {
+		if (status.step === steps.WITH_SONG_LIST_1) {
 			setCurrentSongList(songList);
-			setStatus("2_FORMAT_BY_VERSION_GROUPS");
+			setStatus(steps.FORMAT_BY_VERSION_GROUPS_2);
 		}
 	}, [status, songList]);
 
 	useEffect(() => {
-		if (status.step === "2_FORMAT_BY_VERSION_GROUPS") {
+		if (status.step === steps.FORMAT_BY_VERSION_GROUPS_2) {
 			if (!arrayIsEmpty(currentSongList)) {
 				// FORMAT_BY_VERSION_GROUPS"
 				const versionGroups = {
@@ -177,12 +198,12 @@ export const useSongListPage = () => {
 
 				setCurrentSongList(finalSongList);
 			}
-			setStatus("FINISHED");
+			setStatus(steps.FINISHED);
 		}
 	}, [status.step, currentSongList, userId, dispatch]);
 
 	useEffect(() => {
-		if (status.step === "FINISHED" && !!isLoading) {
+		if (status.step === steps.FINISHED && !!isLoading) {
 			setFinalSongList(currentSongList);
 			if (!status.opts.isSameBackup && retrys !== MAX_RETRYS) {
 				dispatch(setSongListPageBackup({ songList: currentSongList }));

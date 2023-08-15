@@ -13,7 +13,8 @@ import {
 	LevelIcon,
 	CollectionItemLyric,
 } from "../../styles/styles.js";
-import { SongList } from "../../clases/song/types";
+import { SongList } from "../../classes/song/types";
+import { IStoreState } from "../../store.js";
 
 interface Props {
 	songList: SongList;
@@ -34,7 +35,7 @@ const SongCollection: React.FC<Props> = ({
 	checking = false,
 	pageName = "Cancionero",
 }) => {
-	const userId = useSelector((state) => state.user.google.id);
+	const userId = useSelector((state: IStoreState) => state.user.google.id);
 	const navigate = useNavigate();
 
 	const [songChoose, setSongChoose] = useState(null);

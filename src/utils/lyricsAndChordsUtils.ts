@@ -6,7 +6,6 @@ import allChords, {
 	chordToEN,
 } from "../data/allChords.js";
 
-
 // Lyrics and Chords
 
 export const getModuleToneDiference = (a, b) => {
@@ -544,10 +543,10 @@ export const getDataFromRandomLyricOld = (lyric) => {
 	};
 };
 
-export const getStartLyric = (lyric) => {
+export const getLyricStart = (lyric) => {
 	const bracketsRegex = /\[(.*?)\]/g;
 	const numberOfLines = 4;
-	const startLyric = lyric
+	const lyricStart = lyric
 		.split("\n")
 		.map((l) => l.replaceAll("\t", " ").replaceAll(bracketsRegex, ""))
 		.filter((l) => l.replaceAll(" ", "") !== "")
@@ -555,7 +554,7 @@ export const getStartLyric = (lyric) => {
 		// .map(l => l.replaceAll(" ", "")[-1] !== "," ? l + ", " : l)
 		.join(" ");
 
-	return startLyric;
+	return lyricStart;
 };
 
 export const translateFormattedLyric = (lyric, fromChordLang, toChordLang) => {

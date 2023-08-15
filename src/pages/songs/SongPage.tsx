@@ -18,7 +18,8 @@ import LyricContainerZoom from "./components/LyricContainerZoom.tsx";
 import { usePublishSong } from "./hooks/usePublishSong.ts";
 import LabelsInput from "../components/LabelsInput.tsx";
 import { translateChord } from "../../utils/lyricsAndChordsUtils.ts";
-import { generalLevelOptions } from "../../clases/song/types";
+import { generalLevelOptions } from "../../classes/song/types";
+import { IStoreState } from "../../store.ts";
 
 export const SongPage: React.FC = () => {
 	const navigate = useNavigate();
@@ -52,7 +53,7 @@ export const SongPage: React.FC = () => {
 		saveOptions,
 	} = useSongPageOptions();
 
-	const user = useSelector((state) => state.user.google);
+	const user = useSelector((state: IStoreState) => state.user.google);
 	const isCreator = user?.id === song?.creator?.id;
 	const [messageModalOpts, setMessageModalOpts] = useState(null);
 	const [openOptions, setOpenOptions] = useState(false);

@@ -1,4 +1,4 @@
-import { Rate } from "../clases/song/types";
+import { Rate } from "../classes/song/types";
 import allChords from "../data/allChords";
 import searchLabels from "../data/searchLabels";
 
@@ -57,9 +57,13 @@ export const automaticLabels = (lyric, labels) => {
 
 export const objIsEmpty = (object: object): boolean =>
 	!object || Object.keys(object)?.length === 0;
-export const arrayIsEmpty = (arr: Array<any>): boolean => !arr || arr.length === 0;
+export const arrayIsEmpty = (arr: Array<any>): boolean =>
+	!arr || arr.length === 0;
 
-export const objsAreEqual = (obj1: {[index: string]:any}, obj2: {[index: string]:any}) => {
+export const objsAreEqual = (
+	obj1: { [index: string]: any },
+	obj2: { [index: string]: any }
+) => {
 	// Only they first children
 	for (const key in obj1) {
 		if (obj1[key] !== obj2[key]) return false;

@@ -1,11 +1,12 @@
 import React from "react";
 import { GoogleLogin } from "react-google-login";
 import { useDispatch, useSelector } from "react-redux";
-import { login, setUserLoading } from "../../clases/user/actions";
+import { login, setUserLoading } from "../../classes/user/actions";
+import { IStoreState } from "../../store";
 
 const LoggedButton = ({ children = null, onClick = () => {}, className }) => {
 	const dispatch = useDispatch();
-	const isLogged = useSelector((state) => state.user.isLogged);
+	const isLogged = useSelector((state: IStoreState) => state.user.isLogged);
 
 	const loginResponse = (response) => {
 		if (response.googleId) {

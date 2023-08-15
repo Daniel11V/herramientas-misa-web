@@ -2,7 +2,7 @@ import React from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { login, logout, setUserLoading } from "../../clases/user/actions";
+import { login, logout, setUserLoading } from "../../classes/user/actions";
 
 const LoginLogoutBtn = ({
 	children = null,

@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import M from "materialize-css";
-import { useSong } from "./useSong";
+import { useSong } from "../../../classes/song/useSong";
 import { useDispatch, useSelector } from "react-redux";
-import { getAuthorList } from "../../../clases/author/actions";
-import { setSongPageBackup } from "../../../clases/page/actions";
-import { saveSongOptions } from "../../../clases/song/actions";
+import { getAuthorList } from "../../../classes/author/actions";
+import { setSongPageBackup } from "../../../classes/page/actions";
+import { saveSongOptions } from "../../../classes/song/actions";
+import { IStoreState } from "../../../store";
 
 const emptySong = {
 	id: "", // Required
@@ -34,12 +35,12 @@ const emptySong = {
 
 export const useSongPage = (songTitleId: string) => {
 	const dispatch = useDispatch();
-	const userId = useSelector((state) => state.user.google.id);
-	const { authorList } = useSelector((state) => state.author);
-	const { song, isLoadingSong, errorSong, editSong } = useSong(
+	const userId = useSelector((state: IStoreState) => state.user.google.id);
+	const { authorList } = useSelector((state: IStoreState) => state.author);
+	const { song, isLoadingSong, errorSong, editSong } = useSong({
 		songTitleId,
-		userId
-	);
+		userId,
+	});
 	const [currentSong, setCurrentSong] = useState(emptySong);
 
 	const [isNewSong, setIsNewSong] = useState(false);
@@ -87,13 +88,15 @@ export const useSongPage = (songTitleId: string) => {
 			},
 		});
 		editSong({
-			...songForm,
-			author: {
-				name: songForm.author.name,
-				id:
-					authorList?.find(
-						(authorSearch) => authorSearch.name === songForm.author.name
-					)?.id || new Date().getTime(),
+			songEdited: {
+				...songForm,
+				author: {
+					name: songForm.author.name,
+					id:
+						authorList?.find(
+							(authorSearch) => authorSearch.name === songForm.author.name
+						)?.id || new Date().getTime(),
+				},
 			},
 		});
 		setSavingSongEdit(true);

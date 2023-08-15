@@ -7,12 +7,14 @@ import {
 	editSong,
 	getSong,
 	resetSongRequestStatus,
-} from "../../../clases/song/actions";
+} from "../../../classes/song/actions";
 import { MAX_RETRYS } from "../../../configs";
 import {
 	getDataFromRandomLyric,
 	getFormattedLyric,
 } from "../../../utils/lyricsAndChordsUtils";
+import { IStoreState } from "../../../store";
+import { fetchStatus } from "../../../utils/types";
 
 export const useRepertoryFormPage = (songId) => {
 	const dispatch = useDispatch();
@@ -32,84 +34,109 @@ export const useRepertoryFormPage = (songId) => {
 			},
 		],
 	});
-	const [status, setRepertoryFormStatus] = useState("INITIAL");
+
+	type IStep = "INITIAL" | "SONG_1" | "FETCH_SONG_1" | "FINISHED";
+	const steps: Record<IStep, IStep> = {
+		INITIAL: "INITIAL",
+		SONG_1: "SONG_1",
+		FETCH_SONG_1: "FETCH_SONG_1",
+		FINISHED: "FINISHED",
+	};
+	const [step, setRepertoryFormStep] = useState<IStep>(steps.INITIAL);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(false);
 
-	const userId = useSelector((state) => state.user?.google?.id);
-	const userName = useSelector((state) => state.user?.google?.name);
+	const userId = useSelector((state: IStoreState) => state.user?.google?.id);
+	const userName = useSelector(
+		(state: IStoreState) => state.user?.google?.name
+	);
 	const { song, songRequestStatus, songError } = useSelector(
-		(state) => state.song
+		(state: IStoreState) => state.song
 	);
 	const [retrys, setRetrys] = useState(0);
 
-	const [formStep, setFormStep] = useState("INITIAL");
+	type IFormStep =
+		| "INITIAL"
+		| "DESCRIPTION"
+		| "LYRIC_CHORDS"
+		| "EXTRA_DETAILS"
+		| "SUBMIT_SONG_FORM"
+		| "FINISHED";
+	const formSteps: Record<IFormStep, IFormStep> = {
+		INITIAL: "INITIAL",
+		DESCRIPTION: "DESCRIPTION",
+		LYRIC_CHORDS: "LYRIC_CHORDS",
+		EXTRA_DETAILS: "EXTRA_DETAILS",
+		SUBMIT_SONG_FORM: "SUBMIT_SONG_FORM",
+		FINISHED: "FINISHED",
+	};
+	const [formStep, setFormStep] = useState<IFormStep>(formSteps.INITIAL);
 	const [onlyLiric, setOnlyLyric] = useState("");
 	const [chords, setChords] = useState("");
 	const [chordLang, setChordLang] = useState({});
 	const [editOnlyChords, setEditOnlyChords] = useState(false);
 	const navigate = useNavigate();
 
-	const setStatus = (newStatus) => {
+	const setStep = (newStatus: IStep) => {
 		// console.log("ACA SONG_FORM_STATUS: ", newStatus);
-		setRepertoryFormStatus(newStatus);
+		setRepertoryFormStep(newStatus);
 	};
 
 	useEffect(() => {
-		setIsLoading(status !== "FINISHED");
-	}, [status]);
+		setIsLoading(step !== steps.FINISHED);
+	}, [step]);
 
 	useEffect(() => {
 		if (songError) setError(songError);
 	}, [songError]);
 
 	useEffect(() => {
-		setStatus("1_SONG");
+		setStep(steps.SONG_1);
 	}, []);
 
 	useEffect(() => {
-		if (status === "1_SONG") {
+		if (step === steps.SONG_1) {
 			if (!songId) {
-				setStatus("FINISHED");
-				setFormStep("DESCRIPTION");
+				setStep(steps.FINISHED);
+				setFormStep(formSteps.DESCRIPTION);
 			} else if (song.id === songId) {
 				setRepertoryForm({ ...song });
 				setRetrys(0);
-				setStatus("FINISHED");
-				setFormStep("DESCRIPTION");
+				setStep(steps.FINISHED);
+				setFormStep(formSteps.DESCRIPTION);
 			} else if (retrys < MAX_RETRYS) {
-				setStatus("1_FETCH_SONG");
+				setStep(steps.FETCH_SONG_1);
 				setRetrys(retrys + 1);
 			} else {
 				setError("Sin conexión, pruebe recargando la página.");
-				setStatus("FINISHED");
+				setStep("FINISHED");
 			}
 		}
-	}, [status, song, songId, retrys]);
+	}, [step, song, songId, retrys]);
 
 	useEffect(() => {
-		if (status === "1_FETCH_SONG") {
-			if (songRequestStatus === "INITIAL") {
+		if (step === steps.FETCH_SONG_1) {
+			if (songRequestStatus === fetchStatus.INITIAL) {
 				dispatch(getSong({ userId, songId }));
-			} else if (songRequestStatus === "SUCCESS") {
-				setStatus("1_SONG");
+			} else if (songRequestStatus === fetchStatus.SUCCESS) {
+				setStep(steps.SONG_1);
 				dispatch(resetSongRequestStatus());
 				setError(null);
-			} else if (songRequestStatus === "FAILURE") {
-				setStatus("FINISHED");
+			} else if (songRequestStatus === fetchStatus.FAILURE) {
+				setStep(steps.FINISHED);
 				dispatch(resetSongRequestStatus());
 			}
 		}
-	}, [status, songRequestStatus, userId, songId, dispatch]);
+	}, [step, songRequestStatus, userId, songId, dispatch]);
 
 	const nextStep = (e) => {
 		e.preventDefault();
 
-		if (formStep === "DESCRIPTION") {
-			setFormStep("LYRIC_CHORDS");
-		} else if (formStep === "LYRIC_CHORDS") {
-			setFormStep("EXTRA_DETAILS");
-		} else if (formStep === "EXTRA_DETAILS") {
+		if (formStep === formSteps.DESCRIPTION) {
+			setFormStep(formSteps.LYRIC_CHORDS);
+		} else if (formStep === formSteps.LYRIC_CHORDS) {
+			setFormStep(formSteps.EXTRA_DETAILS);
+		} else if (formStep === formSteps.EXTRA_DETAILS) {
 			// Validate
 			setRepertoryForm((lastSongForm) => ({
 				...lastSongForm,
@@ -119,16 +146,16 @@ export const useRepertoryFormPage = (songId) => {
 				},
 			}));
 
-			setFormStep("SUBMIT_SONG_FORM");
+			setFormStep(formSteps.SUBMIT_SONG_FORM);
 		}
 	};
 
 	const isNextDisabled = () => {
-		if (formStep === "DESCRIPTION") {
+		if (formStep === formSteps.DESCRIPTION) {
 			return !repertoryForm.title;
-		} else if (formStep === "LYRIC_CHORDS") {
+		} else if (formStep === formSteps.LYRIC_CHORDS) {
 			return false;
-		} else if (formStep === "EXTRA_DETAILS") {
+		} else if (formStep === formSteps.EXTRA_DETAILS) {
 			return false;
 		} else {
 			return false;
@@ -160,34 +187,34 @@ export const useRepertoryFormPage = (songId) => {
 	};
 
 	useEffect(() => {
-		if (formStep === "SUBMIT_SONG_FORM") {
+		if (formStep === formSteps.SUBMIT_SONG_FORM) {
 			const saveAsPublic = false;
 
 			if (songId) {
-				if (songRequestStatus === "INITIAL") {
+				if (songRequestStatus === fetchStatus.INITIAL) {
 					dispatch(editSong(repertoryForm, saveAsPublic));
-				} else if (songRequestStatus === "SUCCESS") {
+				} else if (songRequestStatus === fetchStatus.SUCCESS) {
 					M.toast({ html: "Canción Actualizada" });
 					dispatch(resetSongRequestStatus());
-					setFormStep("FINISHED");
+					setFormStep(formSteps.FINISHED);
 					navigate(-1);
-				} else if (songRequestStatus === "FAILURE") {
-					setFormStep("FINISHED");
+				} else if (songRequestStatus === fetchStatus.FAILURE) {
+					setFormStep(formSteps.FINISHED);
 					M.toast({ html: "Error actualizando la canción" });
 					dispatch(resetSongRequestStatus());
 					navigate(-1);
 				}
 			} else {
-				if (songRequestStatus === "INITIAL") {
+				if (songRequestStatus === fetchStatus.INITIAL) {
 					dispatch(createSong(repertoryForm, saveAsPublic));
-				} else if (songRequestStatus === "SUCCESS") {
+				} else if (songRequestStatus === fetchStatus.SUCCESS) {
 					M.toast({ html: "Canción Guardada" });
 					dispatch(resetSongRequestStatus());
 
-					setFormStep("FINISHED");
+					setFormStep(formSteps.FINISHED);
 					navigate(-1);
-				} else if (songRequestStatus === "FAILURE") {
-					setFormStep("FINISHED");
+				} else if (songRequestStatus === fetchStatus.FAILURE) {
+					setFormStep(formSteps.FINISHED);
 					M.toast({ html: "Error guardando la canción" });
 					dispatch(resetSongRequestStatus());
 					navigate(-1);
