@@ -77,7 +77,7 @@ const LyricWithChords = ({
 	const hasChord = (i, k) =>
 		showChords && !!chords?.[i] && (k >= 0 ? !!chords[i][k]?.chord : true);
 
-	const handleLetterClick = (i, k, event) => {
+	const handleLetterClick = (i, k, event: React.MouseEvent): void => {
 		event.stopPropagation();
 
 		if (isEditable && !onlyInputText) {
@@ -94,8 +94,8 @@ const LyricWithChords = ({
 
 				setTimeout(() => {
 					const tooltipBody = document.getElementById("tooltip-body");
-					const coords = tooltipBody?.getBoundingClientRect();
-					if (coords) {
+					const coords = tooltipBody?.getBoundingClientRect?.();
+					if (coords && tooltipBody instanceof HTMLDivElement) {
 						const { left: leftCoords, right: rightCoords } = coords;
 						tooltipBody?.getBoundingClientRect();
 						if (leftCoords < 20) {

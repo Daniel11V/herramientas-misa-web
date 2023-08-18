@@ -5,16 +5,26 @@ import LabelsInput from "./LabelsInput";
 import { CollectionItem } from "../../styles/styles";
 import { colors } from "../../styles/styleUtils";
 
-export const CollectionSearcher = ({ searchInput, setSearchInput, labels, setLabels, handleClickSearchLyric  }) => {
+export const CollectionSearcher = ({
+	searchInput,
+	setSearchInput,
+	labels,
+	setLabels,
+	handleClickSearchLyric,
+}) => {
 	const [showFilters, setShowFilters] = useState(false);
-	const [filterSelectors, setFilterSelectors] = useState(null);
+	const [filterSelectors, setFilterSelectors] = useState<M.Collapsible | null>(
+		null
+	);
 	// const [filteredSongs, setFilteredSongs] = useState(allSongLyric);
 
 	useEffect(() => {
 		if (!filterSelectors) {
 			const element = document.querySelector(".collapsible");
-			const inst = M.Collapsible.init(element);
-			setFilterSelectors(inst);
+			if (element instanceof HTMLUListElement) {
+				const inst = M.Collapsible.init(element);
+				setFilterSelectors(inst);
+			}
 		}
 	}, [filterSelectors]);
 

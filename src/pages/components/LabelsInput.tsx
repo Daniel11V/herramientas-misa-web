@@ -1,19 +1,24 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import M from "materialize-css";
 import fullLabels from "../../data/fullLabels";
 
 const LabelsInput = ({ labels = [], updateLabels }) => {
 	useEffect(() => {
-		var elems = document.querySelectorAll("select");
-		M.FormSelect.init(elems);
+		const elems = document.querySelectorAll("select");
+		if (elems instanceof NodeList && elems[0] instanceof HTMLSelectElement) {
+			M.FormSelect.init(elems);
+		}
 	}, []);
 
 	useEffect(() => {
 		for (const label of labels) {
-			let opts = document.querySelectorAll("option.label");
-			for (let i = 0; i < opts.length; i++) {
-				if (opts[i].value === label) {
-					opts[i].selected = true;
+			const opts = document.querySelectorAll("option.label");
+			for (let i = 0; i < opts?.length; i++) {
+				const actualOpt = opts[i];
+				if (actualOpt instanceof HTMLOptionElement) {
+					if (actualOpt.value === label) {
+						actualOpt.selected = true;
+					}
 				}
 			}
 		}
@@ -24,9 +29,11 @@ const LabelsInput = ({ labels = [], updateLabels }) => {
 		let newArray = [];
 
 		for (const type of selectLabels) {
-			for (const label of type.options) {
-				if (label.selected) {
-					newArray.push(label.value);
+			if (type instanceof HTMLSelectElement) {
+				for (const label of type.options) {
+					if (label.selected) {
+						newArray.push(label.value);
+					}
 				}
 			}
 		}

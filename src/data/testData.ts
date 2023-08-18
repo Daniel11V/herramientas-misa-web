@@ -1,6 +1,6 @@
-import { IDatabaseState } from "../classes/database/reducers";
+import { TDatabaseState } from "../classes/database/reducers";
 
-export const testData: IDatabaseState = {
+export const testData: TDatabaseState = {
 	authorList: {
 		"123455": {
 			id: "123455",
@@ -73,7 +73,7 @@ export const testData: IDatabaseState = {
 			},
 			title: "Misa 250 Años de la Parroquia",
 			annotations: "",
-			members: [],
+			members: {},
 			placeTitle: "Parroquia Ntra. Sra. del Pilar",
 			placeUbication: "",
 			isMass: true,
@@ -92,7 +92,7 @@ export const testData: IDatabaseState = {
 			},
 			title: "Misa Sábado 20hs",
 			annotations: "",
-			members: [],
+			members: {},
 			placeTitle: "Parroquia Ntra. Sra. del Pilar",
 			placeUbication: "",
 			isMass: true,
@@ -143,7 +143,7 @@ export const testData: IDatabaseState = {
 			},
 			title: "Procesión Inmaculada Concepción",
 			annotations: "",
-			members: [],
+			members: {},
 			placeTitle: "Parroquia Ntra. Sra. del Pilar",
 			placeUbication: "",
 			isMass: true,
@@ -172,7 +172,7 @@ export const testData: IDatabaseState = {
 			},
 			title: "Primera Comunión",
 			annotations: "",
-			members: [],
+			members: {},
 			placeTitle: 'Capilla "Sagrado Corazón de Jesús"',
 			placeUbication: "",
 			isMass: true,
@@ -219,7 +219,7 @@ export const testData: IDatabaseState = {
 			},
 			title: "Misa de Navidad",
 			annotations: "",
-			members: [],
+			members: {},
 			placeTitle: "Parroquia Ntra Sra del Pilar",
 			placeUbication: "",
 			isMass: true,
@@ -267,7 +267,7 @@ export const testData: IDatabaseState = {
 			},
 			title: "Misas para Comuniones 2023",
 			annotations: "",
-			members: [],
+			members: {},
 			placeTitle: "Parroquia Ntra. Sra. del Pilar",
 			placeUbication: "",
 			isMass: true,
@@ -331,7 +331,7 @@ export const testData: IDatabaseState = {
 			lyricId: "1669864387702",
 			lyricIsPrivate: true,
 			lyricStart: "",
-			hasAccess: {},
+			privateAccess: {},
 		},
 		"1682248649895": {
 			id: "1682248649895",
@@ -356,7 +356,7 @@ export const testData: IDatabaseState = {
 			lyricId: "1682248649882",
 			lyricIsPrivate: true,
 			lyricStart: "",
-			hasAccess: {},
+			privateAccess: {},
 		},
 	},
 	privateSongLyricList: {

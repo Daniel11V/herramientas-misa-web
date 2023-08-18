@@ -1,5 +1,5 @@
-import { IActionType } from "../../utils/types.js";
-import { IUserState } from "./reducers.js";
+import { TActionType } from "../../utils/types.js";
+import { TUserState } from "./reducers.js";
 
 export const types = {
 	SET_USER_LOADING: "SET_USER_LOADING",
@@ -13,29 +13,29 @@ export const types = {
 };
 
 export const setUserLoading = (
-	loading: IUserState["loading"]
-): IActionType => ({
+	loading: TUserState["loading"]
+): TActionType => ({
 	type: types.SET_USER_LOADING,
 	payload: { loading },
 });
 
-export const login = (googleInfo: IUserState["google"]): IActionType => ({
+export const login = (googleInfo: TUserState["google"]): TActionType => ({
 	type: types.LOGIN,
 	payload: { googleInfo },
 });
 
-export const logout = (): IActionType => ({
+export const logout = (): TActionType => ({
 	type: types.LOGOUT,
 });
 
-export const setDevice = (isDesktop: IUserState["isDesktop"]): IActionType => ({
+export const setDevice = (isDesktop: TUserState["isDesktop"]): TActionType => ({
 	type: types.SET_DEVICE,
 	payload: { isDesktop },
 });
 
 export const setSongPageOptions = (
-	songPageOptions: IUserState["config"]["songPageOptions"]
-): IActionType => ({
+	songPageOptions: TUserState["config"]["songPageOptions"]
+): TActionType => ({
 	type: types.SET_USER_SONG_PAGE_OPTIONS,
 	payload: { songPageOptions },
 });

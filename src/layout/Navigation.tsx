@@ -5,21 +5,24 @@ import { useSelector } from "react-redux";
 import styled, { css } from "styled-components";
 import LoginLogoutBtn from "./components/LoginLogoutBtn";
 import { noSelectableText } from "../styles/styleUtils";
-import { IStoreState } from "../store";
+import { TStoreState } from "../store";
 
 const Navigation = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const [lastPage, setLastPage] = useState("");
-	const user = useSelector((state: IStoreState) => state.user.google);
-	const isDesktop = useSelector((state: IStoreState) => state.user.isDesktop);
+	const user = useSelector((state: TStoreState) => state.user.google);
+	const isDesktop = useSelector((state: TStoreState) => state.user.isDesktop);
 
 	useEffect(() => {
 		let elem = document.querySelector(".sidenav");
-		let instance = M.Sidenav.init(elem);
+		let instance: M.Sidenav;
+		if (elem instanceof HTMLUListElement) {
+			instance = M.Sidenav.init(elem);
+		}
 
 		return () => {
-			instance.destroy();
+			if (instance) instance?.destroy();
 		};
 	}, []);
 

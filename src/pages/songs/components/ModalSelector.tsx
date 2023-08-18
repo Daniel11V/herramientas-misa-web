@@ -15,7 +15,7 @@ const ModalSelector = ({
 	textAlign = "center",
 	initialSelectedItemLabel,
 }) => {
-	const [modalInstance, setModalInstance] = useState(null);
+	const [modalInstance, setModalInstance] = useState<M.Modal | null>(null);
 	const [selectedItemLabel, setSelectedItemLabel] = useState(
 		initialSelectedItemLabel || ""
 	);
@@ -39,24 +39,24 @@ const ModalSelector = ({
 
 	useEffect(() => {
 		const elem = document.querySelector("." + modalInstanceId);
-		const instance = M.Modal.init(elem, {
-			endingTop: "15%",
-		});
-		setModalInstance(instance);
+		const modal = !(elem instanceof HTMLDivElement)
+			? null
+			: M.Modal.init(elem, { endingTop: "15%" });
+		setModalInstance(modal);
 		return () => {
-			instance.destroy();
+			modal?.destroy();
 		};
 	}, [modalInstanceId]);
 
-	const handleSelectorClick = (event) => {
+	const handleSelectorClick = (event: React.MouseEvent): void => {
 		event.stopPropagation();
 		modalInstance?.open();
 	};
 
-	const handleItemClick = (event, itemValue) => {
+	const handleItemClick = (event: React.MouseEvent, itemValue): void => {
 		event.stopPropagation();
 		setSelectedItem(itemValue);
-		modalInstance.close();
+		modalInstance?.close();
 	};
 
 	return (

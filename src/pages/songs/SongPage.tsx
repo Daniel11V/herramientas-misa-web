@@ -19,7 +19,7 @@ import { usePublishSong } from "./hooks/usePublishSong.ts";
 import LabelsInput from "../components/LabelsInput.tsx";
 import { translateChord } from "../../utils/lyricsAndChordsUtils.ts";
 import { generalLevelOptions } from "../../classes/song/types";
-import { IStoreState } from "../../store.ts";
+import { TStoreState } from "../../store.ts";
 
 export const SongPage: React.FC = () => {
 	const navigate = useNavigate();
@@ -53,7 +53,7 @@ export const SongPage: React.FC = () => {
 		saveOptions,
 	} = useSongPageOptions();
 
-	const user = useSelector((state: IStoreState) => state.user.google);
+	const user = useSelector((state: TStoreState) => state.user.google);
 	const isCreator = user?.id === song?.creator?.id;
 	const [messageModalOpts, setMessageModalOpts] = useState(null);
 	const [openOptions, setOpenOptions] = useState(false);
@@ -66,8 +66,10 @@ export const SongPage: React.FC = () => {
 	);
 
 	useEffect(() => {
-		const elems = document.querySelectorAll(".modal");
-		M.Modal.init(elems);
+		// const elems = document.querySelectorAll(".modal");
+		// if (elems instanceof NodeList && elems[0] instanceof HTMLElement) {
+		// 	M.Modal.init(elems);
+		// }
 
 		return () => {
 			document
@@ -80,8 +82,10 @@ export const SongPage: React.FC = () => {
 
 	useEffect(() => {
 		if (editingSong) {
-			let textarea = document.querySelector("textarea");
-			M.textareaAutoResize(textarea);
+			const textarea = document.querySelector("textarea");
+			if (textarea instanceof HTMLTextAreaElement) {
+				M.textareaAutoResize(textarea);
+			}
 			document.getElementById("authorName")?.addEventListener("input", (e) => {
 				editForm("author", e?.target?.value);
 			});

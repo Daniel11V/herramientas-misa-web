@@ -2,13 +2,13 @@ import { Store, applyMiddleware, combineReducers, createStore } from "redux";
 
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
-import DatabaseReducer, { IDatabaseState } from "./classes/database/reducers";
-import PageReducer, { IPageState } from "./classes/page/reducers";
-import UserReducer, { IUserState } from "./classes/user/reducers";
-import SongReducer, { ISongState } from "./classes/song/reducers";
-import AuthorReducer, { IAuthorState } from "./classes/author/reducers";
+import DatabaseReducer, { TDatabaseState } from "./classes/database/reducers";
+import PageReducer, { TPageState } from "./classes/page/reducers";
+import UserReducer, { TUserState } from "./classes/user/reducers";
+import SongReducer, { TSongState } from "./classes/song/reducers";
+import AuthorReducer, { TAuthorState } from "./classes/author/reducers";
 import RepertoryReducer, {
-	IRepertoryState,
+	TRepertoryState,
 } from "./classes/repertory/reducers";
 
 // https://typescript.hotexamples.com/examples/redux/-/combineReducers/typescript-combinereducers-function-examples.html
@@ -42,14 +42,14 @@ import RepertoryReducer, {
 //     store.dispatch(replace(path));
 // };
 
-export interface IStoreState {
-	database: IDatabaseState;
-	page: IPageState;
-	user: IUserState;
-	song: ISongState;
-	author: IAuthorState;
-	repertory: IRepertoryState;
-}
+export type TStoreState = {
+	database: TDatabaseState;
+	page: TPageState;
+	user: TUserState;
+	song: TSongState;
+	author: TAuthorState;
+	repertory: TRepertoryState;
+};
 
 const RootReducer = combineReducers({
 	database: DatabaseReducer,

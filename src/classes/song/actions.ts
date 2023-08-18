@@ -9,9 +9,9 @@ import {
 } from "../../utils/generalUtils.js";
 import { getLyricStart } from "../../utils/lyricsAndChordsUtils.js";
 import {
-	IActionType,
-	IDispatchType,
-	ISecurityStatusType,
+	TActionType,
+	TDispatchType,
+	TSecurityStatus,
 } from "../../utils/types.js";
 import { setSongPageBackupSong } from "../page/actions.js";
 import {
@@ -38,9 +38,17 @@ import {
 	getPublicSongTitleDB,
 	getPublicSongTitleListDB,
 } from "./services/publicSongTitleList.js";
-import { IPrivateSongTitleDB, ISong, ISongForm } from "./types.js";
-import { IUserDB } from "../user/types.js";
-import { IStoreState } from "../../store.js";
+import {
+	TPrivateSongLyricDB,
+	TPrivateSongTitleDB,
+	TSong,
+	TSongForm,
+	TSongId,
+	TSongOptions,
+} from "./types.js";
+import { TUserId } from "../user/types.js";
+import { TStoreState } from "../../store.js";
+import { createTPrivateSongTitleDB } from "./createTypes.js";
 
 export const types = {
 	RESET_SONG_REQUEST_STATUS: "RESET_SONG_REQUEST_STATUS",
@@ -78,18 +86,16 @@ export const types = {
 	DELETE_SONG_FAILURE: "DELETE_SONG_FAILURE",
 };
 
-export const resetSongRequestStatus = (): IActionType => ({
+export const resetSongRequestStatus = (): TActionType => ({
 	type: types.RESET_SONG_REQUEST_STATUS,
 });
 export const setSongListStatus = (
-	songListStatus: ISecurityStatusType
-): IActionType => ({
+	songListStatus: TSecurityStatus
+): TActionType => ({
 	type: types.SET_SONG_LIST_STATUS,
 	payload: { songListStatus },
 });
-export const setSongStatus = (
-	songStatus: ISecurityStatusType
-): IActionType => ({
+export const setSongStatus = (songStatus: TSecurityStatus): TActionType => ({
 	type: types.SET_SONG_LIST_STATUS,
 	payload: { songStatus },
 });
@@ -97,12 +103,12 @@ export const setSongStatus = (
 // Thunks
 
 export const getSongList = (p: {
-	userId: IUserDB["id"];
+	userId: TUserId;
 	onlyAddPrivates?: boolean;
 }) => {
 	const { userId, onlyAddPrivates = false } = p;
 
-	return async (dispatch: IDispatchType, getState: () => IStoreState) => {
+	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
 		try {
 			dispatch({
 				type: types.FETCH_SONG_LIST,
@@ -142,12 +148,9 @@ export const getSongList = (p: {
 	};
 };
 
-export const getSong = (p: {
-	userId: IUserDB["id"];
-	songTitleId: ISong["id"];
-}) => {
+export const getSong = (p: { userId: TUserId; songTitleId: TSongId }) => {
 	const { userId, songTitleId } = p;
-	return async (dispatch: IDispatchType, getState: () => IStoreState) => {
+	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
 		try {
 			dispatch({
 				type: types.FETCH_SONG,
@@ -155,9 +158,8 @@ export const getSong = (p: {
 			});
 			//////////////////////////////
 
-			let songTitle = getState().song.songList.find(
-				(i) => i.id === songTitleId
-			);
+			let songTitle =
+				getState().song.songList.find((i) => i.id === songTitleId) || null;
 			if (!songTitle)
 				songTitle = await getPrivateSongTitleDB({
 					userId,
@@ -167,7 +169,7 @@ export const getSong = (p: {
 			if (!songTitle) songTitle = await getPublicSongTitleDB({ songTitleId });
 			if (!songTitle) throw new Error("Song not found (Title).");
 
-			let songLyric = {};
+			let songLyric: TPrivateSongLyricDB | null = null;
 			if (songTitle?.lyricIsPrivate) {
 				songLyric = await getPrivateSongLyricDB({
 					songLyricId: songTitle?.lyricId,
@@ -197,12 +199,9 @@ export const getSong = (p: {
 	};
 };
 
-export const getSongTitle = (p: {
-	userId: IUserDB["id"];
-	songTitleId: ISong["id"];
-}) => {
+export const getSongTitle = (p: { userId: TUserId; songTitleId: TSongId }) => {
 	const { userId, songTitleId } = p;
-	return async (dispatch: IDispatchType, getState: () => IStoreState) => {
+	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
 		try {
 			dispatch({
 				type: types.FETCH_SONG_TITLE,
@@ -243,13 +242,13 @@ export const getSongTitle = (p: {
 	};
 };
 
-export const createSong = (p: { songCreated: ISongForm }) => {
+export const createSong = (p: { songCreated: TSongForm }) => {
 	const { songCreated } = p;
 
 	// Siempre que se cree una canción por el momento se creará como privada y luego se podra publicar
 	// Primero se crea el Lyric y luego el Title, colocando acá el id del Lyric y si es publico o privado.
 
-	return async (dispatch: IDispatchType) => {
+	return async (dispatch: TDispatchType) => {
 		try {
 			dispatch({
 				type: types.CREATE_SONG,
@@ -265,7 +264,7 @@ export const createSong = (p: { songCreated: ISongForm }) => {
 
 			const songTitleCreatedId = new Date().getTime().toString();
 
-			const songTitleCreated: IPrivateSongTitleDB = {
+			const songTitleCreated: TPrivateSongTitleDB = {
 				id: songTitleCreatedId,
 				versionGroupId: songTitleCreatedId,
 				isPrivate: true,
@@ -276,7 +275,7 @@ export const createSong = (p: { songCreated: ISongForm }) => {
 				level: {
 					general: 0,
 				},
-				hasAccess: {},
+				privateAccess: {},
 				title: songTitle.title,
 				author: songTitle.author,
 				creator: songTitle.creator,
@@ -293,7 +292,7 @@ export const createSong = (p: { songCreated: ISongForm }) => {
 			//     await createPublicSongLyricDB({ songCreated });
 
 			await createPrivateSongTitleDB({ songTitleCreated });
-			const newSongCreatedByDB: ISong = {
+			const newSongCreatedByDB: TSong = {
 				...songTitleCreated,
 				lyric,
 			};
@@ -313,13 +312,13 @@ export const createSong = (p: { songCreated: ISongForm }) => {
 	};
 };
 
-export const editSong = (p: { songEdited: ISong; saveAsPublic?: boolean }) => {
+export const editSong = (p: { songEdited: TSong; saveAsPublic?: boolean }) => {
 	const { songEdited, saveAsPublic = false } = p;
 	// Siempre que se edite una canción publica (incluso si es propia)
 	// ... se creará una version privada privada que luego se podra publicar
 	// Si ya era privada simplemente se actualiza
 
-	return async (dispatch: IDispatchType) => {
+	return async (dispatch: TDispatchType) => {
 		try {
 			dispatch({
 				type: types.EDIT_SONG,
@@ -327,23 +326,30 @@ export const editSong = (p: { songEdited: ISong; saveAsPublic?: boolean }) => {
 			});
 			//////////////////////////////////////
 
-			const { lyric, ...songTitleEdited } = songEdited;
-			if (songTitleEdited.isPrivate) {
-				await editPrivateSongTitleDB({ songTitleEdited });
+			const { lyric, privateAccess, ...songTitleEdited } = songEdited;
+			if (privateAccess) {
+				await editPrivateSongTitleDB({
+					songTitleEdited: {
+						...songTitleEdited,
+						privateAccess,
+					},
+				});
 			} else {
 				await editPublicSongTitleDB({ songTitleEdited });
 			}
 
-			if (songTitleEdited.lyricIsPrivate) {
-				await editPrivateSongLyricDB({
-					lyricId: songTitleEdited.lyricId,
-					lyric,
-				});
-			} else {
-				await editPublicSongLyricDB({
-					lyricId: songTitleEdited.lyricId,
-					lyric,
-				});
+			if (!!lyric) {
+				if (songTitleEdited.lyricIsPrivate) {
+					await editPrivateSongLyricDB({
+						lyricId: songTitleEdited.lyricId,
+						lyric,
+					});
+				} else {
+					await editPublicSongLyricDB({
+						lyricId: songTitleEdited.lyricId,
+						lyric,
+					});
+				}
 			}
 
 			//////////////////////////////////////
@@ -361,19 +367,19 @@ export const editSong = (p: { songEdited: ISong; saveAsPublic?: boolean }) => {
 	};
 };
 export const saveSongOptions = () => {
-	return async (dispatch: IDispatchType, getState: () => IStoreState) => {
+	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
 		try {
 			const userId = getState().user.google.id;
 			const { lyric, ...songTitle } = getState().song.song;
 
 			if (songTitle.creator.id === userId) {
 				const { tone, annotations, level } = getState().page.songPageBackup;
-				const levelsInNumbers = {};
+				const levelsInNumbers: TSongOptions["level"] = { general: 1 };
 				for (const levelType in level) {
 					levelsInNumbers[levelType] = Number(level[levelType]);
 				}
 
-				const songOptionsToSave = {};
+				const songOptionsToSave: TSongOptions = {};
 				if (!!tone && songTitle?.tone !== tone) songOptionsToSave.tone = tone;
 				if (annotations !== null && songTitle?.annotations !== annotations)
 					songOptionsToSave.annotations = annotations;
@@ -384,7 +390,11 @@ export const saveSongOptions = () => {
 					songOptionsToSave.level = levelsInNumbers;
 
 				if (!!Object.keys(songOptionsToSave)?.length) {
-					const songTitleEdited = { ...songTitle, ...songOptionsToSave };
+					const songTitleEdited: TPrivateSongTitleDB =
+						createTPrivateSongTitleDB({
+							...songTitle,
+							...songOptionsToSave,
+						});
 					await editPrivateSongTitleDB({ songTitleEdited });
 
 					dispatch({
@@ -406,21 +416,27 @@ export const saveSongOptions = () => {
 	};
 };
 
-export const publishSong = (p: { songPublicId: ISong["id"] }) => {
-	const { songPublicId } = p;
-	return async (dispatch: IDispatchType) => {
+export const publishSong = (p: { privateSongId: TSongId }) => {
+	const { privateSongId } = p;
+	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
 		try {
 			dispatch({
 				type: types.PUBLISH_SONG,
-				payload: { songPublicId },
+				payload: { privateSongId },
 			});
 			//////////////////////////////////////
 
+			// Se copia el PrivateTitleSong y se pega en public
+			const userId = getState().user.google.id;
+			const privateSong = getState().song.songList.find(
+				(song) => song.id === privateSongId
+			);
+
 			const oldSongTitleFromDB = await getPrivateSongTitleDB({
-				songTitleId: songPublicId,
+				songTitleId: privateSongId,
 				hasInvitation: true,
 			});
-			await deletePrivateSongTitleDB({ songTitleId: songPublicId });
+			await deletePrivateSongTitleDB({ songTitleId: privateSongId });
 			const oldSongLyricFromDB = await getPrivateSongLyricDB({
 				songLyricId: oldSongTitleFromDB.lyricId,
 			});
@@ -461,11 +477,11 @@ export const publishSong = (p: { songPublicId: ISong["id"] }) => {
 };
 
 export const deleteSong = (p: {
-	songDeletedId: ISong["id"];
+	songDeletedId: TSongId;
 	isPrivate?: boolean;
 }) => {
 	const { songDeletedId, isPrivate = false } = p;
-	return async (dispatch: IDispatchType) => {
+	return async (dispatch: TDispatchType) => {
 		try {
 			dispatch({
 				type: types.DELETE_SONG,

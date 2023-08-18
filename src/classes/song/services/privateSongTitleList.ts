@@ -1,17 +1,23 @@
 import store from "../../../store";
 import { deleteDatabaseItem, setDatabaseItem } from "../../database/reducers";
-import { IPrivateSongTitleDB, IPublicSongTitleDB } from "../types";
+import {
+	TPrivateSongTitleDB,
+	TPublicSongTitleDB,
+	TSong,
+	TSongForm,
+	TSongId,
+} from "../types";
 
 export const getPrivateSongTitleListDB = async (p: {
 	userId: string;
-}): Promise<Record<IPrivateSongTitleDB["id"], IPrivateSongTitleDB> | null> => {
+}): Promise<Record<TPrivateSongTitleDB["id"], TPrivateSongTitleDB> | null> => {
 	const { userId } = p;
 
 	if (!userId) return null;
 
 	const allPrivateSongTitleList: Record<
-		IPrivateSongTitleDB["id"],
-		IPrivateSongTitleDB
+		TPrivateSongTitleDB["id"],
+		TPrivateSongTitleDB
 	> = store.getState().database.privateSongTitleList;
 
 	const userPrivateSongTitleList =
@@ -33,7 +39,7 @@ export const getPrivateSongTitleDB = async (p: {
 	userId: string;
 	songTitleId: string;
 	hasInvitation?: boolean;
-}): Promise<IPrivateSongTitleDB | null> => {
+}): Promise<TPrivateSongTitleDB | null> => {
 	const { userId, songTitleId, hasInvitation = false } = p;
 
 	if (!userId && !hasInvitation) return null;
@@ -45,7 +51,7 @@ export const getPrivateSongTitleDB = async (p: {
 	if (!!privateSongTitle && !hasInvitation) {
 		const isAuthorized =
 			privateSongTitle.creator.id === userId ||
-			!!privateSongTitle.hasAccess?.[userId];
+			!!privateSongTitle.privateAccess?.[userId];
 		if (!isAuthorized)
 			throw new Error("Unauthorized in getPrivateSongTitleDB.");
 	}
@@ -54,7 +60,7 @@ export const getPrivateSongTitleDB = async (p: {
 };
 
 export const createPrivateSongTitleDB = async (p: {
-	songTitleCreated: IPublicSongTitleDB;
+	songTitleCreated: TPublicSongTitleDB;
 }): Promise<void> => {
 	const { songTitleCreated } = p;
 
@@ -67,14 +73,18 @@ export const createPrivateSongTitleDB = async (p: {
 	);
 };
 
-export const editPrivateSongTitleDB = async ({ songTitleEdited }) => {
+export const editPrivateSongTitleDB = async (p: {
+	songTitleEdited: TPrivateSongTitleDB;
+}) => {
+	const { songTitleEdited } = p;
 	await store.dispatch(
 		setDatabaseItem("privateSongTitleList", songTitleEdited.id, songTitleEdited)
 	);
 	return;
 };
 
-export const deletePrivateSongTitleDB = async ({ songTitleId }) => {
+export const deletePrivateSongTitleDB = async (p: { songTitleId: TSongId }) => {
+	const { songTitleId } = p;
 	await store.dispatch(deleteDatabaseItem("privateSongTitleList", songTitleId));
-	return songTitleId;
+	return;
 };

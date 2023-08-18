@@ -1,16 +1,16 @@
 import store from "../../../store";
 import { deleteDatabaseItem, setDatabaseItem } from "../../database/reducers";
-import { IPrivateSongLyricDB } from "../types";
+import { TPrivateSongLyricDB, TSongId } from "../types";
 
 // export const getPrivateSongLyricListDB = async (p: {
 // 	songLyricId: string;
 // 	userId: string;
-// }): Promise<Record<string, IPrivateSongLyricDB>> => {
+// }): Promise<Record<string, TPrivateSongLyricDB>> => {
 // 	const { songLyricId, userId } = p;
 
 // 	if (!songLyricId) throw new Error("Invalid user ID.");
 
-// 	const allPrivateSongLyricList: Record<string, IPrivateSongLyricDB> =
+// 	const allPrivateSongLyricList: Record<string, TPrivateSongLyricDB> =
 // 		store.getState().database.privateSongLyricList;
 
 // 	const userPrivateSongLyricList =
@@ -30,7 +30,7 @@ import { IPrivateSongLyricDB } from "../types";
 
 export const getPrivateSongLyricDB = async (p: {
 	songLyricId: string;
-}): Promise<IPrivateSongLyricDB | null> => {
+}): Promise<TPrivateSongLyricDB | null> => {
 	const { songLyricId } = p;
 
 	if (!songLyricId) throw new Error("Invalid song lyric ID.");
@@ -43,7 +43,7 @@ export const getPrivateSongLyricDB = async (p: {
 
 export const createPrivateSongLyricDB = async (p: {
 	lyric: string;
-}): Promise<string> => {
+}): Promise<TSongId> => {
 	const { lyric } = p;
 
 	const newId = new Date().getTime().toString();
@@ -69,7 +69,7 @@ export const editPrivateSongLyricDB = async (p: {
 
 export const deletePrivateSongLyricDB = async (p: {
 	songLyricId: string;
-}): Promise<string | null> => {
+}): Promise<TSongId | null> => {
 	const { songLyricId } = p;
 	await store.dispatch(deleteDatabaseItem("privateSongLyricList", songLyricId));
 	return songLyricId || null;

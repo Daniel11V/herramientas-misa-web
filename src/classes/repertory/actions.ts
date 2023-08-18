@@ -2,12 +2,14 @@
 // import { db } from "../../database/firebase"
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
-import { IStoreState } from "../../store.js";
+import { TStoreState } from "../../store.js";
 import { errorMessage, arrayIsEmpty } from "../../utils/generalUtils.js";
-import { IActionType, IDispatchType } from "../../utils/types.js";
+import { TActionType, TDispatchType } from "../../utils/types.js";
 import { getPrivateSongTitleDB } from "../song/services/privateSongTitleList.js";
 import { getPublicSongTitleDB } from "../song/services/publicSongTitleList.js";
-import { IRepertoryState } from "./reducers.js";
+import { TSong } from "../song/types.js";
+import { TUserDB, TUserId } from "../user/types.js";
+import { TRepertoryState } from "./reducers.js";
 import {
 	getPrivateRepertoryListDB,
 	getPrivateRepertoryDB,
@@ -16,6 +18,7 @@ import {
 	getPublicRepertoryDB,
 	getPublicRepertoryListDB,
 } from "./services/publicRepertoryList.js";
+import { TRepertoryId } from "./types.js";
 
 export const types = {
 	RESET_REPERTORY_ACTION_STATUS: "RESET_REPERTORY_ACTION_STATUS",
@@ -49,26 +52,30 @@ export const types = {
 	DELETE_REPERTORY_FAILURE: "DELETE_REPERTORY_FAILURE",
 };
 
-export const resetRepertoryActionStatus = (): IActionType => ({
+export const resetRepertoryActionStatus = (): TActionType => ({
 	type: types.RESET_REPERTORY_ACTION_STATUS,
 });
 export const setRepertoryListStatus = (
-	repertoryListStatus: IRepertoryState["repertoryListStatus"]
-): IActionType => ({
+	repertoryListStatus: TRepertoryState["repertoryListStatus"]
+): TActionType => ({
 	type: types.SET_REPERTORY_LIST_STATUS,
 	payload: { repertoryListStatus },
 });
 export const setRepertoryStatus = (
-	repertoryStatus: IRepertoryState["repertoryStatus"]
-): IActionType => ({
+	repertoryStatus: TRepertoryState["repertoryStatus"]
+): TActionType => ({
 	type: types.SET_REPERTORY_STATUS,
 	payload: { repertoryStatus },
 });
 
 // Thunks
 
-export const getRepertoryList = ({ userId, onlyAddPrivates = false }) => {
-	return async (dispatch: IDispatchType, getState: () => IStoreState) => {
+export const getRepertoryList = (p: {
+	userId: TUserId;
+	onlyAddPrivates?: boolean;
+}) => {
+	const { userId, onlyAddPrivates = false } = p;
+	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
 		try {
 			dispatch({
 				type: types.FETCH_REPERTORY_LIST,
@@ -108,8 +115,12 @@ export const getRepertoryList = ({ userId, onlyAddPrivates = false }) => {
 	};
 };
 
-export const getRepertory = ({ userId, repertoryId }) => {
-	return async (dispatch: IDispatchType, getState: () => IStoreState) => {
+export const getRepertory = (p: {
+	userId: TUserId;
+	repertoryId: TRepertoryId;
+}) => {
+	const { userId, repertoryId } = p;
+	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
 		try {
 			dispatch({
 				type: types.FETCH_REPERTORY,
@@ -118,27 +129,45 @@ export const getRepertory = ({ userId, repertoryId }) => {
 			//////////////////////////////
 
 			const repertoryList = getState().repertory.repertoryList;
-			let repertory;
-			if (!arrayIsEmpty(repertoryList))
-				repertory = repertoryList.find((i) => i.id === repertoryId);
+			if (arrayIsEmpty(repertoryList))
+				throw new Error("Repertory not found (List).");
+			let repertory = repertoryList.find((i) => i.id === repertoryId) || null;
 
-			if (!repertory)
-				repertory = await getPrivateRepertoryDB({
+			if (!repertory) {
+				const privateRepertory = await getPrivateRepertoryDB({
 					userId,
 					repertoryId,
 					hasInvitation: true,
 				});
-			if (!repertory) repertory = await getPublicRepertoryDB({ repertoryId });
+				repertory = privateRepertory
+					? { ...privateRepertory, isPrivate: true }
+					: null;
+			}
+			if (!repertory) {
+				const publicRepertory = await getPublicRepertoryDB({
+					repertoryId,
+				});
+				repertory = publicRepertory
+					? { ...publicRepertory, isPrivate: false }
+					: null;
+			}
 			if (!repertory) throw new Error("Repertory not found (Title).");
 
-			const returnRepertorySongSections = [];
-			for (const [key, section] of repertory?.songSections) {
-				returnRepertorySongSections.push({ name: section?.name, songs: [] });
+			const returnSectionsWithSongTitles: Array<{
+				name: string;
+				songs: TSong[];
+			}> = [];
+			for (const [
+				sectionIndex,
+				{ name, songs },
+			] of repertory.songSections.entries()) {
+				returnSectionsWithSongTitles.push({ name, songs: [] });
 
-				for (const songTitleId of section?.songs) {
-					let songTitle = getState().page.songListPageBackup.songList.find(
-						(i) => i.id === songTitleId
-					);
+				for (const songTitleId of songs) {
+					let songTitle =
+						getState().page.songListPageBackup.songList.find(
+							(i) => i.id === songTitleId
+						) || null;
 					if (!songTitle)
 						songTitle = getState().page.songPageBackup.songList[songTitleId];
 					if (!songTitle)
@@ -151,12 +180,12 @@ export const getRepertory = ({ userId, repertoryId }) => {
 						songTitle = await getPublicSongTitleDB({ songTitleId });
 					if (!songTitle) throw new Error("Song not found (Title).");
 
-					returnRepertorySongSections[key]?.songs?.push(songTitle);
+					returnSectionsWithSongTitles[sectionIndex]?.songs?.push(songTitle);
 				}
 			}
 			const returnRepertory = {
 				...repertory,
-				songSections: returnRepertorySongSections,
+				songSections: returnSectionsWithSongTitles,
 			};
 
 			//////////////////////////////

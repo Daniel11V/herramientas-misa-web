@@ -1,35 +1,30 @@
-export interface IActionType {
+export type TActionType = {
 	type: string;
 	payload?: any;
-}
+};
 
-export type IDispatchType = (args: IActionType) => IActionType;
+export type TDispatchType = (args: TActionType) => TActionType;
 
-export type IFetchStatusType = "INITIAL" | "FETCHING" | "SUCCESS" | "FAILURE";
-export const fetchStatus: Record<IFetchStatusType, IFetchStatusType> = {
+export const FETCH_STATUS = {
 	INITIAL: "INITIAL",
 	FETCHING: "FETCHING",
 	SUCCESS: "SUCCESS",
 	FAILURE: "FAILURE",
-};
+} as const;
+export type TFetchStatus = (typeof FETCH_STATUS)[keyof typeof FETCH_STATUS];
 
-export type ISecurityStatusType =
-	| "INITIAL"
-	| "SHOULD_UPDATE"
-	| "PUBLIC"
-	| "PRIVATE"
-	| "FAILURE";
-export const securityStatus: Record<ISecurityStatusType, ISecurityStatusType> =
-	{
-		INITIAL: "INITIAL",
-		SHOULD_UPDATE: "SHOULD_UPDATE",
-		PUBLIC: "PUBLIC",
-		PRIVATE: "PRIVATE",
-		FAILURE: "FAILURE",
-	};
-
-export type IChordLangs = "en" | "es";
-export const chordLangs: Record<IChordLangs, IChordLangs> = {
-	en: "en",
-	es: "es",
+export const SECURITY_STATUS = {
+	INITIAL: "INITIAL",
+	SHOULD_UPDATE: "SHOULD_UPDATE",
+	PUBLIC: "PUBLIC",
+	PRIVATE: "PRIVATE",
+	FAILURE: "FAILURE",
 };
+export type TSecurityStatus =
+	(typeof SECURITY_STATUS)[keyof typeof SECURITY_STATUS];
+
+export const CHORD_LANGS = {
+	EN: "en",
+	ES: "es",
+};
+export type TChordLangs = (typeof CHORD_LANGS)[keyof typeof CHORD_LANGS];

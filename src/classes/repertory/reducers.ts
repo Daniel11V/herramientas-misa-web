@@ -1,15 +1,15 @@
 import { produce } from "immer";
 import { types } from "./actions";
-import { IRepertory } from "./types";
+import { TRepertory } from "./types";
 import {
-	IActionType,
-	IFetchStatusType,
-	ISecurityStatusType,
-	fetchStatus,
-	securityStatus,
+	TActionType,
+	TFetchStatus,
+	TSecurityStatus,
+	FETCH_STATUS,
+	SECURITY_STATUS,
 } from "../../utils/types";
 
-const defaultRepertory: IRepertory = {
+const defaultRepertory: TRepertory = {
 	id: "",
 	title: "",
 	isPrivate: true,
@@ -21,7 +21,7 @@ const defaultRepertory: IRepertory = {
 		id: "",
 		name: "",
 	},
-	members: [],
+	members: {},
 	songSections: [
 		{
 			name: "",
@@ -30,40 +30,40 @@ const defaultRepertory: IRepertory = {
 	],
 };
 
-export interface IRepertoryState {
-	repertoryActionStatus: IFetchStatusType;
+export type TRepertoryState = {
+	repertoryActionStatus: TFetchStatus;
 	repertoryError: string | null;
 
-	repertoryListStatus: ISecurityStatusType;
+	repertoryListStatus: TSecurityStatus;
 	repertoryListUserId: string | null;
-	repertoryList: IRepertory[];
+	repertoryList: TRepertory[];
 
-	repertoryStatus: ISecurityStatusType;
+	repertoryStatus: TSecurityStatus;
 	repertoryUserId: string | null;
-	repertory: IRepertory;
-}
+	repertory: TRepertory;
+};
 
-const initialState: IRepertoryState = {
-	repertoryActionStatus: fetchStatus.INITIAL,
+const initialState: TRepertoryState = {
+	repertoryActionStatus: FETCH_STATUS.INITIAL,
 	repertoryError: null,
 
-	repertoryListStatus: securityStatus.INITIAL,
+	repertoryListStatus: SECURITY_STATUS.INITIAL,
 	repertoryListUserId: null,
 	repertoryList: [],
 
-	repertoryStatus: securityStatus.INITIAL,
+	repertoryStatus: SECURITY_STATUS.INITIAL,
 	repertoryUserId: null,
 	repertory: defaultRepertory,
 };
 
 const RepertoryReducer = (
-	state: IRepertoryState = initialState,
-	{ type, payload }: IActionType
+	state: TRepertoryState = initialState,
+	{ type, payload }: TActionType
 ) => {
-	return produce(state, (newState: IRepertoryState) => {
+	return produce(state, (newState: TRepertoryState) => {
 		switch (type) {
 			case types.RESET_REPERTORY_ACTION_STATUS:
-				newState.repertoryActionStatus = fetchStatus.INITIAL;
+				newState.repertoryActionStatus = FETCH_STATUS.INITIAL;
 				newState.repertoryError = null;
 				break;
 
@@ -72,20 +72,20 @@ const RepertoryReducer = (
 				break;
 
 			case types.FETCH_REPERTORY_LIST:
-				newState.repertoryActionStatus = fetchStatus.FETCHING;
+				newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
 				break;
 			case types.FETCH_REPERTORY_LIST_SUCCESS:
-				newState.repertoryActionStatus = fetchStatus.SUCCESS;
+				newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
 				newState.repertoryList = payload.repertoryList;
 				newState.repertoryListStatus = payload.userId
-					? securityStatus.PRIVATE
-					: securityStatus.PUBLIC;
+					? SECURITY_STATUS.PRIVATE
+					: SECURITY_STATUS.PUBLIC;
 				newState.repertoryListUserId = payload.userId;
 				break;
 			case types.FETCH_REPERTORY_LIST_FAILURE:
-				newState.repertoryActionStatus = fetchStatus.FAILURE;
+				newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
 				newState.repertoryError = payload.error;
-				newState.repertoryListStatus = securityStatus.FAILURE;
+				newState.repertoryListStatus = SECURITY_STATUS.FAILURE;
 				newState.repertoryListUserId = payload.userId;
 				break;
 
@@ -94,65 +94,65 @@ const RepertoryReducer = (
 				break;
 
 			case types.FETCH_REPERTORY:
-				newState.repertoryActionStatus = fetchStatus.FETCHING;
+				newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
 				break;
 			case types.FETCH_REPERTORY_SUCCESS:
-				newState.repertoryActionStatus = fetchStatus.SUCCESS;
+				newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
 				newState.repertory = payload.repertory;
 				newState.repertoryStatus = payload.userId
-					? securityStatus.PRIVATE
-					: securityStatus.PUBLIC;
+					? SECURITY_STATUS.PRIVATE
+					: SECURITY_STATUS.PUBLIC;
 				newState.repertoryUserId = payload.userId;
 				break;
 			case types.FETCH_REPERTORY_FAILURE:
-				newState.repertoryActionStatus = fetchStatus.FAILURE;
+				newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
 				newState.repertoryError = payload.error;
-				newState.repertoryStatus = securityStatus.FAILURE;
+				newState.repertoryStatus = SECURITY_STATUS.FAILURE;
 				break;
 
 			case types.CREATE_REPERTORY:
-				newState.repertoryActionStatus = fetchStatus.FETCHING;
+				newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
 				break;
 			case types.CREATE_REPERTORY_SUCCESS:
-				newState.repertoryActionStatus = fetchStatus.SUCCESS;
+				newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
 				newState.repertoryList.push(payload.repertoryCreated);
-				newState.repertoryListStatus = securityStatus.SHOULD_UPDATE;
+				newState.repertoryListStatus = SECURITY_STATUS.SHOULD_UPDATE;
 				newState.repertory = payload.repertoryCreated;
 				break;
 			case types.CREATE_REPERTORY_FAILURE:
-				newState.repertoryActionStatus = fetchStatus.FAILURE;
+				newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
 				newState.repertoryError = payload.error;
 				break;
 
 			case types.EDIT_REPERTORY:
-				newState.repertoryActionStatus = fetchStatus.FETCHING;
+				newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
 				break;
 			case types.EDIT_REPERTORY_SUCCESS:
-				newState.repertoryActionStatus = fetchStatus.SUCCESS;
+				newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
 				newState.repertoryList = state.repertoryList.map((repertory) =>
 					repertory.id === payload.repertoryEdited.id
 						? payload.repertoryEdited
 						: repertory
 				);
-				newState.repertoryListStatus = securityStatus.SHOULD_UPDATE;
+				newState.repertoryListStatus = SECURITY_STATUS.SHOULD_UPDATE;
 				newState.repertory = payload.repertoryEdited;
 				break;
 			case types.EDIT_REPERTORY_FAILURE:
-				newState.repertoryActionStatus = fetchStatus.FAILURE;
+				newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
 				newState.repertoryError = payload.error;
 				break;
 
 			case types.DELETE_REPERTORY:
-				newState.repertoryActionStatus = fetchStatus.FETCHING;
+				newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
 				break;
 			case types.DELETE_REPERTORY_SUCCESS:
-				newState.repertoryActionStatus = fetchStatus.SUCCESS;
+				newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
 				delete newState.repertoryList[payload.repertoryDeletedId];
-				newState.repertoryListStatus = securityStatus.SHOULD_UPDATE;
+				newState.repertoryListStatus = SECURITY_STATUS.SHOULD_UPDATE;
 				newState.repertory = defaultRepertory;
 				break;
 			case types.DELETE_REPERTORY_FAILURE:
-				newState.repertoryActionStatus = fetchStatus.FAILURE;
+				newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
 				newState.repertoryError = payload.error;
 				break;
 

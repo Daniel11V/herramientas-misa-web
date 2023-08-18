@@ -1,46 +1,49 @@
-import { type IAuthor } from "../author/types";
-import { IUserDB } from "../user/types";
+import { TypeError } from "../../utils/errors";
+import { type TAuthor } from "../author/types";
+import { TUserDB, TUserId } from "../user/types";
 
-export interface ICreator {
+export type TCreator = {
 	id: string;
 	name: string;
-}
+};
 
-export interface IRate {
+export type TRate = {
 	userId: string;
 	userRate: number;
-}
+};
 
-export interface ISong {
-	id: string;
+export type TSongId = string;
+
+export type TSong = {
+	id: TSongId;
 	versionGroupId: string;
 	isPrivate: boolean;
 	lyricId: string;
 	lyricIsPrivate: boolean;
 	title: string;
 	lyricStart: string;
-	author: IAuthor;
-	creator: ICreator;
-	hasAccess?: Record<IUserDB["id"], IUserDB["name"]>;
+	author: TAuthor;
+	creator: TCreator;
 	labels: Array<string>;
-	topics?: Array<string>;
-	rating?: IRate[];
 	level: {
 		general: number;
 		guitar?: number;
-		//...
+		[key: string]: number;
 	};
+	privateAccess?: Record<TUserId, TUserDB["name"]>;
+	topics?: Array<string>;
+	rating?: TRate[];
 	annotations?: string;
 	tone?: string;
 	pulse?: string;
 	tempo?: string;
-	lyric: string;
-}
+	lyric?: string;
+};
 
-export interface ISongForm {
+export type TSongForm = {
 	title: string;
-	author: IAuthor;
-	creator: ICreator;
+	author: TAuthor;
+	creator: TCreator;
 	labels: Array<string>;
 	topics?: Array<string>;
 	annotations?: string;
@@ -48,7 +51,13 @@ export interface ISongForm {
 	pulse?: string;
 	tempo?: string;
 	lyric: string;
-}
+};
+
+export type TSongOptions = {
+	tone?: TSong["tone"];
+	annotations?: TSong["annotations"];
+	level?: TSong["level"];
+};
 
 export const generalLevelOptions = {
 	general: [
@@ -70,18 +79,33 @@ export const songLevels = {
 }
 */
 
-export interface IPublicSongTitleDB
-	extends Omit<ISong, "lyric" | "hasAccess"> {}
-// export type IPublicSongLyricDB = Pick<ISong, "lyric">;
+export type TPublicSongTitleDB = Omit<TSong, "lyric" | "privateAccess">;
+// export type TPublicSongLyricDB = Pick<TSong, "lyric">;
+export type TPublicSongTitleListDB = Record<
+	TPublicSongTitleDB["id"],
+	TPublicSongTitleDB
+>;
 
-export interface IPublicSongLyricDB {
+export type TPublicSongLyricDB = {
 	lyric: string;
-}
+};
+export type TPrivateRepertoryListDB = Record<
+	TPrivateRepertoryDB["id"],
+	TPrivateRepertoryDB
+>;
 
-export interface IPrivateSongTitleDB extends IPublicSongTitleDB {
-	hasAccess: Record<IUserDB["id"], IUserDB["name"]>; // { userId: name, ...}
-}
+export type TPrivateSongTitleDB = TPublicSongTitleDB & {
+	privateAccess: Record<TUserId, TUserDB["name"]>; // { userId: name, ...}
+};
+export type TPrivateSongTitleListDB = Record<
+	TPrivateSongTitleDB["id"],
+	TPrivateSongTitleDB
+>;
 
-export interface IPrivateSongLyricDB {
+export type TPrivateSongLyricDB = {
 	lyric: string;
-}
+};
+export type TPrivateRepertoryListDB = Record<
+	TPrivateRepertoryDB["id"],
+	TPrivateRepertoryDB
+>;

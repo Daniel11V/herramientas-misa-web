@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, MouseEventHandler } from "react";
 import styled, { css } from "styled-components";
 import { colors } from "../../styles/styleUtils";
 
@@ -16,10 +16,13 @@ const BottomSheet = ({ children, open, setOpen, fullscreen = false }) => {
 
 			if (newTopValue < 50) {
 				const newSheetHeight = screenHeight - (screenHeight / 100) * 10;
-				document.querySelector(
+				const lastBottomSheetDiv = document.querySelector(
 					"#bottom-sheet > div:nth-child(2)"
-				).style.height = newSheetHeight + "px";
-				setTopValue("50");
+				);
+				if (lastBottomSheetDiv instanceof HTMLDivElement) {
+					lastBottomSheetDiv.style.height = newSheetHeight + "px";
+					setTopValue("50");
+				}
 			} else {
 				setTopValue((newTopValue + 12).toFixed(0));
 			}
@@ -52,9 +55,9 @@ const BottomSheet = ({ children, open, setOpen, fullscreen = false }) => {
 		if (!fullscreen) updateTopValue();
 	}, [children, fullscreen]);
 
-	const handleClickActionButton = (event) => {
-		event.stopPropagation();
-		setOpen((lv) => !lv);
+	const handleClickActionButton = (event: React.MouseEvent): void => {
+		event?.stopPropagation();
+		setOpen((lv: boolean) => !lv);
 	};
 
 	return (

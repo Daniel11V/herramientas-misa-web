@@ -7,23 +7,23 @@ import {
 	setRepertoryListStatus,
 } from "../../../classes/repertory/actions";
 import { MAX_RETRYS } from "../../../configs";
-import { IStoreState } from "../../../store";
-import { fetchStatus, securityStatus } from "../../../utils/types";
+import { TStoreState } from "../../../store";
+import { FETCH_STATUS, SECURITY_STATUS } from "../../../utils/types";
 
 export const useRepertoryListPage = () => {
 	const dispatch = useDispatch();
 
-	const userId = useSelector((state: IStoreState) => state.user.google.id);
+	const userId = useSelector((state: TStoreState) => state.user.google.id);
 	const {
 		repertoryList,
 		repertoryListStatus,
 		repertoryListUserId,
 		repertoryActionStatus,
 		repertoryError,
-	} = useSelector((state: IStoreState) => state.repertory);
+	} = useSelector((state: TStoreState) => state.repertory);
 
 	const { repertoryListPageBackup } = useSelector(
-		(state: IStoreState) => state.page
+		(state: TStoreState) => state.page
 	);
 	const { repertoryList: repertoryListBackup } = repertoryListPageBackup;
 
@@ -60,16 +60,16 @@ export const useRepertoryListPage = () => {
 	}, [repertoryError]);
 
 	useEffect(() => {
-		if (repertoryListStatus === securityStatus.SHOULD_UPDATE) {
+		if (repertoryListStatus === SECURITY_STATUS.SHOULD_UPDATE) {
 			setStatus(steps.WITH_REPERTORY_LIST_1);
 			dispatch(
 				setRepertoryListStatus(
-					repertoryListUserId ? securityStatus.PRIVATE : securityStatus.PUBLIC
+					repertoryListUserId ? SECURITY_STATUS.PRIVATE : SECURITY_STATUS.PUBLIC
 				)
 			);
 		} else if (userId && repertoryListUserId !== userId) {
 			setStatus(steps.FETCH_REPERTORY_LIST_1, { userId });
-		} else if (!userId && repertoryListStatus === securityStatus.PRIVATE) {
+		} else if (!userId && repertoryListStatus === SECURITY_STATUS.PRIVATE) {
 			setStatus(steps.FETCH_REPERTORY_LIST_1);
 		} else if (status.step === steps.INITIAL) {
 			if (!arrayIsEmpty(repertoryListBackup)) {
@@ -90,13 +90,13 @@ export const useRepertoryListPage = () => {
 
 	useEffect(() => {
 		if (status.step === steps.FETCH_REPERTORY_LIST_1) {
-			if (repertoryActionStatus === fetchStatus.INITIAL) {
+			if (repertoryActionStatus === FETCH_STATUS.INITIAL) {
 				dispatch(getRepertoryList(status.opts));
 				setRetrys(0);
-			} else if (repertoryActionStatus === fetchStatus.SUCCESS) {
+			} else if (repertoryActionStatus === FETCH_STATUS.SUCCESS) {
 				setStatus(steps.WITH_REPERTORY_LIST_1, { fromFetch: true });
 				dispatch(resetRepertoryActionStatus());
-			} else if (repertoryActionStatus === fetchStatus.FAILURE) {
+			} else if (repertoryActionStatus === FETCH_STATUS.FAILURE) {
 				if (retrys === MAX_RETRYS) {
 					setStatus(steps.FINISHED);
 					dispatch(resetRepertoryActionStatus());

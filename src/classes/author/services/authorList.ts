@@ -1,9 +1,9 @@
 import store from "../../../store";
 import { setDatabaseItem } from "../../database/reducers";
-import { IAuthorDB } from "../types";
+import { TAuthorDB } from "../types";
 
 export const getAuthorListDB = async (): Promise<
-	Record<IAuthorDB["id"], IAuthorDB>
+	Record<TAuthorId, TAuthorDB>
 > => {
 	const authorList = store.getState().database.authorList;
 
@@ -14,7 +14,7 @@ export const getAuthorListDB = async (): Promise<
 
 export const getAuthorDB = async (p: {
 	authorId: string;
-}): Promise<IAuthorDB> => {
+}): Promise<TAuthorDB> => {
 	const { authorId } = p;
 
 	if (!authorId) throw new Error("Invalid author ID.");
@@ -27,7 +27,7 @@ export const getAuthorDB = async (p: {
 };
 
 export const createAuthorDB = async (p: {
-	authorCreated: IAuthorDB;
+	authorCreated: TAuthorDB;
 }): Promise<void> => {
 	const { authorCreated } = p;
 
@@ -39,7 +39,7 @@ export const createAuthorDB = async (p: {
 };
 
 export const editAuthorDB = async (p: {
-	authorEdited: IAuthorDB;
+	authorEdited: TAuthorDB;
 }): Promise<void> => {
 	const { authorEdited } = p;
 };

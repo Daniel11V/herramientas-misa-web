@@ -1,21 +1,21 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAuthorList } from "./actions";
-import { IStoreState } from "../../store";
-import { fetchStatus } from "../../utils/types";
+import { TStoreState } from "../../store";
+import { FETCH_STATUS } from "../../utils/types";
 
 export const useAuthorList = () => {
 	const dispatch = useDispatch();
 	const { authorList, authorStatus, authorError } = useSelector(
-		(state: IStoreState) => state.author
+		(state: TStoreState) => state.author
 	);
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
-		if (authorStatus === fetchStatus.INITIAL) {
+		if (authorStatus === FETCH_STATUS.INITIAL) {
 			dispatch(getAuthorList());
 			setIsLoading(true);
-		} else if (authorStatus === fetchStatus.FETCHING) {
+		} else if (authorStatus === FETCH_STATUS.FETCHING) {
 			setIsLoading(true);
 		} else {
 			setIsLoading(false);

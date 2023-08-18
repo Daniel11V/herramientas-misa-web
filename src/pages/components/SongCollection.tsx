@@ -14,7 +14,7 @@ import {
 	CollectionItemLyric,
 } from "../../styles/styles.js";
 import { SongList } from "../../classes/song/types";
-import { IStoreState } from "../../store.js";
+import { TStoreState } from "../../store.js";
 
 interface Props {
 	songList: SongList;
@@ -35,7 +35,7 @@ const SongCollection: React.FC<Props> = ({
 	checking = false,
 	pageName = "Cancionero",
 }) => {
-	const userId = useSelector((state: IStoreState) => state.user.google.id);
+	const userId = useSelector((state: TStoreState) => state.user.google.id);
 	const navigate = useNavigate();
 
 	const [songChoose, setSongChoose] = useState(null);
@@ -125,8 +125,7 @@ const SongCollection: React.FC<Props> = ({
 	const handleClickSearchLyric = () => {};
 
 	const handleClickSong = (id) => {
-		navigate.push({
-			pathname: `/song/${id}`,
+		navigate(`/song/${id}`, {
 			state: { from: pageName },
 		});
 	};
@@ -136,11 +135,17 @@ const SongCollection: React.FC<Props> = ({
 		e.stopPropagation();
 
 		if (songId === songChoose) {
-			setSongChoose(null);
-			document.getElementById(songId).checked = false;
+			const songItemCheckboxInput = document.getElementById(songId);
+			if (songItemCheckboxInput instanceof HTMLInputElement) {
+				setSongChoose(null);
+				songItemCheckboxInput.checked = false;
+			}
 		} else {
-			setSongChoose(songId);
-			document.getElementById(songId).checked = true;
+			const songItemCheckboxInput = document.getElementById(songId);
+			if (songItemCheckboxInput instanceof HTMLInputElement) {
+				setSongChoose(songId);
+				songItemCheckboxInput.checked = true;
+			}
 		}
 	};
 

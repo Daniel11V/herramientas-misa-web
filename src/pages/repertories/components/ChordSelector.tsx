@@ -4,27 +4,30 @@ import styled from "styled-components";
 import allChords from "../../../data/allChords";
 
 const ChordSelector = ({ selectedChord, setSelectedChord, chordLang }) => {
-	const [chordModal, setChordModal] = useState(null);
+	const [chordModal, setChordModal] = useState<M.Modal | null>(null);
 
 	useEffect(() => {
 		const elem = document.querySelector(".chord-modal");
-		const instance = M.Modal.init(elem, {
-			endingTop: "15%",
-		});
-		setChordModal(instance);
+		let modal: M.Modal;
+		if (elem instanceof HTMLDivElement) {
+			modal = M.Modal.init(elem, {
+				endingTop: "15%",
+			});
+			setChordModal(modal);
+		}
 		return () => {
-			instance.destroy();
+			modal.destroy();
 		};
 	}, []);
 
-	const handleSelectorClick = (event) => {
+	const handleSelectorClick = (event: React.MouseEvent): void => {
 		event.stopPropagation();
 		chordModal?.open();
 	};
 
 	const handleChordClick = (chord) => {
 		setSelectedChord(chord);
-		chordModal.close();
+		chordModal?.close();
 	};
 
 	return (

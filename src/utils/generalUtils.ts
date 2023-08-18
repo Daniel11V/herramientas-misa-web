@@ -1,9 +1,12 @@
-import { Rate } from "../classes/song/types";
+import { TRate } from "../classes/song/types";
+import { TUserId } from "../classes/user/types";
 import allChords from "../data/allChords";
 import searchLabels from "../data/searchLabels";
 
-export const errorMessage = (error: unknown): string =>
-	error instanceof Error ? error.message : String(error);
+export const isAdminUser = (userId: TUserId): boolean => {
+	const adminList = ["111418653738749034139"];
+	return adminList.includes(userId);
+};
 
 export const automaticLabels = (lyric, labels) => {
 	const onlyLyric = lyric.split("\n").filter((p) => {
@@ -76,7 +79,7 @@ export const objsAreEqual = (
 	return true;
 };
 
-export const getRating = (rates: Rate[] = []): number => {
+export const getRating = (rates: TRate[] = []): number => {
 	let sumatory = 0;
 	rates.forEach((rate) => {
 		sumatory += rate.userRate;

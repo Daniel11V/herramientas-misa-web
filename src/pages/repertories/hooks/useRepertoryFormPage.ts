@@ -13,8 +13,8 @@ import {
 	getDataFromRandomLyric,
 	getFormattedLyric,
 } from "../../../utils/lyricsAndChordsUtils";
-import { IStoreState } from "../../../store";
-import { fetchStatus } from "../../../utils/types";
+import { TStoreState } from "../../../store";
+import { FETCH_STATUS } from "../../../utils/types";
 
 export const useRepertoryFormPage = (songId) => {
 	const dispatch = useDispatch();
@@ -46,12 +46,12 @@ export const useRepertoryFormPage = (songId) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(false);
 
-	const userId = useSelector((state: IStoreState) => state.user?.google?.id);
+	const userId = useSelector((state: TStoreState) => state.user?.google?.id);
 	const userName = useSelector(
-		(state: IStoreState) => state.user?.google?.name
+		(state: TStoreState) => state.user?.google?.name
 	);
 	const { song, songRequestStatus, songError } = useSelector(
-		(state: IStoreState) => state.song
+		(state: TStoreState) => state.song
 	);
 	const [retrys, setRetrys] = useState(0);
 
@@ -116,13 +116,13 @@ export const useRepertoryFormPage = (songId) => {
 
 	useEffect(() => {
 		if (step === steps.FETCH_SONG_1) {
-			if (songRequestStatus === fetchStatus.INITIAL) {
+			if (songRequestStatus === FETCH_STATUS.INITIAL) {
 				dispatch(getSong({ userId, songId }));
-			} else if (songRequestStatus === fetchStatus.SUCCESS) {
+			} else if (songRequestStatus === FETCH_STATUS.SUCCESS) {
 				setStep(steps.SONG_1);
 				dispatch(resetSongRequestStatus());
 				setError(null);
-			} else if (songRequestStatus === fetchStatus.FAILURE) {
+			} else if (songRequestStatus === FETCH_STATUS.FAILURE) {
 				setStep(steps.FINISHED);
 				dispatch(resetSongRequestStatus());
 			}
@@ -191,29 +191,29 @@ export const useRepertoryFormPage = (songId) => {
 			const saveAsPublic = false;
 
 			if (songId) {
-				if (songRequestStatus === fetchStatus.INITIAL) {
+				if (songRequestStatus === FETCH_STATUS.INITIAL) {
 					dispatch(editSong(repertoryForm, saveAsPublic));
-				} else if (songRequestStatus === fetchStatus.SUCCESS) {
+				} else if (songRequestStatus === FETCH_STATUS.SUCCESS) {
 					M.toast({ html: "Canción Actualizada" });
 					dispatch(resetSongRequestStatus());
 					setFormStep(formSteps.FINISHED);
 					navigate(-1);
-				} else if (songRequestStatus === fetchStatus.FAILURE) {
+				} else if (songRequestStatus === FETCH_STATUS.FAILURE) {
 					setFormStep(formSteps.FINISHED);
 					M.toast({ html: "Error actualizando la canción" });
 					dispatch(resetSongRequestStatus());
 					navigate(-1);
 				}
 			} else {
-				if (songRequestStatus === fetchStatus.INITIAL) {
+				if (songRequestStatus === FETCH_STATUS.INITIAL) {
 					dispatch(createSong(repertoryForm, saveAsPublic));
-				} else if (songRequestStatus === fetchStatus.SUCCESS) {
+				} else if (songRequestStatus === FETCH_STATUS.SUCCESS) {
 					M.toast({ html: "Canción Guardada" });
 					dispatch(resetSongRequestStatus());
 
 					setFormStep(formSteps.FINISHED);
 					navigate(-1);
-				} else if (songRequestStatus === fetchStatus.FAILURE) {
+				} else if (songRequestStatus === FETCH_STATUS.FAILURE) {
 					setFormStep(formSteps.FINISHED);
 					M.toast({ html: "Error guardando la canción" });
 					dispatch(resetSongRequestStatus());

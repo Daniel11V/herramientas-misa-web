@@ -1,7 +1,9 @@
-import { IChordLangs } from "../../utils/types";
+import { TChordLangs } from "../../utils/types";
 
-export interface IUserDB {
-	id: string;
+export type TUserId = string;
+
+export type TUserDB = {
+	id: TUserId;
 	name: string;
 	email: string;
 	photoUrl: string;
@@ -9,7 +11,9 @@ export interface IUserDB {
 		songPageOptions: {
 			fontSize: string;
 			showChords: true;
-			chordLang: IChordLangs;
+			chordLang: TChordLangs;
 		};
 	};
-}
+};
+
+export type TUserListDB = Record<TUserId, TUserDB>;

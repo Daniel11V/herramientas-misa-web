@@ -20,7 +20,7 @@ import {
 	getLyricWithChords,
 	getLyricStart,
 } from "../../../utils/lyricsAndChordsUtils";
-import { IStoreState } from "../../../store";
+import { TStoreState } from "../../../store";
 
 export const useSongFormPage = (songId) => {
 	const dispatch = useDispatch();
@@ -40,16 +40,16 @@ export const useSongFormPage = (songId) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(false);
 
-	const userId = useSelector((state: IStoreState) => state.user?.google?.id);
+	const userId = useSelector((state: TStoreState) => state.user?.google?.id);
 	const userName = useSelector(
-		(state: IStoreState) => state.user?.google?.name
+		(state: TStoreState) => state.user?.google?.name
 	);
 	const { song, songRequestStatus, songError } = useSelector(
-		(state: IStoreState) => state.song
+		(state: TStoreState) => state.song
 	);
 	const [retrys, setRetrys] = useState(0);
 	const { authorList, authorStatus, authorError } = useSelector(
-		(state: IStoreState) => state.author
+		(state: TStoreState) => state.author
 	);
 	const [authorItems, setAuthorItems] = useState([]);
 	const [authorForm, setAuthorForm] = useState({

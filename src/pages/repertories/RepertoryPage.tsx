@@ -22,7 +22,9 @@ const RepertoryPage = () => {
 
 	useEffect(() => {
 		const elems = document.querySelectorAll(".modal");
-		M.Modal.init(elems);
+		if (elems instanceof NodeList && elems[0] instanceof HTMLDivElement) {
+			M.Modal.init(elems);
+		}
 	}, []);
 
 	const deleteRepertory = async () => {

@@ -2,8 +2,8 @@
 // import { db } from "../../database/firebase"
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
-import store, { IStoreState } from "../../store.js";
-import { IActionType, IDispatchType, fetchStatus } from "../../utils/types.js";
+import { TStoreState } from "../../store.js";
+import { TActionType, TDispatchType, FETCH_STATUS } from "../../utils/types.js";
 import { arrayIsEmpty } from "../../utils/generalUtils.js";
 import {
 	getAuthorListDB,
@@ -12,7 +12,7 @@ import {
 	editAuthorDB,
 	deleteAuthorDB,
 } from "./services/authorList.js";
-import { IAuthorDB } from "./types.js";
+import { TAuthorDB } from "./types.js";
 import { errorMessage } from "../../utils/generalUtils.js";
 
 export const types = {
@@ -34,18 +34,18 @@ export const types = {
 	DELETE_AUTHOR_STATUS: "DELETE_AUTHOR_STATUS",
 };
 
-export const resetAuthorStatus = (): IActionType => ({
+export const resetAuthorStatus = (): TActionType => ({
 	type: types.RESET_AUTHOR_STATUS,
 });
 
 // Thunks
 
 export const getAuthorList = () => {
-	return async (dispatch: IDispatchType): Promise<void> => {
+	return async (dispatch: TDispatchType) => {
 		try {
 			dispatch({
 				type: types.SET_AUTHOR_LIST_STATUS,
-				payload: { authorStatus: fetchStatus.FETCHING, error: null },
+				payload: { authorStatus: FETCH_STATUS.FETCHING, error: null },
 			});
 
 			const authorListObject = await getAuthorListDB();
@@ -53,14 +53,14 @@ export const getAuthorList = () => {
 
 			dispatch({
 				type: types.SET_AUTHOR_LIST,
-				payload: { authorList, authorStatus: fetchStatus.SUCCESS },
+				payload: { authorList, authorStatus: FETCH_STATUS.SUCCESS },
 			});
 		} catch (err) {
 			console.warn(err);
 			dispatch({
 				type: types.SET_AUTHOR_LIST_STATUS,
 				payload: {
-					authorStatus: fetchStatus.FAILURE,
+					authorStatus: FETCH_STATUS.FAILURE,
 					error: errorMessage(err),
 				},
 			});
@@ -71,14 +71,11 @@ export const getAuthorList = () => {
 export const getAuthor = (p: { authorId: string }) => {
 	const { authorId } = p;
 
-	return async (
-		dispatch: IDispatchType,
-		getState: () => IStoreState
-	): Promise<void> => {
+	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
 		try {
 			dispatch({
 				type: types.SET_AUTHOR_STATUS,
-				payload: { authorStatus: fetchStatus.FETCHING, error: null },
+				payload: { authorStatus: FETCH_STATUS.FETCHING, error: null },
 			});
 
 			///////////////////////////////
@@ -87,7 +84,7 @@ export const getAuthor = (p: { authorId: string }) => {
 			let author;
 
 			if (!arrayIsEmpty(authorList)) {
-				author = authorList.find((i: IAuthorDB) => i.id === authorId);
+				author = authorList.find((i: TAuthorDB) => i.id === authorId);
 			} else {
 				author = await getAuthorDB({ authorId });
 			}
@@ -96,14 +93,14 @@ export const getAuthor = (p: { authorId: string }) => {
 
 			dispatch({
 				type: types.SET_AUTHOR,
-				payload: { author, authorStatus: fetchStatus.SUCCESS },
+				payload: { author, authorStatus: FETCH_STATUS.SUCCESS },
 			});
 		} catch (err) {
 			console.warn(err);
 			dispatch({
 				type: types.SET_AUTHOR_STATUS,
 				payload: {
-					authorStatus: fetchStatus.FAILURE,
+					authorStatus: FETCH_STATUS.FAILURE,
 					error: errorMessage(err),
 				},
 			});
@@ -112,16 +109,16 @@ export const getAuthor = (p: { authorId: string }) => {
 };
 
 export const createAuthor = (p: {
-	authorCreated: IAuthorDB;
+	authorCreated: TAuthorDB;
 	saveAsPublic?: boolean;
 }) => {
 	const { authorCreated, saveAsPublic = true } = p;
 
-	return async (dispatch: IDispatchType): Promise<void> => {
+	return async (dispatch: TDispatchType) => {
 		try {
 			dispatch({
 				type: types.CREATE_AUTHOR_STATUS,
-				payload: { authorStatus: fetchStatus.FETCHING, error: null },
+				payload: { authorStatus: FETCH_STATUS.FETCHING, error: null },
 			});
 
 			authorCreated.id = new Date().getTime().toString();
@@ -130,14 +127,14 @@ export const createAuthor = (p: {
 
 			dispatch({
 				type: types.CREATE_AUTHOR,
-				payload: { authorCreated, authorStatus: fetchStatus.SUCCESS },
+				payload: { authorCreated, authorStatus: FETCH_STATUS.SUCCESS },
 			});
 		} catch (err) {
 			console.warn(err);
 			dispatch({
 				type: types.CREATE_AUTHOR_STATUS,
 				payload: {
-					authorStatus: fetchStatus.FAILURE,
+					authorStatus: FETCH_STATUS.FAILURE,
 					error: errorMessage(err),
 				},
 			});
@@ -146,30 +143,30 @@ export const createAuthor = (p: {
 };
 
 export const editAuthor = (p: {
-	authorEdited: IAuthorDB;
+	authorEdited: TAuthorDB;
 	saveAsPublic?: boolean;
 }) => {
 	const { authorEdited, saveAsPublic = false } = p;
 
-	return async (dispatch: IDispatchType): Promise<void> => {
+	return async (dispatch: TDispatchType) => {
 		try {
 			dispatch({
 				type: types.EDIT_AUTHOR_STATUS,
-				payload: { authorStatus: fetchStatus.FETCHING, error: null },
+				payload: { authorStatus: FETCH_STATUS.FETCHING, error: null },
 			});
 
 			await editAuthorDB({ authorEdited });
 
 			dispatch({
 				type: types.EDIT_AUTHOR,
-				payload: { authorEdited, authorStatus: fetchStatus.SUCCESS },
+				payload: { authorEdited, authorStatus: FETCH_STATUS.SUCCESS },
 			});
 		} catch (err) {
 			console.warn(err);
 			dispatch({
 				type: types.EDIT_AUTHOR_STATUS,
 				payload: {
-					authorStatus: fetchStatus.FAILURE,
+					authorStatus: FETCH_STATUS.FAILURE,
 					error: errorMessage(err),
 				},
 			});
@@ -183,25 +180,25 @@ export const deleteAuthor = (p: {
 }) => {
 	const { authorDeletedId, saveAsPublic = false } = p;
 
-	return async (dispatch: IDispatchType): Promise<void> => {
+	return async (dispatch: TDispatchType) => {
 		try {
 			dispatch({
 				type: types.DELETE_AUTHOR_STATUS,
-				payload: { authorStatus: fetchStatus.FETCHING, error: null },
+				payload: { authorStatus: FETCH_STATUS.FETCHING, error: null },
 			});
 
 			deleteAuthorDB({ authorDeletedId });
 
 			dispatch({
 				type: types.DELETE_AUTHOR,
-				payload: { authorDeletedId, authorStatus: fetchStatus.SUCCESS },
+				payload: { authorDeletedId, authorStatus: FETCH_STATUS.SUCCESS },
 			});
 		} catch (err) {
 			console.warn(err);
 			dispatch({
 				type: types.DELETE_AUTHOR_STATUS,
 				payload: {
-					authorStatus: fetchStatus.FAILURE,
+					authorStatus: FETCH_STATUS.FAILURE,
 					error: errorMessage(err),
 				},
 			});

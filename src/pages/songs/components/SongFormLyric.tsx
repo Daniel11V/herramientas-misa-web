@@ -9,8 +9,10 @@ interface Props {
 export const SongFormLyric: React.FC<Props> = ({ lyric, setLyric }) => {
 	const resizeForPreviousLyric = useCallback(() => {
 		if (lyric) {
-			let textarea = document.querySelector("#lyric");
-			setTimeout(() => M.textareaAutoResize(textarea), 500);
+			const textarea = document.querySelector("#lyric");
+			if (textarea instanceof HTMLTextAreaElement) {
+				setTimeout(() => M.textareaAutoResize(textarea), 500);
+			}
 		}
 	}, [lyric]);
 

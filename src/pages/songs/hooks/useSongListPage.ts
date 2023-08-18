@@ -7,23 +7,23 @@ import {
 } from "../../../classes/song/actions";
 import { setSongListPageBackup } from "../../../classes/page/actions";
 import { MAX_RETRYS } from "../../../configs";
-import { IStoreState } from "../../../store";
-import { fetchStatus, securityStatus } from "../../../utils/types";
+import { TStoreState } from "../../../store";
+import { FETCH_STATUS, SECURITY_STATUS } from "../../../utils/types";
 import { arrayIsEmpty, getRating } from "../../../utils/generalUtils";
 
 export const useSongListPage = () => {
 	const dispatch = useDispatch();
 
-	const userId = useSelector((state: IStoreState) => state.user.google.id);
+	const userId = useSelector((state: TStoreState) => state.user.google.id);
 	const {
 		songList,
 		songListStatus,
 		songListUserId,
 		songRequestStatus,
 		songError,
-	} = useSelector((state: IStoreState) => state.song);
+	} = useSelector((state: TStoreState) => state.song);
 	const { songListPageBackup } = useSelector(
-		(state: IStoreState) => state.page
+		(state: TStoreState) => state.page
 	);
 	const { songList: songListBackup } = songListPageBackup;
 
@@ -65,16 +65,16 @@ export const useSongListPage = () => {
 		// if (songListStatus === "INITIAL") {
 		//     setStatus("FETCH_SONG_LIST_1", { isFirst: true, userId });
 
-		if (songListStatus === securityStatus.SHOULD_UPDATE) {
+		if (songListStatus === SECURITY_STATUS.SHOULD_UPDATE) {
 			setStatus(steps.WITH_SONG_LIST_1);
 			dispatch(
 				setSongListStatus(
-					songListUserId ? securityStatus.PRIVATE : securityStatus.PUBLIC
+					songListUserId ? SECURITY_STATUS.PRIVATE : SECURITY_STATUS.PUBLIC
 				)
 			);
 		} else if (userId && songListUserId !== userId) {
 			setStatus(steps.FETCH_SONG_LIST_1, { userId });
-		} else if (!userId && songListStatus === securityStatus.PRIVATE) {
+		} else if (!userId && songListStatus === SECURITY_STATUS.PRIVATE) {
 			setStatus(steps.FETCH_SONG_LIST_1);
 		} else if (status.step === steps.INITIAL) {
 			if (!arrayIsEmpty(songListBackup)) {
@@ -95,13 +95,13 @@ export const useSongListPage = () => {
 
 	useEffect(() => {
 		if (status.step === steps.FETCH_SONG_LIST_1) {
-			if (songRequestStatus === fetchStatus.INITIAL) {
+			if (songRequestStatus === FETCH_STATUS.INITIAL) {
 				dispatch(getSongList(status.opts));
 				setRetrys(0);
-			} else if (songRequestStatus === fetchStatus.SUCCESS) {
+			} else if (songRequestStatus === FETCH_STATUS.SUCCESS) {
 				setStatus(steps.WITH_SONG_LIST_1, { fromFetch: true });
 				dispatch(resetSongRequestStatus());
-			} else if (songRequestStatus === fetchStatus.FAILURE) {
+			} else if (songRequestStatus === FETCH_STATUS.FAILURE) {
 				if (retrys === MAX_RETRYS) {
 					setStatus(steps.FINISHED);
 					dispatch(resetSongRequestStatus());

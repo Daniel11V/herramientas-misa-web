@@ -53,7 +53,7 @@ const LyricWithChords = ({
 
 	const hasChord = (i, k) => !!chords?.[i] && (k >= 0 ? !!chords[i][k] : true);
 
-	const handleLetterClick = (i, k, event) => {
+	const handleLetterClick = (i, k, event: React.MouseEvent): void => {
 		event.stopPropagation();
 
 		if (isEditable) {
@@ -67,7 +67,7 @@ const LyricWithChords = ({
 		}
 	};
 
-	const handleArrowBtns = (event, i, k, direction) => {
+	const handleArrowBtns = (event: React.MouseEvent, i, k, direction) => {
 		event.stopPropagation();
 
 		setSelectedLetter([i, k ? k + direction : k]);

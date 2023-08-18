@@ -16,8 +16,10 @@ const Suggestion = () => {
 	// }
 
 	useEffect(() => {
-		let elems = document.querySelectorAll("select");
-		M.FormSelect.init(elems);
+		const elem = document.querySelector("select");
+		if (elem instanceof HTMLSelectElement) {
+			M.FormSelect.init(elem);
+		}
 	}, []);
 
 	const searchSongs = async (e) => {

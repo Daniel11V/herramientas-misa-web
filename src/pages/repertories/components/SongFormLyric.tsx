@@ -4,8 +4,10 @@ import { useCallback, useEffect } from "react";
 const SongFormLyric = ({ lyric, setLyric }) => {
 	const resizeForPreviousLyric = useCallback(() => {
 		if (lyric) {
-			let textarea = document.querySelector("textarea");
-			setTimeout(() => M.textareaAutoResize(textarea), 500);
+			const textarea = document.querySelector("textarea");
+			if (textarea instanceof HTMLTextAreaElement) {
+				setTimeout(() => M.textareaAutoResize(textarea), 500);
+			}
 		}
 	}, [lyric]);
 

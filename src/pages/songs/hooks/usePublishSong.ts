@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { publishSong } from "../../../classes/song/actions";
 import M from "materialize-css";
+import { isAdminUser } from "../../../utils/generalUtils";
 
 export const usePublishSong = (song, user, setMessageModalOpts) => {
 	const dispatch = useDispatch();
@@ -9,7 +10,7 @@ export const usePublishSong = (song, user, setMessageModalOpts) => {
 	const [errorPublish, setError] = useState(false);
 
 	const publishCurrentSong = () => {
-		dispatch(publishSong({ songPublicId: song.id }));
+		dispatch(publishSong({ privateSongId: song.id }));
 	};
 
 	const handleClickPublish = () => {
@@ -22,7 +23,7 @@ export const usePublishSong = (song, user, setMessageModalOpts) => {
 			},
 			onCancel: () => {},
 			onConfirm: () => {
-				if (user.id === "111418653738749034139") {
+				if (isAdminUser(user.id)) {
 					publishCurrentSong();
 					return;
 				}

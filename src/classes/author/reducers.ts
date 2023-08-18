@@ -1,9 +1,9 @@
 import { produce } from "immer";
 import { types } from "./actions";
-import { IAuthorDB } from "./types";
-import { IActionType, IFetchStatusType, fetchStatus } from "../../utils/types";
+import { TAuthorDB } from "./types";
+import { TActionType, TFetchStatus, FETCH_STATUS } from "../../utils/types";
 
-const defaultAuthor: IAuthorDB = {
+const defaultAuthor: TAuthorDB = {
 	id: "",
 	name: "",
 	email: "",
@@ -12,16 +12,16 @@ const defaultAuthor: IAuthorDB = {
 	songTitleIds: [],
 };
 
-export interface IAuthorState {
-	authorStatus: IFetchStatusType;
+export type TAuthorState = {
+	authorStatus: TFetchStatus;
 	authorError: string | null;
 
-	authorList: IAuthorDB[];
-	author: IAuthorDB;
-}
+	authorList: TAuthorDB[];
+	author: TAuthorDB;
+};
 
-const initialState: IAuthorState = {
-	authorStatus: fetchStatus.INITIAL,
+const initialState: TAuthorState = {
+	authorStatus: FETCH_STATUS.INITIAL,
 	authorError: null,
 
 	authorList: [],
@@ -29,13 +29,13 @@ const initialState: IAuthorState = {
 };
 
 const AuthorReducer = (
-	state: IAuthorState = initialState,
-	{ type, payload }: IActionType
+	state: TAuthorState = initialState,
+	{ type, payload }: TActionType
 ) => {
-	return produce(state, (newState: IAuthorState) => {
+	return produce(state, (newState: TAuthorState) => {
 		switch (type) {
 			case types.RESET_AUTHOR_STATUS:
-				newState.authorStatus = fetchStatus.INITIAL;
+				newState.authorStatus = FETCH_STATUS.INITIAL;
 				newState.authorError = null;
 				break;
 

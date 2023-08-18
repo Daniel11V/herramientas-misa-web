@@ -1,5 +1,6 @@
 import store from "../../../store";
 import { setDatabaseItem } from "../../database/reducers";
+import { TPublicRepertoryDB, TRepertoryId } from "../types";
 
 export const getPublicRepertoryListDB = async () => {
 	const repertoryList = store.getState().database.publicRepertoryList;
@@ -9,7 +10,8 @@ export const getPublicRepertoryListDB = async () => {
 	return repertoryList;
 };
 
-export const getPublicRepertoryDB = async ({ repertoryId }) => {
+export const getPublicRepertoryDB = async (p: { repertoryId: TRepertoryId }) => {
+	const { repertoryId } = p;
 	if (!repertoryId) throw new Error("Invalid repertory ID.");
 
 	const repertory = store.getState().database.publicRepertoryList[repertoryId];
@@ -19,7 +21,9 @@ export const getPublicRepertoryDB = async ({ repertoryId }) => {
 	return repertory;
 };
 
-export const createPublicRepertoryDB = async ({ repertoryCreated }) => {
+export const createPublicRepertoryDB = async (p: { repertoryCreated: TPublicRepertoryDB }) => {
+	const { repertoryCreated } = p;
+
 	if (!repertoryCreated) throw new Error("Invalid repertory ID.");
 
 	await store.dispatch(
@@ -31,6 +35,6 @@ export const createPublicRepertoryDB = async ({ repertoryCreated }) => {
 	);
 };
 
-export const editPublicRepertoryDB = async ({ repertoryEdited }) => {};
+// export const editPublicRepertoryDB = async ({ repertoryEdited }) => {};
 
-export const deletePublicRepertoryDB = async ({ repertoryDeletedId }) => {};
+// export const deletePublicRepertoryDB = async ({ repertoryDeletedId }) => {};

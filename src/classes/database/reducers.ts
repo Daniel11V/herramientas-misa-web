@@ -1,15 +1,21 @@
 import { produce } from "immer";
 import { testData } from "../../data/testData";
-import { IAuthorDB } from "../author/types";
+import { TAuthorDB, TAuthorListDB } from "../author/types";
 import {
-	IPrivateSongLyricDB,
-	IPrivateSongTitleDB,
-	IPublicSongLyricDB,
-	IPublicSongTitleDB,
+	TPrivateSongLyricDB,
+	TPrivateSongTitleDB,
+	TPrivateSongTitleListDB,
+	TPublicSongLyricDB,
+	TPublicSongTitleDB,
 } from "../song/types";
-import { IActionType } from "../../utils/types";
-import { IPrivateRepertoryDB, IPublicRepertoryDB } from "../repertory/types";
-import { IUserDB } from "../user/types";
+import { TActionType } from "../../utils/types";
+import {
+	TPrivateRepertoryDB,
+	TPrivateRepertoryListDB,
+	TPublicRepertoryDB,
+	TPublicRepertoryListDB,
+} from "../repertory/types";
+import { TUserDB, TUserListDB } from "../user/types";
 
 export const types = {
 	SET_DATABASE: "SET_DATABASE",
@@ -17,70 +23,70 @@ export const types = {
 	DELETE_DATABASE_ITEM: "DELETE_DATABASE_ITEM",
 };
 
-export interface IDatabaseState {
-	authorList: Record<IAuthorDB["id"], IAuthorDB>;
-	userList: Record<IUserDB["id"], IUserDB>;
-	privateRepertoryList: Record<IPrivateRepertoryDB["id"], IPrivateRepertoryDB>;
-	privateSongTitleList: Record<IPrivateSongTitleDB["id"], IPrivateSongTitleDB>;
-	privateSongLyricList: Record<string, IPrivateSongLyricDB>;
-	publicRepertoryList: Record<IPublicRepertoryDB["id"], IPublicRepertoryDB>;
-	publicSongTitleList: Record<IPublicSongTitleDB["id"], IPublicSongTitleDB>;
-	publicSongLyricList: Record<string, IPublicSongLyricDB>;
-}
+export type TDatabaseState = {
+	authorList: TAuthorListDB;
+	userList: TUserListDB;
+	privateRepertoryList: TPrivateRepertoryListDB;
+	privateSongTitleList: TPrivateSongTitleListDB;
+	privateSongLyricList: Record<string, TPrivateSongLyricDB>;
+	publicRepertoryList: TPublicRepertoryListDB;
+	publicSongTitleList: Record<TPublicSongTitleDB["id"], TPublicSongTitleDB>;
+	publicSongLyricList: Record<string, TPublicSongLyricDB>;
+};
 
-export type IDatabaseCategory = keyof IDatabaseState;
+export type TDatabaseCategory = keyof TDatabaseState;
 
-export type IDatabaseItem =
-	| IAuthorDB
-	| IUserDB
-	| IPrivateRepertoryDB
-	| IPrivateSongTitleDB
-	| IPrivateSongLyricDB
-	| IPublicRepertoryDB
-	| IPublicSongTitleDB
-	| IPublicSongTitleDB
-	| IPublicSongLyricDB;
+export type TDatabaseItem =
+	| TAuthorDB
+	| TUserDB
+	| TPrivateRepertoryDB
+	| TPrivateSongTitleDB
+	| TPrivateSongLyricDB
+	| TPublicRepertoryDB
+	| TPublicSongTitleDB
+	| TPublicSongTitleDB
+	| TPublicSongLyricDB;
 
-export const setDatabase = (newDatabase: IDatabaseState) => ({
+export const setDatabase = (newDatabase: TDatabaseState) => ({
 	type: types.SET_DATABASE,
 	payload: { newDatabase },
 });
 
 export const setDatabaseItem = (
-	category: IDatabaseCategory,
+	category: TDatabaseCategory,
 	id: string,
-	item: IDatabaseItem
-): IActionType => ({
+	item: TDatabaseItem
+): TActionType => ({
 	type: types.SET_DATABASE_ITEM,
 	payload: { category, id, item },
 });
 
 export const deleteDatabaseItem = (
-	category: IDatabaseCategory,
+	category: TDatabaseCategory,
 	id: string
-): IActionType => ({
+): TActionType => ({
 	type: types.DELETE_DATABASE_ITEM,
 	payload: { category, id },
 });
 
-const initialState: IDatabaseState = { ...testData };
+const initialState: TDatabaseState = { ...testData };
 
 const DatabaseReducer = (
-	state: IDatabaseState = initialState,
+	state: TDatabaseState = initialState,
 	{
 		type,
 		payload,
 	}: {
 		type: string;
 		payload: {
-			newDatabase?: IDatabaseState;
-			category?: IDatabaseCategory;
+			newDatabase?: TDatabaseState;
+			category?: TDatabaseCategory;
 			id?: string;
-			item?: IDatabaseItem;
+			item?: TDatabaseItem;
 		};
 	}
 ) => {
-	return produce(state, (newState: IDatabaseState) => {
+	return produce(state, (newState: TDatabaseState) => {
 		switch (type) {
 			case types.SET_DATABASE:
 				if (payload.newDatabase) newState = payload.newDatabase;

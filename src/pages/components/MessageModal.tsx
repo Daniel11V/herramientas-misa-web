@@ -3,16 +3,19 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const MessageModal = ({ opts }) => {
-	const [modalInstance, setModalInstance] = useState(null);
+	const [modalInstance, setModalInstance] = useState<M.Modal | null>(null);
 
 	useEffect(() => {
 		const elem = document.querySelector(".message-modal");
-		const instance = M.Modal.init(elem, {
-			// endingTop: "15%",
-		});
-		setModalInstance(instance);
+		let modal: M.Modal;
+		if (elem instanceof HTMLDivElement) {
+			const modal = M.Modal.init(elem, {
+				// endingTop: "15%",
+			});
+			setModalInstance(modal);
+		}
 		return () => {
-			instance.destroy();
+			modal?.destroy();
 		};
 	}, []);
 
@@ -24,7 +27,7 @@ const MessageModal = ({ opts }) => {
 		}
 	}, [opts, modalInstance]);
 
-	const closeModal = (event) => {
+	const closeModal = (event: React.MouseEvent): void => {
 		event.stopPropagation();
 		modalInstance?.close();
 	};

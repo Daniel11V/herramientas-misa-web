@@ -6,31 +6,31 @@ import {
 	getSong,
 	resetSongRequestStatus,
 } from "./actions";
-import { ISong } from "./types";
+import { TSong, TSongId } from "./types";
 import { MAX_RETRYS } from "../../configs";
-import { IStoreState } from "../../store";
-import { IUserDB } from "../user/types";
-import { fetchStatus, securityStatus } from "../../utils/types";
+import { TStoreState } from "../../store";
+import { TUserId } from "../user/types";
+import { FETCH_STATUS, SECURITY_STATUS } from "../../utils/types";
 
 interface IUseSong {
-	song: ISong;
+	song: TSong;
 	isLoadingFetchSong: boolean;
 	isLoadingEditSong: boolean;
 	errorSong: boolean;
-	editSong: (song: ISong) => void;
+	editSong: (song: TSong) => void;
 }
 
 export const useSong = (p: {
-	songTitleId: ISong["id"];
-	userId: IUserDB["id"];
+	songTitleId: TSongId;
+	userId: TUserId;
 }): IUseSong => {
 	const { songTitleId, userId } = p;
 	const dispatch = useDispatch();
 
 	const { song, songStatus, songUserId, songRequestStatus, songError } =
-		useSelector((state: IStoreState) => state.song);
+		useSelector((state: TStoreState) => state.song);
 	const songListBackup = useSelector(
-		(state: IStoreState) => state.page.songPageBackup.songList
+		(state: TStoreState) => state.page.songPageBackup.songList
 	);
 
 	type IStep = "INITIAL" | "FETCH_SONG_1" | "EDIT_SONG" | "FINISHED";
@@ -45,7 +45,7 @@ export const useSong = (p: {
 		opts: {},
 	});
 	const [retrys, setRetrys] = useState(0);
-	const [currentSong, setCurrentSong] = useState<ISong>(null);
+	const [currentSong, setCurrentSong] = useState<TSong>(null);
 
 	const [isLoadingFetchSong, setIsLoadingFetchSong] = useState(true);
 	const [isLoadingEditSong, setIsLoadingEditSong] = useState(false);
@@ -64,7 +64,7 @@ export const useSong = (p: {
 	useEffect(() => {
 		if (userId && songUserId !== userId) {
 			setStatus(steps.FETCH_SONG_1, { userId, songTitleId });
-		} else if (!userId && songStatus === securityStatus.PRIVATE) {
+		} else if (!userId && songStatus === SECURITY_STATUS.PRIVATE) {
 			setStatus(steps.FETCH_SONG_1, { songTitleId });
 		} else if (status.step === steps.INITIAL) {
 			if (!!songListBackup[songTitleId]) {
@@ -88,14 +88,14 @@ export const useSong = (p: {
 
 	useEffect(() => {
 		if (status.step === steps.FETCH_SONG_1) {
-			if (songRequestStatus === fetchStatus.INITIAL) {
+			if (songRequestStatus === FETCH_STATUS.INITIAL) {
 				dispatch(getSong(status.opts));
 				setRetrys(0);
-			} else if (songRequestStatus === fetchStatus.SUCCESS) {
+			} else if (songRequestStatus === FETCH_STATUS.SUCCESS) {
 				setCurrentSong(song);
 				setStatus(steps.FINISHED);
 				dispatch(resetSongRequestStatus());
-			} else if (songRequestStatus === fetchStatus.FAILURE) {
+			} else if (songRequestStatus === FETCH_STATUS.FAILURE) {
 				if (retrys === MAX_RETRYS) {
 					setError("Max retrys fetching song");
 					setStatus(steps.FINISHED);
@@ -122,15 +122,15 @@ export const useSong = (p: {
 
 	useEffect(() => {
 		if (status.step === steps.EDIT_SONG) {
-			if (songRequestStatus === fetchStatus.INITIAL) {
+			if (songRequestStatus === FETCH_STATUS.INITIAL) {
 				dispatch(editSongAction(status.opts));
 				setRetrys(0);
-			} else if (songRequestStatus === fetchStatus.SUCCESS) {
+			} else if (songRequestStatus === FETCH_STATUS.SUCCESS) {
 				setCurrentSong(song);
 				// setSongOptions({ tone: song.tone, annotations: song.annotations, level: song.level })
 				setStatus(steps.FINISHED);
 				dispatch(resetSongRequestStatus());
-			} else if (songRequestStatus === fetchStatus.FAILURE) {
+			} else if (songRequestStatus === FETCH_STATUS.FAILURE) {
 				if (retrys === MAX_RETRYS) {
 					setStatus(steps.FINISHED);
 					dispatch(resetSongRequestStatus());

@@ -12,27 +12,27 @@ const SelectorModal = ({
 	],
 	title = "",
 }) => {
-	const [modalRef, setModalRef] = useState(null);
+	const [modalRef, setModalRef] = useState<M.Modal | null>(null);
 
 	useEffect(() => {
 		const elem = document.querySelector(".selector-modal");
-		const instance = M.Modal.init(elem, {
-			endingTop: "15%",
-		});
-		setModalRef(instance);
+		const modal = !(elem instanceof HTMLDivElement)
+			? null
+			: M.Modal.init(elem, { endingTop: "15%" });
+		setModalRef(modal);
 		return () => {
-			instance.destroy();
+			modal?.destroy();
 		};
 	}, []);
 
-	const handleSelectorClick = (event) => {
+	const handleSelectorClick = (event: React.MouseEvent): void => {
 		event.stopPropagation();
 		modalRef?.open();
 	};
 
 	const handleItemClick = (item) => {
 		setSelectedItem(item);
-		modalRef.close();
+		modalRef?.close();
 	};
 
 	return (

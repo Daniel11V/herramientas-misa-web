@@ -7,14 +7,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../classes/user/actions";
 import { useRepertoryListPage } from "./hooks/useRepertoryListPage";
 import { Header } from "../../styles/styles";
-import { IStoreState } from "../../store";
+import { TStoreState } from "../../store";
 
 const RepertoryListPage = () => {
 	const [repertoryList, loadingRepertoryList, errorRepertoryList] =
 		useRepertoryListPage();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const isLogged = useSelector((state: IStoreState) => state.user.isLogged);
+	const isLogged = useSelector((state: TStoreState) => state.user.isLogged);
 
 	const loginAddSong = (userData) => {
 		dispatch(login(userData));

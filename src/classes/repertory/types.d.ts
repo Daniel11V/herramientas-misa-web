@@ -1,8 +1,16 @@
-import { ISong } from "../song/types";
-import { IUserDB } from "../user/types";
+import { TSong, TSongId } from "../song/types";
+import { TUserDB, TUserId } from "../user/types";
 
-export interface IRepertory {
-	id: string;
+export type TRepertoryId = string;
+
+export type TRepertoryMember = {
+	id: TUserId;
+	name: TUserDB["name"];
+	access: string;
+};
+
+export type TRepertory = {
+	id: TRepertoryId;
 	isPrivate: boolean;
 	title: string;
 	annotations: string;
@@ -10,16 +18,25 @@ export interface IRepertory {
 	placeUbication: string;
 	isMass: boolean;
 	creator: Creator;
-	members?: Array;
+	members?: Record<TUserId, TRepertoryMember>;
 	songSections: Array<{
 		name: string;
-		songs: Array<ISong["id"]>;
+		songs: TSongId[];
 	}>;
-	hasAccess?: Record<IUserDB["id"], IUserDB["name"]>;
-}
+};
 
-export interface IPublicRepertoryDB extends Omit<IRepertory, "hasAccess"> {}
+export type TPublicRepertoryDB = Omit<TRepertory, "isPrivate">;
 
-export interface IPrivateRepertoryDB extends Omit<IRepertory, "hasAccess"> {
-	hasAccess: Record<IUserDB["id"], IUserDB["name"]>;
-}
+export type TPublicRepertoryListDB = Record<
+	TPublicRepertoryDB["id"],
+	TPublicRepertoryDB
+>;
+
+export type TPrivateRepertoryDB = Omit<TRepertory, "isPrivate">;
+
+export type TPrivateRepertoryListDB = Record<
+	TPrivateRepertoryDB["id"],
+	TPrivateRepertoryDB
+>;
+
+export type TRepertoryForm = Omit<TRepertory, "id" | "isPrivate">;

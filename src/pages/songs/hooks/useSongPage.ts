@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAuthorList } from "../../../classes/author/actions";
 import { setSongPageBackup } from "../../../classes/page/actions";
 import { saveSongOptions } from "../../../classes/song/actions";
-import { IStoreState } from "../../../store";
+import { TStoreState } from "../../../store";
 
 const emptySong = {
 	id: "", // Required
@@ -35,8 +35,8 @@ const emptySong = {
 
 export const useSongPage = (songTitleId: string) => {
 	const dispatch = useDispatch();
-	const userId = useSelector((state: IStoreState) => state.user.google.id);
-	const { authorList } = useSelector((state: IStoreState) => state.author);
+	const userId = useSelector((state: TStoreState) => state.user.google.id);
+	const { authorList } = useSelector((state: TStoreState) => state.author);
 	const { song, isLoadingSong, errorSong, editSong } = useSong({
 		songTitleId,
 		userId,
@@ -112,7 +112,9 @@ export const useSongPage = (songTitleId: string) => {
 
 	// isEditing
 	const [editingSong, setEditingSong] = useState(false);
-	const [authorInstance, setAuthorInstance] = useState(null);
+	const [authorInstance, setAuthorInstance] = useState<M.Autocomplete | null>(
+		null
+	);
 	const [songForm, setSongForm] = useState(emptySong);
 
 	useEffect(() => {
@@ -139,14 +141,16 @@ export const useSongPage = (songTitleId: string) => {
 			!songForm?.author?.id
 		) {
 			console.log("useEffect authorInstance", authorInstance);
-			setAuthorInstance(
-				M.Autocomplete.init(document.querySelectorAll(".autocomplete"), {
-					onAutocomplete: (authorName) => {
-						editForm("author", authorName);
-					},
-					limit: 20,
-				})[0]
-			);
+			const autocompleteDiv = document.querySelector(".autocomplete");
+			const autocompleteInst = !(autocompleteDiv instanceof HTMLDivElement)
+				? null
+				: M.Autocomplete.init(autocompleteDiv, {
+						onAutocomplete: (authorName) => {
+							editForm("author", authorName);
+						},
+						limit: 20,
+				  });
+			setAuthorInstance(autocompleteInst);
 			dispatch(getAuthorList({ userId }));
 		}
 	}, [editingSong, authorInstance, songForm, dispatch, userId, editForm]);

@@ -1,26 +1,26 @@
 import { produce } from "immer";
 import { types } from "./actions";
-import { IUserDB } from "./types";
-import { IActionType } from "../../utils/types";
+import { TUserDB, TUserId } from "./types";
+import { TActionType } from "../../utils/types";
 
-export interface IUserState {
+export type TUserState = {
 	loading: boolean;
 	error: string | null;
 
 	isLogged: boolean;
 	google: {
-		id: IUserDB["id"];
-		name: IUserDB["name"];
-		imageUrl: IUserDB["photoUrl"];
-		email: IUserDB["email"];
+		id: TUserId;
+		name: TUserDB["name"];
+		imageUrl: TUserDB["photoUrl"];
+		email: TUserDB["email"];
 		accessToken: string;
 	};
-	config: IUserDB["config"];
+	config: TUserDB["config"];
 
 	isDesktop: boolean | null;
-}
+};
 
-const initialState: IUserState = {
+const initialState: TUserState = {
 	loading: false,
 	error: null,
 
@@ -47,10 +47,10 @@ const initialState: IUserState = {
 };
 
 const UserReducer = (
-	state: IUserState = initialState,
-	{ type, payload }: IActionType
+	state: TUserState = initialState,
+	{ type, payload }: TActionType
 ) => {
-	return produce(state, (newState: IUserState) => {
+	return produce(state, (newState: TUserState) => {
 		switch (type) {
 			case types.SET_USER_LOADING:
 				newState.loading = payload.loading;

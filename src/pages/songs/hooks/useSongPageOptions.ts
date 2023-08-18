@@ -3,12 +3,12 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSongPageOptions } from "../../../classes/user/actions";
 import { objsAreEqual } from "../../../utils/lyricsAndChordsUtils";
-import { IStoreState } from "../../../store";
+import { TStoreState } from "../../../store";
 
 export const useSongPageOptions = () => {
 	const dispatch = useDispatch();
 	const { songPageOptions } = useSelector(
-		(state: IStoreState) => state.user.config
+		(state: TStoreState) => state.user.config
 	);
 
 	const [areNewOptions, setAreNewOptions] = useState(false);

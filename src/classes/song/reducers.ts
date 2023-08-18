@@ -1,15 +1,15 @@
 import { produce } from "immer";
 import { types } from "./actions";
-import { ISong } from "./types";
+import { TSong } from "./types";
 import {
-	IActionType,
-	IFetchStatusType,
-	ISecurityStatusType,
-	fetchStatus,
-	securityStatus,
+	TActionType,
+	TFetchStatus,
+	TSecurityStatus,
+	FETCH_STATUS,
+	SECURITY_STATUS,
 } from "../../utils/types";
 
-const defaultSong: ISong = {
+const defaultSong: TSong = {
 	id: "",
 	versionGroupId: "",
 	isPrivate: true,
@@ -35,40 +35,40 @@ const defaultSong: ISong = {
 	},
 };
 
-export interface ISongState {
-	songRequestStatus: IFetchStatusType;
+export type TSongState = {
+	songRequestStatus: TFetchStatus;
 	songError: string | null;
 
-	songListStatus: ISecurityStatusType;
+	songListStatus: TSecurityStatus;
 	songListUserId: string | null;
-	songList: ISong[];
+	songList: TSong[];
 
-	songStatus: ISecurityStatusType;
+	songStatus: TSecurityStatus;
 	songUserId: string | null;
-	song: ISong;
-}
+	song: TSong;
+};
 
-const initialState: ISongState = {
-	songRequestStatus: fetchStatus.INITIAL,
+const initialState: TSongState = {
+	songRequestStatus: FETCH_STATUS.INITIAL,
 	songError: null,
 
-	songListStatus: securityStatus.INITIAL,
+	songListStatus: SECURITY_STATUS.INITIAL,
 	songListUserId: null,
 	songList: [],
 
-	songStatus: securityStatus.INITIAL,
+	songStatus: SECURITY_STATUS.INITIAL,
 	songUserId: null,
 	song: defaultSong,
 };
 
 const SongReducer = (
-	state: ISongState = initialState,
-	{ type, payload }: IActionType
+	state: TSongState = initialState,
+	{ type, payload }: TActionType
 ) => {
-	return produce(state, (newState: ISongState) => {
+	return produce(state, (newState: TSongState) => {
 		switch (type) {
 			case types.RESET_SONG_REQUEST_STATUS:
-				newState.songRequestStatus = fetchStatus.INITIAL;
+				newState.songRequestStatus = FETCH_STATUS.INITIAL;
 				newState.songError = null;
 				break;
 
@@ -77,20 +77,20 @@ const SongReducer = (
 				break;
 
 			case types.FETCH_SONG_LIST:
-				newState.songRequestStatus = fetchStatus.FETCHING;
+				newState.songRequestStatus = FETCH_STATUS.FETCHING;
 				break;
 			case types.FETCH_SONG_LIST_SUCCESS:
-				newState.songRequestStatus = fetchStatus.SUCCESS;
+				newState.songRequestStatus = FETCH_STATUS.SUCCESS;
 				newState.songList = payload.songList;
 				newState.songListStatus = payload.userId
-					? securityStatus.PRIVATE
-					: securityStatus.PUBLIC;
+					? SECURITY_STATUS.PRIVATE
+					: SECURITY_STATUS.PUBLIC;
 				newState.songListUserId = payload.userId;
 				break;
 			case types.FETCH_SONG_LIST_FAILURE:
-				newState.songRequestStatus = fetchStatus.FAILURE;
+				newState.songRequestStatus = FETCH_STATUS.FAILURE;
 				newState.songError = payload.error;
-				newState.songListStatus = securityStatus.FAILURE;
+				newState.songListStatus = SECURITY_STATUS.FAILURE;
 				newState.songListUserId = payload.userId;
 				break;
 
@@ -99,66 +99,66 @@ const SongReducer = (
 				break;
 
 			case types.FETCH_SONG:
-				newState.songRequestStatus = fetchStatus.FETCHING;
+				newState.songRequestStatus = FETCH_STATUS.FETCHING;
 				break;
 			case types.FETCH_SONG_SUCCESS:
-				newState.songRequestStatus = fetchStatus.SUCCESS;
+				newState.songRequestStatus = FETCH_STATUS.SUCCESS;
 				newState.song = payload.song;
 				newState.songStatus = payload.userId
-					? securityStatus.PRIVATE
-					: securityStatus.PUBLIC;
+					? SECURITY_STATUS.PRIVATE
+					: SECURITY_STATUS.PUBLIC;
 				newState.songUserId = payload.userId;
 				break;
 			case types.FETCH_SONG_FAILURE:
-				newState.songRequestStatus = fetchStatus.FAILURE;
+				newState.songRequestStatus = FETCH_STATUS.FAILURE;
 				newState.songError = payload.error;
-				newState.songStatus = securityStatus.FAILURE;
+				newState.songStatus = SECURITY_STATUS.FAILURE;
 				break;
 
 			case types.CREATE_SONG:
-				newState.songRequestStatus = fetchStatus.FETCHING;
+				newState.songRequestStatus = FETCH_STATUS.FETCHING;
 				break;
 			case types.CREATE_SONG_SUCCESS:
-				newState.songRequestStatus = fetchStatus.SUCCESS;
+				newState.songRequestStatus = FETCH_STATUS.SUCCESS;
 				newState.songList.push(payload.songCreated);
-				newState.songListStatus = securityStatus.SHOULD_UPDATE;
+				newState.songListStatus = SECURITY_STATUS.SHOULD_UPDATE;
 				newState.song = payload.songCreated;
 				break;
 			case types.CREATE_SONG_FAILURE:
-				newState.songRequestStatus = fetchStatus.FAILURE;
+				newState.songRequestStatus = FETCH_STATUS.FAILURE;
 				newState.songError = payload.error;
 				break;
 
 			case types.EDIT_SONG:
-				newState.songRequestStatus = fetchStatus.FETCHING;
+				newState.songRequestStatus = FETCH_STATUS.FETCHING;
 				break;
 			case types.EDIT_SONG_SUCCESS:
-				newState.songRequestStatus = fetchStatus.SUCCESS;
+				newState.songRequestStatus = FETCH_STATUS.SUCCESS;
 				const indexToEdit = state.songList.findIndex(
 					(song) => song.id === payload.songEdited.id
 				);
 				if (indexToEdit >= 0) {
 					newState.songList[indexToEdit] = payload.songEdited;
-					newState.songListStatus = securityStatus.SHOULD_UPDATE;
+					newState.songListStatus = SECURITY_STATUS.SHOULD_UPDATE;
 				}
 				newState.song = payload.songEdited;
 				break;
 			case types.EDIT_SONG_FAILURE:
-				newState.songRequestStatus = fetchStatus.FAILURE;
+				newState.songRequestStatus = FETCH_STATUS.FAILURE;
 				newState.songError = payload.error;
 				break;
 
 			case types.DELETE_SONG:
-				newState.songRequestStatus = fetchStatus.FETCHING;
+				newState.songRequestStatus = FETCH_STATUS.FETCHING;
 				break;
 			case types.DELETE_SONG_SUCCESS:
-				newState.songRequestStatus = fetchStatus.SUCCESS;
+				newState.songRequestStatus = FETCH_STATUS.SUCCESS;
 				delete newState.songList[payload.songDeletedId];
-				newState.songListStatus = securityStatus.SHOULD_UPDATE;
+				newState.songListStatus = SECURITY_STATUS.SHOULD_UPDATE;
 				newState.song = defaultSong;
 				break;
 			case types.DELETE_SONG_FAILURE:
-				newState.songRequestStatus = fetchStatus.FAILURE;
+				newState.songRequestStatus = FETCH_STATUS.FAILURE;
 				newState.songError = payload.error;
 				break;
 

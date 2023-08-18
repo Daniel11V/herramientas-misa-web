@@ -1,33 +1,30 @@
 import { produce } from "immer";
 import { types } from "./actions";
-import { IActionType } from "../../utils/types";
-import { ISong } from "../song/types";
-import { IRepertory } from "../repertory/types";
+import { TActionType } from "../../utils/types";
+import { TSong, TSongId, TSongOptions } from "../song/types";
+import { TRepertory, TRepertoryId } from "../repertory/types";
 
-export interface IPageState {
-	songPageBackup: {
-		songList: Record<ISong["id"], ISong>;
-		tone: ISong["tone"] | null;
-		annotations: ISong["annotations"] | null;
-		level: ISong["level"] | null;
+export type TPageState = {
+	songPageBackup: TSongOptions & {
+		songList: Record<TSongId, TSong>;
 	};
 	songListPageBackup: {
-		songList: ISong[];
+		songList: TSong[];
 		filters: object;
 	};
 	repertoryPageBackup: {
-		repertoryList: Record<IRepertory["id"], IRepertory>;
+		repertoryList: Record<TRepertoryId, TRepertory>;
 	};
 	repertoryListPageBackup: {
-		repertoryList: IRepertory[];
+		repertoryList: TRepertory[];
 	};
 	libraryPageBackup: {
-		songList: ISong[];
-		repertoryList: IRepertory[];
+		songList: TSong[];
+		repertoryList: TRepertory[];
 	};
-}
+};
 
-const initialState: IPageState = {
+const initialState: TPageState = {
 	songPageBackup: {
 		songList: {},
 		tone: null,
@@ -51,10 +48,10 @@ const initialState: IPageState = {
 };
 
 const PageReducer = (
-	state: IPageState = initialState,
-	{ type, payload }: IActionType
+	state: TPageState = initialState,
+	{ type, payload }: TActionType
 ) => {
-	return produce(state, (newState: IPageState) => {
+	return produce(state, (newState: TPageState) => {
 		switch (type) {
 			case types.SET_SONG_PAGE_BACKUP:
 				newState.songPageBackup = {
