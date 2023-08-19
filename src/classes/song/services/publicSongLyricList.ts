@@ -14,7 +14,7 @@ export const getPublicSongLyricDB = async (p: {
 	return publicSongLyric;
 };
 
-export const createPublicSongLyricDB = async (p: { lyric: string }) => {
+export const createPublicSongLyricDB = async (p: { lyric: string }): Promise<TSongId> => {
 	const { lyric } = p;
 	if (!lyric) throw new Error("Invalid lyric.");
 	const newId = new Date().getTime().toString();
@@ -25,7 +25,7 @@ export const createPublicSongLyricDB = async (p: { lyric: string }) => {
 
 	if (!response) throw new Error("Error in createPublicSongLyricDB.");
 
-	return;
+	return newId;
 };
 
 export const editPublicSongLyricDB = async (p: {

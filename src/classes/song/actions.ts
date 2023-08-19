@@ -4,7 +4,6 @@
 // import { database } from "../../data/database.js";
 import {
 	arrayIsEmpty,
-	errorMessage,
 	objsAreEqual,
 } from "../../utils/generalUtils.js";
 import { getLyricStart } from "../../utils/lyricsAndChordsUtils.js";
@@ -41,6 +40,7 @@ import {
 import {
 	TPrivateSongLyricDB,
 	TPrivateSongTitleDB,
+	TPublicSongTitleDB,
 	TSong,
 	TSongForm,
 	TSongId,
@@ -48,7 +48,8 @@ import {
 } from "./types.js";
 import { TUserId } from "../user/types.js";
 import { TStoreState } from "../../store.js";
-import { createTPrivateSongTitleDB } from "./createTypes.js";
+import { createTPrivateSongTitleDB, createTPublicSongTitleDB, createTSong } from "./createTypes.js";
+import { errorMessage } from "../../utils/errors.js";
 
 export const types = {
 	RESET_SONG_REQUEST_STATUS: "RESET_SONG_REQUEST_STATUS",
@@ -427,16 +428,15 @@ export const publishSong = (p: { privateSongId: TSongId }) => {
 			//////////////////////////////////////
 
 			// Se copia el PrivateTitleSong y se pega en public
-			const userId = getState().user.google.id;
-			const privateSong = getState().song.songList.find(
-				(song) => song.id === privateSongId
-			);
+			// const privateSong = getState().song.songList.find(
+			// 	(song) => song.id === privateSongId
+			// );
 
 			const oldSongTitleFromDB = await getPrivateSongTitleDB({
 				songTitleId: privateSongId,
 				hasInvitation: true,
 			});
-			await deletePrivateSongTitleDB({ songTitleId: privateSongId });
+			// await deletePrivateSongTitleDB({ songTitleId: privateSongId });
 			const oldSongLyricFromDB = await getPrivateSongLyricDB({
 				songLyricId: oldSongTitleFromDB.lyricId,
 			});
@@ -444,22 +444,23 @@ export const publishSong = (p: { privateSongId: TSongId }) => {
 				songLyricId: oldSongTitleFromDB.lyricId,
 			});
 
-			const newSongLyricCreatedByDB = await createPublicSongLyricDB({
+			const newSongLyricCreatedByDBId = await createPublicSongLyricDB({
 				lyric: oldSongLyricFromDB.lyric,
 			});
-			const newPublicSongTitle = {
+			const newPublicSongTitle: TPublicSongTitleDB = createTPublicSongTitleDB({
 				...oldSongTitleFromDB,
 				isPrivate: false,
 				lyricIsPrivate: false,
-				lyricId: newSongLyricCreatedByDB.id,
-			};
-			const newSongTitleCreatedByDB = await createPublicSongTitleDB({
+				lyricId: newSongLyricCreatedByDBId,
+			});
+			const newSongTitleCreatedByDBId = await createPublicSongTitleDB({
 				songTitleCreated: newPublicSongTitle,
 			});
-			const newSongCreatedByDB = {
-				...newSongLyricCreatedByDB,
-				...newSongTitleCreatedByDB,
-			};
+			const newSongCreatedByDB: TSong = createTSong({
+				...newPublicSongTitle,
+				lyric: oldSongLyricFromDB.lyric,
+				id: newSongTitleCreatedByDBId,
+			});
 
 			//////////////////////////////////////
 			dispatch({

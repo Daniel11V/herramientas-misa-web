@@ -20,16 +20,15 @@ export const getPublicSongTitleDB = async (p: { songTitleId: TSongId }): Promise
     return publicSongTitle;
 }
 
-export const createPublicSongTitleDB = async (p:{ songId: TSongId; songTitleCreated: TSongForm }) => {
-    const { songId, songTitleCreated } = p
-    if (!songId) throw new Error("Invalid song ID.");
-
-    await store.dispatch(setDatabaseItem("publicSongTitleList", songId, songTitleCreated));
+export const createPublicSongTitleDB = async (p:{ songTitleCreated: TPublicSongTitleDB }): Promise<TSongId> => {
+    const { songTitleCreated } = p
+    const newId = new Date().getTime().toString();
+    await store.dispatch(setDatabaseItem("publicSongTitleList", newId, songTitleCreated));
     const response = songTitleCreated;
 
     if (!response) throw new Error("Error fetching in createPublicSongTitleDB.");
 
-    return;
+    return newId;
 }
 
 export const editPublicSongTitleDB = async (p:{ songTitleEdited: TSong }) => {

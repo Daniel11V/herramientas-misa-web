@@ -1,6 +1,6 @@
 import store from "../../../store";
 import { setDatabaseItem } from "../../database/reducers";
-import { TAuthorDB } from "../types";
+import { TAuthorDB, TAuthorId } from "../types";
 
 export const getAuthorListDB = async (): Promise<
 	Record<TAuthorId, TAuthorDB>

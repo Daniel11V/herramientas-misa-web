@@ -8,6 +8,7 @@ import { login } from "../../classes/user/actions";
 import { useRepertoryListPage } from "./hooks/useRepertoryListPage";
 import { Header } from "../../styles/styles";
 import { TStoreState } from "../../store";
+import { TUserGoogle } from "../../classes/user/types";
 
 const RepertoryListPage = () => {
 	const [repertoryList, loadingRepertoryList, errorRepertoryList] =
@@ -16,7 +17,7 @@ const RepertoryListPage = () => {
 	const dispatch = useDispatch();
 	const isLogged = useSelector((state: TStoreState) => state.user.isLogged);
 
-	const loginAddSong = (userData) => {
+	const loginAddSong = (userData: TUserGoogle) => {
 		dispatch(login(userData));
 		navigate("/create-repertory", { state: { from: "Repertorios" } });
 	};
@@ -36,7 +37,7 @@ const RepertoryListPage = () => {
 						<i className="material-icons right">add</i>Crear
 					</Link>
 				) : (
-					<LoginLogoutBtn update={(v) => loginAddSong(v)}>
+					<LoginLogoutBtn update={loginAddSong}>
 						<div className="btn waves-effect waves-light blue darken-2 right">
 							<i className="material-icons right">add</i>Crear
 						</div>

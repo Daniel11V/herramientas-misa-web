@@ -1,19 +1,18 @@
 import store from "../../../store";
 import { deleteDatabaseItem, setDatabaseItem } from "../../database/reducers";
+import { TUserId } from "../../user/types";
 import {
 	TPrivateSongTitleDB,
 	TPublicSongTitleDB,
-	TSong,
-	TSongForm,
 	TSongId,
 } from "../types";
 
 export const getPrivateSongTitleListDB = async (p: {
 	userId: string;
-}): Promise<Record<TPrivateSongTitleDB["id"], TPrivateSongTitleDB> | null> => {
+}): Promise<Record<TPrivateSongTitleDB["id"], TPrivateSongTitleDB>> => {
 	const { userId } = p;
 
-	if (!userId) return null;
+	if (!userId) throw new Error("Required information missing");;
 
 	const allPrivateSongTitleList: Record<
 		TPrivateSongTitleDB["id"],
@@ -30,25 +29,25 @@ export const getPrivateSongTitleListDB = async (p: {
 					  }
 					: userPrivateSongTitleList,
 			{}
-		) || null;
+		);
 
 	return userPrivateSongTitleList;
 };
 
 export const getPrivateSongTitleDB = async (p: {
-	userId: string;
+	userId?: TUserId;
 	songTitleId: string;
 	hasInvitation?: boolean;
-}): Promise<TPrivateSongTitleDB | null> => {
+}): Promise<TPrivateSongTitleDB> => {
 	const { userId, songTitleId, hasInvitation = false } = p;
 
-	if (!userId && !hasInvitation) return null;
+	if (!userId && !hasInvitation) throw new Error("Required information missing");
 	if (!songTitleId) throw new Error("Invalid song title ID.");
 
 	const privateSongTitle =
 		store.getState().database.privateSongTitleList[songTitleId];
 
-	if (!!privateSongTitle && !hasInvitation) {
+	if (!!privateSongTitle && !hasInvitation && !!userId) {
 		const isAuthorized =
 			privateSongTitle.creator.id === userId ||
 			!!privateSongTitle.privateAccess?.[userId];

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 
-const UserLoadingScreen = ({ loading }) => {
+const UserLoadingScreen = (p: { loading: boolean }) => {
+	const { loading } = p;
 	const [showLoader, setShowLoader] = useState(true);
 
 	useEffect(() => {
@@ -15,7 +16,7 @@ const UserLoadingScreen = ({ loading }) => {
 	}, [loading]);
 
 	return showLoader ? (
-		<FullScreenBackground loading={loading.toString()}>
+		<FullScreenBackground loading={loading}>
 			<div>
 				<div className="preloader-wrapper big active">
 					<div className="spinner-layer spinner-blue-only">
@@ -35,7 +36,7 @@ const UserLoadingScreen = ({ loading }) => {
 	) : null;
 };
 
-const FullScreenBackground = styled.div`
+const FullScreenBackground = styled.div<{loading:boolean}>`
 	position: fixed;
 	z-index: 1000;
 	display: flex;
@@ -58,7 +59,7 @@ const FullScreenBackground = styled.div`
 	}
 
 	${(props) =>
-		props.loading === "true" &&
+		props.loading &&
 		css`
 			background-color: #ffffffe0;
 

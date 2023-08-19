@@ -52,7 +52,7 @@ const Navigation = () => {
 						<i className="material-icons">menu</i>
 					</Icon>
 					{lastPage && (
-						<BackIcon onClick={navigate(-1)}>
+						<BackIcon onClick={()=>{navigate(-1)}}>
 							<i className="material-icons">chevron_left</i>
 							{lastPage}
 						</BackIcon>
@@ -171,7 +171,7 @@ const BackIcon = styled(Icon).attrs({
 		line-height: 58px !important;
 	}
 `;
-const UserImage = styled.div`
+const UserImage = styled.div<{src: string, isDesktop?: boolean}>`
 	padding: 0 !important;
 	width: 100px !important;
 	height: 100px !important;

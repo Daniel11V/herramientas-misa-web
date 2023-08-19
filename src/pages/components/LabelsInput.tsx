@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import M from "materialize-css";
 import fullLabels from "../../data/fullLabels";
+import { TSong } from "../../classes/song/types";
+import { setFunc } from "../../utils/types";
 
-const LabelsInput = ({ labels = [], updateLabels }) => {
+const LabelsInput = (p:{ labels: TSong["labels"], updateLabels: setFunc<TSong["labels"]> }) => {
+	const { labels = [], updateLabels } = p;
 	useEffect(() => {
 		const elems = document.querySelectorAll("select");
 		if (elems instanceof NodeList && elems[0] instanceof HTMLSelectElement) {

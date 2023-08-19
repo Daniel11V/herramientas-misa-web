@@ -28,3 +28,6 @@ export const CHORD_LANGS = {
 	ES: "es",
 };
 export type TChordLangs = (typeof CHORD_LANGS)[keyof typeof CHORD_LANGS];
+
+
+export type setFunc<P> = React.Dispatch<React.SetStateAction<P>>

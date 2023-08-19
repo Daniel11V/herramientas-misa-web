@@ -1,16 +1,17 @@
-import React from "react";
 import { GoogleLogin } from "react-google-login";
 import { useDispatch, useSelector } from "react-redux";
 import { login, setUserLoading } from "../../classes/user/actions";
 import { TStoreState } from "../../store";
+import { TUserGoogle } from "../../classes/user/types";
 
-const LoggedButton = ({ children = null, onClick = () => {}, className }) => {
+const LoggedButton = (p: { children: any, onClick: () => void, className: string }) => {
+	const { children = null, onClick = () => {}, className } = p;
 	const dispatch = useDispatch();
 	const isLogged = useSelector((state: TStoreState) => state.user.isLogged);
 
-	const loginResponse = (response) => {
+	const loginResponse = (response: any) => {
 		if (response.googleId) {
-			const newUserDate = {
+			const newUserDate: TUserGoogle = {
 				id: response.profileObj.googleId,
 				name: response.profileObj.name,
 				email: response.profileObj.email,
@@ -18,7 +19,7 @@ const LoggedButton = ({ children = null, onClick = () => {}, className }) => {
 				accessToken: response.accessToken,
 			};
 			dispatch(login(newUserDate));
-			onClick(newUserDate);
+			onClick();
 		} else {
 			dispatch(setUserLoading(false));
 		}
@@ -26,7 +27,7 @@ const LoggedButton = ({ children = null, onClick = () => {}, className }) => {
 
 	return isLogged ? (
 		<div
-			class={className}
+			className={className}
 			onClick={(e) => {
 				e.stopPropagation();
 				onClick();

@@ -30,7 +30,7 @@ import { TPrivateSongLyricDB, TSongId } from "../types";
 
 export const getPrivateSongLyricDB = async (p: {
 	songLyricId: string;
-}): Promise<TPrivateSongLyricDB | null> => {
+}): Promise<TPrivateSongLyricDB> => {
 	const { songLyricId } = p;
 
 	if (!songLyricId) throw new Error("Invalid song lyric ID.");
@@ -38,7 +38,7 @@ export const getPrivateSongLyricDB = async (p: {
 	const privateSongLyric =
 		store.getState().database.privateSongLyricList[songLyricId];
 
-	return privateSongLyric || null;
+	return privateSongLyric;
 };
 
 export const createPrivateSongLyricDB = async (p: {
@@ -59,7 +59,7 @@ export const createPrivateSongLyricDB = async (p: {
 export const editPrivateSongLyricDB = async (p: {
 	lyricId: string;
 	lyric: string;
-}): Promise<void | null> => {
+}): Promise<void> => {
 	const { lyricId, lyric } = p;
 	await store.dispatch(
 		setDatabaseItem("privateSongLyricList", lyricId, { lyric })
@@ -69,8 +69,8 @@ export const editPrivateSongLyricDB = async (p: {
 
 export const deletePrivateSongLyricDB = async (p: {
 	songLyricId: string;
-}): Promise<TSongId | null> => {
+}): Promise<TSongId> => {
 	const { songLyricId } = p;
 	await store.dispatch(deleteDatabaseItem("privateSongLyricList", songLyricId));
-	return songLyricId || null;
+	return songLyricId;
 };

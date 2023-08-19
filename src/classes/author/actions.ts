@@ -13,7 +13,7 @@ import {
 	deleteAuthorDB,
 } from "./services/authorList.js";
 import { TAuthorDB } from "./types.js";
-import { errorMessage } from "../../utils/generalUtils.js";
+import { errorMessage } from "../../utils/errors.js";
 
 export const types = {
 	RESET_AUTHOR_STATUS: "RESET_AUTHOR_STATUS",

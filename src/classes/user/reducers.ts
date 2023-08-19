@@ -1,6 +1,6 @@
 import { produce } from "immer";
 import { types } from "./actions";
-import { TUserDB, TUserId } from "./types";
+import { TUserDB, TUserGoogle } from "./types";
 import { TActionType } from "../../utils/types";
 
 export type TUserState = {
@@ -8,13 +8,7 @@ export type TUserState = {
 	error: string | null;
 
 	isLogged: boolean;
-	google: {
-		id: TUserId;
-		name: TUserDB["name"];
-		imageUrl: TUserDB["photoUrl"];
-		email: TUserDB["email"];
-		accessToken: string;
-	};
+	google: TUserGoogle,
 	config: TUserDB["config"];
 
 	isDesktop: boolean | null;

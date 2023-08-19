@@ -27,9 +27,9 @@ export type TPageState = {
 const initialState: TPageState = {
 	songPageBackup: {
 		songList: {},
-		tone: null,
-		annotations: null,
-		level: null,
+		tone: undefined,
+		annotations: undefined,
+		level: undefined,
 	},
 	songListPageBackup: {
 		songList: [],

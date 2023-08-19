@@ -1,4 +1,12 @@
-const fullLabels = [
+export type TFullLabels = Array<{
+    name: string,
+    ask: string,
+    lbs: {
+        [key:string]: string
+    }
+}>
+
+const fullLabels: TFullLabels = [
     {
         name: 'Etiquetas de personas',
         ask: 'A quienes se menciona?',

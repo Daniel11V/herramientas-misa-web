@@ -1,5 +1,6 @@
 import { TActionType } from "../../utils/types.js";
 import { TUserState } from "./reducers.js";
+import { TUserGoogle } from "./types.js";
 
 export const types = {
 	SET_USER_LOADING: "SET_USER_LOADING",
@@ -19,7 +20,7 @@ export const setUserLoading = (
 	payload: { loading },
 });
 
-export const login = (googleInfo: TUserState["google"]): TActionType => ({
+export const login = (googleInfo: TUserGoogle): TActionType => ({
 	type: types.LOGIN,
 	payload: { googleInfo },
 });
