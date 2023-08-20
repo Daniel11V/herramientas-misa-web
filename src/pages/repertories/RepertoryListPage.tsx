@@ -1,21 +1,23 @@
 import { Fragment } from "react";
-import { Link } from "react-router-dom";
 import LoginLogoutBtn from "../../layout/components/LoginLogoutBtn";
 import { useNavigate } from "react-router";
 import RepertoryList from "./components/RepertoryList";
-import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../classes/user/actions";
 import { useRepertoryListPage } from "./hooks/useRepertoryListPage";
 import { Header } from "../../styles/styles";
-import { TStoreState } from "../../store";
 import { TUserGoogle } from "../../classes/user/types";
+import ButtonLink from "../components/ButtonLink";
+import { useAppDispatch, useAppSelector } from "../../store";
 
 const RepertoryListPage = () => {
-	const [repertoryList, loadingRepertoryList, errorRepertoryList] =
-		useRepertoryListPage();
+	const {
+		repertoryList,
+		loading: loadingRepertoryList,
+		error: errorRepertoryList,
+	} = useRepertoryListPage();
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
-	const isLogged = useSelector((state: TStoreState) => state.user.isLogged);
+	const dispatch = useAppDispatch();
+	const isLogged = useAppSelector((state) => state.user.isLogged);
 
 	const loginAddSong = (userData: TUserGoogle) => {
 		dispatch(login(userData));
@@ -27,15 +29,18 @@ const RepertoryListPage = () => {
 			<Header>
 				<h4>Repertorios</h4>
 				{isLogged ? (
-					<Link
-						to={{
-							pathname: "/create-repertory",
-							state: { from: "Repertorios" },
-						}}
-						className="btn waves-effect waves-light blue darken-2 right"
-					>
+					// <Link
+					// 	to={{
+					// 		pathname: "/create-repertory",
+					// 		state: { from: "Repertorios" },
+					// 	}}
+					// 	className="btn waves-effect waves-light blue darken-2 right"
+					// >
+					// 	<i className="material-icons right">add</i>Crear
+					// </Link>
+					<ButtonLink pathname="/create-repertory" from="Repertorios">
 						<i className="material-icons right">add</i>Crear
-					</Link>
+					</ButtonLink>
 				) : (
 					<LoginLogoutBtn update={loginAddSong}>
 						<div className="btn waves-effect waves-light blue darken-2 right">

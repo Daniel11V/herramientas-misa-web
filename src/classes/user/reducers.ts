@@ -1,14 +1,14 @@
 import { produce } from "immer";
 import { types } from "./actions";
 import { TUserDB, TUserGoogle } from "./types";
-import { TActionType } from "../../utils/types";
+import { TAction } from "../../utils/types";
 
 export type TUserState = {
 	loading: boolean;
 	error: string | null;
 
 	isLogged: boolean;
-	google: TUserGoogle,
+	google: TUserGoogle;
 	config: TUserDB["config"];
 
 	isDesktop: boolean | null;
@@ -42,7 +42,7 @@ const initialState: TUserState = {
 
 const UserReducer = (
 	state: TUserState = initialState,
-	{ type, payload }: TActionType
+	{ type, payload }: TAction
 ) => {
 	return produce(state, (newState: TUserState) => {
 		switch (type) {

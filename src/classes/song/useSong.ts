@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { setSongPageBackupSong } from "../page/actions";
 import {
 	editSong as editSongAction,
@@ -8,13 +7,13 @@ import {
 } from "./actions";
 import { TSong, TSongForm, TSongId } from "./types";
 import { MAX_RETRYS } from "../../configs";
-import { TStoreState } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { TUserId } from "../user/types";
 import { FETCH_STATUS, SECURITY_STATUS } from "../../utils/types";
 import { createTSong } from "./createTypes";
 
 interface IUseSong {
-	song?: TSong|null;
+	song?: TSong | null;
 	isLoadingFetchSong: boolean;
 	isLoadingEditSong: boolean;
 	errorSong: string;
@@ -26,35 +25,35 @@ export const useSong = (p: {
 	userId: TUserId;
 }): IUseSong => {
 	const { songTitleId, userId } = p;
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const { song, songStatus, songUserId, songRequestStatus, songError } =
-		useSelector((state: TStoreState) => state.song);
-	const songListBackup = useSelector(
-		(state: TStoreState) => state.page.songPageBackup.songList
+		useAppSelector((state) => state.song);
+	const songListBackup = useAppSelector(
+		(state) => state.page.songPageBackup.songList
 	);
 
-	type IStep = "INITIAL" | "FETCH_SONG_1" | "EDIT_SONG" | "FINISHED";
-	const steps: Record<IStep, IStep> = {
+	type TStep = "INITIAL" | "FETCH_SONG_1" | "EDIT_SONG" | "FINISHED";
+	const steps: Record<TStep, TStep> = {
 		INITIAL: "INITIAL",
 		FETCH_SONG_1: "FETCH_SONG_1",
 		EDIT_SONG: "EDIT_SONG",
 		FINISHED: "FINISHED",
 	};
 	type TStatus = {
-		step: IStep,
+		step: TStep;
 		opts: {
-			userId?: TUserId, 
-			songTitleId?: TSongId
-			edittedSong?: TSongForm
-		}
-	}
+			userId?: TUserId;
+			songTitleId?: TSongId;
+			edittedSong?: TSongForm;
+		};
+	};
 	const [status, setCurrentSongListStatus] = useState<TStatus>({
 		step: steps.INITIAL,
 		opts: {},
 	});
 	const [retrys, setRetrys] = useState(0);
-	const [currentSong, setCurrentSong] = useState<TSong|null>(null);
+	const [currentSong, setCurrentSong] = useState<TSong | null>(null);
 
 	const [isLoadingFetchSong, setIsLoadingFetchSong] = useState(true);
 	const [isLoadingEditSong, setIsLoadingEditSong] = useState(false);
@@ -64,7 +63,10 @@ export const useSong = (p: {
 		if (songError) setError(songError);
 	}, [songError]);
 
-	const setStatus = (statusStep: TStatus["step"], statusOpts: TStatus["opts"] = {}) => {
+	const setStatus = (
+		statusStep: TStatus["step"],
+		statusOpts: TStatus["opts"] = {}
+	) => {
 		// setIsLoadingFetchSong(true);
 		// console.log("ACA SONG_LIST_STATUS: ", statusStep, statusOpts);
 		setCurrentSongListStatus({ step: statusStep, opts: statusOpts });
@@ -100,7 +102,7 @@ export const useSong = (p: {
 			if (songRequestStatus === FETCH_STATUS.INITIAL) {
 				const { songTitleId, userId } = status.opts;
 				if (songTitleId && userId) {
-					dispatch(getSong({songTitleId, userId}));
+					dispatch(getSong({ songTitleId, userId }));
 					setRetrys(0);
 				}
 			} else if (songRequestStatus === FETCH_STATUS.SUCCESS) {
@@ -114,10 +116,10 @@ export const useSong = (p: {
 					dispatch(resetSongRequestStatus());
 				} else {
 					const { songTitleId, userId } = status.opts;
-				if (songTitleId && userId) {
-					setRetrys((lastRetrys) => lastRetrys + 1);
-					dispatch(getSong({ songTitleId, userId }));
-				}
+					if (songTitleId && userId) {
+						setRetrys((lastRetrys) => lastRetrys + 1);
+						dispatch(getSong({ songTitleId, userId }));
+					}
 				}
 			}
 		}
@@ -132,7 +134,7 @@ export const useSong = (p: {
 
 	const editSong = (edittedSong: TSongForm) => {
 		setIsLoadingEditSong(true);
-		setStatus(steps.EDIT_SONG, {edittedSong});
+		setStatus(steps.EDIT_SONG, { edittedSong });
 	};
 
 	useEffect(() => {
@@ -140,8 +142,8 @@ export const useSong = (p: {
 			if (songRequestStatus === FETCH_STATUS.INITIAL) {
 				const { edittedSong } = status.opts;
 				if (edittedSong) {
-					const songEdited = createTSong({...edittedSong})
-					dispatch(editSongAction({ songEdited  }));
+					const songEdited = createTSong({ ...edittedSong });
+					dispatch(editSongAction({ songEdited }));
 					setRetrys(0);
 				}
 			} else if (songRequestStatus === FETCH_STATUS.SUCCESS) {
@@ -157,8 +159,8 @@ export const useSong = (p: {
 					setRetrys((lastRetrys) => lastRetrys + 1);
 					const { edittedSong } = status.opts;
 					if (edittedSong) {
-						const songEdited = createTSong({...edittedSong})
-						dispatch(editSongAction({ songEdited  }));
+						const songEdited = createTSong({ ...edittedSong });
+						dispatch(editSongAction({ songEdited }));
 					}
 				}
 			}

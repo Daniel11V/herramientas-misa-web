@@ -5,12 +5,12 @@
 import { TStoreState } from "../../store.js";
 import { errorMessage } from "../../utils/errors.js";
 import { arrayIsEmpty } from "../../utils/generalUtils.js";
-import { TActionType, TDispatchType } from "../../utils/types.js";
+import { TAction, TDispatch } from "../../utils/types.js";
 import { getPrivateSongTitleDB } from "../song/services/privateSongTitleList.js";
 import { getPublicSongTitleDB } from "../song/services/publicSongTitleList.js";
 import { TSong } from "../song/types.js";
 import { TUserId } from "../user/types.js";
-import { TRepertoryState } from "./reducers.js";
+import { TRepertoryAction, TRepertoryState } from "./reducers.js";
 import {
 	getPrivateRepertoryListDB,
 	getPrivateRepertoryDB,
@@ -53,18 +53,18 @@ export const types = {
 	DELETE_REPERTORY_FAILURE: "DELETE_REPERTORY_FAILURE",
 };
 
-export const resetRepertoryActionStatus = (): TActionType => ({
+export const resetRepertoryActionStatus = (): TAction => ({
 	type: types.RESET_REPERTORY_ACTION_STATUS,
 });
 export const setRepertoryListStatus = (
 	repertoryListStatus: TRepertoryState["repertoryListStatus"]
-): TActionType => ({
+): TRepertoryAction => ({
 	type: types.SET_REPERTORY_LIST_STATUS,
 	payload: { repertoryListStatus },
 });
 export const setRepertoryStatus = (
 	repertoryStatus: TRepertoryState["repertoryStatus"]
-): TActionType => ({
+): TRepertoryAction => ({
 	type: types.SET_REPERTORY_STATUS,
 	payload: { repertoryStatus },
 });
@@ -76,12 +76,13 @@ export const getRepertoryList = (p: {
 	onlyAddPrivates?: boolean;
 }) => {
 	const { userId, onlyAddPrivates = false } = p;
-	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
+	return async (dispatch: TDispatch, getState: () => TStoreState) => {
 		try {
-			dispatch({
+			const dispatchAction: TRepertoryAction = {
 				type: types.FETCH_REPERTORY_LIST,
 				payload: { userId },
-			});
+			};
+			dispatch(dispatchAction);
 			//////////////////////////////////////
 			let publicRepertoryList;
 			if (onlyAddPrivates) {
@@ -121,7 +122,7 @@ export const getRepertory = (p: {
 	repertoryId: TRepertoryId;
 }) => {
 	const { userId, repertoryId } = p;
-	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
+	return async (dispatch: TDispatch, getState: () => TStoreState) => {
 		try {
 			dispatch({
 				type: types.FETCH_REPERTORY,

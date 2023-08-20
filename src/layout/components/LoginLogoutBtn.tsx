@@ -1,20 +1,16 @@
 import { GoogleLogin, GoogleLogout } from "react-google-login";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { login, logout, setUserLoading } from "../../classes/user/actions";
 import { TUserGoogle } from "../../classes/user/types";
+import { useAppDispatch } from "../../store";
 
 const LoginLogoutBtn = (p: {
-	children?: any,
-	isLogged?: boolean,
-	update?: (p2: TUserGoogle|void) => {},
+	children?: any;
+	isLogged?: boolean;
+	update?: (userData: TUserGoogle) => void;
 }) => {
-	const {
-		children = null,
-		isLogged = false,
-		update = () => {},
-	} = p
-	const dispatch = useDispatch();
+	const { children = null, isLogged = false, update = () => {} } = p;
+	const dispatch = useAppDispatch();
 
 	const loginResponse = (response: any) => {
 		if (response.googleId) {
@@ -47,7 +43,7 @@ const LoginLogoutBtn = (p: {
 				// Arreglar Type
 				render={(renderProps) => (
 					// <div onClick={renderProps.onClick} disabled={renderProps.disabled}>
-					<div onClick={renderProps.disabled ?()=>{} : renderProps.onClick} >
+					<div onClick={renderProps.disabled ? () => {} : renderProps.onClick}>
 						{children}
 					</div>
 				)}

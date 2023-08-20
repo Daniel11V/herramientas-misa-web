@@ -8,7 +8,7 @@ import {
 	TPublicSongLyricDB,
 	TPublicSongTitleDB,
 } from "../song/types";
-import { TActionType } from "../../utils/types";
+import { TAction } from "../../utils/types";
 import {
 	TPrivateRepertoryDB,
 	TPrivateRepertoryListDB,
@@ -56,7 +56,7 @@ export const setDatabaseItem = (
 	category: TDatabaseCategory,
 	id: string,
 	item: TDatabaseItem
-): TActionType => ({
+): TAction => ({
 	type: types.SET_DATABASE_ITEM,
 	payload: { category, id, item },
 });
@@ -64,7 +64,7 @@ export const setDatabaseItem = (
 export const deleteDatabaseItem = (
 	category: TDatabaseCategory,
 	id: string
-): TActionType => ({
+): TAction => ({
 	type: types.DELETE_DATABASE_ITEM,
 	payload: { category, id },
 });

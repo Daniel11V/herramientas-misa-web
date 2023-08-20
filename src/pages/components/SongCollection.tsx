@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { arrayIsEmpty } from "../../utils/lyricsAndChordsUtils.js";
 import { CollectionSearcher } from "./CollectionSearcher.js";
 import {
 	Collection,
@@ -13,20 +11,19 @@ import {
 	LevelIcon,
 	CollectionItemLyric,
 } from "../../styles/styles.js";
-import { SongList } from "../../classes/song/types";
-import { TStoreState } from "../../store.js";
+import { TSong, TSongId } from "../../classes/song/types.js";
+import { arrayIsEmpty } from "../../utils/generalUtils.js";
+import { useAppSelector } from "../../store.js";
 
-interface Props {
-	songList: SongList;
+const SongCollection: React.FC<{
+	songList?: TSong[];
 	loading?: boolean;
 	error?: string;
 	searcher?: boolean;
-	labelsStart: Array<string>;
+	labelsStart?: Array<string>;
 	checking?: boolean;
 	pageName?: string;
-}
-
-const SongCollection: React.FC<Props> = ({
+}> = ({
 	songList = [],
 	loading = false,
 	error = "",
@@ -35,16 +32,18 @@ const SongCollection: React.FC<Props> = ({
 	checking = false,
 	pageName = "Cancionero",
 }) => {
-	const userId = useSelector((state: TStoreState) => state.user.google.id);
+	const userId = useAppSelector((state) => state.user.google.id);
 	const navigate = useNavigate();
 
-	const [songChoose, setSongChoose] = useState(null);
-	const [lirycStartList, setLirycStartList] = useState([]);
+	const [songChoose, setSongChoose] = useState<TSongId | null>(null);
+	const [lirycStartList, setLirycStartList] = useState<{
+		[key: TSongId]: string;
+	}>({});
 	const [labels, setLabels] = useState(labelsStart);
 	const [searchInput, setSearchInput] = useState("");
-	const [filteredSongList, setFilteredSongList] = useState([]);
+	const [filteredSongList, setFilteredSongList] = useState<TSong[]>([]);
 
-	const containerContentRef = useRef(null);
+	const containerContentRef = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
 		if (!!songList.length) {
@@ -64,26 +63,28 @@ const SongCollection: React.FC<Props> = ({
 
 			if (lyricStartMaxWidth) {
 				const canvasContext = document.createElement("canvas").getContext("2d");
-				canvasContext.font = "12px Arial";
+				if (canvasContext) {
+					canvasContext.font = "12px Arial";
 
-				setLirycStartList(
-					songList.reduce((prev, song) => {
-						if (!song.lyricStart) return prev;
+					setLirycStartList(
+						songList.reduce((prev, song) => {
+							if (!song.lyricStart) return prev;
 
-						let newLyricStart = song.lyricStart;
-						while (
-							canvasContext.measureText(newLyricStart).width >
-							lyricStartMaxWidth
-						) {
-							newLyricStart = newLyricStart.split(" ").slice(0, -1).join(" ");
-						}
+							let newLyricStart = song.lyricStart;
+							while (
+								canvasContext.measureText(newLyricStart).width >
+								lyricStartMaxWidth
+							) {
+								newLyricStart = newLyricStart.split(" ").slice(0, -1).join(" ");
+							}
 
-						if (newLyricStart?.[newLyricStart?.length - 1] === ",")
-							newLyricStart = newLyricStart?.slice(0, -1);
+							if (newLyricStart?.[newLyricStart?.length - 1] === ",")
+								newLyricStart = newLyricStart?.slice(0, -1);
 
-						return { ...prev, [song.id]: "| " + newLyricStart + "..." };
-					}, {})
-				);
+							return { ...prev, [song.id]: "| " + newLyricStart + "..." };
+						}, {})
+					);
+				}
 			}
 		}
 	}, [containerContentRef, songList]);
@@ -124,13 +125,13 @@ const SongCollection: React.FC<Props> = ({
 
 	const handleClickSearchLyric = () => {};
 
-	const handleClickSong = (id) => {
+	const handleClickSong = (id: TSongId) => {
 		navigate(`/song/${id}`, {
 			state: { from: pageName },
 		});
 	};
 
-	const handleCheck = (e, songId) => {
+	const handleCheck = (e: React.MouseEvent, songId: TSongId) => {
 		e.preventDefault();
 		e.stopPropagation();
 
@@ -198,7 +199,7 @@ const SongCollection: React.FC<Props> = ({
 				{arrayIsEmpty(filteredSongList) && (
 					<CollectionItem withCheck={false}>Sin canciones.</CollectionItem>
 				)}
-				{filteredSongList.map((song, songIndex) => (
+				{filteredSongList.map((song) => (
 					<CollectionItem
 						key={song.id}
 						onClick={() => handleClickSong(song.id)}
@@ -222,7 +223,7 @@ const SongCollection: React.FC<Props> = ({
 									{song?.creator?.id === userId && (
 										<PrivacyIcon withCheck={checking}>
 											<i className="material-icons">
-												{!!song?.isPrivate === userId ? "lock" : "public"}
+												{!!song?.isPrivate ? "lock" : "public"}
 											</i>
 										</PrivacyIcon>
 									)}
@@ -244,9 +245,9 @@ const SongCollection: React.FC<Props> = ({
 								</label>
 							)}
 						</CollectionItemDescription>
-						{!!lirycStartList?.[song.id] && (
+						{!!lirycStartList[song.id] && (
 							<CollectionItemLyric>
-								{lirycStartList?.[song.id]}
+								{lirycStartList[song.id]}
 							</CollectionItemLyric>
 						)}
 					</CollectionItem>

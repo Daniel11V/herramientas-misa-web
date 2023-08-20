@@ -2,7 +2,7 @@ import { produce } from "immer";
 import { types } from "./actions";
 import { TRepertory } from "./types";
 import {
-	TActionType,
+	TAction,
 	TFetchStatus,
 	TSecurityStatus,
 	FETCH_STATUS,
@@ -56,9 +56,14 @@ const initialState: TRepertoryState = {
 	repertory: defaultRepertory,
 };
 
+export type TRepertoryAction = {
+	type: string;
+	payload?: Partial<TRepertoryState>;
+};
+
 const RepertoryReducer = (
 	state: TRepertoryState = initialState,
-	{ type, payload }: TActionType
+	{ type, payload }: TAction
 ) => {
 	return produce(state, (newState: TRepertoryState) => {
 		switch (type) {
@@ -68,6 +73,7 @@ const RepertoryReducer = (
 				break;
 
 			case types.SET_REPERTORY_LIST_STATUS:
+				if (!payload) break;
 				newState.repertoryListStatus = payload.repertoryListStatus;
 				break;
 

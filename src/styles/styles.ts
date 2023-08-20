@@ -5,22 +5,22 @@ export const Header = styled.div`
 	display: flex;
 	align-items: center;
 	margin: 20px 0 20px 0;
-    ${noSelectableText}
+	${noSelectableText}
 
 	h1, h2, h3, h4, h5, h6 {
-        flex: 1;
-	    margin: 0;
-    }
+		flex: 1;
+		margin: 0;
+	}
 
-    h4 {
-        /* @media (max-width: 800px) {
+	h4 {
+		/* @media (max-width: 800px) {
 		    font-size: 2.6rem;
         } */
 
-        @media (max-width: 600px) {
-            font-size: 2rem;
-        }
-    }
+		@media (max-width: 600px) {
+			font-size: 2rem;
+		}
+	}
 `;
 
 export const Collection = styled.div.attrs({
@@ -35,16 +35,16 @@ export const CollectionContent = styled.div`
 	/* border: 1px solid red; */
 `;
 
-export const CollectionItem = styled.div.attrs(props => ({
+export const CollectionItem = styled.div.attrs((props) => ({
 	className: "collection-item " + (props.className || ""),
-}))`
+}))<{ withCheck?: boolean }>`
 	color: #555 !important;
 	font-size: 14px;
 	display: flex !important;
 	flex-direction: column;
-    cursor: pointer;
+	cursor: pointer;
 
-    &:hover {
+	&:hover {
 		background-color: #ddd;
 	}
 
@@ -52,18 +52,18 @@ export const CollectionItem = styled.div.attrs(props => ({
 		border-top-left-radius: 5px;
 		border-top-right-radius: 5px;
 	}
-	
+
 	&:last-child {
 		border-bottom-left-radius: 5px;
 		border-bottom-right-radius: 5px;
 	}
 
 	${(props) =>
-		props.withCheck && css`
+		props.withCheck &&
+		css`
 			height: 42px !important;
 			padding: 0 0 0 20px !important;
-		`
-	}
+		`}
 `;
 
 export const CollectionItemDescription = styled.div`
@@ -75,7 +75,7 @@ export const CollectionItemDescription = styled.div`
 export const CollectionItemLyric = styled.div`
 	font-style: italic;
 	font-size: 12px;
-    line-height: 1rem;
+	line-height: 1rem;
 	padding-top: 4px;
 `;
 
@@ -124,7 +124,7 @@ export const CollectionItemIcons = styled.div`
 			}
 		`}
 `;
-export const PrivacyIcon = styled.div`
+export const PrivacyIcon = styled.div<{ withCheck?: boolean }>`
 	position: relative;
 	margin-left: 10px;
 
@@ -134,8 +134,7 @@ export const PrivacyIcon = styled.div`
 	}
 `;
 
-export const LevelIcon = styled.div`
-
+export const LevelIcon = styled.div<{ withCheck?: boolean }>`
 	> i {
 		color: ${colors.blue};
 	}

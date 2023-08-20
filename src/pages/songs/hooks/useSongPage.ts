@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import M from "materialize-css";
 import { useSong } from "../../../classes/song/useSong";
-import { useDispatch, useSelector } from "react-redux";
 import { getAuthorList } from "../../../classes/author/actions";
 import { setSongPageBackup } from "../../../classes/page/actions";
 import { saveSongOptions } from "../../../classes/song/actions";
-import { TStoreState } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store";
 
 const emptySong = {
 	id: "", // Required
@@ -34,9 +33,9 @@ const emptySong = {
 };
 
 export const useSongPage = (songTitleId: string) => {
-	const dispatch = useDispatch();
-	const userId = useSelector((state: TStoreState) => state.user.google.id);
-	const { authorList } = useSelector((state: TStoreState) => state.author);
+	const dispatch = useAppDispatch();
+	const userId = useAppSelector((state) => state.user.google.id);
+	const { authorList } = useAppSelector((state) => state.author);
 	const { song, isLoadingSong, errorSong, editSong } = useSong({
 		songTitleId,
 		userId,

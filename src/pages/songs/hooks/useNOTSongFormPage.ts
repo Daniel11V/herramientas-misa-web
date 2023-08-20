@@ -1,6 +1,5 @@
 import M from "materialize-css";
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
 	createAuthor,
@@ -15,15 +14,14 @@ import {
 } from "../../../classes/song/actions";
 import { MAX_RETRYS } from "../../../configs";
 import {
-	arrayIsEmpty,
 	getDataFromRandomLyric,
-	getLyricWithChords,
 	getLyricStart,
 } from "../../../utils/lyricsAndChordsUtils";
-import { TStoreState } from "../../../store";
+import { TSongId } from "../../../classes/song/types";
+import { useAppDispatch, useAppSelector } from "../../../store";
 
-export const useSongFormPage = (songId) => {
-	const dispatch = useDispatch();
+export const useSongFormPage = (songId: TSongId) => {
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
 	const [songForm, setSongForm] = useState({
@@ -40,16 +38,14 @@ export const useSongFormPage = (songId) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(false);
 
-	const userId = useSelector((state: TStoreState) => state.user?.google?.id);
-	const userName = useSelector(
-		(state: TStoreState) => state.user?.google?.name
-	);
-	const { song, songRequestStatus, songError } = useSelector(
-		(state: TStoreState) => state.song
+	const userId = useAppSelector((state) => state.user?.google?.id);
+	const userName = useAppSelector((state) => state.user?.google?.name);
+	const { song, songRequestStatus, songError } = useAppSelector(
+		(state) => state.song
 	);
 	const [retrys, setRetrys] = useState(0);
-	const { authorList, authorStatus, authorError } = useSelector(
-		(state: TStoreState) => state.author
+	const { authorList, authorStatus, authorError } = useAppSelector(
+		(state) => state.author
 	);
 	const [authorItems, setAuthorItems] = useState([]);
 	const [authorForm, setAuthorForm] = useState({

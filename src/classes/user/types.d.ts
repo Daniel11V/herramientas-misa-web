@@ -1,4 +1,4 @@
-import { TChordLangs } from "../../utils/types";
+import { TChordLang } from "../../utils/types";
 
 export type TUserId = string;
 
@@ -8,7 +8,7 @@ export type TUserGoogle = {
 	imageUrl: string;
 	email: string;
 	accessToken: string;
-}
+};
 
 export type TUserDB = {
 	id: TUserId;
@@ -19,7 +19,7 @@ export type TUserDB = {
 		songPageOptions: {
 			fontSize: string;
 			showChords: true;
-			chordLang: TChordLangs;
+			chordLang: TChordLang;
 		};
 	};
 };

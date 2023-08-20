@@ -10,6 +10,7 @@ import AuthorReducer, { TAuthorState } from "./classes/author/reducers";
 import RepertoryReducer, {
 	TRepertoryState,
 } from "./classes/repertory/reducers";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 // https://typescript.hotexamples.com/examples/redux/-/combineReducers/typescript-combinereducers-function-examples.html
 // import { syncHistoryWithStore, routerReducer, routerMiddleware, push, replace } from 'react-router-redux';
@@ -42,15 +43,6 @@ import RepertoryReducer, {
 //     store.dispatch(replace(path));
 // };
 
-export type TStoreState = {
-	database: TDatabaseState;
-	page: TPageState;
-	user: TUserState;
-	song: TSongState;
-	author: TAuthorState;
-	repertory: TRepertoryState;
-};
-
 const RootReducer = combineReducers({
 	database: DatabaseReducer,
 	page: PageReducer,
@@ -68,3 +60,21 @@ const store = createStore(
 );
 
 export default store;
+
+// export type TStoreState = {
+// 	database: TDatabaseState;
+// 	page: TPageState;
+// 	user: TUserState;
+// 	song: TSongState;
+// 	author: TAuthorState;
+// 	repertory: TRepertoryState;
+// };
+
+// Infer the `TStoreState` and `AppDispatch` types from the store itself
+export type TStoreState = ReturnType<typeof store.getState>;
+// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type TDispatch = typeof store.dispatch<TStoreState>;
+// Use throughout your app instead of plain `useDispatch` and `useSelector`
+type TDispatchFunc = () => TDispatch;
+export const useAppDispatch: TDispatchFunc = useDispatch;
+export const useAppSelector: TypedUseSelectorHook<TStoreState> = useSelector;

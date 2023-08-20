@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import {
 	getSongList,
 	resetSongRequestStatus,
@@ -7,33 +6,31 @@ import {
 } from "../../../classes/song/actions";
 import { setSongListPageBackup } from "../../../classes/page/actions";
 import { MAX_RETRYS } from "../../../configs";
-import { TStoreState } from "../../../store";
 import { FETCH_STATUS, SECURITY_STATUS } from "../../../utils/types";
 import { arrayIsEmpty, getRating } from "../../../utils/generalUtils";
+import { useAppDispatch, useAppSelector } from "../../../store";
 
 export const useSongListPage = () => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
-	const userId = useSelector((state: TStoreState) => state.user.google.id);
+	const userId = useAppSelector((state) => state.user.google.id);
 	const {
 		songList,
 		songListStatus,
 		songListUserId,
 		songRequestStatus,
 		songError,
-	} = useSelector((state: TStoreState) => state.song);
-	const { songListPageBackup } = useSelector(
-		(state: TStoreState) => state.page
-	);
+	} = useAppSelector((state) => state.song);
+	const { songListPageBackup } = useAppSelector((state) => state.page);
 	const { songList: songListBackup } = songListPageBackup;
 
-	type IStep =
+	type TStep =
 		| "INITIAL"
 		| "FETCH_SONG_LIST_1"
 		| "WITH_SONG_LIST_1"
 		| "FORMAT_BY_VERSION_GROUPS_2"
 		| "FINISHED";
-	const steps: Record<IStep, IStep> = {
+	const steps: Record<TStep, TStep> = {
 		INITIAL: "INITIAL",
 		FETCH_SONG_LIST_1: "FETCH_SONG_LIST_1",
 		WITH_SONG_LIST_1: "WITH_SONG_LIST_1",
@@ -51,7 +48,7 @@ export const useSongListPage = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState(false);
 
-	const setStatus = (statusStep: IStep, statusOpts = {}) => {
+	const setStatus = (statusStep: TStep, statusOpts = {}) => {
 		setIsLoading(true);
 		// console.log("ACA SONG_LIST_STATUS: ", statusStep, statusOpts);
 		setCurrentSongListStatus({ step: statusStep, opts: statusOpts });

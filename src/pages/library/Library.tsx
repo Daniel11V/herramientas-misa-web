@@ -7,7 +7,11 @@ import { useLibraryPage } from "./hooks/useLibraryPage";
 
 const Library = () => {
 	// const navigate = useNavigate();
-	const [songList, loadingSongList, errorSongList] = useLibraryPage();
+	const {
+		songList,
+		isLoading: loadingSongList,
+		songError: errorSongList,
+	} = useLibraryPage();
 
 	// const loginAddSong = (v) => {
 	// 	setUser(v);
@@ -42,7 +46,7 @@ const Library = () => {
 				searcher={false}
 				songList={songList}
 				loading={loadingSongList}
-				error={errorSongList}
+				error={errorSongList || undefined}
 			/>
 		</Fragment>
 	);

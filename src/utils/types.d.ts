@@ -1,9 +1,4 @@
-export type TActionType = {
-	type: string;
-	payload?: any;
-};
-
-export type TDispatchType = (args: TActionType) => TActionType;
+// export type TDispatch<P> = (args: TAction<P>) => TAction<P>;
 
 export const FETCH_STATUS = {
 	INITIAL: "INITIAL",
@@ -19,15 +14,8 @@ export const SECURITY_STATUS = {
 	PUBLIC: "PUBLIC",
 	PRIVATE: "PRIVATE",
 	FAILURE: "FAILURE",
-};
+} as const;
 export type TSecurityStatus =
 	(typeof SECURITY_STATUS)[keyof typeof SECURITY_STATUS];
 
-export const CHORD_LANGS = {
-	EN: "en",
-	ES: "es",
-};
-export type TChordLangs = (typeof CHORD_LANGS)[keyof typeof CHORD_LANGS];
-
-
-export type setFunc<P> = React.Dispatch<React.SetStateAction<P>>
+export type TsetFunc<P> = React.Dispatch<React.SetStateAction<P>>;

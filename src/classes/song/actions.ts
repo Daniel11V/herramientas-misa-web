@@ -2,16 +2,9 @@
 // import { db } from "../../database/firebase"
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
-import {
-	arrayIsEmpty,
-	objsAreEqual,
-} from "../../utils/generalUtils.js";
+import { arrayIsEmpty, objsAreEqual } from "../../utils/generalUtils.js";
 import { getLyricStart } from "../../utils/lyricsAndChordsUtils.js";
-import {
-	TActionType,
-	TDispatchType,
-	TSecurityStatus,
-} from "../../utils/types.js";
+import { TAction, TDispatch, TSecurityStatus } from "../../utils/types.js";
 import { setSongPageBackupSong } from "../page/actions.js";
 import {
 	createPrivateSongLyricDB,
@@ -21,7 +14,6 @@ import {
 } from "./services/privateSongLyricList.js";
 import {
 	createPrivateSongTitleDB,
-	deletePrivateSongTitleDB,
 	editPrivateSongTitleDB,
 	getPrivateSongTitleDB,
 	getPrivateSongTitleListDB,
@@ -48,7 +40,11 @@ import {
 } from "./types.js";
 import { TUserId } from "../user/types.js";
 import { TStoreState } from "../../store.js";
-import { createTPrivateSongTitleDB, createTPublicSongTitleDB, createTSong } from "./createTypes.js";
+import {
+	createTPrivateSongTitleDB,
+	createTPublicSongTitleDB,
+	createTSong,
+} from "./createTypes.js";
 import { errorMessage } from "../../utils/errors.js";
 
 export const types = {
@@ -87,16 +83,16 @@ export const types = {
 	DELETE_SONG_FAILURE: "DELETE_SONG_FAILURE",
 };
 
-export const resetSongRequestStatus = (): TActionType => ({
+export const resetSongRequestStatus = (): TAction => ({
 	type: types.RESET_SONG_REQUEST_STATUS,
 });
 export const setSongListStatus = (
 	songListStatus: TSecurityStatus
-): TActionType => ({
+): TAction => ({
 	type: types.SET_SONG_LIST_STATUS,
 	payload: { songListStatus },
 });
-export const setSongStatus = (songStatus: TSecurityStatus): TActionType => ({
+export const setSongStatus = (songStatus: TSecurityStatus): TAction => ({
 	type: types.SET_SONG_LIST_STATUS,
 	payload: { songStatus },
 });
@@ -109,7 +105,7 @@ export const getSongList = (p: {
 }) => {
 	const { userId, onlyAddPrivates = false } = p;
 
-	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
+	return async (dispatch: TDispatch, getState: () => TStoreState) => {
 		try {
 			dispatch({
 				type: types.FETCH_SONG_LIST,
@@ -151,7 +147,7 @@ export const getSongList = (p: {
 
 export const getSong = (p: { userId: TUserId; songTitleId: TSongId }) => {
 	const { userId, songTitleId } = p;
-	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
+	return async (dispatch: TDispatch, getState: () => TStoreState) => {
 		try {
 			dispatch({
 				type: types.FETCH_SONG,
@@ -202,7 +198,7 @@ export const getSong = (p: { userId: TUserId; songTitleId: TSongId }) => {
 
 export const getSongTitle = (p: { userId: TUserId; songTitleId: TSongId }) => {
 	const { userId, songTitleId } = p;
-	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
+	return async (dispatch: TDispatch, getState: () => TStoreState) => {
 		try {
 			dispatch({
 				type: types.FETCH_SONG_TITLE,
@@ -249,7 +245,7 @@ export const createSong = (p: { songCreated: TSongForm }) => {
 	// Siempre que se cree una canción por el momento se creará como privada y luego se podra publicar
 	// Primero se crea el Lyric y luego el Title, colocando acá el id del Lyric y si es publico o privado.
 
-	return async (dispatch: TDispatchType) => {
+	return async (dispatch: TDispatch) => {
 		try {
 			dispatch({
 				type: types.CREATE_SONG,
@@ -319,7 +315,7 @@ export const editSong = (p: { songEdited: TSong; saveAsPublic?: boolean }) => {
 	// ... se creará una version privada privada que luego se podra publicar
 	// Si ya era privada simplemente se actualiza
 
-	return async (dispatch: TDispatchType) => {
+	return async (dispatch: TDispatch) => {
 		try {
 			dispatch({
 				type: types.EDIT_SONG,
@@ -368,7 +364,7 @@ export const editSong = (p: { songEdited: TSong; saveAsPublic?: boolean }) => {
 	};
 };
 export const saveSongOptions = () => {
-	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
+	return async (dispatch: TDispatch, getState: () => TStoreState) => {
 		try {
 			const userId = getState().user.google.id;
 			const { lyric, ...songTitle } = getState().song.song;
@@ -419,7 +415,7 @@ export const saveSongOptions = () => {
 
 export const publishSong = (p: { privateSongId: TSongId }) => {
 	const { privateSongId } = p;
-	return async (dispatch: TDispatchType, getState: () => TStoreState) => {
+	return async (dispatch: TDispatch) => {
 		try {
 			dispatch({
 				type: types.PUBLISH_SONG,
@@ -482,7 +478,7 @@ export const deleteSong = (p: {
 	isPrivate?: boolean;
 }) => {
 	const { songDeletedId, isPrivate = false } = p;
-	return async (dispatch: TDispatchType) => {
+	return async (dispatch: TDispatch) => {
 		try {
 			dispatch({
 				type: types.DELETE_SONG,

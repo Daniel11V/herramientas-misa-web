@@ -26,6 +26,12 @@ export class TypeCreationError extends Error {
 		this.name = "TypeCreationError";
 	}
 }
+export class ActionError extends Error {
+	constructor(action: string) {
+		super(`Error in action "${action}"`);
+		this.name = "ActionError";
+	}
+}
 
 export const errorMessage = (error: unknown): string =>
 	error instanceof Error ? error.message : String(error);

@@ -1,6 +1,6 @@
 import { produce } from "immer";
 import { types } from "./actions";
-import { TActionType } from "../../utils/types";
+import { TAction } from "../../utils/types";
 import { TSong, TSongId, TSongOptions } from "../song/types";
 import { TRepertory, TRepertoryId } from "../repertory/types";
 
@@ -49,7 +49,7 @@ const initialState: TPageState = {
 
 const PageReducer = (
 	state: TPageState = initialState,
-	{ type, payload }: TActionType
+	{ type, payload }: TAction
 ) => {
 	return produce(state, (newState: TPageState) => {
 		switch (type) {

@@ -1,52 +1,72 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { setLibraryPageBackup } from "../../../classes/page/actions";
 import {
 	getSongList,
 	resetSongRequestStatus,
 	setSongListStatus,
 } from "../../../classes/song/actions";
-import { TStoreState } from "../../../store";
 import { FETCH_STATUS, SECURITY_STATUS } from "../../../utils/types";
-import { arrayIsEmpty, objIsEmpty } from "../../../utils/generalUtils";
+import {
+	arrayIsEmpty,
+	getRating,
+	objIsEmpty,
+} from "../../../utils/generalUtils";
+import { TSong, TSongId } from "../../../classes/song/types";
+import { TUserId } from "../../../classes/user/types";
+import { useAppDispatch, useAppSelector } from "../../../store";
 
 export const useLibraryPage = () => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
-	const userId = useSelector((state: TStoreState) => state.user.google.id);
+	const userId = useAppSelector((state) => state.user.google.id);
 	const {
 		songList,
 		songListStatus,
 		songListUserId,
 		songRequestStatus,
 		songError,
-	} = useSelector((state: TStoreState) => state.song);
-	const { libraryPageBackup } = useSelector((state: TStoreState) => state.page);
+	} = useAppSelector((state) => state.song);
+	const { libraryPageBackup } = useAppSelector((state) => state.page);
 	const { songList: songListBackup } = libraryPageBackup;
 
-	type IStep =
+	type TStep =
 		| "INITIAL"
 		| "FETCH_SONG_LIST_1"
 		| "WITH_SONG_LIST_1"
 		| "FORMAT_BY_VERSION_GROUPS_2"
 		| "FINISHED";
-	const steps: Record<IStep, IStep> = {
+	const steps: Record<TStep, TStep> = {
 		INITIAL: "INITIAL",
 		FETCH_SONG_LIST_1: "FETCH_SONG_LIST_1",
 		WITH_SONG_LIST_1: "WITH_SONG_LIST_1",
 		FORMAT_BY_VERSION_GROUPS_2: "FORMAT_BY_VERSION_GROUPS_2",
 		FINISHED: "FINISHED",
 	};
-	const [status, setCurrentSongListStatus] = useState({
+	type TStatus = {
+		step: TStep;
+		opts: {
+			userId?: TUserId;
+			onlyAddPrivates?: boolean;
+			isFirst?: boolean;
+			isSameBackup?: boolean;
+			fromFetch?: boolean;
+			// songTitleId?: TSongId;
+			// edittedSong?: TSongForm;
+		};
+	};
+	const [status, setCurrentSongListStatus] = useState<TStatus>({
 		step: steps.INITIAL,
 		opts: {},
 	});
-	const [currentSongList, setCurrentSongList] = useState([]);
+	const [currentSongList, setCurrentSongList] = useState<TSong[]>([]);
 
-	const [finalSongList, setFinalSongList] = useState([]);
+	const [finalSongList, setFinalSongList] = useState<TSong[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 
-	const setStatus = (statusStep: IStep, statusOpts = {}) => {
+	const setStatus = (
+		statusStep: TStatus["step"],
+		statusOpts: TStatus["opts"] = {}
+	) => {
 		setIsLoading(true);
 		// console.log("ACA SONG_LIST_STATUS: ", statusStep, statusOpts);
 		setCurrentSongListStatus({ step: statusStep, opts: statusOpts });
@@ -86,7 +106,10 @@ export const useLibraryPage = () => {
 	useEffect(() => {
 		if (status.step === steps.FETCH_SONG_LIST_1) {
 			if (songRequestStatus === FETCH_STATUS.INITIAL) {
-				dispatch(getSongList(status.opts));
+				const { onlyAddPrivates, userId } = status.opts;
+				if (onlyAddPrivates && userId) {
+					dispatch(getSongList({ userId, onlyAddPrivates }));
+				}
 			} else if (songRequestStatus === FETCH_STATUS.SUCCESS) {
 				setStatus(steps.WITH_SONG_LIST_1, { fromFetch: true });
 				dispatch(resetSongRequestStatus());
@@ -122,21 +145,25 @@ export const useLibraryPage = () => {
 	useEffect(() => {
 		if (status.step === steps.FORMAT_BY_VERSION_GROUPS_2) {
 			if (!arrayIsEmpty(currentSongList)) {
-				const versionGroups = {
-					// $versionGroupId: {
-					//     moreRated: $songId,
-					//     maxLevel: 0,
-					//     versions: [ $songId, ... ],
-					// }
-				};
+				const versionGroups: Record<
+					TSong["versionGroupId"],
+					{
+						moreRated: TSongId;
+						maxLevel: number;
+						versions: TSongId[];
+					}
+				> = {};
 
-				const mainLevel = (level) =>
+				const mainLevel = (level: TSong["level"]) =>
 					Object.keys(level || {}).reduce(
 						(newMainLevel, levelType) => newMainLevel + level[levelType],
 						0
 					);
 
-				const swapMoreRated = (newSongId, versionGroupId) => {
+				const swapMoreRated = (
+					newSongId: TSongId,
+					versionGroupId: TSong["versionGroupId"]
+				) => {
 					const lastMoreRatedSongId = versionGroups[versionGroupId].moreRated;
 					versionGroups[versionGroupId].moreRated = newSongId;
 					versionGroups[versionGroupId].versions.push(lastMoreRatedSongId);
@@ -146,8 +173,9 @@ export const useLibraryPage = () => {
 					.filter((i) => i.creator?.id === userId)
 					.forEach((song) => {
 						if (versionGroups[song.versionGroupId]) {
-							const currentSongVersion =
-								currentSongList[versionGroups[song.versionGroupId].moreRated];
+							const currentSongVersion = currentSongList.find(
+								(s) => s.id === versionGroups[song.versionGroupId].moreRated
+							);
 							const currentMaxLevel =
 								versionGroups[song.versionGroupId].maxLevel || 0;
 
@@ -160,7 +188,8 @@ export const useLibraryPage = () => {
 									song.level
 								);
 							} else if (
-								getRating(song.rating) > getRating(currentSongVersion.rating)
+								getRating(song.rating) >
+								getRating(currentSongVersion?.rating || [])
 							) {
 								swapMoreRated(song.id, song.versionGroupId);
 							} else {
@@ -190,11 +219,13 @@ export const useLibraryPage = () => {
 		if (status.step === steps.FINISHED) {
 			setFinalSongList(currentSongList);
 			if (!status.opts.isSameBackup) {
-				dispatch(setLibraryPageBackup({ songList: currentSongList }));
+				dispatch(
+					setLibraryPageBackup({ songList: currentSongList, repertoryList: [] })
+				);
 			}
 			setIsLoading(false);
 		}
 	}, [status, currentSongList, dispatch]);
 
-	return [finalSongList, isLoading, songError];
+	return { songList: finalSongList, isLoading, songError };
 };

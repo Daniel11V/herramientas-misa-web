@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import M from "materialize-css";
-import { useSelector } from "react-redux";
 import fullLabels from "../../data/fullLabels.ts";
 import LyricWithChords from "./components/LyricWithChords.tsx";
 import styled from "styled-components";
@@ -19,7 +18,7 @@ import { usePublishSong } from "./hooks/usePublishSong.ts";
 import LabelsInput from "../components/LabelsInput.tsx";
 import { translateChord } from "../../utils/lyricsAndChordsUtils.ts";
 import { generalLevelOptions } from "../../classes/song/types";
-import { TStoreState } from "../../store.ts";
+import { useAppSelector } from "../../store.ts";
 
 export const SongPage: React.FC = () => {
 	const navigate = useNavigate();
@@ -53,7 +52,7 @@ export const SongPage: React.FC = () => {
 		saveOptions,
 	} = useSongPageOptions();
 
-	const user = useSelector((state: TStoreState) => state.user.google);
+	const user = useAppSelector((state) => state.user.google);
 	const isCreator = user?.id === song?.creator?.id;
 	const [messageModalOpts, setMessageModalOpts] = useState(null);
 	const [openOptions, setOpenOptions] = useState(false);

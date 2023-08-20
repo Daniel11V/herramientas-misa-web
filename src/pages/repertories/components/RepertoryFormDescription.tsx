@@ -1,5 +1,16 @@
+import { TsetFunc } from "../../../utils/types";
 
-const RepertoryFormDescription = ({
+const RepertoryFormDescription: React.FC<{
+	title?: string;
+	setTitle: TsetFunc<string>;
+	placeTitle?: string;
+	setPlaceTitle: TsetFunc<string>;
+	placeUbication?: string;
+	setPlaceUbication: TsetFunc<string>;
+	annotations?: string;
+	setAnnotations: TsetFunc<string>;
+	setIsMass: TsetFunc<boolean>;
+}> = ({
 	title,
 	setTitle,
 	placeTitle,
@@ -10,6 +21,12 @@ const RepertoryFormDescription = ({
 	setAnnotations,
 	setIsMass,
 }) => {
+	const handleChangeIsMass: React.FormEventHandler<HTMLLabelElement> = (
+		event
+	) => {
+		setIsMass((event.target as HTMLInputElement).value === "true");
+	};
+
 	return (
 		<>
 			<div className="row">
@@ -35,7 +52,10 @@ const RepertoryFormDescription = ({
 						type="text"
 						value={placeTitle || ""}
 					/>
-					<label htmlFor="placeTitle" className={"lab" + (placeTitle ? " active" : "")}>
+					<label
+						htmlFor="placeTitle"
+						className={"lab" + (placeTitle ? " active" : "")}
+					>
 						Titulo de la Ubicacion
 					</label>
 				</div>
@@ -49,7 +69,10 @@ const RepertoryFormDescription = ({
 						type="text"
 						value={placeUbication || ""}
 					/>
-					<label htmlFor="placeUbication" className={"lab" + (placeUbication ? " active" : "")}>
+					<label
+						htmlFor="placeUbication"
+						className={"lab" + (placeUbication ? " active" : "")}
+					>
 						Url de la Ubicacion
 					</label>
 				</div>
@@ -60,7 +83,7 @@ const RepertoryFormDescription = ({
 					marginBottom: "40px",
 				}}
 			>
-				<label onChange={setIsMass}>
+				<label onChange={handleChangeIsMass}>
 					<input type="checkbox" id="checkAuto" />
 					<span className="lever"></span>
 					<span style={{ color: "black" }}>Usar plantilla para misas</span>

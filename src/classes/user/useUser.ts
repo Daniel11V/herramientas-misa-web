@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { setUserLoading, setDevice } from "./actions";
-import { TStoreState } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 
 export const useUser = () => {
-	const dispatch = useDispatch();
-	const { loading, error, isLogged, ...userData } = useSelector(
-		(state: TStoreState) => state.user
+	const dispatch = useAppDispatch();
+	const { loading, error, isLogged, ...userData } = useAppSelector(
+		(state) => state.user
 	);
 
 	const [isFirstTime, setIsFirstTime] = useState(true);

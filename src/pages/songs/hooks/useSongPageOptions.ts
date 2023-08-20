@@ -1,15 +1,12 @@
 import M from "materialize-css";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { setSongPageOptions } from "../../../classes/user/actions";
-import { objsAreEqual } from "../../../utils/lyricsAndChordsUtils";
-import { TStoreState } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { objsAreEqual } from "../../../utils/generalUtils";
 
 export const useSongPageOptions = () => {
-	const dispatch = useDispatch();
-	const { songPageOptions } = useSelector(
-		(state: TStoreState) => state.user.config
-	);
+	const dispatch = useAppDispatch();
+	const { songPageOptions } = useAppSelector((state) => state.user.config);
 
 	const [areNewOptions, setAreNewOptions] = useState(false);
 	const [pageOptions, setPageOptions] = useState(songPageOptions);

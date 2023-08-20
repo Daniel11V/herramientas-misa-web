@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import M from "materialize-css";
-import { useSelector } from "react-redux";
 import styled, { css } from "styled-components";
 import LoginLogoutBtn from "./components/LoginLogoutBtn";
 import { noSelectableText } from "../styles/styleUtils";
-import { TStoreState } from "../store";
+import { useAppSelector } from "../store";
 
 const Navigation = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const [lastPage, setLastPage] = useState("");
-	const user = useSelector((state: TStoreState) => state.user.google);
-	const isDesktop = useSelector((state: TStoreState) => state.user.isDesktop);
+	const user = useAppSelector((state) => state.user.google);
+	const isDesktop = useAppSelector(
+		(state) => state.user.isDesktop
+	);
 
 	useEffect(() => {
 		let elem = document.querySelector(".sidenav");

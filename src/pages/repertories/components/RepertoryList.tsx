@@ -1,12 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import "../../../styles/SongList.css";
 import { Collection, CollectionItem } from "../../../styles/styles";
-import { arrayIsEmpty } from "../../../utils/lyricsAndChordsUtils";
+import { TRepertory, TRepertoryId } from "../../../classes/repertory/types";
+import { arrayIsEmpty } from "../../../utils/generalUtils";
 
-const RepertoryList = ({ repertoryList = [], loading = false, error = "" }) => {
+const RepertoryList: React.FC<{
+	repertoryList: TRepertory[];
+	loading?: boolean;
+	error?: string;
+}> = ({ repertoryList = [], loading = false, error = "" }) => {
 	const navigate = useNavigate();
 
-	const handleClickRepertory = (id) => {
+	const handleClickRepertory = (id: TRepertoryId) => {
 		navigate(`/repertory/${id}`, { state: { from: "Repertorios" } });
 	};
 

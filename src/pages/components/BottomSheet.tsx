@@ -1,10 +1,14 @@
-import React, { useState, useEffect, MouseEventHandler } from "react";
+import { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import { colors } from "../../styles/styleUtils";
-import { setFunc } from "../../utils/types";
+import { TsetFunc } from "../../utils/types";
 
-const BottomSheet = (p:{ children: any, open: boolean, setOpen: setFunc<boolean>, fullscreen: boolean }) => {
-	const { children, open, setOpen, fullscreen = false } = p;
+const BottomSheet: React.FC<{
+	children: any;
+	open: boolean;
+	setOpen: TsetFunc<boolean>;
+	fullscreen: boolean;
+}> = ({ children, open, setOpen, fullscreen = false }) => {
 	const [topValue, setTopValue] = useState<number>(0);
 	const [transitionDuration, setTransitionDuration] = useState("0.3s");
 	const [openBottonSheet, setOpenBottonSheet] = useState(false);
@@ -109,7 +113,12 @@ const FullScreenBackground = styled.div`
 	left: 0;
 `;
 
-const BottomSheetStyled = styled.div<{topValue:number, fullscreen: boolean, transitionDuration: string, open: boolean}>`
+const BottomSheetStyled = styled.div<{
+	topValue: number;
+	fullscreen: boolean;
+	transitionDuration: string;
+	open: boolean;
+}>`
 	background-color: #fff;
 	width: 100vw;
 	min-height: 15vh;

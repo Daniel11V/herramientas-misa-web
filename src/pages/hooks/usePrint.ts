@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { errorMessage } from "../../utils/generalUtils";
+import { errorMessage } from "../../utils/errors";
 
-export const usePrint = (pageTitle) => {
+export const usePrint = (pageTitle: string) => {
 	const [isLoadingPrint, setIsLoading] = useState(false);
 	const [errorPrint, setError] = useState<string | null>(null);
 
@@ -24,11 +24,12 @@ export const usePrint = (pageTitle) => {
 			content += "</body>";
 			content += "</html>";
 
-			const win = window.openOptions(
+			const win = window.open(
 				"",
 				"",
 				"left=0,top=0,width=552,height=477,toolbar=0,scrollbars=0,status =0"
 			);
+			if (!win) throw new Error("Can not open window");
 			win.document.write(content);
 			win.document.close();
 		} catch (err) {

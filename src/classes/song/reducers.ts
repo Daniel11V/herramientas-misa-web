@@ -2,7 +2,7 @@ import { produce } from "immer";
 import { types } from "./actions";
 import { TSong } from "./types";
 import {
-	TActionType,
+	TAction,
 	TFetchStatus,
 	TSecurityStatus,
 	FETCH_STATUS,
@@ -63,7 +63,7 @@ const initialState: TSongState = {
 
 const SongReducer = (
 	state: TSongState = initialState,
-	{ type, payload }: TActionType
+	{ type, payload }: TAction
 ) => {
 	return produce(state, (newState: TSongState) => {
 		switch (type) {

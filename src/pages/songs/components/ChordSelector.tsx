@@ -2,18 +2,16 @@
 import { allChordsOptions } from "../../../data/allChords";
 import ModalSelector from "./ModalSelector";
 import styled from "styled-components";
-import { Chord, ChordLang } from "../types";
+import { TChord, TChordLang } from "../types";
 
-interface Props {
-	selectedChord: Chord;
-	setSelectedChord: (chord: Chord) => void;
-	chordLang: ChordLang;
+const ChordSelector: React.FC<{
+	selectedChord: TChord;
+	setSelectedChord: (chord: TChord) => void;
+	chordLang: TChordLang;
 	label: string;
 	onlyChangeTone: boolean;
 	modalId: string;
-}
-
-const ChordSelector: React.FC<Props> = ({
+}> = ({
 	selectedChord,
 	setSelectedChord,
 	chordLang,

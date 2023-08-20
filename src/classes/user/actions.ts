@@ -1,4 +1,4 @@
-import { TActionType } from "../../utils/types.js";
+import { TAction } from "../../utils/types.js";
 import { TUserState } from "./reducers.js";
 import { TUserGoogle } from "./types.js";
 
@@ -13,30 +13,28 @@ export const types = {
 	SET_USER_SONG_PAGE_OPTIONS: "SET_USER_SONG_PAGE_OPTIONS",
 };
 
-export const setUserLoading = (
-	loading: TUserState["loading"]
-): TActionType => ({
+export const setUserLoading = (loading: TUserState["loading"]): TAction => ({
 	type: types.SET_USER_LOADING,
 	payload: { loading },
 });
 
-export const login = (googleInfo: TUserGoogle): TActionType => ({
+export const login = (googleInfo: TUserGoogle): TAction => ({
 	type: types.LOGIN,
 	payload: { googleInfo },
 });
 
-export const logout = (): TActionType => ({
+export const logout = (): TAction => ({
 	type: types.LOGOUT,
 });
 
-export const setDevice = (isDesktop: TUserState["isDesktop"]): TActionType => ({
+export const setDevice = (isDesktop: TUserState["isDesktop"]): TAction => ({
 	type: types.SET_DEVICE,
 	payload: { isDesktop },
 });
 
 export const setSongPageOptions = (
 	songPageOptions: TUserState["config"]["songPageOptions"]
-): TActionType => ({
+): TAction => ({
 	type: types.SET_USER_SONG_PAGE_OPTIONS,
 	payload: { songPageOptions },
 });

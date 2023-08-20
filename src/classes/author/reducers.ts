@@ -1,7 +1,9 @@
 import { produce } from "immer";
 import { types } from "./actions";
-import { TAuthorDB } from "./types";
-import { TActionType, TFetchStatus, FETCH_STATUS } from "../../utils/types";
+import { TAuthorDB, TAuthorId, TAuthorListDB } from "./types";
+import { TFetchStatus, FETCH_STATUS } from "../../utils/types";
+import { ActionError } from "../../utils/errors";
+import { Dispatch } from "redux";
 
 const defaultAuthor: TAuthorDB = {
 	id: "",
@@ -16,7 +18,7 @@ export type TAuthorState = {
 	authorStatus: TFetchStatus;
 	authorError: string | null;
 
-	authorList: TAuthorDB[];
+	authorList: TAuthorListDB;
 	author: TAuthorDB;
 };
 
@@ -24,15 +26,24 @@ const initialState: TAuthorState = {
 	authorStatus: FETCH_STATUS.INITIAL,
 	authorError: null,
 
-	authorList: [],
+	authorList: {},
 	author: defaultAuthor,
 };
 
+export type TAuthorAction = {
+	type: string;
+	payload?: Partial<TAuthorState> & {
+		authorCreated?: TAuthorDB;
+		authorEdited?: TAuthorDB;
+		authorDeletedId?: TAuthorId;
+	};
+};
+
 const AuthorReducer = (
-	state: TAuthorState = initialState,
-	{ type, payload }: TActionType
+	state = initialState,
+	{ type, payload }: TAuthorAction
 ) => {
-	return produce(state, (newState: TAuthorState) => {
+	return produce(state, (newState: TAuthorState): void => {
 		switch (type) {
 			case types.RESET_AUTHOR_STATUS:
 				newState.authorStatus = FETCH_STATUS.INITIAL;
@@ -40,34 +51,48 @@ const AuthorReducer = (
 				break;
 
 			case types.SET_AUTHOR_LIST:
-				newState.authorList = payload.authorList;
-				newState.authorStatus = payload.authorStatus;
+				if (payload?.authorList && payload?.authorStatus) {
+					newState.authorList = payload.authorList;
+					newState.authorStatus = payload.authorStatus;
+				} else throw new ActionError(type);
 				break;
 			case types.SET_AUTHOR_LIST_STATUS:
-				newState.authorStatus = payload.authorStatus;
-				newState.authorError = payload.error;
+				if (payload?.authorError && payload?.authorStatus) {
+					newState.authorStatus = payload?.authorStatus;
+					newState.authorError = payload?.authorError;
+				} else throw new ActionError(type);
 				break;
 
 			case types.SET_AUTHOR:
-				newState.author = payload.author;
-				newState.authorStatus = payload.authorStatus;
+				if (payload?.author && payload?.authorStatus) {
+					newState.author = payload?.author;
+					newState.authorStatus = payload?.authorStatus;
+				} else throw new ActionError(type);
 				break;
 			case types.SET_AUTHOR_STATUS:
-				newState.authorStatus = payload.authorStatus;
-				newState.authorError = payload.error;
+				if (payload?.authorError && payload?.authorStatus) {
+					newState.authorStatus = payload?.authorStatus;
+					newState.authorError = payload?.authorError;
+				} else throw new ActionError(type);
 				break;
 
 			case types.CREATE_AUTHOR:
-				newState.authorList[payload.authorCreated.id] = payload.authorCreated;
-				newState.author = payload.authorCreated;
+				if (payload?.authorCreated) {
+					newState.authorList[payload.authorCreated.id] = payload.authorCreated;
+					newState.author = payload?.authorCreated;
+				} else throw new ActionError(type);
 				break;
 			case types.EDIT_AUTHOR:
-				newState.authorList[payload.authorEdited.id] = payload.authorEdited;
-				newState.author = payload.authorEdited;
+				if (payload?.authorEdited) {
+					newState.authorList[payload?.authorEdited.id] = payload?.authorEdited;
+					newState.author = payload?.authorEdited;
+				} else throw new ActionError(type);
 				break;
 			case types.DELETE_AUTHOR:
-				delete newState.authorList[payload.authorDeletedId];
-				newState.author = defaultAuthor;
+				if (payload?.authorDeletedId) {
+					delete newState.authorList[payload?.authorDeletedId];
+					newState.author = defaultAuthor;
+				} else throw new ActionError(type);
 				break;
 
 			default:
@@ -75,5 +100,7 @@ const AuthorReducer = (
 		}
 	});
 };
+
+export type TAuthorDispatch = Dispatch<TAuthorAction>;
 
 export default AuthorReducer;

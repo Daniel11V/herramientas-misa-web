@@ -1,13 +1,16 @@
 import { GoogleLogin } from "react-google-login";
-import { useDispatch, useSelector } from "react-redux";
 import { login, setUserLoading } from "../../classes/user/actions";
-import { TStoreState } from "../../store";
 import { TUserGoogle } from "../../classes/user/types";
+import { useAppDispatch, useAppSelector } from "../../store";
 
-const LoggedButton = (p: { children: any, onClick: () => void, className: string }) => {
+const LoggedButton = (p: {
+	children: any;
+	onClick: () => void;
+	className: string;
+}) => {
 	const { children = null, onClick = () => {}, className } = p;
-	const dispatch = useDispatch();
-	const isLogged = useSelector((state: TStoreState) => state.user.isLogged);
+	const dispatch = useAppDispatch();
+	const isLogged = useAppSelector((state) => state.user.isLogged);
 
 	const loginResponse = (response: any) => {
 		if (response.googleId) {

@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import M from "materialize-css";
-import { useDispatch } from "react-redux";
 // import { useRepertoryPage } from "./hooks/useRepertoryPage.js";
 import SongCollection from "../components/SongCollection.jsx";
 import { useRepertoryPage } from "./hooks/useRepertoryPage.js";
@@ -9,9 +8,8 @@ import { Header } from "../../styles/styles.js";
 
 const RepertoryPage = () => {
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
 	const { id } = useParams();
-	const [repertory, isLoading, error] = useRepertoryPage(id);
+	const { repertory, loading, error } = useRepertoryPage(id);
 
 	// const [tone, setTone] = useState(null);
 	// const [currentChords, setCurrentChords] = useState({});
@@ -29,13 +27,13 @@ const RepertoryPage = () => {
 
 	const deleteRepertory = async () => {
 		// await axios.delete(`/api/songs/${id}`).catch((err) => console.error(err));
-		dispatch(deleteRepertory(id));
+		// dispatch(deleteRepertory(id));
 		M.toast({ html: "Repertorio eliminado." });
 		// refetchRepertorys();
 		navigate(-1);
 	};
 
-	if (isLoading)
+	if (loading || !repertory)
 		return (
 			<div className="progress" style={{ backgroundColor: "#9cd1ff" }}>
 				<div
@@ -48,17 +46,14 @@ const RepertoryPage = () => {
 	return (
 		<>
 			<Header>
-				<h4>
-					{repertory.title}{" "}
-					{repertory.author?.name && ` - ${repertory.author.name}`}
-				</h4>
+				<h4>{repertory.title}</h4>
 			</Header>
 			{repertory?.songSections?.map(({ name, songs }) => (
 				<div key={name}>
 					<h6>{name}</h6>
 					<SongCollection
 						songList={songs}
-						isLoading={isLoading}
+						loading={loading}
 						error={error}
 						pageName="Repertorio"
 					/>

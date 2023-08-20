@@ -2,7 +2,7 @@
 // import { db } from "../../database/firebase"
 // import * as FileSystem from 'expo-file-system'
 
-import { TActionType } from "../../utils/types";
+import { TAction } from "../../utils/types";
 import { TSong } from "../song/types";
 import { TPageState } from "./reducers";
 
@@ -18,35 +18,35 @@ export const types = {
 
 export const setSongPageBackup = (
 	songPageBackup: TPageState["songPageBackup"]
-): TActionType => ({
+): TAction => ({
 	type: types.SET_SONG_PAGE_BACKUP,
 	payload: { songPageBackup },
 });
-export const setSongPageBackupSong = (song: TSong): TActionType => ({
+export const setSongPageBackupSong = (song: TSong): TAction => ({
 	type: types.SET_SONG_PAGE_BACKUP_SONG,
 	payload: { song },
 });
 export const setSongListPageBackup = (
 	songListPageBackup: TPageState["songListPageBackup"]
-): TActionType => ({
+): TAction => ({
 	type: types.SET_SONG_LIST_PAGE_BACKUP,
 	payload: { songListPageBackup },
 });
 export const setRepertoryPageBackup = (
 	repertoryPageBackup: TPageState["repertoryPageBackup"]
-): TActionType => ({
+): TAction => ({
 	type: types.SET_REPERTORY_PAGE_BACKUP,
 	payload: { repertoryPageBackup },
 });
 export const setRepertoryListPageBackup = (
 	repertoryListPageBackup: TPageState["repertoryListPageBackup"]
-): TActionType => ({
+): TAction => ({
 	type: types.SET_REPERTORY_LIST_PAGE_BACKUP,
 	payload: { repertoryListPageBackup },
 });
 export const setLibraryPageBackup = (
 	libraryPageBackup: TPageState["libraryPageBackup"]
-): TActionType => ({
+): TAction => ({
 	type: types.SET_LIBRARY_PAGE_BACKUP,
 	payload: { libraryPageBackup },
 });

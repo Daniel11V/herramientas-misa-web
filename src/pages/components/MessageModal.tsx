@@ -2,7 +2,12 @@ import M from "materialize-css";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 
-const MessageModal = ({ opts }) => {
+const MessageModal: React.FC<{
+	title?: string;
+	message?: string;
+	onCancel?: () => void;
+	onConfirm?: () => void;
+}> = ({ title, message, onCancel, onConfirm }) => {
 	const [modalInstance, setModalInstance] = useState<M.Modal | null>(null);
 
 	useEffect(() => {
@@ -20,12 +25,12 @@ const MessageModal = ({ opts }) => {
 	}, []);
 
 	useEffect(() => {
-		if (!!opts?.title || !!opts?.message) {
+		if (!!title || message) {
 			modalInstance?.open();
 		} else {
 			modalInstance?.close();
 		}
-	}, [opts, modalInstance]);
+	}, [title, message, modalInstance]);
 
 	const closeModal = (event: React.MouseEvent): void => {
 		event.stopPropagation();
@@ -35,26 +40,26 @@ const MessageModal = ({ opts }) => {
 	return (
 		<MessageModalStyled>
 			<div className="modal-content">
-				{opts?.title && <h4>{opts.title}</h4>}
-				{opts?.message && <p>{opts.message}</p>}
+				{title && <h4>{title}</h4>}
+				{message && <p>{message}</p>}
 			</div>
 			<div className="modal-footer">
-				{opts?.onCancel && (
+				{onCancel && (
 					<div
 						onClick={(e) => {
 							closeModal(e);
-							opts.onCancel();
+							onCancel();
 						}}
 						className="modal-close waves-effect waves-light-blue btn-flat"
 					>
 						Cancelar
 					</div>
 				)}
-				{opts?.onConfirm && (
+				{onConfirm && (
 					<div
 						onClick={(e) => {
 							closeModal(e);
-							opts.onConfirm();
+							onConfirm();
 						}}
 						className="modal-close waves-effect waves-light-blue btn-flat"
 					>

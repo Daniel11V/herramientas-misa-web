@@ -4,23 +4,22 @@ import styled from "styled-components";
 import LabelsInput from "./LabelsInput";
 import { CollectionItem } from "../../styles/styles";
 import { colors } from "../../styles/styleUtils";
-import { setFunc } from "../../utils/types";
+import { TsetFunc } from "../../utils/types";
 import { TSong } from "../../classes/song/types";
 
-export const CollectionSearcher = (p: {
-	searchInput: string,
-	setSearchInput: setFunc<string>,
-	labels: TSong["labels"],
-	setLabels: setFunc<TSong["labels"]>,
-	handleClickSearchLyric: () => void,
+export const CollectionSearcher: React.FC<{
+	searchInput: string;
+	setSearchInput: TsetFunc<string>;
+	labels: TSong["labels"];
+	setLabels: TsetFunc<TSong["labels"]>;
+	handleClickSearchLyric: () => void;
+}> = ({
+	searchInput,
+	setSearchInput,
+	labels,
+	setLabels,
+	handleClickSearchLyric,
 }) => {
-	const {
-		searchInput,
-		setSearchInput,
-		labels,
-		setLabels,
-		handleClickSearchLyric,
-	} = p;
 	const [showFilters, setShowFilters] = useState(false);
 	const [filterSelectors, setFilterSelectors] = useState<M.Collapsible | null>(
 		null
@@ -96,7 +95,7 @@ const FilterBtn = styled.div`
 
 const CollectionSearcherStyle = styled(CollectionItem).attrs({
 	className: "nav-wrapper",
-})<{showFilters:boolean}>`
+})<{ showFilters: boolean }>`
 	padding: 0 !important;
 	padding-right: 0 !important;
 	border-top-left-radius: 5px;

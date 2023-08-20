@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { setRepertoryListPageBackup } from "../../../classes/page/actions";
 import {
 	getRepertoryList,
@@ -7,50 +6,67 @@ import {
 	setRepertoryListStatus,
 } from "../../../classes/repertory/actions";
 import { MAX_RETRYS } from "../../../configs";
-import { TStoreState } from "../../../store";
 import { FETCH_STATUS, SECURITY_STATUS } from "../../../utils/types";
+import { arrayIsEmpty } from "../../../utils/generalUtils";
+import { TRepertory } from "../../../classes/repertory/types";
+import { TUserId } from "../../../classes/user/types";
+import { useAppDispatch, useAppSelector } from "../../../store";
 
 export const useRepertoryListPage = () => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
-	const userId = useSelector((state: TStoreState) => state.user.google.id);
+	const userId = useAppSelector((state) => state.user.google.id);
 	const {
 		repertoryList,
 		repertoryListStatus,
 		repertoryListUserId,
 		repertoryActionStatus,
 		repertoryError,
-	} = useSelector((state: TStoreState) => state.repertory);
+	} = useAppSelector((state) => state.repertory);
 
-	const { repertoryListPageBackup } = useSelector(
-		(state: TStoreState) => state.page
-	);
+	const { repertoryListPageBackup } = useAppSelector((state) => state.page);
 	const { repertoryList: repertoryListBackup } = repertoryListPageBackup;
 
-	type IStep =
+	type TStep =
 		| "INITIAL"
 		| "FETCH_REPERTORY_LIST_1"
 		| "WITH_REPERTORY_LIST_1"
 		| "FINISHED";
-	const steps: Record<IStep, IStep> = {
+	const steps: Record<TStep, TStep> = {
 		INITIAL: "INITIAL",
 		FETCH_REPERTORY_LIST_1: "FETCH_REPERTORY_LIST_1",
 		WITH_REPERTORY_LIST_1: "WITH_REPERTORY_LIST_1",
 		FINISHED: "FINISHED",
 	};
-	const [status, setCurrentRepertoryListStatus] = useState({
+	type TStatus = {
+		step: TStep;
+		opts: {
+			userId?: TUserId;
+			onlyAddPrivates?: boolean;
+			isFirst?: boolean;
+			isSameBackup?: boolean;
+			fromFetch?: boolean;
+			// songTitleId?: TSongId;
+			// edittedSong?: TSongForm;
+		};
+	};
+	const [status, setCurrentRepertoryListStatus] = useState<TStatus>({
 		step: steps.INITIAL,
 		opts: {},
 	});
 	const [retrys, setRetrys] = useState(0);
-	const [currentRepertoryList, setCurrentRepertoryList] = useState([]);
+	const [currentRepertoryList, setCurrentRepertoryList] = useState<
+		TRepertory[]
+	>([]);
 
-	const [finalRepertoryList, setFinalRepertoryList] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState(false);
+	const [finalRepertoryList, setFinalRepertoryList] = useState<TRepertory[]>(
+		[]
+	);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState("");
 
-	const setStatus = (statusStep: IStep, statusOpts = {}) => {
-		setIsLoading(true);
+	const setStatus = (statusStep: TStep, statusOpts = {}) => {
+		setLoading(true);
 		// console.log("ACA REPERTORY_LIST_STATUS: ", statusStep, statusOpts);
 		setCurrentRepertoryListStatus({ step: statusStep, opts: statusOpts });
 	};
@@ -91,8 +107,11 @@ export const useRepertoryListPage = () => {
 	useEffect(() => {
 		if (status.step === steps.FETCH_REPERTORY_LIST_1) {
 			if (repertoryActionStatus === FETCH_STATUS.INITIAL) {
-				dispatch(getRepertoryList(status.opts));
-				setRetrys(0);
+				const { onlyAddPrivates, userId } = status.opts;
+				if (onlyAddPrivates && userId) {
+					dispatch(getRepertoryList({ userId, onlyAddPrivates }));
+					setRetrys(0);
+				}
 			} else if (repertoryActionStatus === FETCH_STATUS.SUCCESS) {
 				setStatus(steps.WITH_REPERTORY_LIST_1, { fromFetch: true });
 				dispatch(resetRepertoryActionStatus());
@@ -101,8 +120,11 @@ export const useRepertoryListPage = () => {
 					setStatus(steps.FINISHED);
 					dispatch(resetRepertoryActionStatus());
 				} else {
-					setRetrys((lastRetrys) => lastRetrys + 1);
-					dispatch(getRepertoryList(status.opts));
+					const { onlyAddPrivates, userId } = status.opts;
+					if (onlyAddPrivates && userId) {
+						setRetrys((lastRetrys) => lastRetrys + 1);
+						dispatch(getRepertoryList({ onlyAddPrivates, userId }));
+					}
 				}
 			}
 		}
@@ -116,16 +138,16 @@ export const useRepertoryListPage = () => {
 	}, [status, repertoryList]);
 
 	useEffect(() => {
-		if (status.step === steps.FINISHED && !!isLoading) {
+		if (status.step === steps.FINISHED && !!loading) {
 			setFinalRepertoryList(currentRepertoryList);
 			if (!status.opts.isSameBackup && retrys !== MAX_RETRYS) {
 				dispatch(
 					setRepertoryListPageBackup({ repertoryList: currentRepertoryList })
 				);
 			}
-			setIsLoading(false);
+			setLoading(false);
 		}
-	}, [status, isLoading, currentRepertoryList, retrys, dispatch]);
+	}, [status, loading, currentRepertoryList, retrys, dispatch]);
 
-	return [finalRepertoryList, isLoading, error];
+	return { repertoryList: finalRepertoryList, loading, error };
 };
