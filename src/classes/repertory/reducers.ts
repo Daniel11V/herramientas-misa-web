@@ -1,13 +1,15 @@
 import { produce } from "immer";
 import { types } from "./actions";
-import { TRepertory } from "./types";
+import { TRepertory, TRepertoryId, TRepertoryList } from "./types";
 import {
-	TAction,
 	TFetchStatus,
 	TSecurityStatus,
 	FETCH_STATUS,
 	SECURITY_STATUS,
 } from "../../utils/types";
+import { TUserId } from "../user/types";
+import { Dispatch } from "redux";
+import { valid } from "../../utils/generalUtils";
 
 const defaultRepertory: TRepertory = {
 	id: "",
@@ -36,7 +38,7 @@ export type TRepertoryState = {
 
 	repertoryListStatus: TSecurityStatus;
 	repertoryListUserId: string | null;
-	repertoryList: TRepertory[];
+	repertoryList: TRepertoryList;
 
 	repertoryStatus: TSecurityStatus;
 	repertoryUserId: string | null;
@@ -49,7 +51,7 @@ const initialState: TRepertoryState = {
 
 	repertoryListStatus: SECURITY_STATUS.INITIAL,
 	repertoryListUserId: null,
-	repertoryList: [],
+	repertoryList: {},
 
 	repertoryStatus: SECURITY_STATUS.INITIAL,
 	repertoryUserId: null,
@@ -58,114 +60,114 @@ const initialState: TRepertoryState = {
 
 export type TRepertoryAction = {
 	type: string;
-	payload?: Partial<TRepertoryState>;
+	payload?: Partial<TRepertoryState> & {
+		userId?: TUserId;
+		error?: string | null;
+		repertoryCreated?: TRepertory;
+		repertoryEdited?: TRepertory;
+		repertoryDeletedId?: TRepertoryId;
+	};
 };
 
 const RepertoryReducer = (
-	state: TRepertoryState = initialState,
-	{ type, payload }: TAction
+	state = initialState,
+	{ type, payload }: TRepertoryAction
 ) => {
 	return produce(state, (newState: TRepertoryState) => {
-		switch (type) {
-			case types.RESET_REPERTORY_ACTION_STATUS:
-				newState.repertoryActionStatus = FETCH_STATUS.INITIAL;
-				newState.repertoryError = null;
-				break;
+		if (type === types.RESET_REPERTORY_ACTION_STATUS) {
+			newState.repertoryActionStatus = FETCH_STATUS.INITIAL;
+			newState.repertoryError = null;
+		}
+		if (type === types.SET_REPERTORY_LIST_STATUS) {
+			newState.repertoryListStatus = valid(payload?.repertoryListStatus, type);
+		}
 
-			case types.SET_REPERTORY_LIST_STATUS:
-				if (!payload) break;
-				newState.repertoryListStatus = payload.repertoryListStatus;
-				break;
+		if (type === types.FETCH_REPERTORY_LIST) {
+			newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
+		}
+		if (type === types.FETCH_REPERTORY_LIST_SUCCESS) {
+			newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
+			newState.repertoryList = valid(payload?.repertoryList, type);
+			newState.repertoryListStatus = valid(payload?.userId, type)
+				? SECURITY_STATUS.PRIVATE
+				: SECURITY_STATUS.PUBLIC;
+			newState.repertoryListUserId = valid(payload?.userId, type);
+		}
+		if (type === types.FETCH_REPERTORY_LIST_FAILURE) {
+			newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
+			newState.repertoryError = valid(payload?.error, type);
+			newState.repertoryListStatus = SECURITY_STATUS.FAILURE;
+			newState.repertoryListUserId = valid(payload?.userId, type);
+		}
 
-			case types.FETCH_REPERTORY_LIST:
-				newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
-				break;
-			case types.FETCH_REPERTORY_LIST_SUCCESS:
-				newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
-				newState.repertoryList = payload.repertoryList;
-				newState.repertoryListStatus = payload.userId
-					? SECURITY_STATUS.PRIVATE
-					: SECURITY_STATUS.PUBLIC;
-				newState.repertoryListUserId = payload.userId;
-				break;
-			case types.FETCH_REPERTORY_LIST_FAILURE:
-				newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
-				newState.repertoryError = payload.error;
-				newState.repertoryListStatus = SECURITY_STATUS.FAILURE;
-				newState.repertoryListUserId = payload.userId;
-				break;
+		if (type === types.SET_REPERTORY_STATUS) {
+			newState.repertoryStatus = valid(payload?.repertoryStatus, type);
+		}
 
-			case types.SET_REPERTORY_STATUS:
-				newState.repertoryStatus = payload.repertoryStatus;
-				break;
+		if (type === types.FETCH_REPERTORY) {
+			newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
+		}
+		if (type === types.FETCH_REPERTORY_SUCCESS) {
+			newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
+			newState.repertory = valid(payload?.repertory, type);
+			newState.repertoryStatus = valid(payload?.userId, type)
+				? SECURITY_STATUS.PRIVATE
+				: SECURITY_STATUS.PUBLIC;
+			newState.repertoryUserId = valid(payload?.userId, type);
+		}
+		if (type === types.FETCH_REPERTORY_FAILURE) {
+			newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
+			newState.repertoryError = valid(payload?.error, type);
+			newState.repertoryStatus = SECURITY_STATUS.FAILURE;
+		}
 
-			case types.FETCH_REPERTORY:
-				newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
-				break;
-			case types.FETCH_REPERTORY_SUCCESS:
-				newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
-				newState.repertory = payload.repertory;
-				newState.repertoryStatus = payload.userId
-					? SECURITY_STATUS.PRIVATE
-					: SECURITY_STATUS.PUBLIC;
-				newState.repertoryUserId = payload.userId;
-				break;
-			case types.FETCH_REPERTORY_FAILURE:
-				newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
-				newState.repertoryError = payload.error;
-				newState.repertoryStatus = SECURITY_STATUS.FAILURE;
-				break;
+		if (type === types.CREATE_REPERTORY) {
+			newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
+		}
+		if (type === types.CREATE_REPERTORY_SUCCESS) {
+			let repertoryCreated = valid(payload?.repertoryCreated, type);
+			newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
+			newState.repertoryList[repertoryCreated.id] = repertoryCreated;
+			newState.repertoryListStatus = SECURITY_STATUS.SHOULD_UPDATE;
+			newState.repertory = repertoryCreated;
+		}
+		if (type === types.CREATE_REPERTORY_FAILURE) {
+			newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
+			newState.repertoryError = valid(payload?.error, type);
+		}
 
-			case types.CREATE_REPERTORY:
-				newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
-				break;
-			case types.CREATE_REPERTORY_SUCCESS:
-				newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
-				newState.repertoryList.push(payload.repertoryCreated);
-				newState.repertoryListStatus = SECURITY_STATUS.SHOULD_UPDATE;
-				newState.repertory = payload.repertoryCreated;
-				break;
-			case types.CREATE_REPERTORY_FAILURE:
-				newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
-				newState.repertoryError = payload.error;
-				break;
+		if (type === types.EDIT_REPERTORY) {
+			newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
+		}
+		if (type === types.EDIT_REPERTORY_SUCCESS) {
+			let repertoryEdited = valid(payload?.repertoryEdited, type);
+			newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
+			newState.repertoryList[repertoryEdited.id] = repertoryEdited;
+			newState.repertoryListStatus = SECURITY_STATUS.SHOULD_UPDATE;
+			newState.repertory = repertoryEdited;
+		}
+		if (type === types.EDIT_REPERTORY_FAILURE) {
+			newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
+			newState.repertoryError = valid(payload?.error, type);
+		}
 
-			case types.EDIT_REPERTORY:
-				newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
-				break;
-			case types.EDIT_REPERTORY_SUCCESS:
-				newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
-				newState.repertoryList = state.repertoryList.map((repertory) =>
-					repertory.id === payload.repertoryEdited.id
-						? payload.repertoryEdited
-						: repertory
-				);
-				newState.repertoryListStatus = SECURITY_STATUS.SHOULD_UPDATE;
-				newState.repertory = payload.repertoryEdited;
-				break;
-			case types.EDIT_REPERTORY_FAILURE:
-				newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
-				newState.repertoryError = payload.error;
-				break;
-
-			case types.DELETE_REPERTORY:
-				newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
-				break;
-			case types.DELETE_REPERTORY_SUCCESS:
-				newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
-				delete newState.repertoryList[payload.repertoryDeletedId];
-				newState.repertoryListStatus = SECURITY_STATUS.SHOULD_UPDATE;
-				newState.repertory = defaultRepertory;
-				break;
-			case types.DELETE_REPERTORY_FAILURE:
-				newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
-				newState.repertoryError = payload.error;
-				break;
-
-			default:
-				break;
+		if (type === types.DELETE_REPERTORY) {
+			newState.repertoryActionStatus = FETCH_STATUS.FETCHING;
+		}
+		if (type === types.DELETE_REPERTORY_SUCCESS) {
+			let repertoryDeletedId = valid(payload?.repertoryDeletedId, type);
+			newState.repertoryActionStatus = FETCH_STATUS.SUCCESS;
+			delete newState.repertoryList[repertoryDeletedId];
+			newState.repertoryListStatus = SECURITY_STATUS.SHOULD_UPDATE;
+			newState.repertory = defaultRepertory;
+		}
+		if (type === types.DELETE_REPERTORY_FAILURE) {
+			newState.repertoryActionStatus = FETCH_STATUS.FAILURE;
+			newState.repertoryError = valid(payload?.error, type);
 		}
 	});
 };
+
+export type TRepertoryDispatch = Dispatch<TRepertoryAction>;
 
 export default RepertoryReducer;

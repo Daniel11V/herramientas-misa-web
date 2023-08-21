@@ -1,5 +1,5 @@
 import store from "../../../store";
-import { setDatabaseItem } from "../../database/reducers";
+import { setDatabaseItem } from "../../database/actions";
 import { TPublicRepertoryDB, TRepertoryId } from "../types";
 
 export const getPublicRepertoryListDB = async () => {
@@ -10,7 +10,9 @@ export const getPublicRepertoryListDB = async () => {
 	return repertoryList;
 };
 
-export const getPublicRepertoryDB = async (p: { repertoryId: TRepertoryId }) => {
+export const getPublicRepertoryDB = async (p: {
+	repertoryId: TRepertoryId;
+}): Promise<TPublicRepertoryDB | null> => {
 	const { repertoryId } = p;
 	if (!repertoryId) throw new Error("Invalid repertory ID.");
 
@@ -18,16 +20,18 @@ export const getPublicRepertoryDB = async (p: { repertoryId: TRepertoryId }) => 
 
 	if (!repertory) throw new Error("PublicRepertory not found.");
 
-	return repertory;
+	return repertory || null;
 };
 
-export const createPublicRepertoryDB = async (p: { repertoryCreated: TPublicRepertoryDB }) => {
+export const createPublicRepertoryDB = async (p: {
+	repertoryCreated: TPublicRepertoryDB;
+}) => {
 	const { repertoryCreated } = p;
 
 	if (!repertoryCreated) throw new Error("Invalid repertory ID.");
 
 	await store.dispatch(
-		setDatabaseItem(
+		setDatabaseItem (
 			"publicRepertoryList",
 			repertoryCreated.id,
 			repertoryCreated

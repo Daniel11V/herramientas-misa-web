@@ -32,6 +32,12 @@ export class ActionError extends Error {
 		this.name = "ActionError";
 	}
 }
+export class UndefinedError extends Error {
+	constructor(action: string) {
+		super(`Error in "${action}"`);
+		this.name = "UndefinedError";
+	}
+}
 
 export const errorMessage = (error: unknown): string =>
 	error instanceof Error ? error.message : String(error);

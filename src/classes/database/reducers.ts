@@ -8,7 +8,6 @@ import {
 	TPublicSongLyricDB,
 	TPublicSongTitleDB,
 } from "../song/types";
-import { TAction } from "../../utils/types";
 import {
 	TPrivateRepertoryDB,
 	TPrivateRepertoryListDB,
@@ -16,6 +15,7 @@ import {
 	TPublicRepertoryListDB,
 } from "../repertory/types";
 import { TUserDB, TUserListDB } from "../user/types";
+import { valid } from "../../utils/generalUtils";
 
 export const types = {
 	SET_DATABASE: "SET_DATABASE",
@@ -47,63 +47,36 @@ export type TDatabaseItem =
 	| TPublicSongTitleDB
 	| TPublicSongLyricDB;
 
-export const setDatabase = (newDatabase: TDatabaseState) => ({
-	type: types.SET_DATABASE,
-	payload: { newDatabase },
-});
-
-export const setDatabaseItem = (
-	category: TDatabaseCategory,
-	id: string,
-	item: TDatabaseItem
-): TAction => ({
-	type: types.SET_DATABASE_ITEM,
-	payload: { category, id, item },
-});
-
-export const deleteDatabaseItem = (
-	category: TDatabaseCategory,
-	id: string
-): TAction => ({
-	type: types.DELETE_DATABASE_ITEM,
-	payload: { category, id },
-});
-
 const initialState: TDatabaseState = { ...testData };
 
+export type TDatabaseAction = {
+	type: string;
+	payload?: Partial<TDatabaseState> & {
+		newDatabase?: TDatabaseState;
+		category?: TDatabaseCategory;
+		id?: string;
+		item?: TDatabaseItem;
+	};
+};
+
 const DatabaseReducer = (
-	state: TDatabaseState = initialState,
-	{
-		type,
-		payload,
-	}: {
-		type: string;
-		payload: {
-			newDatabase?: TDatabaseState;
-			category?: TDatabaseCategory;
-			id?: string;
-			item?: TDatabaseItem;
-		};
-	}
+	state = initialState,
+	{ type, payload }: TDatabaseAction
 ) => {
 	return produce(state, (newState: TDatabaseState) => {
-		switch (type) {
-			case types.SET_DATABASE:
-				if (payload.newDatabase) newState = payload.newDatabase;
-				break;
-			case types.SET_DATABASE_ITEM:
-				if (payload.category && payload.id && payload.item) {
-					newState[payload.category][payload.id] = payload.item;
-				}
-				break;
-			case types.DELETE_DATABASE_ITEM:
-				if (payload.category && payload.id) {
-					delete newState[payload.category][payload.id];
-				}
-				break;
-
-			default:
-				break;
+		if (type === types.SET_DATABASE) {
+			newState = valid(payload?.newDatabase, type);
+		}
+		if (type === types.SET_DATABASE_ITEM) {
+			let category = valid(payload?.category, type);
+			let id = valid(payload?.id, type);
+			let item = valid(payload?.item, type);
+			newState[category][id] = item;
+		}
+		if (type === types.DELETE_DATABASE_ITEM) {
+			let category = valid(payload?.category, type);
+			let id = valid(payload?.id, type);
+			delete newState[category][id];
 		}
 	});
 };

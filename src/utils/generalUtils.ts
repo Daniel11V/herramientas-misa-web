@@ -2,6 +2,7 @@ import { TRate } from "../classes/song/types";
 import { TUserId } from "../classes/user/types";
 import allChords from "../data/allChords";
 import searchLabels from "../data/searchLabels";
+import { UndefinedError } from "./errors";
 
 export const isAdminUser = (userId: TUserId): boolean => {
 	const adminList = ["111418653738749034139"];
@@ -77,6 +78,13 @@ export const objsAreEqual = (
 	}
 
 	return true;
+};
+
+// Not undefined value
+export const valid = <P>(payloadValue: P | undefined, type: string): P => {
+	if (payloadValue === undefined) {
+		throw new UndefinedError(type);
+	} else return payloadValue;
 };
 
 export const getRating = (rates: TRate[] = []): number => {

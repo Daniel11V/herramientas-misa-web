@@ -2,7 +2,7 @@ import { GoogleLogin, GoogleLogout } from "react-google-login";
 import styled from "styled-components";
 import { login, logout, setUserLoading } from "../../classes/user/actions";
 import { TUserGoogle } from "../../classes/user/types";
-import { useAppDispatch } from "../../store";
+import { useDispatch } from "react-redux";
 
 const LoginLogoutBtn = (p: {
 	children?: any;
@@ -10,7 +10,7 @@ const LoginLogoutBtn = (p: {
 	update?: (userData: TUserGoogle) => void;
 }) => {
 	const { children = null, isLogged = false, update = () => {} } = p;
-	const dispatch = useAppDispatch();
+	const dispatch = useDispatch();
 
 	const loginResponse = (response: any) => {
 		if (response.googleId) {

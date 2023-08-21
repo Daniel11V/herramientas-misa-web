@@ -7,7 +7,8 @@ import { useRepertoryListPage } from "./hooks/useRepertoryListPage";
 import { Header } from "../../styles/styles";
 import { TUserGoogle } from "../../classes/user/types";
 import ButtonLink from "../components/ButtonLink";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppSelector } from "../../store";
+import { useDispatch } from "react-redux";
 
 const RepertoryListPage = () => {
 	const {
@@ -16,7 +17,7 @@ const RepertoryListPage = () => {
 		error: errorRepertoryList,
 	} = useRepertoryListPage();
 	const navigate = useNavigate();
-	const dispatch = useAppDispatch();
+	const dispatch = useDispatch();
 	const isLogged = useAppSelector((state) => state.user.isLogged);
 
 	const loginAddSong = (userData: TUserGoogle) => {

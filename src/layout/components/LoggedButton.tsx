@@ -1,7 +1,8 @@
 import { GoogleLogin } from "react-google-login";
 import { login, setUserLoading } from "../../classes/user/actions";
 import { TUserGoogle } from "../../classes/user/types";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppSelector } from "../../store";
+import { useDispatch } from "react-redux";
 
 const LoggedButton = (p: {
 	children: any;
@@ -9,7 +10,7 @@ const LoggedButton = (p: {
 	className: string;
 }) => {
 	const { children = null, onClick = () => {}, className } = p;
-	const dispatch = useAppDispatch();
+	const dispatch = useDispatch();
 	const isLogged = useAppSelector((state) => state.user.isLogged);
 
 	const loginResponse = (response: any) => {

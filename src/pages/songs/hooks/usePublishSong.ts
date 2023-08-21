@@ -2,10 +2,10 @@ import { useState } from "react";
 import { publishSong } from "../../../classes/song/actions";
 import M from "materialize-css";
 import { isAdminUser } from "../../../utils/generalUtils";
-import { useAppDispatch } from "../../../store";
+import { useDispatch } from "../../../store";
 
 export const usePublishSong = (song, user, setMessageModalOpts) => {
-	const dispatch = useAppDispatch();
+	const dispatch = useDispatch();
 	const [isLoadingPublish, setIsLoading] = useState(false);
 	const [errorPublish, setError] = useState(false);
 

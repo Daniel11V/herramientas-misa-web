@@ -8,10 +8,11 @@ import { setSongListPageBackup } from "../../../classes/page/actions";
 import { MAX_RETRYS } from "../../../configs";
 import { FETCH_STATUS, SECURITY_STATUS } from "../../../utils/types";
 import { arrayIsEmpty, getRating } from "../../../utils/generalUtils";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppSelector } from "../../../store";
+import { useDispatch } from "react-redux";
 
 export const useSongListPage = () => {
-	const dispatch = useAppDispatch();
+	const dispatch = useDispatch();
 
 	const userId = useAppSelector((state) => state.user.google.id);
 	const {

@@ -13,10 +13,11 @@ import {
 } from "../../../utils/generalUtils";
 import { TSong, TSongId } from "../../../classes/song/types";
 import { TUserId } from "../../../classes/user/types";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppSelector } from "../../../store";
+import { useDispatch } from "react-redux";
 
 export const useLibraryPage = () => {
-	const dispatch = useAppDispatch();
+	const dispatch = useDispatch();
 
 	const userId = useAppSelector((state) => state.user.google.id);
 	const {

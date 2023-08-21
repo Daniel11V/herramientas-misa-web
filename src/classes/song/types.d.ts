@@ -40,6 +40,8 @@ export type TSong = {
 	lyric?: string;
 };
 
+export type TSongList = Record<TSongId, TSong>;
+
 export type TSongForm = {
 	title: string;
 	author: TAuthor;

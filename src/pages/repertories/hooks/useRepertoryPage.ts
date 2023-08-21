@@ -13,10 +13,11 @@ import {
 	TSongSections,
 } from "../../../classes/repertory/types";
 import { TUserId } from "../../../classes/user/types";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppSelector } from "../../../store";
+import { useDispatch } from "react-redux";
 
 export const useRepertoryPage = (repertoryId?: TRepertoryId) => {
-	const dispatch = useAppDispatch();
+	const dispatch = useDispatch();
 
 	const userId = useAppSelector((state) => state.user.google.id);
 	const {

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppSelector } from "../../store";
 import { getAuthor } from "./actions";
 import { FETCH_STATUS } from "../../utils/types";
+import { useDispatch } from "react-redux";
 
 export const useAuthor = (p: { authorId: string }) => {
 	const { authorId } = p;
 
-	const dispatch = useAppDispatch();
+	const dispatch = useDispatch();
 	const { author, authorStatus, authorError } = useAppSelector(
 		(state) => state.author
 	);

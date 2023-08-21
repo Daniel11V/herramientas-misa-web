@@ -4,7 +4,8 @@ import { useSong } from "../../../classes/song/useSong";
 import { getAuthorList } from "../../../classes/author/actions";
 import { setSongPageBackup } from "../../../classes/page/actions";
 import { saveSongOptions } from "../../../classes/song/actions";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppSelector } from "../../../store";
+import { useDispatch } from "react-redux";
 
 const emptySong = {
 	id: "", // Required
@@ -33,7 +34,7 @@ const emptySong = {
 };
 
 export const useSongPage = (songTitleId: string) => {
-	const dispatch = useAppDispatch();
+	const dispatch = useDispatch();
 	const userId = useAppSelector((state) => state.user.google.id);
 	const { authorList } = useAppSelector((state) => state.author);
 	const { song, isLoadingSong, errorSong, editSong } = useSong({

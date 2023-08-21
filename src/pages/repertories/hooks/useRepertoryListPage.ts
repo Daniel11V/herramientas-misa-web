@@ -10,10 +10,11 @@ import { FETCH_STATUS, SECURITY_STATUS } from "../../../utils/types";
 import { arrayIsEmpty } from "../../../utils/generalUtils";
 import { TRepertory } from "../../../classes/repertory/types";
 import { TUserId } from "../../../classes/user/types";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppSelector } from "../../../store";
+import { useDispatch } from "react-redux";
 
 export const useRepertoryListPage = () => {
-	const dispatch = useAppDispatch();
+	const dispatch = useDispatch();
 
 	const userId = useAppSelector((state) => state.user.google.id);
 	const {

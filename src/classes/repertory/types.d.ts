@@ -41,6 +41,8 @@ export type TPrivateRepertoryListDB = Record<
 
 export type TRepertoryForm = Omit<TRepertory, "id" | "isPrivate">;
 
+export type TRepertoryList = Record<TRepertoryId, TRepertory>;
+
 export type TSongSections = Array<{
 	name: string;
 	songs: TSong[];

@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { setUserLoading, setDevice } from "./actions";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppSelector } from "../../store";
+import { useDispatch } from "react-redux";
 
 export const useUser = () => {
-	const dispatch = useAppDispatch();
+	const dispatch = useDispatch();
 	const { loading, error, isLogged, ...userData } = useAppSelector(
 		(state) => state.user
 	);

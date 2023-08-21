@@ -1,8 +1,8 @@
 import { produce } from "immer";
 import { types } from "./actions";
-import { TAction } from "../../utils/types";
 import { TSong, TSongId, TSongOptions } from "../song/types";
 import { TRepertory, TRepertoryId } from "../repertory/types";
+import { valid } from "../../utils/generalUtils";
 
 export type TPageState = {
 	songPageBackup: TSongOptions & {
@@ -47,38 +47,43 @@ const initialState: TPageState = {
 	},
 };
 
-const PageReducer = (
-	state: TPageState = initialState,
-	{ type, payload }: TAction
-) => {
-	return produce(state, (newState: TPageState) => {
-		switch (type) {
-			case types.SET_SONG_PAGE_BACKUP:
-				newState.songPageBackup = {
-					...newState.songPageBackup,
-					...payload.songPageBackup,
-				};
-				break;
-			case types.SET_SONG_PAGE_BACKUP_SONG:
-				newState.songPageBackup.songList[payload.song?.id] = payload.song;
-				break;
-			case types.SET_SONG_LIST_PAGE_BACKUP:
-				newState.songListPageBackup = payload.songListPageBackup;
-				break;
-			case types.SET_REPERTORY_PAGE_BACKUP:
-				newState.repertoryPageBackup.repertoryList[
-					payload.repertoryPageBackup?.id
-				] = payload.repertoryPageBackup;
-				break;
-			case types.SET_REPERTORY_LIST_PAGE_BACKUP:
-				newState.repertoryListPageBackup = payload.repertoryListPageBackup;
-				break;
-			case types.SET_LIBRARY_PAGE_BACKUP:
-				newState.libraryPageBackup = payload.libraryPageBackup;
-				break;
+export type TPageAction = {
+	type: string;
+	payload?: Partial<TPageState> & {
+		song?: TSong;
+	};
+};
 
-			default:
-				break;
+const PageReducer = (state = initialState, { type, payload }: TPageAction) => {
+	return produce(state, (newState: TPageState) => {
+		if (type === types.SET_SONG_PAGE_BACKUP) {
+			let songPageBackup = valid(payload?.songPageBackup, type);
+			newState.songPageBackup = {
+				...newState.songPageBackup,
+				...songPageBackup,
+			};
+		}
+		if (type === types.SET_SONG_PAGE_BACKUP_SONG) {
+			let song = valid(payload?.song, type);
+			newState.songPageBackup.songList[song?.id] = song;
+		}
+		if (type === types.SET_SONG_LIST_PAGE_BACKUP) {
+			newState.songListPageBackup = valid(payload?.songListPageBackup, type);
+		}
+		if (type === types.SET_REPERTORY_PAGE_BACKUP) {
+			newState.repertoryPageBackup = valid(payload?.repertoryPageBackup, type);
+			// newState.repertoryPageBackup.repertoryList[
+			// 	payload.repertoryPageBackup?.id
+			// ] = payload.repertoryPageBackup;
+		}
+		if (type === types.SET_REPERTORY_LIST_PAGE_BACKUP) {
+			newState.repertoryListPageBackup = valid(
+				payload?.repertoryListPageBackup,
+				type
+			);
+		}
+		if (type === types.SET_LIBRARY_PAGE_BACKUP) {
+			newState.libraryPageBackup = valid(payload?.libraryPageBackup, type);
 		}
 	});
 };

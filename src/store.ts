@@ -1,16 +1,15 @@
-import { Store, applyMiddleware, combineReducers, createStore } from "redux";
+import { applyMiddleware, combineReducers, createStore } from "redux";
 
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
-import DatabaseReducer, { TDatabaseState } from "./classes/database/reducers";
-import PageReducer, { TPageState } from "./classes/page/reducers";
-import UserReducer, { TUserState } from "./classes/user/reducers";
-import SongReducer, { TSongState } from "./classes/song/reducers";
-import AuthorReducer, { TAuthorState } from "./classes/author/reducers";
-import RepertoryReducer, {
-	TRepertoryState,
-} from "./classes/repertory/reducers";
+import DatabaseReducer from "./classes/database/reducers";
+import PageReducer from "./classes/page/reducers";
+import UserReducer from "./classes/user/reducers";
+import SongReducer from "./classes/song/reducers";
+import AuthorReducer, { TAuthorActionTypes } from "./classes/author/reducers";
+import RepertoryReducer from "./classes/repertory/reducers";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { TAuthorAction2 } from "./classes/author/actions";
 
 // https://typescript.hotexamples.com/examples/redux/-/combineReducers/typescript-combinereducers-function-examples.html
 // import { syncHistoryWithStore, routerReducer, routerMiddleware, push, replace } from 'react-router-redux';
@@ -70,11 +69,14 @@ export default store;
 // 	repertory: TRepertoryState;
 // };
 
-// Infer the `TStoreState` and `AppDispatch` types from the store itself
+// Infer the `TStoreState` type from the store itself
 export type TStoreState = ReturnType<typeof store.getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type TDispatch = typeof store.dispatch<TStoreState>;
-// Use throughout your app instead of plain `useDispatch` and `useSelector`
-type TDispatchFunc = () => TDispatch;
-export const useAppDispatch: TDispatchFunc = useDispatch;
+// export type TDispatch = typeof store.dispatch<TStoreState>;
+// Use throughout your app instead of plain `useSelector`
 export const useAppSelector: TypedUseSelectorHook<TStoreState> = useSelector;
+export const useAppDispatch: () => AppDispatch = useDispatch;
+
+const authorDispatch = <T extends TAuthorActionTypes>(
+	action: TAuthorAction2<T>
+) => dispatch(action);

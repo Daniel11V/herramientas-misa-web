@@ -4,7 +4,7 @@
 // import { database } from "../../data/database.js";
 import { TStoreState } from "../../store.js";
 import { errorMessage } from "../../utils/errors.js";
-import { arrayIsEmpty } from "../../utils/generalUtils.js";
+import { arrayIsEmpty, objIsEmpty } from "../../utils/generalUtils.js";
 import { TAction, TDispatch } from "../../utils/types.js";
 import { getPrivateSongTitleDB } from "../song/services/privateSongTitleList.js";
 import { getPublicSongTitleDB } from "../song/services/publicSongTitleList.js";
@@ -19,7 +19,7 @@ import {
 	getPublicRepertoryDB,
 	getPublicRepertoryListDB,
 } from "./services/publicRepertoryList.js";
-import { TRepertoryId } from "./types.js";
+import { TRepertory, TRepertoryId } from "./types.js";
 
 export const types = {
 	RESET_REPERTORY_ACTION_STATUS: "RESET_REPERTORY_ACTION_STATUS",
@@ -86,10 +86,7 @@ export const getRepertoryList = (p: {
 			//////////////////////////////////////
 			let publicRepertoryList;
 			if (onlyAddPrivates) {
-				publicRepertoryList = getState().repertory.repertoryList.reduce(
-					(tO, e) => ({ ...tO, [e.id]: e }),
-					{}
-				);
+				publicRepertoryList = getState().repertory.repertoryList;
 			} else {
 				publicRepertoryList = await getPublicRepertoryListDB();
 			}
@@ -131,9 +128,9 @@ export const getRepertory = (p: {
 			//////////////////////////////
 
 			const repertoryList = getState().repertory.repertoryList;
-			if (arrayIsEmpty(repertoryList))
+			if (objIsEmpty(repertoryList))
 				throw new Error("Repertory not found (List).");
-			let repertory = repertoryList.find((i) => i.id === repertoryId) || null;
+			let repertory: TRepertory = repertoryList[repertoryId] || null;
 
 			if (!repertory) {
 				const privateRepertory = await getPrivateRepertoryDB({
@@ -141,17 +138,17 @@ export const getRepertory = (p: {
 					repertoryId,
 					hasInvitation: true,
 				});
-				repertory = privateRepertory
-					? { ...privateRepertory, isPrivate: true }
-					: null;
+				if (privateRepertory !== null) {
+					repertory = { ...privateRepertory, isPrivate: true };
+				}
 			}
 			if (!repertory) {
 				const publicRepertory = await getPublicRepertoryDB({
 					repertoryId,
 				});
-				repertory = publicRepertory
-					? { ...publicRepertory, isPrivate: false }
-					: null;
+				if (publicRepertory !== null) {
+					repertory = { ...publicRepertory, isPrivate: false };
+				}
 			}
 			if (!repertory) throw new Error("Repertory not found (Title).");
 

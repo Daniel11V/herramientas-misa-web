@@ -7,10 +7,11 @@ import {
 } from "./actions";
 import { TSong, TSongForm, TSongId } from "./types";
 import { MAX_RETRYS } from "../../configs";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppSelector } from "../../store";
 import { TUserId } from "../user/types";
 import { FETCH_STATUS, SECURITY_STATUS } from "../../utils/types";
 import { createTSong } from "./createTypes";
+import { useDispatch } from "react-redux";
 
 interface IUseSong {
 	song?: TSong | null;
@@ -25,7 +26,7 @@ export const useSong = (p: {
 	userId: TUserId;
 }): IUseSong => {
 	const { songTitleId, userId } = p;
-	const dispatch = useAppDispatch();
+	const dispatch = useDispatch();
 
 	const { song, songStatus, songUserId, songRequestStatus, songError } =
 		useAppSelector((state) => state.song);

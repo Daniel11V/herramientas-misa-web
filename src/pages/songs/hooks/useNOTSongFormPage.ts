@@ -18,10 +18,11 @@ import {
 	getLyricStart,
 } from "../../../utils/lyricsAndChordsUtils";
 import { TSongId } from "../../../classes/song/types";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppSelector } from "../../../store";
+import { useDispatch } from "react-redux";
 
 export const useSongFormPage = (songId: TSongId) => {
-	const dispatch = useAppDispatch();
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const [songForm, setSongForm] = useState({
