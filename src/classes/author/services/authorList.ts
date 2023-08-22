@@ -1,5 +1,5 @@
 import store from "../../../store";
-import { setDatabaseItem } from "../../database/reducers";
+import { setDatabaseItem } from "../../database/actions";
 import { TAuthorDB, TAuthorId } from "../types";
 
 export const getAuthorListDB = async (): Promise<

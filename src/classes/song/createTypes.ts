@@ -1,62 +1,12 @@
-import { TypeCreationError } from "../../utils/errors";
+import {
+	validArray,
+	validBool,
+	validNumber,
+	validRecord,
+	validString,
+} from "../../utils/generalUtils";
 import { TUserDB, TUserId } from "../user/types";
 import { TPrivateSongTitleDB, TPublicSongTitleDB, TSong } from "./types";
-
-const validNumber = (value: unknown, typeName: string): number => {
-	if (
-		value === undefined ||
-		value === null ||
-		typeof value !== "number" ||
-		isNaN(value)
-	) {
-		throw new TypeCreationError(typeName);
-	}
-	return value;
-};
-const validString = (value: unknown, typeName: string): string => {
-	if (value === undefined || value === null || typeof value !== "string") {
-		throw new TypeCreationError(typeName);
-	}
-	return value;
-};
-const validBool = (value: unknown, typeName: string): boolean => {
-	if (value === undefined || value === null || typeof value !== "boolean") {
-		throw new TypeCreationError(typeName);
-	}
-	return !!value;
-};
-const validRecord = <P extends string, U>(
-	value: unknown,
-	keyValidation: (item: unknown, typeName: string) => P,
-	itemValidation: (item: unknown, typeName: string) => U,
-	typeName: string
-): Record<P, U> => {
-	if (
-		value === undefined ||
-		value === null ||
-		typeof value !== "object" ||
-		Array.isArray(value)
-	) {
-		throw new TypeCreationError(typeName);
-	}
-
-	Object.keys(value).forEach((v) => keyValidation(v, typeName));
-	Object.values(value).forEach((v) => itemValidation(v, typeName));
-
-	return value as Record<P, U>;
-};
-const validArray = <P>(
-	value: unknown,
-	itemValidation: (item: unknown, typeName: string) => P,
-	typeName: string
-): Array<P> => {
-	if (value === undefined || value === null || !Array.isArray(value)) {
-		throw new TypeCreationError(typeName);
-	}
-	value?.forEach((v) => itemValidation(v, typeName));
-
-	return [...(value as Array<P>)];
-};
 
 export const createTSong = ({
 	id,
@@ -89,7 +39,7 @@ export const createTSong = ({
 		lyricIsPrivate: validBool(lyricIsPrivate, typeName),
 		title: validString(title, typeName),
 		lyricStart: validString(lyricStart, typeName),
-		labels: validArray<string>(labels, validString, typeName),
+		labels: validArray<string>(labels, typeName, validString),
 		author: {
 			id: validString(author?.id, typeName),
 			name: validString(author?.name, typeName),
@@ -145,7 +95,7 @@ export const createTPrivateSongTitleDB = ({
 		lyricIsPrivate: validBool(lyricIsPrivate, typeName),
 		title: validString(title, typeName),
 		lyricStart: validString(lyricStart, typeName),
-		labels: validArray<string>(labels, validString, typeName),
+		labels: validArray<string>(labels, typeName, validString),
 		author: {
 			id: validString(author?.id, typeName),
 			name: validString(author?.name, typeName),
@@ -204,7 +154,7 @@ export const createTPublicSongTitleDB = ({
 		lyricIsPrivate: validBool(lyricIsPrivate, typeName),
 		title: validString(title, typeName),
 		lyricStart: validString(lyricStart, typeName),
-		labels: validArray<string>(labels, validString, typeName),
+		labels: validArray<string>(labels, typeName, validString),
 		author: {
 			id: validString(author?.id, typeName),
 			name: validString(author?.name, typeName),

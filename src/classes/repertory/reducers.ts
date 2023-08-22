@@ -8,7 +8,6 @@ import {
 	SECURITY_STATUS,
 } from "../../utils/types";
 import { TUserId } from "../user/types";
-import { Dispatch } from "redux";
 import { valid } from "../../utils/generalUtils";
 
 const defaultRepertory: TRepertory = {
@@ -58,22 +57,26 @@ const initialState: TRepertoryState = {
 	repertory: defaultRepertory,
 };
 
+export type TRepertoryActionType = (typeof types)[keyof typeof types];
+
+export type TRepertoryActionPayload = Partial<TRepertoryState> & {
+	userId?: TUserId;
+	error?: string | null;
+	repertoryCreated?: TRepertory;
+	repertoryEdited?: TRepertory;
+	repertoryDeletedId?: TRepertoryId;
+};
+
 export type TRepertoryAction = {
-	type: string;
-	payload?: Partial<TRepertoryState> & {
-		userId?: TUserId;
-		error?: string | null;
-		repertoryCreated?: TRepertory;
-		repertoryEdited?: TRepertory;
-		repertoryDeletedId?: TRepertoryId;
-	};
+	type: TRepertoryActionType;
+	payload?: TRepertoryActionPayload;
 };
 
 const RepertoryReducer = (
 	state = initialState,
 	{ type, payload }: TRepertoryAction
 ) => {
-	return produce(state, (newState: TRepertoryState) => {
+	return produce(state, (newState: TRepertoryState): void => {
 		if (type === types.RESET_REPERTORY_ACTION_STATUS) {
 			newState.repertoryActionStatus = FETCH_STATUS.INITIAL;
 			newState.repertoryError = null;
@@ -168,6 +171,52 @@ const RepertoryReducer = (
 	});
 };
 
-export type TRepertoryDispatch = Dispatch<TRepertoryAction>;
+export type TRepertorySelectedActionPayload = {
+	[types.RESET_REPERTORY_ACTION_STATUS]: undefined;
+	[types.SET_REPERTORY_LIST_STATUS]: {
+		repertoryListStatus: TRepertoryActionPayload["repertoryListStatus"];
+	};
+	[types.FETCH_REPERTORY_LIST]: undefined;
+	[types.FETCH_REPERTORY_LIST_SUCCESS]: {
+		repertoryList: TRepertoryActionPayload["repertoryList"];
+		userId: TRepertoryActionPayload["userId"];
+	};
+	[types.FETCH_REPERTORY_LIST_FAILURE]: {
+		userId: TRepertoryActionPayload["userId"];
+		error: TRepertoryActionPayload["error"];
+	};
+	[types.SET_REPERTORY_STATUS]: {
+		repertoryStatus: TRepertoryActionPayload["repertoryStatus"];
+	};
+	[types.FETCH_REPERTORY]: undefined;
+	[types.FETCH_REPERTORY_SUCCESS]: {
+		repertory: TRepertoryActionPayload["repertory"];
+		userId: TRepertoryActionPayload["userId"];
+	};
+	[types.FETCH_REPERTORY_FAILURE]: {
+		error: TRepertoryActionPayload["error"];
+	};
+	[types.CREATE_REPERTORY]: undefined;
+	[types.CREATE_REPERTORY_SUCCESS]: {
+		repertoryCreated: TRepertoryActionPayload["repertoryCreated"];
+	};
+	[types.CREATE_REPERTORY_FAILURE]: {
+		error: TRepertoryActionPayload["error"];
+	};
+	[types.EDIT_REPERTORY]: undefined;
+	[types.EDIT_REPERTORY_SUCCESS]: {
+		repertoryEdited: TRepertoryActionPayload["repertoryEdited"];
+	};
+	[types.EDIT_REPERTORY_FAILURE]: {
+		error: TRepertoryActionPayload["error"];
+	};
+	[types.DELETE_REPERTORY]: undefined;
+	[types.DELETE_REPERTORY_SUCCESS]: {
+		repertoryDeletedId: TRepertoryActionPayload["repertoryDeletedId"];
+	};
+	[types.DELETE_REPERTORY_FAILURE]: {
+		error: TRepertoryActionPayload["error"];
+	};
+};
 
 export default RepertoryReducer;

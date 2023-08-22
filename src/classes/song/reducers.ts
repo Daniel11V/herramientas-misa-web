@@ -9,7 +9,6 @@ import {
 } from "../../utils/types";
 import { TUserId } from "../user/types";
 import { valid } from "../../utils/generalUtils";
-import { Dispatch } from "react";
 
 const defaultSong: TSong = {
 	id: "",
@@ -63,15 +62,19 @@ const initialState: TSongState = {
 	song: defaultSong,
 };
 
+export type TSongActionType = (typeof types)[keyof typeof types];
+
+export type TSongActionPayload = Partial<TSongState> & {
+	userId?: TUserId;
+	error?: string | null;
+	songCreated?: TSong;
+	songEdited?: TSong;
+	songDeletedId?: TSongId;
+};
+
 export type TSongAction = {
-	type: string;
-	payload?: Partial<TSongState> & {
-		userId?: TUserId;
-		error?: string | null;
-		songCreated?: TSong;
-		songEdited?: TSong;
-		songDeletedId?: TSongId;
-	};
+	type: TSongActionType;
+	payload?: TSongActionPayload;
 };
 
 const SongReducer = (state = initialState, { type, payload }: TSongAction) => {
@@ -82,23 +85,19 @@ const SongReducer = (state = initialState, { type, payload }: TSongAction) => {
 		}
 
 		if (type === types.SET_SONG_LIST_STATUS) {
-			if (payload?.songListStatus) {
-				newState.songListStatus = payload.songListStatus;
-			}
+			newState.songListStatus = valid(payload?.songListStatus, type);
 		}
 
 		if (type === types.FETCH_SONG_LIST) {
 			newState.songRequestStatus = FETCH_STATUS.FETCHING;
 		}
 		if (type === types.FETCH_SONG_LIST_SUCCESS) {
-			if (payload?.songList && payload?.userId) {
-				newState.songRequestStatus = FETCH_STATUS.SUCCESS;
-				newState.songList = payload.songList;
-				newState.songListStatus = payload.userId
-					? SECURITY_STATUS.PRIVATE
-					: SECURITY_STATUS.PUBLIC;
-				newState.songListUserId = payload.userId;
-			}
+			newState.songRequestStatus = FETCH_STATUS.SUCCESS;
+			newState.songList = valid(payload?.songList, type);
+			newState.songListStatus = valid(payload?.userId, type)
+				? SECURITY_STATUS.PRIVATE
+				: SECURITY_STATUS.PUBLIC;
+			newState.songListUserId = valid(payload?.userId, type);
 		}
 		if (type === types.FETCH_SONG_LIST_FAILURE) {
 			newState.songRequestStatus = FETCH_STATUS.FAILURE;
@@ -158,6 +157,21 @@ const SongReducer = (state = initialState, { type, payload }: TSongAction) => {
 			newState.songError = valid(payload?.error, type);
 		}
 
+		if (type === types.PUBLISH_SONG) {
+			newState.songRequestStatus = FETCH_STATUS.FETCHING;
+		}
+		if (type === types.PUBLISH_SONG_SUCCESS) {
+			let songCreated = valid(payload?.songCreated, type);
+			newState.songRequestStatus = FETCH_STATUS.SUCCESS;
+			newState.songList[songCreated.id] = songCreated;
+			newState.songListStatus = SECURITY_STATUS.SHOULD_UPDATE;
+			newState.song = songCreated;
+		}
+		if (type === types.PUBLISH_SONG_FAILURE) {
+			newState.songRequestStatus = FETCH_STATUS.FAILURE;
+			newState.songError = valid(payload?.error, type);
+		}
+
 		if (type === types.DELETE_SONG) {
 			newState.songRequestStatus = FETCH_STATUS.FETCHING;
 		}
@@ -175,6 +189,66 @@ const SongReducer = (state = initialState, { type, payload }: TSongAction) => {
 	});
 };
 
-export type TSongDispatch = Dispatch<TSongAction>;
+export type TSongSelectedActionPayload = {
+	[types.RESET_SONG_REQUEST_STATUS]: undefined;
+
+	[types.SET_SONG_LIST_STATUS]: {
+		songListStatus: TSongActionPayload["songListStatus"];
+	};
+
+	[types.FETCH_SONG_LIST]: undefined;
+	[types.FETCH_SONG_LIST_SUCCESS]: {
+		songList: TSongActionPayload["songList"];
+		userId: TSongActionPayload["userId"];
+	};
+	[types.FETCH_SONG_LIST_FAILURE]: {
+		error: TSongActionPayload["error"];
+		userId: TSongActionPayload["userId"];
+	};
+
+	[types.SET_SONG_STATUS]: {
+		songStatus: TSongActionPayload["songStatus"];
+	};
+
+	[types.FETCH_SONG]: undefined;
+	[types.FETCH_SONG_SUCCESS]: {
+		song: TSongActionPayload["song"];
+		userId: TSongActionPayload["userId"];
+	};
+	[types.FETCH_SONG_FAILURE]: {
+		error: TSongActionPayload["error"];
+	};
+
+	[types.CREATE_SONG]: undefined;
+	[types.CREATE_SONG_SUCCESS]: {
+		songCreated: TSongActionPayload["songCreated"];
+	};
+	[types.CREATE_SONG_FAILURE]: {
+		error: TSongActionPayload["error"];
+	};
+
+	[types.EDIT_SONG]: undefined;
+	[types.EDIT_SONG_SUCCESS]: {
+		songEdited: TSongActionPayload["songEdited"];
+	};
+	[types.EDIT_SONG_FAILURE]: {
+		error: TSongActionPayload["error"];
+	};
+
+	[types.PUBLISH_SONG]: undefined;
+	[types.PUBLISH_SONG_SUCCESS]: {
+		songCreated: TSongActionPayload["songCreated"];
+	};
+	[types.PUBLISH_SONG_FAILURE]: {
+		error: TSongActionPayload["error"];
+	};
+	[types.DELETE_SONG]: undefined;
+	[types.DELETE_SONG_SUCCESS]: {
+		songDeletedId: TSongActionPayload["songDeletedId"];
+	};
+	[types.DELETE_SONG_FAILURE]: {
+		error: TSongActionPayload["error"];
+	};
+};
 
 export default SongReducer;

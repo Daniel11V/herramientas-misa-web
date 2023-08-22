@@ -2,15 +2,14 @@
 // import { db } from "../../database/firebase"
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
-import { TStoreState } from "../../store.js";
+import { TDispatch, TStoreState } from "../../store.js";
 import { errorMessage } from "../../utils/errors.js";
-import { arrayIsEmpty, objIsEmpty } from "../../utils/generalUtils.js";
-import { TAction, TDispatch } from "../../utils/types.js";
+import { objIsEmpty } from "../../utils/generalUtils.js";
 import { getPrivateSongTitleDB } from "../song/services/privateSongTitleList.js";
 import { getPublicSongTitleDB } from "../song/services/publicSongTitleList.js";
 import { TSong } from "../song/types.js";
 import { TUserId } from "../user/types.js";
-import { TRepertoryAction, TRepertoryState } from "./reducers.js";
+import { TRepertoryActionPayload } from "./reducers.js";
 import {
 	getPrivateRepertoryListDB,
 	getPrivateRepertoryDB,
@@ -44,27 +43,27 @@ export const types = {
 	EDIT_REPERTORY_SUCCESS: "EDIT_REPERTORY_SUCCESS",
 	EDIT_REPERTORY_FAILURE: "EDIT_REPERTORY_FAILURE",
 
-	PUBLISH_REPERTORY: "PUBLISH_REPERTORY",
-	PUBLISH_REPERTORY_SUCCESS: "PUBLISH_REPERTORY_SUCCESS",
-	PUBLISH_REPERTORY_FAILURE: "PUBLISH_REPERTORY_FAILURE",
+	// PUBLISH_REPERTORY: "PUBLISH_REPERTORY",
+	// PUBLISH_REPERTORY_SUCCESS: "PUBLISH_REPERTORY_SUCCESS",
+	// PUBLISH_REPERTORY_FAILURE: "PUBLISH_REPERTORY_FAILURE",
 
 	DELETE_REPERTORY: "DELETE_REPERTORY",
 	DELETE_REPERTORY_SUCCESS: "DELETE_REPERTORY_SUCCESS",
 	DELETE_REPERTORY_FAILURE: "DELETE_REPERTORY_FAILURE",
-};
+} as const;
 
-export const resetRepertoryActionStatus = (): TAction => ({
+export const resetRepertoryActionStatus = () => ({
 	type: types.RESET_REPERTORY_ACTION_STATUS,
 });
 export const setRepertoryListStatus = (
-	repertoryListStatus: TRepertoryState["repertoryListStatus"]
-): TRepertoryAction => ({
+	repertoryListStatus: TRepertoryActionPayload["repertoryListStatus"]
+) => ({
 	type: types.SET_REPERTORY_LIST_STATUS,
 	payload: { repertoryListStatus },
 });
 export const setRepertoryStatus = (
-	repertoryStatus: TRepertoryState["repertoryStatus"]
-): TRepertoryAction => ({
+	repertoryStatus: TRepertoryActionPayload["repertoryStatus"]
+) => ({
 	type: types.SET_REPERTORY_STATUS,
 	payload: { repertoryStatus },
 });
@@ -78,11 +77,9 @@ export const getRepertoryList = (p: {
 	const { userId, onlyAddPrivates = false } = p;
 	return async (dispatch: TDispatch, getState: () => TStoreState) => {
 		try {
-			const dispatchAction: TRepertoryAction = {
+			dispatch({
 				type: types.FETCH_REPERTORY_LIST,
-				payload: { userId },
-			};
-			dispatch(dispatchAction);
+			});
 			//////////////////////////////////////
 			let publicRepertoryList;
 			if (onlyAddPrivates) {
@@ -94,10 +91,11 @@ export const getRepertoryList = (p: {
 				userId,
 			});
 
-			const repertoryList = [
-				...Object.values(publicRepertoryList || {}),
-				...Object.values(userPrivateRepertoryList || {}),
-			];
+			// Falta crear el createTRepertory
+			const repertoryList = {
+				...(publicRepertoryList || {}),
+				...(userPrivateRepertoryList || {}),
+			};
 
 			//////////////////////////////////////
 			dispatch({
@@ -123,7 +121,6 @@ export const getRepertory = (p: {
 		try {
 			dispatch({
 				type: types.FETCH_REPERTORY,
-				payload: { userId, repertoryId },
 			});
 			//////////////////////////////
 
@@ -182,6 +179,8 @@ export const getRepertory = (p: {
 					returnSectionsWithSongTitles[sectionIndex]?.songs?.push(songTitle);
 				}
 			}
+
+			// Falta el createTRepertory
 			const returnRepertory = {
 				...repertory,
 				songSections: returnSectionsWithSongTitles,
@@ -196,7 +195,7 @@ export const getRepertory = (p: {
 			console.warn(error);
 			dispatch({
 				type: types.FETCH_REPERTORY_FAILURE,
-				payload: { error: errorMessage(error), userId },
+				payload: { error: errorMessage(error) },
 			});
 		}
 	};

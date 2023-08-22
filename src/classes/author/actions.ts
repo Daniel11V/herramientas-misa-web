@@ -2,7 +2,7 @@
 // import { db } from "../../database/firebase"
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
-import { TStoreState } from "../../store.js";
+import { TDispatch, TStoreState } from "../../store.js";
 import { FETCH_STATUS } from "../../utils/types.js";
 import { objIsEmpty } from "../../utils/generalUtils.js";
 import {
@@ -14,7 +14,6 @@ import {
 } from "./services/authorList.js";
 import { TAuthorDB } from "./types.js";
 import { errorMessage } from "../../utils/errors.js";
-import { TAuthorAction, TAuthorDispatch } from "./reducers.js";
 
 export const types = {
 	RESET_AUTHOR_STATUS: "RESET_AUTHOR_STATUS",
@@ -35,14 +34,14 @@ export const types = {
 	DELETE_AUTHOR_STATUS: "DELETE_AUTHOR_STATUS",
 } as const;
 
-export const resetAuthorStatus = (): TAuthorAction => ({
+export const resetAuthorStatus = () => ({
 	type: types.RESET_AUTHOR_STATUS,
 });
 
 // Thunks
 
 export const getAuthorList = () => {
-	return async (dispatch: TAuthorDispatch) => {
+	return async (dispatch: TDispatch) => {
 		// const authorDispatch = createAuthorDispatch(dispatch);
 		try {
 			dispatch({
@@ -72,7 +71,7 @@ export const getAuthorList = () => {
 export const getAuthor = (p: { authorId: string }) => {
 	const { authorId } = p;
 
-	return async (dispatch: TAuthorDispatch, getState: () => TStoreState) => {
+	return async (dispatch: TDispatch, getState: () => TStoreState) => {
 		try {
 			dispatch({
 				type: types.SET_AUTHOR_STATUS,
@@ -115,7 +114,7 @@ export const createAuthor = (p: {
 }) => {
 	const { authorCreated, saveAsPublic = true } = p;
 
-	return async (dispatch: TAuthorDispatch) => {
+	return async (dispatch: TDispatch) => {
 		try {
 			dispatch({
 				type: types.CREATE_AUTHOR_STATUS,
@@ -130,7 +129,6 @@ export const createAuthor = (p: {
 				type: types.CREATE_AUTHOR,
 				payload: {
 					authorCreated: authorCreated,
-					authorStatus: FETCH_STATUS.SUCCESS,
 				},
 			});
 		} catch (err) {
@@ -152,7 +150,7 @@ export const editAuthor = (p: {
 }) => {
 	const { authorEdited, saveAsPublic = false } = p;
 
-	return async (dispatch: TAuthorDispatch) => {
+	return async (dispatch: TDispatch) => {
 		try {
 			dispatch({
 				type: types.EDIT_AUTHOR_STATUS,
@@ -163,7 +161,7 @@ export const editAuthor = (p: {
 
 			dispatch({
 				type: types.EDIT_AUTHOR,
-				payload: { authorEdited, authorStatus: FETCH_STATUS.SUCCESS },
+				payload: { authorEdited },
 			});
 		} catch (err) {
 			console.warn(err);
@@ -184,7 +182,7 @@ export const deleteAuthor = (p: {
 }) => {
 	const { authorDeletedId, saveAsPublic = false } = p;
 
-	return async (dispatch: TAuthorDispatch) => {
+	return async (dispatch: TDispatch) => {
 		try {
 			dispatch({
 				type: types.DELETE_AUTHOR_STATUS,
@@ -195,7 +193,7 @@ export const deleteAuthor = (p: {
 
 			dispatch({
 				type: types.DELETE_AUTHOR,
-				payload: { authorDeletedId, authorStatus: FETCH_STATUS.SUCCESS },
+				payload: { authorDeletedId },
 			});
 		} catch (err) {
 			console.warn(err);

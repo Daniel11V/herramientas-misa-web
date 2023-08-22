@@ -1,7 +1,8 @@
 import { produce } from "immer";
 import { types } from "./actions";
 import { TUserDB, TUserGoogle } from "./types";
-import { TAction } from "../../utils/types";
+import { valid } from "../../utils/generalUtils";
+import { Dispatch } from "react";
 
 export type TUserState = {
 	loading: boolean;
@@ -40,40 +41,72 @@ const initialState: TUserState = {
 	isDesktop: null,
 };
 
-const UserReducer = (
-	state: TUserState = initialState,
-	{ type, payload }: TAction
-) => {
-	return produce(state, (newState: TUserState) => {
-		switch (type) {
-			case types.SET_USER_LOADING:
-				newState.loading = payload.loading;
-				break;
+export type TUserActionType = (typeof types)[keyof typeof types];
 
-			case types.LOGIN:
-				newState.google = payload.googleInfo;
-				newState.isLogged = true;
-				newState.loading = false;
-				break;
-			case types.LOGOUT:
-				newState.google = initialState.google;
-				newState.loading = false;
-				newState.error = null;
-				newState.isLogged = false;
-				break;
+export type TUserActionPayload = Partial<TUserState> & {
+	googleInfo?: TUserGoogle;
+	songPageOptions?: TUserDB["config"]["songPageOptions"];
+};
 
-			case types.SET_DEVICE:
-				newState.isDesktop = payload.isDesktop;
-				break;
+export type TUserAction = {
+	type: TUserActionType;
+	payload?: TUserActionPayload;
+};
 
-			case types.SET_USER_SONG_PAGE_OPTIONS:
-				newState.config.songPageOptions = payload.songPageOptions;
-				break;
+const UserReducer = (state = initialState, { type, payload }: TUserAction) => {
+	return produce(state, (newState: TUserState): void => {
+		if (type === types.SET_USER_LOADING) {
+			newState.loading = valid(payload?.loading, type);
+		}
 
-			default:
-				return state;
+		if (type === types.LOGIN) {
+			newState.google = valid(payload?.googleInfo, type);
+			newState.isLogged = true;
+			newState.loading = false;
+		}
+		if (type === types.LOGOUT) {
+			newState.google = initialState.google;
+			newState.loading = false;
+			newState.error = null;
+			newState.isLogged = false;
+		}
+
+		if (type === types.SET_DEVICE) {
+			newState.isDesktop = valid(payload?.isDesktop, type);
+		}
+
+		if (type === types.SET_USER_SONG_PAGE_OPTIONS) {
+			newState.config.songPageOptions = valid(payload?.songPageOptions, type);
 		}
 	});
 };
+
+export type TUserSelectedActionPayload = {
+	[types.SET_USER_LOADING]: {
+		loading: TUserActionPayload["loading"];
+	};
+
+	[types.LOGIN]: {
+		googleInfo: TUserActionPayload["googleInfo"];
+	};
+	[types.LOGOUT]: undefined;
+
+	[types.SET_DEVICE]: {
+		isDesktop: TUserActionPayload["isDesktop"];
+	};
+
+	[types.SET_USER_SONG_PAGE_OPTIONS]: {
+		songPageOptions: TUserActionPayload["songPageOptions"];
+	};
+};
+
+type TUserSelectedAction<T extends TUserActionType> =
+	TUserSelectedActionPayload[T] extends undefined
+		? { type: T }
+		: { type: T; payload: TUserSelectedActionPayload[T] };
+
+export type TUserDispatch = <T extends TUserActionType>(
+	action: TUserSelectedAction<T>
+) => Dispatch<TUserSelectedAction<T>>;
 
 export default UserReducer;

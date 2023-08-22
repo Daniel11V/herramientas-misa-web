@@ -1,5 +1,11 @@
 // export type TDispatch<P> = (args: TAction<P>) => TAction<P>;
 
+import { Dispatch } from "react";
+import { TPageSelectedActionPayload } from "../classes/page/reducers";
+import { TSongSelectedActionPayload } from "../classes/song/reducers";
+import { TAuthorSelectedActionPayload } from "../classes/author/reducers";
+import { useDispatch } from "react-redux";
+
 export const FETCH_STATUS = {
 	INITIAL: "INITIAL",
 	FETCHING: "FETCHING",

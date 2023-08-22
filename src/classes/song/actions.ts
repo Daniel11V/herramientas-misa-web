@@ -2,7 +2,7 @@
 // import { db } from "../../database/firebase"
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
-import { arrayIsEmpty, objsAreEqual } from "../../utils/generalUtils.js";
+import { objsAreEqual } from "../../utils/generalUtils.js";
 import { getLyricStart } from "../../utils/lyricsAndChordsUtils.js";
 import { TSecurityStatus } from "../../utils/types.js";
 import { setSongPageBackupSong } from "../page/actions.js";
@@ -39,14 +39,13 @@ import {
 	TSongOptions,
 } from "./types.js";
 import { TUserId } from "../user/types.js";
-import { TStoreState } from "../../store.js";
+import { TDispatch, TStoreState } from "../../store.js";
 import {
 	createTPrivateSongTitleDB,
 	createTPublicSongTitleDB,
 	createTSong,
 } from "./createTypes.js";
 import { errorMessage } from "../../utils/errors.js";
-import { TSongAction, TSongDispatch } from "./reducers.js";
 
 export const types = {
 	RESET_SONG_REQUEST_STATUS: "RESET_SONG_REQUEST_STATUS",
@@ -63,9 +62,9 @@ export const types = {
 	FETCH_SONG_SUCCESS: "FETCH_SONG_SUCCESS",
 	FETCH_SONG_FAILURE: "FETCH_SONG_FAILURE",
 
-	FETCH_SONG_TITLE: "FETCH_SONG_TITLE",
-	FETCH_SONG_TITLE_SUCCESS: "FETCH_SONG_TITLE_SUCCESS",
-	FETCH_SONG_TITLE_FAILURE: "FETCH_SONG_TITLE_FAILURE",
+	// FETCH_SONG_TITLE: "FETCH_SONG_TITLE",
+	// FETCH_SONG_TITLE_SUCCESS: "FETCH_SONG_TITLE_SUCCESS",
+	// FETCH_SONG_TITLE_FAILURE: "FETCH_SONG_TITLE_FAILURE",
 
 	CREATE_SONG: "CREATE_SONG",
 	CREATE_SONG_SUCCESS: "CREATE_SONG_SUCCESS",
@@ -82,18 +81,16 @@ export const types = {
 	DELETE_SONG: "DELETE_SONG",
 	DELETE_SONG_SUCCESS: "DELETE_SONG_SUCCESS",
 	DELETE_SONG_FAILURE: "DELETE_SONG_FAILURE",
-};
+} as const;
 
-export const resetSongRequestStatus = (): TSongAction => ({
+export const resetSongRequestStatus = () => ({
 	type: types.RESET_SONG_REQUEST_STATUS,
 });
-export const setSongListStatus = (
-	songListStatus: TSecurityStatus
-): TSongAction => ({
+export const setSongListStatus = (songListStatus: TSecurityStatus) => ({
 	type: types.SET_SONG_LIST_STATUS,
 	payload: { songListStatus },
 });
-export const setSongStatus = (songStatus: TSecurityStatus): TSongAction => ({
+export const setSongStatus = (songStatus: TSecurityStatus) => ({
 	type: types.SET_SONG_LIST_STATUS,
 	payload: { songStatus },
 });
@@ -106,11 +103,10 @@ export const getSongList = (p: {
 }) => {
 	const { userId, onlyAddPrivates = false } = p;
 
-	return async (dispatch: TSongDispatch, getState: () => TStoreState) => {
+	return async (dispatch: TDispatch, getState: () => TStoreState) => {
 		try {
 			dispatch({
 				type: types.FETCH_SONG_LIST,
-				payload: { userId },
 			});
 			//////////////////////////////////////
 			let publicSongTitleList;
@@ -145,7 +141,7 @@ export const getSongList = (p: {
 
 export const getSong = (p: { userId: TUserId; songTitleId: TSongId }) => {
 	const { userId, songTitleId } = p;
-	return async (dispatch: TSongDispatch, getState: () => TStoreState) => {
+	return async (dispatch: TDispatch, getState: () => TStoreState) => {
 		try {
 			dispatch({
 				type: types.FETCH_SONG,
@@ -186,54 +182,54 @@ export const getSong = (p: { userId: TUserId; songTitleId: TSongId }) => {
 			console.warn(error);
 			dispatch({
 				type: types.FETCH_SONG_FAILURE,
-				payload: { error: errorMessage(error), userId },
+				payload: { error: errorMessage(error) },
 			});
 		}
 	};
 };
 
-export const getSongTitle = (p: { userId: TUserId; songTitleId: TSongId }) => {
-	const { userId, songTitleId } = p;
-	return async (dispatch: TSongDispatch, getState: () => TStoreState) => {
-		try {
-			dispatch({
-				type: types.FETCH_SONG_TITLE,
-				payload: { userId, songTitleId },
-			});
-			//////////////////////////////
+// export const getSongTitle = (p: { userId: TUserId; songTitleId: TSongId }) => {
+// 	const { userId, songTitleId } = p;
+// 	return async (dispatch: TDispatch, getState: () => TStoreState) => {
+// 		try {
+// 			dispatch({
+// 				type: types.FETCH_SONG_TITLE,
+// 				payload: { userId, songTitleId },
+// 			});
+// 			//////////////////////////////
 
-			let songTitle;
-			const { songList } = getState().page.songListPageBackup;
-			if (!arrayIsEmpty(songList))
-				songTitle = songList.find((i) => i.id === songTitleId);
+// 			let songTitle;
+// 			const { songList } = getState().page.songListPageBackup;
+// 			if (!arrayIsEmpty(songList))
+// 				songTitle = songList.find((i) => i.id === songTitleId);
 
-			if (!songTitle) {
-				const { songList: songPageBackupList } = getState().page.songPageBackup;
-				songTitle = songPageBackupList[songTitleId];
-			}
-			if (!songTitle)
-				songTitle = await getPrivateSongTitleDB({
-					userId,
-					songTitleId,
-					hasInvitation: true,
-				});
-			if (!songTitle) songTitle = await getPublicSongTitleDB({ songTitleId });
-			if (!songTitle) throw new Error("Song not found (Title).");
+// 			if (!songTitle) {
+// 				const { songList: songPageBackupList } = getState().page.songPageBackup;
+// 				songTitle = songPageBackupList[songTitleId];
+// 			}
+// 			if (!songTitle)
+// 				songTitle = await getPrivateSongTitleDB({
+// 					userId,
+// 					songTitleId,
+// 					hasInvitation: true,
+// 				});
+// 			if (!songTitle) songTitle = await getPublicSongTitleDB({ songTitleId });
+// 			if (!songTitle) throw new Error("Song not found (Title).");
 
-			//////////////////////////////
-			dispatch({
-				type: types.FETCH_SONG_TITLE_SUCCESS,
-				payload: { songTitle, userId },
-			});
-		} catch (error) {
-			console.warn(error);
-			dispatch({
-				type: types.FETCH_SONG_TITLE_FAILURE,
-				payload: { error: errorMessage(error), userId },
-			});
-		}
-	};
-};
+// 			//////////////////////////////
+// 			dispatch({
+// 				type: types.FETCH_SONG_TITLE_SUCCESS,
+// 				payload: { songTitle, userId },
+// 			});
+// 		} catch (error) {
+// 			console.warn(error);
+// 			dispatch({
+// 				type: types.FETCH_SONG_TITLE_FAILURE,
+// 				payload: { error: errorMessage(error), userId },
+// 			});
+// 		}
+// 	};
+// };
 
 export const createSong = (p: { songCreated: TSongForm }) => {
 	const { songCreated } = p;
@@ -241,11 +237,10 @@ export const createSong = (p: { songCreated: TSongForm }) => {
 	// Siempre que se cree una canción por el momento se creará como privada y luego se podra publicar
 	// Primero se crea el Lyric y luego el Title, colocando acá el id del Lyric y si es publico o privado.
 
-	return async (dispatch: TSongDispatch) => {
+	return async (dispatch: TDispatch) => {
 		try {
 			dispatch({
 				type: types.CREATE_SONG,
-				payload: { songCreated },
 			});
 			//////////////////////////////////////
 
@@ -311,11 +306,10 @@ export const editSong = (p: { songEdited: TSong; saveAsPublic?: boolean }) => {
 	// ... se creará una version privada privada que luego se podra publicar
 	// Si ya era privada simplemente se actualiza
 
-	return async (dispatch: TSongDispatch) => {
+	return async (dispatch: TDispatch) => {
 		try {
 			dispatch({
 				type: types.EDIT_SONG,
-				payload: { songEdited, saveAsPublic },
 			});
 			//////////////////////////////////////
 
@@ -360,7 +354,7 @@ export const editSong = (p: { songEdited: TSong; saveAsPublic?: boolean }) => {
 	};
 };
 export const saveSongOptions = () => {
-	return async (dispatch: TSongDispatch, getState: () => TStoreState) => {
+	return async (dispatch: TDispatch, getState: () => TStoreState) => {
 		try {
 			const userId = getState().user.google.id;
 			const { lyric, ...songTitle } = getState().song.song;
@@ -390,11 +384,13 @@ export const saveSongOptions = () => {
 						});
 					await editPrivateSongTitleDB({ songTitleEdited });
 
+					const song = createTSong({ ...songTitleEdited, lyric });
+
 					dispatch({
 						type: types.EDIT_SONG_SUCCESS,
-						payload: { songEdited: { ...songTitleEdited, lyric } },
+						payload: { songEdited: song },
 					});
-					dispatch(setSongPageBackupSong({ ...songTitleEdited, lyric }));
+					dispatch(setSongPageBackupSong(song));
 				}
 			}
 
@@ -411,11 +407,10 @@ export const saveSongOptions = () => {
 
 export const publishSong = (p: { privateSongId: TSongId }) => {
 	const { privateSongId } = p;
-	return async (dispatch: TSongDispatch) => {
+	return async (dispatch: TDispatch) => {
 		try {
 			dispatch({
 				type: types.PUBLISH_SONG,
-				payload: { privateSongId },
 			});
 			//////////////////////////////////////
 
@@ -457,7 +452,7 @@ export const publishSong = (p: { privateSongId: TSongId }) => {
 			//////////////////////////////////////
 			dispatch({
 				type: types.PUBLISH_SONG_SUCCESS,
-				payload: { newSongCreatedByDB },
+				payload: { songCreated: newSongCreatedByDB },
 			});
 		} catch (error) {
 			console.warn(error);
@@ -474,11 +469,10 @@ export const deleteSong = (p: {
 	isPrivate?: boolean;
 }) => {
 	const { songDeletedId, isPrivate = false } = p;
-	return async (dispatch: TSongDispatch) => {
+	return async (dispatch: TDispatch) => {
 		try {
 			dispatch({
 				type: types.DELETE_SONG,
-				payload: { songDeletedId, isPrivate },
 			});
 			//////////////////////////////////////
 

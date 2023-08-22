@@ -1,7 +1,6 @@
 import { produce } from "immer";
 import { TAuthorDB, TAuthorId, TAuthorListDB } from "./types";
 import { TFetchStatus, FETCH_STATUS } from "../../utils/types";
-import { Dispatch } from "redux";
 import { valid } from "../../utils/generalUtils";
 import { types } from "./actions";
 
@@ -74,54 +73,57 @@ const AuthorReducer = (
 			let authorCreated = valid(payload?.authorCreated, type);
 			newState.authorList[authorCreated.id] = authorCreated;
 			newState.author = authorCreated;
+			newState.authorStatus = FETCH_STATUS.SUCCESS;
 		}
 		if (type === types.EDIT_AUTHOR) {
 			let authorEdited = valid(payload?.authorEdited, type);
 			newState.authorList[authorEdited.id] = authorEdited;
 			newState.author = authorEdited;
+			newState.authorStatus = FETCH_STATUS.SUCCESS;
 		}
 		if (type === types.DELETE_AUTHOR) {
 			let authorDeletedId = valid(payload?.authorDeletedId, type);
 			delete newState.authorList[authorDeletedId];
 			newState.author = defaultAuthor;
+			newState.authorStatus = FETCH_STATUS.SUCCESS;
 		}
 	});
 };
 
+type TAuthorActionPayloadStatus = {
+	authorStatus: TAuthorActionPayload["authorStatus"];
+	authorError: TAuthorActionPayload["authorError"];
+};
 // export type TAuthorDispatch = Dispatch<TAuthorActionPayload>;
 export type TAuthorSelectedActionPayload = {
 	[types.RESET_AUTHOR_STATUS]: undefined;
 
-	// [types.SET_AUTHOR_LIST]: Pick<TAuthorActionPayload, "authorList" & "authorStatus">
 	[types.SET_AUTHOR_LIST]: {
 		authorList: TAuthorActionPayload["authorList"];
 		authorStatus: TAuthorActionPayload["authorStatus"];
 	};
-	[types.SET_AUTHOR_LIST_STATUS]: {
-		authorStatus: string;
-		authorError: string | null;
+	[types.SET_AUTHOR_LIST_STATUS]: TAuthorActionPayloadStatus;
+
+	[types.SET_AUTHOR]: {
+		author: TAuthorActionPayload["author"];
+		authorStatus: TAuthorActionPayload["authorStatus"];
 	};
+	[types.SET_AUTHOR_STATUS]: TAuthorActionPayloadStatus;
 
-	[types.SET_AUTHOR]: {};
-	[types.SET_AUTHOR_STATUS]: {};
+	[types.CREATE_AUTHOR]: {
+		authorCreated: TAuthorActionPayload["authorCreated"];
+	};
+	[types.CREATE_AUTHOR_STATUS]: TAuthorActionPayloadStatus;
 
-	[types.CREATE_AUTHOR]: {};
-	[types.CREATE_AUTHOR_STATUS]: {};
+	[types.EDIT_AUTHOR]: {
+		authorEdited: TAuthorActionPayload["authorEdited"];
+	};
+	[types.EDIT_AUTHOR_STATUS]: TAuthorActionPayloadStatus;
 
-	[types.EDIT_AUTHOR]: {};
-	[types.EDIT_AUTHOR_STATUS]: {};
-
-	[types.DELETE_AUTHOR]: {};
-	[types.DELETE_AUTHOR_STATUS]: {};
+	[types.DELETE_AUTHOR]: {
+		authorDeletedId: TAuthorActionPayload["authorDeletedId"];
+	};
+	[types.DELETE_AUTHOR_STATUS]: TAuthorActionPayloadStatus;
 };
-
-type TAuthorSelectedAction<T extends TAuthorActionType> = {
-	type: T;
-	payload: TAuthorSelectedActionPayload[T];
-};
-
-export type TAuthorDispatch = <T extends TAuthorActionType>(
-	action: TAuthorSelectedAction<T>
-) => Dispatch<TAuthorSelectedAction<T>>;
 
 export default AuthorReducer;

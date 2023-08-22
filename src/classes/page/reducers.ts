@@ -47,15 +47,19 @@ const initialState: TPageState = {
 	},
 };
 
+export type TPageActionType = (typeof types)[keyof typeof types];
+
+export type TPageActionPayload = Partial<TPageState> & {
+	song?: TSong;
+};
+
 export type TPageAction = {
-	type: string;
-	payload?: Partial<TPageState> & {
-		song?: TSong;
-	};
+	type: TPageActionType;
+	payload?: TPageActionPayload;
 };
 
 const PageReducer = (state = initialState, { type, payload }: TPageAction) => {
-	return produce(state, (newState: TPageState) => {
+	return produce(state, (newState: TPageState): void => {
 		if (type === types.SET_SONG_PAGE_BACKUP) {
 			let songPageBackup = valid(payload?.songPageBackup, type);
 			newState.songPageBackup = {
@@ -86,6 +90,27 @@ const PageReducer = (state = initialState, { type, payload }: TPageAction) => {
 			newState.libraryPageBackup = valid(payload?.libraryPageBackup, type);
 		}
 	});
+};
+
+export type TPageSelectedActionPayload = {
+	[types.SET_SONG_PAGE_BACKUP]: {
+		songPageBackup: TPageActionPayload["songPageBackup"];
+	};
+	[types.SET_SONG_PAGE_BACKUP_SONG]: {
+		song: TPageActionPayload["song"];
+	};
+	[types.SET_SONG_LIST_PAGE_BACKUP]: {
+		songListPageBackup: TPageActionPayload["songListPageBackup"];
+	};
+	[types.SET_REPERTORY_PAGE_BACKUP]: {
+		repertoryPageBackup: TPageActionPayload["repertoryPageBackup"];
+	};
+	[types.SET_REPERTORY_LIST_PAGE_BACKUP]: {
+		repertoryListPageBackup: TPageActionPayload["repertoryListPageBackup"];
+	};
+	[types.SET_LIBRARY_PAGE_BACKUP]: {
+		libraryPageBackup: TPageActionPayload["libraryPageBackup"];
+	};
 };
 
 export default PageReducer;
