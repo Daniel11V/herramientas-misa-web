@@ -18,7 +18,7 @@ import {
 	getPublicRepertoryDB,
 	getPublicRepertoryListDB,
 } from "./services/publicRepertoryList.js";
-import { TRepertory, TRepertoryId } from "./types.js";
+import { TRepertory, TRepertoryId, TRepertoryList } from "./types.js";
 
 export const types = {
 	RESET_REPERTORY_ACTION_STATUS: "RESET_REPERTORY_ACTION_STATUS",
@@ -93,8 +93,8 @@ export const getRepertoryList = (p: {
 
 			// Falta crear el createTRepertory
 			const repertoryList = {
-				...(publicRepertoryList || {}),
-				...(userPrivateRepertoryList || {}),
+				...((publicRepertoryList as TRepertoryList) || {}),
+				...((userPrivateRepertoryList as TRepertoryList) || {}),
 			};
 
 			//////////////////////////////////////

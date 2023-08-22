@@ -1,7 +1,5 @@
 import { TRate } from "../classes/song/types";
 import { TUserId } from "../classes/user/types";
-import allChords from "../data/allChords";
-import searchLabels from "../data/searchLabels";
 import { TypeCreationError, UndefinedError } from "./errors";
 
 export const isAdminUser = (userId: TUserId): boolean => {
@@ -9,55 +7,55 @@ export const isAdminUser = (userId: TUserId): boolean => {
 	return adminList.includes(userId);
 };
 
-export const automaticLabels = (lyric, labels) => {
-	const onlyLyric = lyric.split("\n").filter((p) => {
-		p = p.toLowerCase();
+// export const automaticLabels = (lyric: string, labels: TSong["labels"]) => {
+// 	const onlyLyric = lyric.split("\n").filter((p) => {
+// 		p = p.toLowerCase();
 
-		if (!p || p.includes("      ")) {
-			return false;
-		}
+// 		if (!p || p.includes("      ")) {
+// 			return false;
+// 		}
 
-		let counter = 0;
-		for (const key in allChords) {
-			for (let chord of allChords[key]) {
-				chord = chord.toLowerCase();
-				if (p === chord) {
-					return false;
-				}
+// 		let counter = 0;
+// 		for (const key in allChords) {
+// 			for (let chord of allChords[key]) {
+// 				chord = chord.toLowerCase();
+// 				if (p === chord) {
+// 					return false;
+// 				}
 
-				if (p.includes(` ${chord} `)) {
-					counter++;
-					if (p.replace(` ${chord} `, "  ").includes(` ${chord} `)) {
-						counter++;
-					}
-				}
-			}
-		}
+// 				if (p.includes(` ${chord} `)) {
+// 					counter++;
+// 					if (p.replace(` ${chord} `, "  ").includes(` ${chord} `)) {
+// 						counter++;
+// 					}
+// 				}
+// 			}
+// 		}
 
-		if (counter >= 3) {
-			return false;
-		} else {
-			return true;
-		}
-	});
+// 		if (counter >= 3) {
+// 			return false;
+// 		} else {
+// 			return true;
+// 		}
+// 	});
 
-	onlyLyric.forEach((p, i, thisArray) => (thisArray[i] = p.trim()));
+// 	onlyLyric.forEach((p, i, thisArray) => (thisArray[i] = p.trim()));
 
-	const manualLabel = false;
+// 	const manualLabel = false;
 
-	if (!manualLabel) {
-		for (const label in searchLabels) {
-			for (const keyWords of searchLabels[label]) {
-				if (lyric.includes(keyWords)) {
-					// console.log("Incluye: ", label);
-					if (!labels.includes(label)) {
-						labels.push(label);
-					}
-				}
-			}
-		}
-	}
-};
+// 	if (!manualLabel) {
+// 		for (const label in searchLabels) {
+// 			for (const keyWords of searchLabels[label]) {
+// 				if (lyric.includes(keyWords)) {
+// 					// console.log("Incluye: ", label);
+// 					if (!labels.includes(label)) {
+// 						labels.push(label);
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// };
 
 export const objIsEmpty = (object: object): boolean =>
 	!object || Object.keys(object)?.length === 0;
@@ -187,13 +185,13 @@ export const validArray = <P>(
 		} else if (itemValidation.func === "validBool") {
 			const validatedElement = validBool(element, typeName);
 			validatedArray.push(validatedElement);
-		} else if (itemValidation.func === "validArray") {
-			const validatedElement = validArray(
-				element,
-				typeName,
-				itemValidation.params
-			);
-			validatedArray.push(validatedElement);
+			// } else if (itemValidation.func === "validArray") {
+			// 	const validatedElement = validArray(
+			// 		element,
+			// 		typeName,
+			// 		itemValidation.params
+			// 	);
+			// 	validatedArray.push(validatedElement);
 		} else if (itemValidation.func === "validObject" && itemValidation.params) {
 			const validatedElement = validObject(
 				element,
@@ -254,7 +252,6 @@ export const validObject = <P extends string, U>(
 		(finalV, key) => {
 			if (keyValidations.hasOwnProperty(key)) {
 				const validationFunction = keyValidations[key];
-				let validatedValue: unknown;
 
 				if (validationFunction === "validNumber") {
 					const validatedValue = validNumber(typedValue[key], typeName);
@@ -268,13 +265,13 @@ export const validObject = <P extends string, U>(
 					const validatedValue = validBool(typedValue[key], typeName);
 					return { ...finalV, [key]: validatedValue };
 				}
-				if (validationFunction === "validArray") {
-					validatedValue = validArray(typedValue[key], typeName);
-				}
-				if (validationFunction === "validObject") {
-					validatedValue = validObject(typedValue[key], typeName);
-					return { ...finalV, [key]: typedValue[key] };
-				}
+				// if (validationFunction === "validArray") {
+				// 	validatedValue = validArray(typedValue[key], typeName);
+				// }
+				// if (validationFunction === "validObject") {
+				// 	validatedValue = validObject(typedValue[key], typeName);
+				// 	return { ...finalV, [key]: typedValue[key] };
+				// }
 				return { ...finalV, [key]: typedValue[key] };
 			} else {
 				return { ...finalV, [key]: typedValue[key] };

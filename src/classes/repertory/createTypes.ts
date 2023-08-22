@@ -1,10 +1,4 @@
-import {
-	validArray,
-	validBool,
-	validObject,
-	validString,
-} from "../../utils/generalUtils";
-import { TSongId } from "../song/types";
+import { validBool, validString } from "../../utils/generalUtils";
 import { TRepertory } from "./types";
 
 export const createTRepertory = ({
@@ -32,16 +26,7 @@ export const createTRepertory = ({
 			id: validString(creator?.id, typeName),
 			name: validString(creator?.name, typeName),
 		},
-		songSections: validArray<{
-			name: string;
-			songs: TSongId[];
-		}>(songSections, typeName, {
-			func: "validObject",
-			params: {
-				name: "validString",
-				songs: "validArray",
-			},
-		}),
+		songSections: songSections as TRepertory["songSections"],
 		annotations,
 		members,
 	};

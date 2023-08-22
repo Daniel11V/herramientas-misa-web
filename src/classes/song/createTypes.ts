@@ -39,7 +39,7 @@ export const createTSong = ({
 		lyricIsPrivate: validBool(lyricIsPrivate, typeName),
 		title: validString(title, typeName),
 		lyricStart: validString(lyricStart, typeName),
-		labels: validArray<string>(labels, typeName, validString),
+		labels: validArray<string>(labels, typeName, { func: "validString" }),
 		author: {
 			id: validString(author?.id, typeName),
 			name: validString(author?.name, typeName),
@@ -95,7 +95,7 @@ export const createTPrivateSongTitleDB = ({
 		lyricIsPrivate: validBool(lyricIsPrivate, typeName),
 		title: validString(title, typeName),
 		lyricStart: validString(lyricStart, typeName),
-		labels: validArray<string>(labels, typeName, validString),
+		labels: validArray<string>(labels, typeName, { func: "validString" }),
 		author: {
 			id: validString(author?.id, typeName),
 			name: validString(author?.name, typeName),
@@ -154,7 +154,7 @@ export const createTPublicSongTitleDB = ({
 		lyricIsPrivate: validBool(lyricIsPrivate, typeName),
 		title: validString(title, typeName),
 		lyricStart: validString(lyricStart, typeName),
-		labels: validArray<string>(labels, typeName, validString),
+		labels: validArray<string>(labels, typeName, { func: "validString" }),
 		author: {
 			id: validString(author?.id, typeName),
 			name: validString(author?.name, typeName),
