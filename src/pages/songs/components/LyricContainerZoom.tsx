@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, ReactNode } from "react";
 import styled, { css } from "styled-components";
 
-const LyricContainerZoom = ({initialZoomed, ...props}) => {
+const LyricContainerZoom = (p: {initialZoomed: boolean, children: ReactNode}) => {
+	const {initialZoomed, children} = p;
 	const [hasZoom, setHasZoom] = useState(initialZoomed);
 
 	return (
 		<LyricContainerBox hasZoom={hasZoom}>
-			{props.children}
+			{children}
 			<LyricContainerButton
 				onClick={() => setHasZoom(!hasZoom)}
 			>
@@ -15,7 +16,7 @@ const LyricContainerZoom = ({initialZoomed, ...props}) => {
 		</LyricContainerBox>
 	);
 };
-const LyricContainerBox = styled.div`
+const LyricContainerBox = styled.div<{ hasZoom: boolean }>`
 	position: relative;
 	border: 2px solid blue;
 	border-radius: 10px;

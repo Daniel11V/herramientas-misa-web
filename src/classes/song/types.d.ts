@@ -12,11 +12,26 @@ export type TRate = {
 	userRate: number;
 };
 
+export type TVersionGroupId =  string
+export type TVersionGroup =  {
+    moreRated: TSongId,
+    maxLevel: number,
+    versions: TSongId[],
+}
+
+export type TVersionGroups = Record<TVersionGroupId, TVersionGroup>
+
+export type TSongLevel =  {
+	general: number;
+	guitar?: number;
+	[key: string]: number;
+}
+
 export type TSongId = string;
 
 export type TSong = {
 	id: TSongId;
-	versionGroupId: string;
+	versionGroupId: TVersionGroupId;
 	isPrivate: boolean;
 	lyricId: string;
 	lyricIsPrivate: boolean;
@@ -25,11 +40,7 @@ export type TSong = {
 	author: TAuthor;
 	creator: TCreator;
 	labels: Array<string>;
-	level: {
-		general: number;
-		guitar?: number;
-		[key: string]: number;
-	};
+	level: TSongLevel;
 	privateAccess?: Record<TUserId, TUserDB["name"]>;
 	topics?: Array<string>;
 	rating?: TRate[];
@@ -61,17 +72,20 @@ export type TSongOptions = {
 	level?: TSong["level"];
 };
 
-export const generalLevelOptions = {
-	general: [
-		{ value: "0", label: "0. Nueva: guardada en mi biblioteca" },
-		{
-			value: "1",
-			label: "1. Conocida: la puedo tocar acompañado y viendo la letra",
-		},
-		{ value: "2", label: "2. Aprendida: la puedo tocar solo" },
-		{ value: "3", label: "3. Memorizada: me la se de memoria" },
-	],
-};
+export const generalLevelOptions = [
+	{
+		type: "general",
+		options: [
+			{ value: "0", label: "0. Nueva: guardada en mi biblioteca" },
+			{
+				value: "1",
+				label: "1. Conocida: la puedo tocar acompañado y viendo la letra",
+			},
+			{ value: "2", label: "2. Aprendida: la puedo tocar solo" },
+			{ value: "3", label: "3. Memorizada: me la se de memoria" },
+		],
+	}
+]
 /*
 export const songLevels = {
     1: "Aprendiendo Melodía: todovía no me sale cantarla",

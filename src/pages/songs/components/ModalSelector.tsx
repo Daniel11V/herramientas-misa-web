@@ -1,9 +1,31 @@
 import M from "materialize-css";
 import { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
-import { objIsEmpty } from "../../../utils/lyricsAndChordsUtils";
+import { arrayIsEmpty } from "../../../utils/generalUtils";
+import { TsetFunc } from "../../../utils/types";
 
-const ModalSelector = ({
+export type TModalSelectorOpts = Array<{
+	type: string,
+	options: Array<{
+		value: string
+		label: string
+	}>
+}>
+
+interface Props {
+	selectedItem: string,
+	setSelectedItem: TsetFunc<string>,
+	items: TModalSelectorOpts
+	label: string,
+	modalTitle: string,
+	hasCategories?: boolean,
+	modalId: string,
+	selectorWidth?: string,
+	textAlign?: string,
+	initialSelectedItemLabel?: string,
+}
+
+const ModalSelector: React.FC<Props> = ({
 	selectedItem,
 	setSelectedItem,
 	items,
@@ -24,16 +46,16 @@ const ModalSelector = ({
 	);
 
 	useEffect(() => {
-		if (!objIsEmpty(items)) {
+		if (!arrayIsEmpty(items)) {
 			let selectedItemFound;
-			for (const categoryName in items) {
-				selectedItemFound = items[categoryName].find(
+			for (const category of items) {
+				selectedItemFound = category.options.find(
 					(item) => item.value === selectedItem
 				);
 				if (selectedItemFound) break;
 			}
 			console.log("ACA ", { selectedItemFound });
-			setSelectedItemLabel(selectedItemFound?.label);
+			setSelectedItemLabel(selectedItemFound?.label || "-");
 		}
 	}, [items, selectedItem, setSelectedItemLabel]);
 
@@ -53,7 +75,7 @@ const ModalSelector = ({
 		modalInstance?.open();
 	};
 
-	const handleItemClick = (event: React.MouseEvent, itemValue): void => {
+	const handleItemClick = (event: React.MouseEvent, itemValue: string): void => {
 		event.stopPropagation();
 		setSelectedItem(itemValue);
 		modalInstance?.close();
@@ -72,10 +94,10 @@ const ModalSelector = ({
 				<StyledModal modalInstanceId={modalInstanceId}>
 					<StyledModalContent>
 						{!!modalTitle && <StyledModalTitle>{modalTitle}</StyledModalTitle>}
-						{Object.keys(items || {})?.map((categoryName) => (
-							<div key={categoryName}>
-								<ItemText>{hasCategories && <b>{categoryName}</b>}</ItemText>
-								{items[categoryName].map((item) => (
+						{items?.map((category) => (
+							<div key={category.type}>
+								<ItemText>{hasCategories && <b>{category.type}</b>}</ItemText>
+								{category.options.map((item) => (
 									<ItemBtn
 										key={item.value}
 										selected={item.value === selectedItem}
@@ -97,7 +119,7 @@ const Label = styled.span`
 	margin-right: 10px;
 `;
 
-const Selector = styled.div`
+const Selector = styled.div<{ textAlign: string; selectorWidth: string }>`
 	display: inline-block;
 	text-align: ${(props) => props.textAlign};
 	margin-bottom: 5px;
@@ -108,11 +130,11 @@ const Selector = styled.div`
 					width: 100%;
 			  `
 			: css`
-					width: ${(props) => props.selectorWidth};
+					width: ${props.selectorWidth};
 			  `}
 `;
 
-const StyledModal = styled.div.attrs((props) => ({
+const StyledModal = styled.div.attrs<{ modalInstanceId: string }>((props) => ({
 	className: "modal " + props.modalInstanceId,
 }))`
 	color: black;
@@ -138,7 +160,7 @@ const ItemText = styled.div`
 	display: block;
 `;
 
-const ItemBtn = styled(ItemText)`
+const ItemBtn = styled(ItemText)<{ selected: boolean }>`
 	padding-top: 10px;
 	cursor: pointer;
 	${(props) =>

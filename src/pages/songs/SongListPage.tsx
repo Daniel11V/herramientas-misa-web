@@ -6,7 +6,7 @@ import SongCollection from "../components/SongCollection";
 import LoggedButton from "../../layout/components/LoggedButton";
 
 export const SongListPage: React.FC = () => {
-	const [songList, loadingSongList, errorSongList] = useSongListPage();
+	const {songList, loadingSongList, errorSongList} = useSongListPage();
 	const navigate = useNavigate();
 
 	const loginAddSong = () => {

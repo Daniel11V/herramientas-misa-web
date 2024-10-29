@@ -6,7 +6,7 @@ import LoginLogoutBtn from "./components/LoginLogoutBtn";
 import { noSelectableText } from "../styles/styleUtils";
 import { useAppSelector } from "../store";
 
-const Navigation = () => {
+const Navigation: React.FC = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const [lastPage, setLastPage] = useState("");

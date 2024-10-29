@@ -89,7 +89,7 @@ export const useLibraryPage = () => {
 			setStatus(steps.FETCH_SONG_LIST_1);
 		} else if (status.step === steps.INITIAL) {
 			if (!objIsEmpty(songListBackup)) {
-				setCurrentSongList(songListBackup);
+				setCurrentSongList(Object.values(songListBackup));
 				setStatus("FINISHED", { isSameBackup: true });
 			} else {
 				setStatus("FETCH_SONG_LIST_1");
@@ -138,7 +138,7 @@ export const useLibraryPage = () => {
 
 	useEffect(() => {
 		if (status.step === steps.WITH_SONG_LIST_1) {
-			setCurrentSongList(songList);
+			setCurrentSongList(Object.values(songList));
 			setStatus(steps.FORMAT_BY_VERSION_GROUPS_2);
 		}
 	}, [status, songList]);

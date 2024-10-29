@@ -85,7 +85,7 @@ const ItemText = styled.span`
 	display: block;
 `;
 
-const ItemBtn = styled(ItemText)`
+const ItemBtn = styled(ItemText)<{ isSelected: boolean }>`
 	padding-top: 10px;
 	cursor: ${(props) => (props.isSelected ? "initial" : "pointer")};
 	background-color: ${(props) => (props.isSelected ? "#e4e4e4" : null)};

@@ -10,7 +10,7 @@ export type TPageState = {
 	};
 	songListPageBackup: {
 		songList: TSong[];
-		filters: object;
+		filters?: object;
 	};
 	repertoryPageBackup: {
 		repertoryList: Record<TRepertoryId, TRepertory>;
@@ -72,7 +72,11 @@ const PageReducer = (state = initialState, { type, payload }: TPageAction) => {
 			newState.songPageBackup.songList[song?.id] = song;
 		}
 		if (type === types.SET_SONG_LIST_PAGE_BACKUP) {
-			newState.songListPageBackup = valid(payload?.songListPageBackup, type);
+			const songListPageBackup = valid(payload?.songListPageBackup, type);
+			newState.songListPageBackup = {
+				...state.songListPageBackup,
+				...songListPageBackup
+			}
 		}
 		if (type === types.SET_REPERTORY_PAGE_BACKUP) {
 			newState.repertoryPageBackup = valid(payload?.repertoryPageBackup, type);

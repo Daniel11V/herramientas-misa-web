@@ -5,16 +5,17 @@ import allChords, {
 	allChordsArrayES,
 	chordToEN,
 } from "../data/allChords.js";
+import { CHORD_LANGS, TChordInLyric, TChordLang, TChordString, TChordStringEN, TChordStringES } from "../pages/songs/types.js";
 
 // Lyrics and Chords
 
-export const getModuleToneDiference = (a, b) => {
+export const getModuleToneDiference = (a: number, b: number) => {
 	const difference = (a - b) * -1;
 	if (difference < 0) return 12 + difference;
 	return difference;
 };
 
-export const getChordIndex = (chord, chordLang = "en") => {
+export const getChordIndex = (chord: TChordString, chordLang: TChordLang = CHORD_LANGS.EN) => {
 	// In allChords
 	for (let i = 0; i < allChords[chordLang].length; i++)
 		for (let k = 0; k < allChords[chordLang][i].chords.length; k++)
@@ -22,9 +23,9 @@ export const getChordIndex = (chord, chordLang = "en") => {
 				return [i, k];
 };
 
-export const oldTranslateChord = (chord, toLang, currentLang) => {
+export const oldTranslateChord = (chord: TChordString, toLang: TChordLang, currentLang?: TChordLang) => {
 	if (currentLang === toLang) return chord;
-	if (!!chord && toLang === "es") return chordToES[chord];
+	if (!!chord && toLang === "es") return chordToES[chord as TChordStringEN];
 	const fromLang = toLang === "en" ? "es" : "en";
 	for (let i = 0; i < allChords?.[fromLang]?.length; i++) {
 		const chordIndex = allChords[fromLang][i].chords.findIndex(
@@ -35,12 +36,12 @@ export const oldTranslateChord = (chord, toLang, currentLang) => {
 	return chord;
 };
 
-export const translateChord = (chord, toLang, currentLang) => {
+export const translateChord = (chord: TChordString, toLang: TChordLang, currentLang?: TChordLang) => {
 	if (currentLang === toLang || !chord) return chord;
-	return toLang === "es" ? chordToES[chord] : chordToEN[chord];
+	return toLang === "es" ? chordToES[chord as TChordStringEN] : chordToEN[chord as TChordStringES];
 };
 
-export const translateChords = (chords, toLang, currentLang) => {
+export const translateChords = (chords: TChordInLyric, toLang: TChordLang, currentLang?: TChordLang) => {
 	if (currentLang === toLang || !chords) return chords;
 
 	for (const line in chords) {
@@ -56,54 +57,61 @@ export const translateChords = (chords, toLang, currentLang) => {
 	return chords;
 };
 
-export const getToneDifference = (toChord, fromChord) => {
+export const getToneDifference = (toChord: TChordString, fromChord: TChordString) => {
 	const currentToneIndex = getChordIndex(fromChord);
 	const toneIndex = getChordIndex(toChord);
+	if (typeof currentToneIndex !== "number" || typeof toneIndex !== "number" ) return undefined
 	const toneDiference = getModuleToneDiference(
-		currentToneIndex?.[1],
-		toneIndex?.[1]
+		currentToneIndex[1],
+		toneIndex[1]
 	);
 	return toneDiference;
 };
 
-export const transposeChord = (initialChord, toneDiference, chordLang) => {
+export const transposeChord = (initialChord: TChordString, toneDiference:number, chordLang: TChordLang) => {
 	const initialChordIndex = getChordIndex(initialChord, chordLang);
-	let newChordIndex = initialChordIndex[1] + toneDiference;
-	if (newChordIndex > 11) newChordIndex = newChordIndex - 12;
-	return allChords[chordLang][initialChordIndex[0]].chords[newChordIndex];
+	if (initialChordIndex) {
+		let newChordIndex = initialChordIndex[1] + toneDiference;
+		if (newChordIndex > 11) newChordIndex = newChordIndex - 12;
+		return allChords[chordLang][initialChordIndex[0]].chords[newChordIndex];
+	}
 };
 
-export const transposeChords = (chords, toTone, fromTone, chordLang) => {
-	if (!chords || !toTone || !fromTone || !chordLang) return chords;
+export const transposeChords = (chords: TChordInLyric, toTone: TChordString, fromTone: TChordString, chordLang: TChordLang) => {
+	if (!chords || !toTone || !fromTone || !chordLang) return undefined;
 
 	const toneDiference = getToneDifference(toTone, fromTone);
-
+	if (toneDiference === undefined) return undefined
 	for (const line in chords) {
 		for (const chordIndex in chords[line]) {
-			chords[line][chordIndex].chord = transposeChord(
+			const chordTransposed = transposeChord(
 				chords[line][chordIndex].chord,
 				toneDiference,
 				chordLang
 			);
+			if (chordTransposed) {
+				chords[line][chordIndex].chord = chordTransposed;
+			}
 		}
 	}
 
 	return chords;
 };
 
-export const getFormattedLyric = (onlyLyric, chords) => {
+export const getFormattedLyric = (onlyLyric: string, chords: TChordInLyric) => {
 	console.log("ACA getFormattedLyric", { onlyLyric, chords });
 	if (!onlyLyric) return onlyLyric;
 
 	const formattedLyric = onlyLyric.split("\n").map((line) => line.split(""));
 	for (const lineIndex in chords) {
 		for (const charIndex of Object.keys(chords[lineIndex]).reverse()) {
-			const chordDuration = chords[lineIndex][charIndex]?.duration
-				? chords[lineIndex][charIndex]?.duration + "|"
+			const charIndexN = Number(charIndex)
+			const chordDuration = chords[lineIndex][charIndexN]?.duration
+				? chords[lineIndex][charIndexN]?.duration + "|"
 				: "";
-			const chordString = `[${chordDuration}${chords[lineIndex][charIndex].chord}]`;
+			const chordString = `[${chordDuration}${chords[lineIndex][charIndexN].chord}]`;
 
-			formattedLyric[lineIndex].splice(charIndex, 0, chordString);
+			formattedLyric[lineIndex].splice(charIndexN, 0, chordString);
 		}
 	}
 	console.log("ACA getFormattedLyric2", {
@@ -114,19 +122,20 @@ export const getFormattedLyric = (onlyLyric, chords) => {
 	return formattedLyric.map((line) => line.join("")).join("\n");
 };
 
-export const getLyricWithChordsOld = (onlyLyric, chords) => {
+export const getLyricWithChordsOld = (onlyLyric: string, chords: TChordInLyric) => {
 	let lyric = onlyLyric.split("\n");
 
 	let numInsertedLines = 0;
 	if (chords) {
 		Object.keys(chords).forEach((lineIndex) => {
-			const lyricLineIndex = Number(lineIndex) + numInsertedLines;
+			const lineIndexN = Number(lineIndex)
+			const lyricLineIndex = lineIndexN + numInsertedLines;
 			lyric.splice(lyricLineIndex, 0, "");
 
-			Object.keys(chords[lineIndex]).forEach((charIndex) => {
+			Object.keys(chords[lineIndexN]).forEach((charIndex) => {
 				const numberOfSpaces = Number(charIndex) - lyric[lyricLineIndex].length;
 				for (let i = 0; i < numberOfSpaces; i++) lyric[lyricLineIndex] += " ";
-				lyric[lyricLineIndex] += chords[lineIndex][charIndex];
+				lyric[lyricLineIndex] += chords[lineIndexN][Number(charIndex)];
 			});
 
 			numInsertedLines++;
@@ -136,14 +145,14 @@ export const getLyricWithChordsOld = (onlyLyric, chords) => {
 	return lyric.join("\n");
 };
 
-export const getDataFromRandomLyric = (randomLyric) => {
-	const newChords = {};
-	const emptyReturn = { newChords: {}, newArrayLyric: [] };
-	const songLines = randomLyric.split("\n");
+export const getDataFromRandomLyric = (randomLyric: string) => {
+	const newChords: TChordInLyric = {};
+	const emptyReturn: { newChords: TChordInLyric, newArrayLyric: [] } = { newChords: {}, newArrayLyric: [] };
+	const songLines: string[] = randomLyric.split("\n");
 	let onlyLyric = [...songLines];
 
-	let chordLangFound = null; // Normal chords
-	let chordLangFound2 = null; // Formatted chords
+	let chordLangFound: TChordLang|null = null; // Normal chords
+	let chordLangFound2: TChordLang|null = null; // Formatted chords
 	let finalLineIndex = -1;
 	songLines.forEach((currentLine) => {
 		finalLineIndex++;

@@ -1,9 +1,11 @@
 import M from "materialize-css";
 import { useState } from "react";
 import { setSongPageOptions } from "../../../classes/user/actions";
-import { useAppSelector } from "../../../store";
 import { objsAreEqual } from "../../../utils/generalUtils";
 import { useDispatch } from "react-redux";
+import { TModalSelectorOpts } from "../components/ModalSelector";
+import { TChordLang } from "../types";
+import { useAppSelector } from "../../../store";
 
 export const useSongPageOptions = () => {
 	const dispatch = useDispatch();
@@ -12,7 +14,7 @@ export const useSongPageOptions = () => {
 	const [areNewOptions, setAreNewOptions] = useState(false);
 	const [pageOptions, setPageOptions] = useState(songPageOptions);
 
-	const setPageOptionsField = (field, newVal) => {
+	const setPageOptionsField = (field: string, newVal: unknown) => {
 		setPageOptions((lv) => {
 			if (lv[field] !== newVal) {
 				const newPageOptions = {
@@ -29,7 +31,7 @@ export const useSongPageOptions = () => {
 		});
 	};
 
-	const setFontSize = (newVal) => {
+	const setFontSize = (newVal: number) => {
 		setPageOptionsField("fontSize", newVal);
 	};
 
@@ -37,16 +39,19 @@ export const useSongPageOptions = () => {
 		setPageOptionsField("showChords", !pageOptions.showChords);
 	};
 
-	const setChordLang = (newVal) => {
+	const setChordLang = (newVal: TChordLang) => {
 		setPageOptionsField("chordLang", newVal);
 	};
 
-	const chordLangOptions = {
-		Cifrados: [
-			{ value: "en", label: "Americano" },
-			{ value: "es", label: "Español" },
-		],
-	};
+	const chordLangOptions: TModalSelectorOpts = [
+		{
+			type: "Cifrados",
+			options: [
+				{ value: "en", label: "Americano" },
+				{ value: "es", label: "Español" },
+			],
+		}
+	]
 
 	const saveOptions = () => {
 		dispatch(setSongPageOptions(pageOptions));

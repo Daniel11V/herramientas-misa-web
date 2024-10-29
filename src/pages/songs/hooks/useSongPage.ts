@@ -33,11 +33,11 @@ const emptySong = {
 	lyric: "",
 };
 
-export const useSongPage = (songTitleId: string) => {
+export const useSongPage = (songTitleId: string | undefined) => {
 	const dispatch = useDispatch();
 	const userId = useAppSelector((state) => state.user.google.id);
 	const { authorList } = useAppSelector((state) => state.author);
-	const { song, isLoadingSong, errorSong, editSong } = useSong({
+	const { song, isLoadingFetchSong, isLoadingEditSong, errorSong, editSong } = useSong({
 		songTitleId,
 		userId,
 	});
@@ -103,12 +103,12 @@ export const useSongPage = (songTitleId: string) => {
 	};
 
 	useEffect(() => {
-		if (!!savingSongEdit && !isLoadingSong) {
+		if (!!savingSongEdit && !isLoadingEditSong) {
 			setSavingSongEdit(false);
 			setAreNewSongOptions(false);
 			M.toast({ html: "Guardado con exito." });
 		}
-	}, [savingSongEdit, isLoadingSong]);
+	}, [savingSongEdit, isLoadingEditSong]);
 
 	// isEditing
 	const [editingSong, setEditingSong] = useState(false);
@@ -183,7 +183,7 @@ export const useSongPage = (songTitleId: string) => {
 
 	return {
 		song: currentSong,
-		isLoadingPage: isLoadingSong,
+		isLoadingPage: isLoadingFetchSong || isLoadingEditSong,
 		errorPage: errorSong,
 		tone,
 		setTone,

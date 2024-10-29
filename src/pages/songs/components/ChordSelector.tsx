@@ -2,7 +2,8 @@
 import { allChordsOptions } from "../../../data/allChords";
 import ModalSelector from "./ModalSelector";
 import styled from "styled-components";
-import { TChord, TChordLang } from "../types";
+import { TChord, TChordLang, TChordString } from "../types";
+import { TsetFunc } from "../../../utils/types";
 
 const ChordSelector: React.FC<{
 	selectedChord: TChord;
@@ -57,7 +58,7 @@ const ChordSelector: React.FC<{
 	// );
 	// }, [chordLang, onlyChangeTone]);
 
-	const setSelectedModalChord = (chord: string) => {
+	const setSelectedModalChord = (chord: TChordString) => {
 		setSelectedChord({
 			chord,
 			duration: selectedChord?.duration || "",
@@ -69,10 +70,7 @@ const ChordSelector: React.FC<{
 	};
 
 	const listItems = onlyChangeTone
-		? {
-				mayores:
-					allChordsOptions[chordLang][chordLang === "es" ? "Mayores" : "Mayor"],
-		  }
+		? [allChordsOptions[chordLang][0]]
 		: allChordsOptions[chordLang];
 
 	return (
@@ -96,7 +94,7 @@ const ChordSelector: React.FC<{
 				label={label}
 				modalTitle={onlyChangeTone ? "Elegir Tono" : "Elegir Acorde"}
 				selectedItem={selectedChord.chord}
-				setSelectedItem={setSelectedModalChord}
+				setSelectedItem={setSelectedModalChord as TsetFunc<string>}
 				hasCategories={!onlyChangeTone}
 				items={listItems}
 				selectorWidth="flex"

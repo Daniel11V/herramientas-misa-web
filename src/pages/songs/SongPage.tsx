@@ -19,6 +19,7 @@ import LabelsInput from "../components/LabelsInput.tsx";
 import { translateChord } from "../../utils/lyricsAndChordsUtils.ts";
 import { generalLevelOptions } from "../../classes/song/types";
 import { useAppSelector } from "../../store.ts";
+import { TsetFunc } from "../../utils/types";
 
 export const SongPage: React.FC = () => {
 	const navigate = useNavigate();
@@ -437,7 +438,7 @@ export const SongPage: React.FC = () => {
 									label="Cifrado: "
 									modalTitle="Elegir Cifrado"
 									selectedItem={pageOptions.chordLang}
-									setSelectedItem={setChordLang}
+									setSelectedItem={setChordLang as TsetFunc<string>}
 									items={chordLangOptions}
 									selectorWidth="115px"
 								/>
@@ -488,7 +489,7 @@ export const SongPage: React.FC = () => {
 	);
 };
 
-const PageContainer = styled.div`
+const PageContainer = styled.div<{ fontSize: string }>`
 	font-size: ${(props) => props.fontSize}px;
 	margin: 0 auto 40px auto;
 	max-width: 700px;

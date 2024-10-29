@@ -10,7 +10,8 @@ import { FETCH_STATUS, SECURITY_STATUS } from "../../../utils/types";
 import { arrayIsEmpty, getRating } from "../../../utils/generalUtils";
 import { useAppSelector } from "../../../store";
 import { useDispatch } from "react-redux";
-import { TSong } from "../../../classes/song/types";
+import { TSong, TSongId, TSongLevel, TVersionGroupId, TVersionGroups } from "../../../classes/song/types";
+import { TUserId } from "../../../classes/user/types";
 
 export const useSongListPage = () => {
 	const dispatch = useDispatch();
@@ -39,7 +40,14 @@ export const useSongListPage = () => {
 		FORMAT_BY_VERSION_GROUPS_2: "FORMAT_BY_VERSION_GROUPS_2",
 		FINISHED: "FINISHED",
 	};
-	const [status, setCurrentSongListStatus] = useState({
+	const [status, setCurrentSongListStatus] = useState<{
+		step: TStep,
+		opts: {
+			userId?: TUserId,
+			isSameBackup?: boolean,
+			fromFetch?: boolean
+		}
+	}>({
 		step: steps.INITIAL,
 		opts: {},
 	});
@@ -129,7 +137,7 @@ export const useSongListPage = () => {
 
 	useEffect(() => {
 		if (status.step === steps.WITH_SONG_LIST_1) {
-			setCurrentSongList(songList);
+			setCurrentSongList(Object.values(songList));
 			setStatus(steps.FORMAT_BY_VERSION_GROUPS_2);
 		}
 	}, [status, songList]);
@@ -138,32 +146,27 @@ export const useSongListPage = () => {
 		if (status.step === steps.FORMAT_BY_VERSION_GROUPS_2) {
 			if (!arrayIsEmpty(currentSongList)) {
 				// FORMAT_BY_VERSION_GROUPS"
-				const versionGroups = {
-					// $versionGroupId: {
-					//     moreRated: $songId,
-					//     maxLevel: 0,
-					//     versions: [ $songId, ... ],
-					// }
-				};
+				const versionGroups: TVersionGroups = {};
 
-				const mainLevel = (level) =>
+				const mainLevel = (level: TSongLevel) =>
 					Object.keys(level || {}).reduce(
 						(newMainLevel, levelType) => newMainLevel + level[levelType],
 						0
 					);
 
-				const swapMoreRated = (newSongId, versionGroupId) => {
+				const swapMoreRated = (newSongId: TSongId, versionGroupId: TVersionGroupId) => {
 					const lastMoreRatedSongId = versionGroups[versionGroupId].moreRated;
 					versionGroups[versionGroupId].moreRated = newSongId;
 					versionGroups[versionGroupId].versions.push(lastMoreRatedSongId);
 				};
 
 				currentSongList.forEach((song) => {
-					if (versionGroups[song.versionGroupId]) {
+					const currentVersionGroup = versionGroups[song.versionGroupId]
+					if (currentVersionGroup) {
 						const currentSongVersion =
-							currentSongList[versionGroups[song.versionGroupId].moreRated];
+							currentSongList.find(s => s.id === currentVersionGroup.moreRated);
 						const currentMaxLevel =
-							versionGroups[song.versionGroupId].maxLevel || 0;
+							currentVersionGroup.maxLevel || 0;
 
 						if (
 							song.creator.id === userId &&
@@ -174,7 +177,7 @@ export const useSongListPage = () => {
 								song.level
 							);
 						} else if (
-							getRating(song.rating) > getRating(currentSongVersion.rating)
+							getRating(song.rating) > getRating(currentSongVersion?.rating)
 						) {
 							swapMoreRated(song.id, song.versionGroupId);
 						} else {
@@ -211,5 +214,5 @@ export const useSongListPage = () => {
 		}
 	}, [status, isLoading, currentSongList, retrys, dispatch]);
 
-	return [finalSongList, isLoading, error];
+	return {songList: finalSongList, loadingSongList: isLoading, errorSongList: error};
 };

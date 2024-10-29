@@ -137,7 +137,7 @@ export const useRepertoryPage = (repertoryId?: TRepertoryId) => {
 
 	useEffect(() => {
 		if (status.step === steps.FINISHED && !!loading) {
-			setSongSections();
+			setSongSections([]);
 			setFinalRepertory(currentRepertory);
 			if (
 				!status.opts.isSameBackup &&

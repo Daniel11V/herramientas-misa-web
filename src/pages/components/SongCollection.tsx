@@ -18,7 +18,7 @@ import { useAppSelector } from "../../store.js";
 const SongCollection: React.FC<{
 	songList?: TSong[];
 	loading?: boolean;
-	error?: string;
+	error?: string | null;
 	searcher?: boolean;
 	labelsStart?: Array<string>;
 	checking?: boolean;
@@ -26,7 +26,7 @@ const SongCollection: React.FC<{
 }> = ({
 	songList = [],
 	loading = false,
-	error = "",
+	error = null,
 	searcher = false,
 	labelsStart = [],
 	checking = false,
@@ -209,7 +209,7 @@ const SongCollection: React.FC<{
 							{song.title}
 							{song?.author?.name && ` - ${song.author.name}`}
 							{userId && (
-								<CollectionItemIcons>
+								<CollectionItemIcons withCheck={checking}>
 									{!!song?.level?.general && (
 										<LevelIcon withCheck={checking}>
 											<i className="material-icons">favorite_border</i>

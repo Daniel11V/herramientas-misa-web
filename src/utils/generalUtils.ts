@@ -78,7 +78,7 @@ export const objsAreEqual = (
 	return true;
 };
 
-export const getRating = (rates: TRate[] = []): number => {
+export const getRating = (rates: TRate[] | undefined = []): number => {
 	let sumatory = 0;
 	rates.forEach((rate) => {
 		sumatory += rate.userRate;

@@ -9,7 +9,7 @@ import { Header } from "../../styles/styles.js";
 const RepertoryPage = () => {
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const { repertory, loading, error } = useRepertoryPage(id);
+	const { repertory, loading, error, songSections } = useRepertoryPage(id);
 
 	// const [tone, setTone] = useState(null);
 	// const [currentChords, setCurrentChords] = useState({});
@@ -48,7 +48,7 @@ const RepertoryPage = () => {
 			<Header>
 				<h4>{repertory.title}</h4>
 			</Header>
-			{repertory?.songSections?.map(({ name, songs }) => (
+			{songSections?.map(({ name, songs }) => (
 				<div key={name}>
 					<h6>{name}</h6>
 					<SongCollection

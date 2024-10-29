@@ -3,19 +3,32 @@ import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import ChordSelector from "./ChordSelector";
 import { useFormattedLyric } from "../hooks/useFormattedLyric";
-import SongFormLyric from "./SongFormLyric";
+import { SongFormLyric } from "./SongFormLyric";
+import { TsetFunc } from "../../../utils/types";
+import { TChord, TChordLang } from "../types";
 
-const LyricWithChords = ({
-	lyricWithChords = "",
-	setLyricWithChords,
-	setLyricWithChordsEN,
-	userTone,
-	setUserTone = () => {},
-	userChordLang,
-	showChords = true,
-	isEditable = false,
-	onlyInputText = false,
+const LyricWithChords = (p: {
+	lyricWithChords?: string,
+	setLyricWithChords: TsetFunc<string>,
+	setLyricWithChordsEN: TsetFunc<string>,
+	userTone: string,
+	setUserTone?: TsetFunc<string>,
+	userChordLang: TChordLang,
+	showChords?: boolean,
+	isEditable?: boolean,
+	onlyInputText?: boolean,
 }) => {
+	const {
+		lyricWithChords = "",
+		setLyricWithChords,
+		setLyricWithChordsEN,
+		userTone,
+		setUserTone = () => {},
+		userChordLang,
+		showChords = true,
+		isEditable = false,
+		onlyInputText = false,
+	} = p;
 	const {
 		arrayLyric,
 		chords,
@@ -53,7 +66,7 @@ const LyricWithChords = ({
 		};
 	}, []);
 
-	const editSelectedChord = (newSelectedChord, alreadyHasChord) => {
+	const editSelectedChord = (newSelectedChord: TChord, alreadyHasChord: boolean) => {
 		console.log("ACA 2", { newSelectedChord, alreadyHasChord });
 		if (!!alreadyHasChord) {
 			addChord(selectedLetter, newSelectedChord);
@@ -71,10 +84,10 @@ const LyricWithChords = ({
 		// setSelectedLetter([null, null]);
 	};
 
-	const isLetterSelected = (i, k) =>
+	const isLetterSelected = (i: number, k: number) =>
 		selectedLetter[0] === i && selectedLetter[1] === k;
 
-	const hasChord = (i, k) =>
+	const hasChord = (i: number, k: number) =>
 		showChords && !!chords?.[i] && (k >= 0 ? !!chords[i][k]?.chord : true);
 
 	const handleLetterClick = (i, k, event: React.MouseEvent): void => {
@@ -316,7 +329,7 @@ const Word = styled.div`
 	white-space: nowrap;
 `;
 
-const Letter = styled.div`
+const Letter = styled.div<{ hasChord: boolean; isEditable: boolean }>`
 	display: inline-block;
 	position: relative;
 	margin-left: 1px;

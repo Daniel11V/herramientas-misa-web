@@ -133,7 +133,7 @@ export const useRepertoryListPage = () => {
 
 	useEffect(() => {
 		if (status.step === steps.WITH_REPERTORY_LIST_1) {
-			setCurrentRepertoryList(repertoryList);
+			setCurrentRepertoryList(Object.values(repertoryList));
 			setStatus(steps.FINISHED);
 		}
 	}, [status, repertoryList]);

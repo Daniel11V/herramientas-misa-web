@@ -6,30 +6,42 @@ import {
 	translateChords,
 	transposeChords,
 } from "../../../utils/lyricsAndChordsUtils";
+import { TsetFunc } from "../../../utils/types";
+import { TChordInLyric, TChordLang } from "../types";
 
-export const useFormattedLyric = ({
-	lyricWithChords,
-	setLyricWithChords,
-	setLyricWithChordsEN,
-	userTone,
-	setUserTone,
-	userChordLang,
-	onlyInputText,
-	isEditable,
+export const useFormattedLyric = (p: {
+	lyricWithChords?: string,
+	setLyricWithChords: TsetFunc<string>,
+	setLyricWithChordsEN: TsetFunc<string>,
+	userTone: string,
+	setUserTone: TsetFunc<string>,
+	userChordLang: TChordLang,
+	isEditable: boolean,
+	onlyInputText: boolean,
 }) => {
+	const {
+		lyricWithChords,
+		setLyricWithChords,
+		setLyricWithChordsEN,
+		userTone,
+		setUserTone,
+		userChordLang,
+		onlyInputText,
+		isEditable,
+	} = p;
 	// const [isLoadingLyric, setIsLoading] = useState(false);
 	// const [errorLyric, setError] = useState(false);
 
 	const [lastChordLang, setLastChordLang] = useState(null);
 
-	const [chords, setChords] = useState({});
+	const [chords, setChords] = useState<TChordInLyric>({});
 	const [tone, setTone] = useState(null);
 	const [chordLang, setChordLang] = useState(null);
 	const [arrayLyric, setArrayLyric] = useState([]);
 	const [onlyLyric, setOnlyLyric] = useState("");
 
 	const saveLyricWithChords = useCallback(
-		(lyricToSave, newOnlyLyric = null, newChords = null) => {
+		(lyricToSave: string, newOnlyLyric: string|null = null, newChords = null) => {
 			if (setLyricWithChords) {
 				setLyricWithChords(
 					lyricToSave ||

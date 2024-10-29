@@ -129,7 +129,7 @@ const AuthorPhotoField = styled.div.attrs({
 	}
 `;
 
-const AuthorPhotoUrl = styled.div`
+const AuthorPhotoUrl = styled.div<{ src: string }>`
 	padding: 0 !important;
 	width: 50px !important;
 	height: 50px !important;

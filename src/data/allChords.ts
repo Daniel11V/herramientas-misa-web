@@ -1,3 +1,7 @@
+// import { TChordLang } from "../pages/songs/types";
+
+// type TAllChords = Record<TChordLang, {name: string; chords: string[];}[]>;
+
 const allChords = {
     es: [
         {
@@ -250,9 +254,122 @@ const allChords = {
             ]
         }
     ]
-};
+} as const;
+
+// type TAllChordsOptions = {
+//     [key: string]: Record<string, {label: string, value: string}[]>
+// }
 
 export const allChordsOptions = {
+    es: [
+        {
+            type: "Mayores",
+            options: [
+                { label: "DO", value: "DO" },
+                { label: "DO#", value: "DO#" },
+                { label: "RE", value: "RE" },
+                { label: "RE#", value: "RE#" },
+                { label: "MI", value: "MI" },
+                { label: "FA", value: "FA" },
+                { label: "FA#", value: "FA#" },
+                { label: "SOL", value: "SOL" },
+                { label: "SOL#", value: "SOL#" },
+                { label: "LA", value: "LA" },
+                { label: "LA#", value: "LA#" },
+                { label: "SI", value: "SI" },
+            ]
+        },
+        {
+            type: "Menores",
+            options: [
+                { label: "DOm", value: "DOm" },
+                { label: "DO#m", value: "DO#m" },
+                { label: "REm", value: "REm" },
+                { label: "RE#m", value: "RE#m" },
+                { label: "MIm", value: "MIm" },
+                { label: "FAm", value: "FAm" },
+                { label: "FA#m", value: "FA#m" },
+                { label: "SOLm", value: "SOLm" },
+                { label: "SOL#m", value: "SOL#m" },
+                { label: "LAm", value: "LAm" },
+                { label: "LA#m", value: "LA#m" },
+                { label: "SIm", value: "SIm" },
+            ]
+        },
+        {
+            type: "Septimas",
+            options: [
+                { label: "DO7", value: "DO7" },
+                { label: "DO#7", value: "DO#7" },
+                { label: "RE7", value: "RE7" },
+                { label: "RE#7", value: "RE#7" },
+                { label: "MI7", value: "MI7" },
+                { label: "FA7", value: "FA7" },
+                { label: "FA#7", value: "FA#7" },
+                { label: "SOL7", value: "SOL7" },
+                { label: "SOL#7", value: "SOL#7" },
+                { label: "LA7", value: "LA7" },
+                { label: "LA#7", value: "LA#7" },
+                { label: "SI7", value: "SI7" },
+            ]
+        },
+        {
+            type: "Menores Septimas",
+            options: [
+                { label: "DOm7", value: "DOm7" },
+                { label: "DO#m7", value: "DO#m7" },
+                { label: "REm7", value: "REm7" },
+                { label: "RE#m7", value: "RE#m7" },
+                { label: "MIm7", value: "MIm7" },
+                { label: "FAm7", value: "FAm7" },
+                { label: "FA#m7", value: "FA#m7" },
+                { label: "SOLm7", value: "SOLm7" },
+                { label: "SOL#m7", value: "SOL#m7" },
+                { label: "LAm7", value: "LAm7" },
+                { label: "LA#m7", value: "LA#m7" },
+                { label: "SIm7", value: "SIm7" },
+            ]
+        },
+        {
+            type: "Mayores Septimas",
+            options: [
+                { label: "DOmaj7", value: "DOmaj7" },
+                { label: "DO#maj7", value: "DO#maj7" },
+                { label: "REmaj7", value: "REmaj7" },
+                { label: "RE#maj7", value: "RE#maj7" },
+                { label: "MImaj7", value: "MImaj7" },
+                { label: "FAmaj7", value: "FAmaj7" },
+                { label: "FA#maj7", value: "FA#maj7" },
+                { label: "SOLmaj7", value: "SOLmaj7" },
+                { label: "SOL#maj7", value: "SOL#maj7" },
+                { label: "LAmaj7", value: "LAmaj7" },
+                { label: "LA#maj7", value: "LA#maj7" },
+                { label: "SImaj7", value: "SImaj7" },
+            ]
+        },
+    ],
+    en: [
+        {
+            type: "Mayor",
+            options: [
+                { label: "C", value: "C" },
+                { label: "C#", value: "C#" },
+                { label: "D", value: "D" },
+                { label: "D#", value: "D#" },
+                { label: "E", value: "E" },
+                { label: "F", value: "F" },
+                { label: "F#", value: "F#" },
+                { label: "G", value: "G" },
+                { label: "G#", value: "G#" },
+                { label: "A", value: "A" },
+                { label: "A#", value: "A#" },
+                { label: "B", value: "B" },
+            ]
+        },   
+    ]
+};
+
+export const allChordsOptions2 = {
     es: {
         "Mayores": [
             { label: "DO", value: "DO" },
@@ -481,7 +598,7 @@ export const allChordsOptions = {
             { label: "Bmaj9", value: "Bmaj9" },
         ]
     }
-};
+} as const;
 
 export const replaceBemols = {
     es: {
@@ -498,7 +615,7 @@ export const replaceBemols = {
         "AB": "G#",
         "BB": "A#",
     }
-}
+} as const;
 
 export const chordToES = {
     "C": "DO",
@@ -597,7 +714,7 @@ export const chordToES = {
     "Amaj9": "LAmaj9",
     "A#maj9": "LA#maj9",
     "Bmaj9": "SImaj9",
-}
+} as const
 
 export const chordToEN = {
     "DO": "C",
@@ -696,7 +813,7 @@ export const chordToEN = {
     "LAmaj9": "Amaj9",
     "LA#maj9": "A#maj9",
     "SImaj9": "Bmaj9",
-}
+} as const
 
 export const allChordsArrayEN = [
     "BMAJ9",
@@ -795,7 +912,7 @@ export const allChordsArrayEN = [
     "D",
     "C#",
     "C"
-]
+] as const
 
 export const allChordsArrayES = [
     "SIMAJ9",
@@ -894,6 +1011,6 @@ export const allChordsArrayES = [
     "RE",
     "DO#",
     "DO"
-]
+] as const
 
 export default allChords;

@@ -79,7 +79,7 @@ export const CollectionItemLyric = styled.div`
 	padding-top: 4px;
 `;
 
-export const CollectionItemIcons = styled.div`
+export const CollectionItemIcons = styled.div<{ withCheck: boolean }>`
 	margin-top: 2px;
 	display: flex;
 
