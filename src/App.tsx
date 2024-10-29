@@ -9,7 +9,7 @@ import { SongPage } from "./pages/songs/SongPage.js";
 
 import RepertoryPage from "./pages/repertories/RepertoryPage";
 import RepertoryListPage from "./pages/repertories/RepertoryListPage";
-import RepertoryFormPage from "./pages/repertories/RepertoryFormPage";
+// import RepertoryFormPage from "./pages/repertories/RepertoryFormPage";
 
 import Library from "./pages/library/Library";
 
@@ -28,18 +28,20 @@ const App = () => {
 			{/* NAVIGATION */}
 			<Routes>
 				<Route path="/song">
-					<Navigation inSong={true} />
+					<Navigation />
+					{/* inSong={true} */}
 				</Route>
 				<Route>
-					<Navigation inSong={false} />
+					<Navigation />
+					{/* inSong={false} */}
 				</Route>
 			</Routes>
 
 			<div className="container">
 				<Routes>
 					<Route path="/" element={<Navigate replace to="/songs" />} />
-					<Route path="/songs" element={SongListPage} />
-					<Route path="/song/:id" element={SongPage} />
+					<Route path="/songs" element={<SongListPage />} />
+					<Route path="/song/:id" element={<SongPage />} />
 					<Route
 						path="/library"
 						element={isLogged ? <Library /> : <Navigate replace to="/songs" />}
@@ -48,9 +50,9 @@ const App = () => {
 						{isLogged ? <SongFormPage /> : <Redirect to="/songs" />}
 					</Route> */}
 					{/* <Route path="/suggestion" element={Suggestion} /> */}
-					<Route path="/repertories" element={RepertoryListPage} />
-					<Route path="/repertory/:id" element={RepertoryPage} />
-					<Route path="/create-repertory" element={RepertoryFormPage} />
+					<Route path="/repertories" element={<RepertoryListPage />} />
+					<Route path="/repertory/:id" element={<RepertoryPage />} />
+					{/* <Route path="/create-repertory" element={RepertoryFormPage} /> */}
 					<Route>
 						<h3>Error 404 - No se encontro la página</h3>
 					</Route>

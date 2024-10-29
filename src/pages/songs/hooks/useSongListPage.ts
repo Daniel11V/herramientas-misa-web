@@ -10,6 +10,7 @@ import { FETCH_STATUS, SECURITY_STATUS } from "../../../utils/types";
 import { arrayIsEmpty, getRating } from "../../../utils/generalUtils";
 import { useAppSelector } from "../../../store";
 import { useDispatch } from "react-redux";
+import { TSong } from "../../../classes/song/types";
 
 export const useSongListPage = () => {
 	const dispatch = useDispatch();
@@ -42,12 +43,12 @@ export const useSongListPage = () => {
 		step: steps.INITIAL,
 		opts: {},
 	});
-	const [retrys, setRetrys] = useState(0);
-	const [currentSongList, setCurrentSongList] = useState([]);
+	const [retrys, setRetrys] = useState<number>(0);
+	const [currentSongList, setCurrentSongList] = useState<TSong[]>([]);
 
-	const [finalSongList, setFinalSongList] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState(false);
+	const [finalSongList, setFinalSongList] = useState<TSong[]>([]);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [error, setError] = useState<string | null>(null);
 
 	const setStatus = (statusStep: TStep, statusOpts = {}) => {
 		setIsLoading(true);

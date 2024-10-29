@@ -98,7 +98,7 @@ export const setSongStatus = (songStatus: TSecurityStatus) => ({
 // Thunks
 
 export const getSongList = (p: {
-	userId: TUserId;
+	userId?: TUserId;
 	onlyAddPrivates?: boolean;
 }) => {
 	const { userId, onlyAddPrivates = false } = p;
@@ -115,9 +115,11 @@ export const getSongList = (p: {
 			} else {
 				publicSongTitleList = await getPublicSongTitleListDB();
 			}
-			const userPrivateSongTitleList = await getPrivateSongTitleListDB({
-				userId,
-			});
+			const userPrivateSongTitleList = userId
+				? await getPrivateSongTitleListDB({
+						userId,
+				  })
+				: {};
 
 			const songList = {
 				...(publicSongTitleList || {}),
