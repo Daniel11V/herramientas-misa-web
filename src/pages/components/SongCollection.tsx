@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { FC, MouseEvent, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CollectionSearcher } from "./CollectionSearcher.js";
 import {
@@ -11,11 +11,12 @@ import {
 	LevelIcon,
 	CollectionItemLyric,
 } from "../../styles/styles.js";
-import { TSong, TSongId } from "../../classes/song/types.js";
+import { TSong, TSongId } from "../../classes/song/types.d";
 import { arrayIsEmpty } from "../../utils/generalUtils.js";
-import { useAppSelector } from "../../store.js";
+import { useSelector } from "react-redux";
+import { TRootState } from "../../store.js";
 
-const SongCollection: React.FC<{
+const SongCollection: FC<{
 	songList?: TSong[];
 	loading?: boolean;
 	error?: string | null;
@@ -32,7 +33,7 @@ const SongCollection: React.FC<{
 	checking = false,
 	pageName = "Cancionero",
 }) => {
-	const userId = useAppSelector((state) => state.user.google.id);
+	const userId = useSelector((state: TRootState) => state.user.google.id);
 	const navigate = useNavigate();
 
 	const [songChoose, setSongChoose] = useState<TSongId | null>(null);
@@ -45,83 +46,90 @@ const SongCollection: React.FC<{
 
 	const containerContentRef = useRef<HTMLDivElement | null>(null);
 
-	useEffect(() => {
-		if (!!songList.length) {
-			let newFilteredSongList = [...songList];
-			if (!!searchInput && !!searcher) {
-				newFilteredSongList = newFilteredSongList.filter((song) =>
-					song.title.toUpperCase().includes(searchInput.toUpperCase())
-				);
-			}
-			setFilteredSongList(newFilteredSongList);
-		}
-	}, [songList, searcher, searchInput]);
+	// useEffect(() => {
+	// 	if (!songList.length) return
+		
+	// 	let newFilteredSongList = [...songList];
+	// 	if (!!searchInput && !!searcher) {
+	// 		newFilteredSongList = newFilteredSongList.filter((song) =>
+	// 			(song.title + " " + song.lyricStart).toUpperCase().includes(searchInput.toUpperCase())
+	// 		);
+	// 	}
+	// 	setFilteredSongList(newFilteredSongList);
+	// }, [songList, searcher, searchInput]);
 
 	useEffect(() => {
-		if (!!containerContentRef.current && !!songList.length) {
-			const lyricStartMaxWidth = containerContentRef?.current?.offsetWidth - 90;
+		if (!containerContentRef.current || !songList.length) return
+		
+		const lyricStartMaxWidth = containerContentRef?.current?.offsetWidth - 90;
+		if (!lyricStartMaxWidth) return
+		
+		const canvasContext = document.createElement("canvas").getContext("2d");
+		if (!canvasContext) return
+				
+		canvasContext.font = "12px Arial";
 
-			if (lyricStartMaxWidth) {
-				const canvasContext = document.createElement("canvas").getContext("2d");
-				if (canvasContext) {
-					canvasContext.font = "12px Arial";
+		setLirycStartList(
+			songList.reduce((prev, song) => {
+				if (!song.lyricStart) return prev;
 
-					setLirycStartList(
-						songList.reduce((prev, song) => {
-							if (!song.lyricStart) return prev;
-
-							let newLyricStart = song.lyricStart;
-							while (
-								canvasContext.measureText(newLyricStart).width >
-								lyricStartMaxWidth
-							) {
-								newLyricStart = newLyricStart.split(" ").slice(0, -1).join(" ");
-							}
-
-							if (newLyricStart?.[newLyricStart?.length - 1] === ",")
-								newLyricStart = newLyricStart?.slice(0, -1);
-
-							return { ...prev, [song.id]: "| " + newLyricStart + "..." };
-						}, {})
-					);
+				let newLyricStart = song.lyricStart;
+				while (
+					canvasContext.measureText(newLyricStart).width >
+					lyricStartMaxWidth
+				) {
+					newLyricStart = newLyricStart.split(" ").slice(0, -1).join(" ");
 				}
-			}
-		}
+
+				if (newLyricStart?.[newLyricStart?.length - 1] === ",")
+					newLyricStart = newLyricStart?.slice(0, -1);
+
+				return { ...prev, [song.id]: "| " + newLyricStart + "..." };
+			}, {})
+		);
 	}, [containerContentRef, songList]);
 
-	// useEffect(() => {
-	// 	if (allSongDetails) {
-	// 		// Filter
-	// 		let startsTitle = [];
-	// 		let includesTitle = [];
-	// 		let includesLyric = [];
-	// 		if (songChoose) {
-	// 			startsTitle.push(allSongDetails.find((song) => song.id === songChoose));
-	// 			// filterById(songChoose)
-	// 		} else {
-	// 			allSongDetails.forEach((song) => {
-	// 				if (labels.every((elem) => song.labels.includes(elem))) {
-	// 					if (
-	// 						search === "" ||
-	// 						song.title.toLowerCase().startsWith(search.toLowerCase())
-	// 					) {
-	// 						startsTitle.push(song);
-	// 					} else if (
-	// 						song.title.toLowerCase().includes(search.toLowerCase())
-	// 					) {
-	// 						includesTitle.push(song);
-	// 					} else if (
-	// 						song.lyric.toLowerCase().includes(search.toLowerCase())
-	// 					) {
-	// 						includesLyric.push(song);
-	// 					}
-	// 				}
-	// 			});
-	// 		}
+	useEffect(() => {
+		if (!songList.length) return
+		
+		if (songChoose) {
+			const songChoosed: TSong | undefined = songList.find((song) => song.id === songChoose)
+			if (songChoosed) setFilteredSongList([songChoosed]);
+			return
+		} 
+		
+		// Search Filter
+		let startsTitle: TSong[] = [];
+		let includesTitle: TSong[] = [];
+		let includesStartLyric: TSong[] = [];
+		let includesLyric: TSong[] = [];
+		
+		songList.forEach((song) => {
+			// Label Filter
+			if (!labels.every((elem) => song.labels.includes(elem))) return
+			
+			if (
+				searchInput === "" ||
+				song.title.toLowerCase().startsWith(searchInput.toLowerCase())
+			) {
+				startsTitle.push(song);
+			} else if (
+				song.title.toLowerCase().includes(searchInput.toLowerCase())
+			) {
+				includesTitle.push(song);
+			} else if (
+				song.lyricStart?.toLowerCase?.()?.includes?.(searchInput.toLowerCase())
+			) {
+				includesStartLyric.push(song);
+			} else if (
+				song.lyric?.toLowerCase?.()?.includes?.(searchInput.toLowerCase())
+			) {
+				includesLyric.push(song);
+			}
+		});
 
-	// 		setFilteredSongs([...startsTitle, ...includesTitle, ...includesLyric]);
-	// 	}
-	// }, [allSongDetails, search, labels, songChoose]);
+		setFilteredSongList([...startsTitle, ...includesTitle, ...includesStartLyric, ...includesLyric]);
+	}, [songList, searchInput, labels, songChoose]);
 
 	const handleClickSearchLyric = () => {};
 
@@ -131,7 +139,7 @@ const SongCollection: React.FC<{
 		});
 	};
 
-	const handleCheck = (e: React.MouseEvent, songId: TSongId) => {
+	const handleCheck = (e: MouseEvent, songId: TSongId) => {
 		e.preventDefault();
 		e.stopPropagation();
 
@@ -197,21 +205,21 @@ const SongCollection: React.FC<{
 			))} */}
 			<CollectionContent ref={containerContentRef}>
 				{arrayIsEmpty(filteredSongList) && (
-					<CollectionItem withCheck={false}>Sin canciones.</CollectionItem>
+					<CollectionItem $withCheck={false}>Sin canciones.</CollectionItem>
 				)}
 				{filteredSongList.map((song) => (
 					<CollectionItem
 						key={song.id}
 						onClick={() => handleClickSong(song.id)}
-						withCheck={checking}
+						$withCheck={checking}
 					>
 						<CollectionItemDescription>
 							{song.title}
 							{song?.author?.name && ` - ${song.author.name}`}
 							{userId && (
-								<CollectionItemIcons withCheck={checking}>
+								<CollectionItemIcons $withCheck={checking}>
 									{!!song?.level?.general && (
-										<LevelIcon withCheck={checking}>
+										<LevelIcon $withCheck={checking}>
 											<i className="material-icons">favorite_border</i>
 											<span>
 												{song?.level?.general
@@ -221,7 +229,7 @@ const SongCollection: React.FC<{
 										</LevelIcon>
 									)}
 									{song?.creator?.id === userId && (
-										<PrivacyIcon withCheck={checking}>
+										<PrivacyIcon $withCheck={checking}>
 											<i className="material-icons">
 												{!!song?.isPrivate ? "lock" : "public"}
 											</i>

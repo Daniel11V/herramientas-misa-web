@@ -2,10 +2,12 @@ import { useState, useEffect, useCallback } from "react";
 import M from "materialize-css";
 import { useSong } from "../../../classes/song/useSong";
 import { getAuthorList } from "../../../classes/author/actions";
-import { setSongPageBackup } from "../../../classes/page/actions";
 import { saveSongOptions } from "../../../classes/song/actions";
-import { useAppSelector } from "../../../store";
-import { useDispatch } from "react-redux";
+import { TChordString } from "../types.d";
+import { TSong, TSongLevel } from "../../../classes/song/types.d";
+import { TRootState, useAppDispatch } from "../../../store";
+import { useSelector } from "react-redux";
+import { setSongPageBackup } from "../../../classes/page/reducers";
 
 const emptySong = {
 	id: "", // Required
@@ -27,46 +29,46 @@ const emptySong = {
 		general: 0, // Required
 	},
 	annotations: "",
-	tone: "",
+	tone: undefined,
 	pulse: "",
 	tempo: "",
 	lyric: "",
 };
 
 export const useSongPage = (songTitleId: string | undefined) => {
-	const dispatch = useDispatch();
-	const userId = useAppSelector((state) => state.user.google.id);
-	const { authorList } = useAppSelector((state) => state.author);
+	const dispatch = useAppDispatch();
+	const userId = useSelector((state: TRootState) => state.user.google.id);
+	const authorList = useSelector((state: TRootState) => state.author.authorList);
 	const { song, isLoadingFetchSong, isLoadingEditSong, errorSong, editSong } = useSong({
 		songTitleId,
 		userId,
 	});
-	const [currentSong, setCurrentSong] = useState(emptySong);
+	const [currentSong, setCurrentSong] = useState<TSong>(emptySong);
 
 	const [isNewSong, setIsNewSong] = useState(false);
 	const [songEdited, setSongEdited] = useState(false);
 	const [areNewSongOptions, setAreNewSongOptions] = useState(false);
 
-	const [tone, setCurrentTone] = useState(null); // Aca siempre en Cifrado Americano
+	const [tone, setCurrentTone] = useState<null|TChordString>(null); // Aca siempre en Cifrado Americano
 	const [annotations, setCurrentAnnotations] = useState("");
-	const [level, setCurrentLevel] = useState({ general: null });
+	const [level, setCurrentLevel] = useState<TSongLevel>({ general: 0 });
 
 	const [savingSongEdit, setSavingSongEdit] = useState(false);
 
 	const setAnnotationsBackup = () => {
-		dispatch(setSongPageBackup({ annotations }));
+		dispatch(setSongPageBackup({songPageBackup: { annotations }}));
 	};
 
-	const setTone = (newTone) => {
+	const setTone = (newTone?: TChordString) => {
 		if (newTone) {
 			setCurrentTone(newTone);
-			dispatch(setSongPageBackup({ tone: newTone }));
+			dispatch(setSongPageBackup({songPageBackup: { tone: newTone }}));
 		}
 	};
-	const setLevel = (category, newCatLevel) => {
-		const newLevel = { ...level, [category]: newCatLevel };
+	const setLevel = (category: string, newCatLevel: number) => {
+		const newLevel: TSongLevel = { ...level, [category]: newCatLevel };
 		setCurrentLevel(newLevel);
-		dispatch(setSongPageBackup({ level: newLevel }));
+		dispatch(setSongPageBackup({songPageBackup:{ level: newLevel }}));
 	};
 
 	useEffect(
@@ -77,26 +79,22 @@ export const useSongPage = (songTitleId: string | undefined) => {
 	);
 
 	const handleClickSaveSong = () => {
-		console.log("ACA save", {
-			...songForm,
-			author: {
-				name: songForm.author.name,
-				id:
-					authorList?.find(
-						(authorSearch) => authorSearch.name === songForm.author.name
-					)?.id || new Date().getTime(),
-			},
-		});
+		// console.log("ACA save", {
+		// 	...songForm,
+		// 	author: {
+		// 		name: songForm.author.name,
+		// 		id:
+		// 			authorList?.find?.(
+		// 				(authorSearch) => authorSearch.name === songForm.author.name
+		// 			)?.id || new Date().getTime(),
+		// 	},
+		// });
+		const hasAuthor = !!songForm.author?.name
 		editSong({
-			songEdited: {
-				...songForm,
-				author: {
-					name: songForm.author.name,
-					id:
-						authorList?.find(
-							(authorSearch) => authorSearch.name === songForm.author.name
-						)?.id || new Date().getTime(),
-				},
+			...songForm,
+			author: !hasAuthor ? undefined : {
+				name: songForm.author!.name,
+				id: songForm.author?.id || `${new Date().getTime()}`,
 			},
 		});
 		setSavingSongEdit(true);
@@ -115,7 +113,7 @@ export const useSongPage = (songTitleId: string | undefined) => {
 	const [authorInstance, setAuthorInstance] = useState<M.Autocomplete | null>(
 		null
 	);
-	const [songForm, setSongForm] = useState(emptySong);
+	const [songForm, setSongForm] = useState<Partial<TSong>>(emptySong);
 
 	useEffect(() => {
 		if (!editingSong && !!song?.title && !currentSong?.title)
@@ -124,9 +122,9 @@ export const useSongPage = (songTitleId: string | undefined) => {
 			setSongForm({ ...song });
 	}, [editingSong, song, currentSong, songForm]);
 
-	const editForm = useCallback((key, value) => {
+	const editForm = useCallback((key: string, value: any) => {
 		if (key === "author") {
-			setSongForm((v) => ({ ...v, [key]: { name: value, id: null } }));
+			setSongForm((v) => ({ ...v, [key]: { name: value, id: '' } }));
 		} else {
 			setSongForm((v) => ({ ...v, [key]: value }));
 		}
@@ -151,14 +149,14 @@ export const useSongPage = (songTitleId: string | undefined) => {
 						limit: 20,
 				  });
 			setAuthorInstance(autocompleteInst);
-			dispatch(getAuthorList({ userId }));
+			dispatch(getAuthorList())
 		}
 	}, [editingSong, authorInstance, songForm, dispatch, userId, editForm]);
 
 	useEffect(() => {
 		if (authorList?.length && !!authorInstance) {
 			authorInstance.updateData(
-				authorList.reduce(
+				Object.values(authorList || {}).reduce(
 					(allAuthors, author) => ({ ...allAuthors, [author?.name]: null }),
 					{}
 				)
@@ -169,10 +167,10 @@ export const useSongPage = (songTitleId: string | undefined) => {
 	const toogleEditBtn = () => {
 		if (!editingSong) {
 			editForm("annotations", annotations);
-			editForm("tone", tone);
+			editForm("tone", tone || '');
 		} else {
-			setCurrentAnnotations(songForm.annotations);
-			setAnnotationsBackup(songForm.annotations);
+			setCurrentAnnotations(songForm.annotations ?? '');
+			setAnnotationsBackup();
 			setTone(songForm.tone); // Me falta cambiarle a "en", realizarlo en el form
 			if (isNewSong) {
 			}

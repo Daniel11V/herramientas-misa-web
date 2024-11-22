@@ -1,8 +1,7 @@
-import { GoogleLogin, GoogleLogout } from "react-google-login";
 import styled from "styled-components";
-import { login, logout, setUserLoading } from "../../classes/user/actions";
-import { TUserGoogle } from "../../classes/user/types";
-import { useDispatch } from "react-redux";
+import { TUserGoogle } from "../../classes/user/types.d";
+import useLogin from '../hooks/useLogin';
+
 
 const LoginLogoutBtn = (p: {
 	children?: any;
@@ -10,69 +9,47 @@ const LoginLogoutBtn = (p: {
 	update?: (userData: TUserGoogle) => void;
 }) => {
 	const { children = null, isLogged = false, update = () => {} } = p;
-	const dispatch = useDispatch();
-
-	const loginResponse = (response: any) => {
-		if (response.googleId) {
-			const newUserDate: TUserGoogle = {
-				id: response.profileObj.googleId,
-				name: response.profileObj.name,
-				email: response.profileObj.email,
-				imageUrl: response.profileObj.imageUrl,
-				accessToken: response.accessToken,
-			};
-			dispatch(login(newUserDate));
-			update(newUserDate);
-		} else {
-			dispatch(setUserLoading(false));
-		}
-	};
-
-	const logoutResponse = () => {
-		dispatch(logout());
-	};
+	
+	const { handleLogin, handleLogout } = useLogin({update})
 
 	if (children) {
 		return (
-			<GoogleLogin
-				clientId="270166148168-cu4pvav4r2s5pps6b8t8chqdratnklgs.apps.googleusercontent.com"
-				buttonText="Iniciar Sesion"
-				onSuccess={loginResponse}
-				onFailure={loginResponse}
-				cookiePolicy={"single_host_origin"}
-				// Arreglar Type
-				render={(renderProps) => (
-					// <div onClick={renderProps.onClick} disabled={renderProps.disabled}>
-					<div onClick={renderProps.disabled ? () => {} : renderProps.onClick}>
-						{children}
-					</div>
-				)}
-			/>
+			<div onClick={() => handleLogin()}>
+				{children}
+			</div>
+			// <GoogleLogin
+			// 	// buttonText="Iniciar Sesion"
+			// 	onSuccess={loginResponse}
+			// 	onError={loginResponse}
+			// 	cookiePolicy={"single_host_origin"}
+			// 	// Arreglar Type
+			// 	render={(renderProps) => (
+			// 		// <div onClick={renderProps.onClick} disabled={renderProps.disabled}>
+					
+			// 	)}
+			// />
 		);
 	} else if (isLogged) {
 		return (
 			<GoogleLogoutStyled
-				clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-				buttonText="Cerrar Sesión"
-				onLogoutSuccess={logoutResponse}
+				// buttonText="Cerrar Sesión"
+				onClick={() => handleLogout()}
 				className="googleLogout"
 			/>
 		);
 	} else {
 		return (
-			<GoogleLogin
-				clientId="270166148168-cu4pvav4r2s5pps6b8t8chqdratnklgs.apps.googleusercontent.com"
-				buttonText="Iniciar Sesion"
-				onSuccess={loginResponse}
-				onFailure={loginResponse}
-				cookiePolicy={"single_host_origin"}
-				isSignedIn={true}
+			<button
+				// buttonText="Iniciar Sesion"
+				// cookiePolicy={"single_host_origin"}
+				onClick={() => handleLogin()}
+				// isSignedIn={true}
 				className="googleLogin"
 			/>
 		);
 	}
 };
-const GoogleLogoutStyled = styled(GoogleLogout)`
+const GoogleLogoutStyled = styled.div`
 	border-radius: 4px !important;
 	/* margin-top: 15px !important; */
 	display: flex;

@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, FC, MouseEvent } from "react";
 import styled, { css } from "styled-components";
 import { colors } from "../../styles/styleUtils";
-import { TsetFunc } from "../../utils/types";
+import { TsetFunc } from "../../utils/types.d";
 
-const BottomSheet: React.FC<{
+const BottomSheet: FC<{
 	children: any;
 	open: boolean;
 	setOpen: TsetFunc<boolean>;
@@ -62,7 +62,7 @@ const BottomSheet: React.FC<{
 		if (!fullscreen) updateTopValue();
 	}, [children, fullscreen]);
 
-	const handleClickActionButton = (event: React.MouseEvent): void => {
+	const handleClickActionButton = (event: MouseEvent): void => {
 		event?.stopPropagation();
 		setOpen((lv: boolean) => !lv);
 	};

@@ -1,37 +1,37 @@
 import { useEffect, useState } from "react";
-import { setSongPageBackupSong } from "../page/actions";
 import {
 	editSong as editSongAction,
 	getSong,
-	resetSongRequestStatus,
 } from "./actions";
-import { TSong, TSongForm, TSongId } from "./types";
+import { TSong, TSongForm, TSongId } from "./types.d";
 import { MAX_RETRYS } from "../../configs";
-import { useAppSelector } from "../../store";
-import { TUserId } from "../user/types";
-import { FETCH_STATUS, SECURITY_STATUS } from "../../utils/types";
+import { TUserId } from "../user/types.d";
+import { FETCH_STATUS, SECURITY_STATUS } from "../../utils/types.d";
 import { createTSong } from "./createTypes";
-import { useDispatch } from "react-redux";
+import { TRootState, useAppDispatch } from "../../store";
+import { useSelector } from "react-redux";
+import { setSongPageBackupSong } from "../page/reducers";
+import { resetSongRequestStatus } from "./reducers";
 
 interface IUseSong {
 	song?: TSong | null;
 	isLoadingFetchSong: boolean;
 	isLoadingEditSong: boolean;
 	errorSong: string;
-	editSong: (edittedSong: TSongForm) => void;
+	editSong: (edittedSong: Partial<TSong>) => void;
 }
 
 export const useSong = (p: {
-	songTitleId: TSongId;
-	userId: TUserId;
+	songTitleId: TSongId | undefined;
+	userId: TUserId | undefined;
 }): IUseSong => {
 	const { songTitleId, userId } = p;
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const { song, songStatus, songUserId, songRequestStatus, songError } =
-		useAppSelector((state) => state.song);
-	const songListBackup = useAppSelector(
-		(state) => state.page.songPageBackup.songList
+		useSelector((state: TRootState) => state.song);
+	const songListBackup = useSelector(
+		(state: TRootState) => state.page.songPageBackup.songList
 	);
 
 	type TStep = "INITIAL" | "FETCH_SONG_1" | "EDIT_SONG" | "FINISHED";
@@ -46,7 +46,7 @@ export const useSong = (p: {
 		opts: {
 			userId?: TUserId;
 			songTitleId?: TSongId;
-			edittedSong?: TSongForm;
+			edittedSong?: Partial<TSong>;
 		};
 	};
 	const [status, setCurrentSongListStatus] = useState<TStatus>({
@@ -79,10 +79,10 @@ export const useSong = (p: {
 		} else if (!userId && songStatus === SECURITY_STATUS.PRIVATE) {
 			setStatus(steps.FETCH_SONG_1, { songTitleId });
 		} else if (status.step === steps.INITIAL) {
-			if (!!songListBackup[songTitleId]) {
+			if (!!songTitleId && !!songListBackup?.[songTitleId]) {
 				const selectedSong = songListBackup[songTitleId];
 				setCurrentSong(selectedSong);
-				dispatch(setSongPageBackupSong(selectedSong));
+				dispatch(setSongPageBackupSong({song:selectedSong}));
 				setStatus(steps.FINISHED);
 			} else {
 				setStatus(steps.FETCH_SONG_1, { userId, songTitleId });
@@ -133,7 +133,7 @@ export const useSong = (p: {
 		}
 	}, [status]);
 
-	const editSong = (edittedSong: TSongForm) => {
+	const editSong = (edittedSong: Partial<TSong>) => {
 		setIsLoadingEditSong(true);
 		setStatus(steps.EDIT_SONG, { edittedSong });
 	};

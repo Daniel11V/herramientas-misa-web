@@ -5,7 +5,7 @@ import allChords, {
 	allChordsArrayES,
 	chordToEN,
 } from "../data/allChords.js";
-import { CHORD_LANGS, TChordInLyric, TChordLang, TChordString, TChordStringEN, TChordStringES } from "../pages/songs/types.js";
+import { CHORD_LANGS, TChordInLyric, TChordLang, TChordString, TChordStringEN, TChordStringES } from "../pages/songs/types.d";
 
 // Lyrics and Chords
 
@@ -25,8 +25,8 @@ export const getChordIndex = (chord: TChordString, chordLang: TChordLang = CHORD
 
 export const oldTranslateChord = (chord: TChordString, toLang: TChordLang, currentLang?: TChordLang) => {
 	if (currentLang === toLang) return chord;
-	if (!!chord && toLang === "es") return chordToES[chord as TChordStringEN];
-	const fromLang = toLang === "en" ? "es" : "en";
+	if (!!chord && toLang === CHORD_LANGS.ES) return chordToES[chord as TChordStringEN];
+	const fromLang = toLang === CHORD_LANGS.EN ? CHORD_LANGS.ES : CHORD_LANGS.EN;
 	for (let i = 0; i < allChords?.[fromLang]?.length; i++) {
 		const chordIndex = allChords[fromLang][i].chords.findIndex(
 			(bookedChord) => bookedChord.toUpperCase() === chord.toUpperCase()
@@ -36,12 +36,12 @@ export const oldTranslateChord = (chord: TChordString, toLang: TChordLang, curre
 	return chord;
 };
 
-export const translateChord = (chord: TChordString, toLang: TChordLang, currentLang?: TChordLang) => {
+export const translateChord = (chord: TChordString, toLang: TChordLang, currentLang?: TChordLang|null): TChordString => {
 	if (currentLang === toLang || !chord) return chord;
-	return toLang === "es" ? chordToES[chord as TChordStringEN] : chordToEN[chord as TChordStringES];
+	return toLang === CHORD_LANGS.ES ? chordToES[chord as TChordStringEN] : chordToEN[chord as TChordStringES];
 };
 
-export const translateChords = (chords: TChordInLyric, toLang: TChordLang, currentLang?: TChordLang) => {
+export const translateChords = (chords: TChordInLyric|undefined, toLang: TChordLang, currentLang?: TChordLang|null) => {
 	if (currentLang === toLang || !chords) return chords;
 
 	for (const line in chords) {
@@ -77,7 +77,7 @@ export const transposeChord = (initialChord: TChordString, toneDiference:number,
 	}
 };
 
-export const transposeChords = (chords: TChordInLyric, toTone: TChordString, fromTone: TChordString, chordLang: TChordLang) => {
+export const transposeChords = (chords?: TChordInLyric, toTone?: TChordString, fromTone?: TChordString, chordLang?: TChordLang): undefined|TChordInLyric => {
 	if (!chords || !toTone || !fromTone || !chordLang) return undefined;
 
 	const toneDiference = getToneDifference(toTone, fromTone);
@@ -98,20 +98,21 @@ export const transposeChords = (chords: TChordInLyric, toTone: TChordString, fro
 	return chords;
 };
 
-export const getFormattedLyric = (onlyLyric: string, chords: TChordInLyric) => {
+export const getFormattedLyric = (onlyLyric: string, chords?: TChordInLyric) => {
 	console.log("ACA getFormattedLyric", { onlyLyric, chords });
-	if (!onlyLyric) return onlyLyric;
+	if (!onlyLyric || !chords) return onlyLyric;
 
 	const formattedLyric = onlyLyric.split("\n").map((line) => line.split(""));
 	for (const lineIndex in chords) {
-		for (const charIndex of Object.keys(chords[lineIndex]).reverse()) {
+		const charIndexes: string[] = Object.keys(chords[lineIndex]).reverse()
+		for (const charIndex of charIndexes) {
 			const charIndexN = Number(charIndex)
 			const chordDuration = chords[lineIndex][charIndexN]?.duration
 				? chords[lineIndex][charIndexN]?.duration + "|"
 				: "";
 			const chordString = `[${chordDuration}${chords[lineIndex][charIndexN].chord}]`;
 
-			formattedLyric[lineIndex].splice(charIndexN, 0, chordString);
+			formattedLyric[Number(lineIndex)].splice(charIndexN, 0, chordString);
 		}
 	}
 	console.log("ACA getFormattedLyric2", {
@@ -156,20 +157,20 @@ export const getDataFromRandomLyric = (randomLyric: string) => {
 	let finalLineIndex = -1;
 	songLines.forEach((currentLine) => {
 		finalLineIndex++;
-		let line = (" " + currentLine + " ").replaceAll("\t", " ").toUpperCase();
-		if (line.replaceAll(" ", "") === "") return emptyReturn;
+		let line = ` ${currentLine} `.replace(/\t/g, " ").toUpperCase();
+		if (line.replace(/ /g, "") === "") return emptyReturn;
 
 		// Quita los acordes para ver si es una linea solo de acordes, y obtiene el chordLangFound
 		for (
 			let i = 0;
-			i < allChordsArrayEN.length && line.replaceAll(" ", "") !== "";
+			i < allChordsArrayEN.length && line.replace(/ /g, "") !== "";
 			i++
 		) {
-			if (chordLangFound === null || chordLangFound === "en") {
+			if (chordLangFound === null || chordLangFound === CHORD_LANGS.EN) {
 				const upperChordEN = allChordsArrayEN[i];
 				while (line.includes(` ${upperChordEN} `)) {
 					line = line.replace(upperChordEN, "");
-					if (!chordLangFound) chordLangFound = "en";
+					if (!chordLangFound) chordLangFound = CHORD_LANGS.EN;
 				}
 				// Also check bemols
 				if (upperChordEN.includes("#")) {
@@ -178,17 +179,17 @@ export const getDataFromRandomLyric = (randomLyric: string) => {
 							replaceBemols.en[bemolChord].slice(0, -1) ===
 							upperChordEN.split("#")[0]
 					);
-					while (line.includes(` ${upperChordENbemol} `)) {
+					while (!!upperChordENbemol && line.includes(` ${upperChordENbemol} `)) {
 						line = line.replace(upperChordENbemol, "");
-						if (!chordLangFound) chordLangFound = "en";
+						if (!chordLangFound) chordLangFound = CHORD_LANGS.EN;
 					}
 				}
 			}
-			if (chordLangFound === null || chordLangFound === "es") {
+			if (chordLangFound === null || chordLangFound === CHORD_LANGS.ES) {
 				const upperChordES = allChordsArrayES[i];
 				while (line.includes(` ${upperChordES} `)) {
 					line = line.replace(` ${upperChordES} `, " ");
-					if (!chordLangFound) chordLangFound = "es";
+					if (!chordLangFound) chordLangFound = CHORD_LANGS.ES;
 				}
 				// Also check bemols
 				if (upperChordES.includes("#")) {
@@ -197,46 +198,43 @@ export const getDataFromRandomLyric = (randomLyric: string) => {
 							replaceBemols.es[bemolChord].slice(0, -1) ===
 							upperChordES.split("#")[0]
 					);
-					while (line.includes(` ${upperChordESbemol} `)) {
+					while (!!upperChordESbemol && line.includes(` ${upperChordESbemol} `)) {
 						line = line.replace(upperChordESbemol, "");
-						if (!chordLangFound) chordLangFound = "es";
+						if (!chordLangFound) chordLangFound = CHORD_LANGS.ES;
 					}
 				}
 			}
 		}
 
 		// Si es linea de acordes, la revisa y los agrega a newChords
-		if (line.replaceAll(" ", "") === "") {
+		if (line.replace(/ /g, "") === "") {
 			const chordLine = currentLine + " ";
 			let newChord = "";
-			let newChordIndex = null;
+			let newChordIndex: number|null = null;
 			chordLine.split("").forEach((character, index) => {
 				if (character !== " " && !!newChord) {
 					newChord += character;
 				} else if (character !== " " && !newChord) {
 					newChordIndex = index;
 					newChord += character;
-				} else if (character === " " && !!newChord) {
+				} else if (character === " " && !!newChord && !!newChordIndex) {
 					// Replace bemol
-					for (const bemolChord of Object.keys(replaceBemols[chordLangFound])) {
+					const replaceBemolsLang = chordLangFound ? replaceBemols[chordLangFound] : {}
+					for (const bemolChord of Object.keys(replaceBemolsLang)) {
 						if (newChord.toUpperCase().includes(bemolChord)) {
 							newChord = newChord
 								.toUpperCase()
-								.replace(bemolChord, replaceBemols[chordLangFound][bemolChord]);
+								.replace(bemolChord, replaceBemolsLang[bemolChord]);
 							break;
 						}
 					}
-					// + PuntoMejora: newChords[finalLineIndex][newChordIndex] = { chord: newChord, duration: "" }
-					newChords[finalLineIndex] = {
-						...(newChords[finalLineIndex] || {}),
-						[newChordIndex]: { chord: newChord, duration: "" },
-					};
+					newChords[finalLineIndex][newChordIndex] = { chord: newChord as TChordString, duration: "" }
 					// if (newChords[finalLineIndex]) {
-					//     newChords[finalLineIndex][newChordIndex] = translateChord(newChord, "en", chordLangFound);
+					//     newChords[finalLineIndex][newChordIndex] = translateChord(newChord, CHORD_LANGS.EN, chordLangFound);
 					// } else {
 					//     newChords[finalLineIndex] = {
 					//         ...newChords[finalLineIndex],
-					//         [newChordIndex]: translateChord(newChord, "en", chordLangFound)
+					//         [newChordIndex]: translateChord(newChord, CHORD_LANGS.EN, chordLangFound)
 					//     };
 					// }
 					newChord = "";
@@ -261,36 +259,29 @@ export const getDataFromRandomLyric = (randomLyric: string) => {
 					// console.log("ACA3", { line: onlyLyric[finalLineIndex], content })
 					let [newChord, newChordDuration] = content.split("|");
 
-					if (chordLangFound2 === null || chordLangFound2 === "en") {
-						for (const bemolChord of Object.keys(replaceBemols["en"])) {
+					if (chordLangFound2 === null || chordLangFound2 === CHORD_LANGS.EN) {
+						for (const bemolChord of Object.keys(replaceBemols[CHORD_LANGS.EN])) {
 							if (newChord.toUpperCase().includes(bemolChord)) {
 								newChord = newChord
 									.toUpperCase()
-									.replace(bemolChord, replaceBemols["en"][bemolChord]);
-								if (!chordLangFound) chordLangFound = "en";
+									.replace(bemolChord, replaceBemols[CHORD_LANGS.EN][bemolChord]);
+								if (!chordLangFound) chordLangFound = CHORD_LANGS.EN;
 								break;
 							}
 						}
 					}
-					if (chordLangFound2 === null || chordLangFound2 === "es") {
-						for (const bemolChord of Object.keys(replaceBemols["es"])) {
+					if (chordLangFound2 === null || chordLangFound2 === CHORD_LANGS.ES) {
+						for (const bemolChord of Object.keys(replaceBemols[CHORD_LANGS.ES])) {
 							if (newChord.toUpperCase().includes(bemolChord)) {
 								newChord = newChord
 									.toUpperCase()
-									.replace(bemolChord, replaceBemols["es"][bemolChord]);
-								if (!chordLangFound) chordLangFound = "es";
+									.replace(bemolChord, replaceBemols[CHORD_LANGS.ES][bemolChord]);
+								if (!chordLangFound) chordLangFound = CHORD_LANGS.ES;
 								break;
 							}
 						}
 					}
-					// + PuntoMejora: newChords[finalLineIndex][newChordIndex] = { chord: newChord, duration: newChordDuration || "" }
-					newChords[finalLineIndex] = {
-						...(newChords[finalLineIndex] || {}),
-						[newChordIndex]: {
-							chord: newChord,
-							duration: newChordDuration || "",
-						},
-					};
+					newChords[finalLineIndex][newChordIndex] = { chord: newChord as TChordString, duration: newChordDuration || "" }
 
 					onlyLyric[finalLineIndex] = onlyLyric[finalLineIndex].replace(
 						bracketsRegex,
@@ -312,12 +303,14 @@ export const getDataFromRandomLyric = (randomLyric: string) => {
 
 		// Adjust if chordLine is larger
 		for (const lineIndex in newChords) {
-			if (!onlyLyric[lineIndex]) onlyLyric[lineIndex] = " ";
-			for (const charIndex in newChords[lineIndex]) {
-				const lineLength = onlyLyric[lineIndex].length;
-				if (lineLength < charIndex) {
-					for (let j = 0; j <= Number(charIndex) - lineLength; j++) {
-						onlyLyric[lineIndex] += " ";
+			const lineIndexNum: number = Number(lineIndex)
+			if (!onlyLyric[lineIndexNum]) onlyLyric[lineIndexNum] = " ";
+			for (const charIndex in newChords[lineIndexNum]) {
+				const charIndexNum: number = Number(charIndex)
+				const lineLength = onlyLyric[lineIndexNum].length;
+				if (lineLength < charIndexNum) {
+					for (let j = 0; j <= charIndexNum - lineLength; j++) {
+						onlyLyric[lineIndexNum] += " ";
 					}
 				}
 			}
@@ -331,40 +324,40 @@ export const getDataFromRandomLyric = (randomLyric: string) => {
 				? line.split(" ").map((word) => (word ? word.split("") : [" "]))
 				: [[""]]
 		);
-
+		
 	return {
 		newOnlyLyric: onlyLyric.join("\n"),
 		newArrayLyric,
 		newChords,
-		chordToneFound,
-		chordLangFound: chordLangFound || chordLangFound2,
+		chordToneFound: chordToneFound as TChordString,
+		chordLangFound: (chordLangFound || chordLangFound2) as TChordLang|null,
 	}; // newChords in same chordLand that found
 };
 
-export const getDataFromRandomLyricOld = (lyric) => {
+export const getDataFromRandomLyricOld = (lyric: string) => {
 	const songLines = lyric.split("\n");
 	const newChords = {};
 	let onlyLyric = [...songLines];
 
-	let chordLangFound = null; // Normal chords
-	let chordLangFound2 = null; // Formatted chords
+	let chordLangFound: null|TChordLang = null; // Normal chords
+	let chordLangFound2: null|TChordLang = null; // Formatted chords
 	let finalLineIndex = -1;
 	songLines.forEach((currentLine) => {
 		finalLineIndex++;
-		let line = (" " + currentLine + " ").replaceAll("\t", " ").toUpperCase();
-		if (line.replaceAll(" ", "") === "") return;
+		let line = (" " + currentLine + " ").replace(/\t/g, " ").toUpperCase();
+		if (line.replace(/ /g, "") === "") return;
 
 		// Quita los acordes para ver si es una linea solo de acordes, y obtiene el chordLangFound
 		for (
 			let i = 0;
-			i < allChordsArrayEN.length && line.replaceAll(" ", "") !== "";
+			i < allChordsArrayEN.length && line.replace(/ /g, "") !== "";
 			i++
 		) {
-			if (chordLangFound === null || chordLangFound === "en") {
+			if (chordLangFound === null || chordLangFound === CHORD_LANGS.EN) {
 				const upperChordEN = allChordsArrayEN[i].toUpperCase();
 				while (line.includes(` ${upperChordEN} `)) {
 					line = line.replace(upperChordEN, "");
-					if (!chordLangFound) chordLangFound = "en";
+					if (!chordLangFound) chordLangFound = CHORD_LANGS.EN;
 				}
 				// Also check bemols
 				if (upperChordEN.includes("#")) {
@@ -373,17 +366,17 @@ export const getDataFromRandomLyricOld = (lyric) => {
 							replaceBemols.en[bemolChord].slice(0, -1) ===
 							upperChordEN.split("#")[0]
 					);
-					while (line.includes(` ${upperChordENbemol} `)) {
+					while (!!upperChordENbemol && line.includes(` ${upperChordENbemol} `)) {
 						line = line.replace(upperChordENbemol, "");
-						if (!chordLangFound) chordLangFound = "en";
+						if (!chordLangFound) chordLangFound = CHORD_LANGS.EN;
 					}
 				}
 			}
-			if (chordLangFound === null || chordLangFound === "es") {
+			if (chordLangFound === null || chordLangFound === CHORD_LANGS.ES) {
 				const upperChordES = allChordsArrayES[i].toUpperCase();
 				while (line.includes(` ${upperChordES} `)) {
 					line = line.replace(` ${upperChordES} `, " ");
-					if (!chordLangFound) chordLangFound = "es";
+					if (!chordLangFound) chordLangFound = CHORD_LANGS.ES;
 				}
 				// Also check bemols
 				if (upperChordES.includes("#")) {
@@ -392,9 +385,9 @@ export const getDataFromRandomLyricOld = (lyric) => {
 							replaceBemols.es[bemolChord].slice(0, -1) ===
 							upperChordES.split("#")[0]
 					);
-					while (line.includes(` ${upperChordESbemol} `)) {
+					while (!!upperChordESbemol && line.includes(` ${upperChordESbemol} `)) {
 						line = line.replace(upperChordESbemol, "");
-						if (!chordLangFound) chordLangFound = "es";
+						if (!chordLangFound) chordLangFound = CHORD_LANGS.ES;
 					}
 				}
 			}
@@ -402,10 +395,10 @@ export const getDataFromRandomLyricOld = (lyric) => {
 
 		// Si es linea de acordes, la revisa y los agrega a newChords
 		// console.log("ACA", { line });
-		if (line.replaceAll(" ", "") === "") {
+		if (line.replace(/ /g, "") === "") {
 			const chordLine = currentLine + " ";
 			let newChord = "";
-			let newChordIndex = null;
+			let newChordIndex: null|number = null;
 			chordLine.split("").forEach((character, index) => {
 				if (character !== " " && !!newChord) {
 					newChord += character;
@@ -414,26 +407,27 @@ export const getDataFromRandomLyricOld = (lyric) => {
 					newChord += character;
 				} else if (character === " " && !!newChord) {
 					// Replace bemol
+					// @ts-ignore
 					for (const bemolChord of Object.keys(replaceBemols[chordLangFound])) {
 						if (newChord.toUpperCase().includes(bemolChord)) {
 							newChord = newChord
 								.toUpperCase()
+								// @ts-ignore
 								.replace(bemolChord, replaceBemols[chordLangFound][bemolChord]);
 							break;
 						}
 					}
-					newChords[finalLineIndex] = {
-						...(newChords[finalLineIndex] || {}),
-						[newChordIndex]: {
-							chord: translateChord(newChord, "en", chordLangFound),
-						},
-					};
+					// @ts-ignore
+					newChords[finalLineIndex][newChordIndex] = {
+						// @ts-ignore
+						chord: translateChord(newChord, CHORD_LANGS.EN, chordLangFound),
+					},
 					// if (newChords[finalLineIndex]) {
-					//     newChords[finalLineIndex][newChordIndex] = translateChord(newChord, "en", chordLangFound);
+					//     newChords[finalLineIndex][newChordIndex] = translateChord(newChord, CHORD_LANGS.EN, chordLangFound);
 					// } else {
 					//     newChords[finalLineIndex] = {
 					//         ...newChords[finalLineIndex],
-					//         [newChordIndex]: translateChord(newChord, "en", chordLangFound)
+					//         [newChordIndex]: translateChord(newChord, CHORD_LANGS.EN, chordLangFound)
 					//     };
 					// }
 					newChord = "";
@@ -458,32 +452,35 @@ export const getDataFromRandomLyricOld = (lyric) => {
 					console.log("ACA3", { line: onlyLyric[finalLineIndex], content });
 					let [newChord, newChordDuration] = content.split("|");
 
-					if (chordLangFound2 === null || chordLangFound2 === "en") {
-						for (const bemolChord of Object.keys(replaceBemols["en"])) {
+					if (chordLangFound2 === null || chordLangFound2 === CHORD_LANGS.EN) {
+						for (const bemolChord of Object.keys(replaceBemols[CHORD_LANGS.EN])) {
 							if (newChord.toUpperCase().includes(bemolChord)) {
 								newChord = newChord
 									.toUpperCase()
-									.replace(bemolChord, replaceBemols["en"][bemolChord]);
-								if (!chordLangFound) chordLangFound = "en";
+									.replace(bemolChord, replaceBemols[CHORD_LANGS.EN][bemolChord]);
+								if (!chordLangFound) chordLangFound = CHORD_LANGS.EN;
 								break;
 							}
 						}
 					}
-					if (chordLangFound2 === null || chordLangFound2 === "es") {
-						for (const bemolChord of Object.keys(replaceBemols["es"])) {
+					if (chordLangFound2 === null || chordLangFound2 === CHORD_LANGS.ES) {
+						for (const bemolChord of Object.keys(replaceBemols[CHORD_LANGS.ES])) {
 							if (newChord.toUpperCase().includes(bemolChord)) {
 								newChord = newChord
 									.toUpperCase()
-									.replace(bemolChord, replaceBemols["es"][bemolChord]);
-								if (!chordLangFound) chordLangFound = "es";
+									.replace(bemolChord, replaceBemols[CHORD_LANGS.ES][bemolChord]);
+								if (!chordLangFound) chordLangFound = CHORD_LANGS.ES;
 								break;
 							}
 						}
 					}
+					// @ts-ignore
 					newChords[finalLineIndex] = {
+						// @ts-ignore
 						...(newChords[finalLineIndex] || {}),
 						[newChordIndex]: {
-							chord: translateChord(newChord, "en", chordLangFound2),
+							// @ts-ignore
+							chord: translateChord(newChord, CHORD_LANGS.EN, chordLangFound2),
 							duration: newChordDuration || "",
 						},
 					};
@@ -505,6 +502,7 @@ export const getDataFromRandomLyricOld = (lyric) => {
 		do {
 			const lineToSearchChord =
 				Object.values(newChords)[lineToSearchChordNumber];
+				// @ts-ignore
 			firstChord = Object.values(lineToSearchChord)[0]?.chord;
 			lineToSearchChordNumber++;
 		} while (
@@ -513,18 +511,23 @@ export const getDataFromRandomLyricOld = (lyric) => {
 		);
 
 		if (!!firstChord) {
-			// chordTone = translateChord(firstChord, "en", chordLangFound);
+			// chordTone = translateChord(firstChord, CHORD_LANGS.EN, chordLangFound);
 			const chordIndex = getChordIndex(firstChord);
+			// @ts-ignore
 			chordTone = allChords?.en?.[0]?.chords?.[chordIndex[1]];
 		}
 
 		// Adjust if chordLine is larger
 		for (const lineIndex in newChords) {
-			if (!onlyLyric[lineIndex]) onlyLyric[lineIndex] = " ";
+			// @ts-ignore
+			if (!onlyLyric[lineIndex]) onlyLyric[lineIndex] = " "
+			// @ts-ignore;
 			for (const charIndex in newChords[lineIndex]) {
+				// @ts-ignore
 				const lineLength = onlyLyric[lineIndex].length;
 				if (lineLength < charIndex) {
 					for (let j = 0; j <= Number(charIndex) - lineLength; j++) {
+						// @ts-ignore
 						onlyLyric[lineIndex] += " ";
 					}
 				}
@@ -552,13 +555,13 @@ export const getDataFromRandomLyricOld = (lyric) => {
 	};
 };
 
-export const getLyricStart = (lyric) => {
+export const getLyricStart = (lyric: string) => {
 	const bracketsRegex = /\[(.*?)\]/g;
 	const numberOfLines = 4;
 	const lyricStart = lyric
 		.split("\n")
-		.map((l) => l.replaceAll("\t", " ").replaceAll(bracketsRegex, ""))
-		.filter((l) => l.replaceAll(" ", "") !== "")
+		.map((l) => l.replace(/\t/g, " ").replace(bracketsRegex, ""))
+		.filter((l) => l.replace(/ /g, "") !== "")
 		.slice(0, numberOfLines - 1)
 		// .map(l => l.replaceAll(" ", "")[-1] !== "," ? l + ", " : l)
 		.join(" ");
@@ -566,16 +569,16 @@ export const getLyricStart = (lyric) => {
 	return lyricStart;
 };
 
-export const translateFormattedLyric = (lyric, fromChordLang, toChordLang) => {
+export const translateFormattedLyric = (lyric: string, fromChordLang: TChordLang, toChordLang: TChordLang) => {
 	if (!lyric || !toChordLang || !fromChordLang || fromChordLang === toChordLang)
 		return lyric;
 
 	const songLines = lyric.split("\n");
-	const newChords = {};
+	const newChords: TChordInLyric = {};
 	let onlyLyric = [...songLines];
 
 	songLines.forEach((currentLine, currentLineIndex) => {
-		if (currentLine.replaceAll("\t", " ").replaceAll(" ", "") === "") return;
+		if (currentLine.replace(/\t/g, " ").replace(/ /g, "") === "") return;
 
 		const bracketsRegex = /\[(.*?)\]/;
 		console.log("ACA4", bracketsRegex.test(onlyLyric[currentLineIndex]));
@@ -596,13 +599,10 @@ export const translateFormattedLyric = (lyric, fromChordLang, toChordLang) => {
 					break;
 				}
 			}
-			newChords[currentLineIndex] = {
-				...(newChords[currentLineIndex] || {}),
-				[newChordIndex]: {
-					chord: translateChord(newChord, toChordLang, fromChordLang),
-					duration: newChordDuration || "",
-				},
-			};
+			newChords[currentLineIndex][newChordIndex] = {
+				chord: translateChord(newChord as TChordString, toChordLang, fromChordLang),
+				duration: newChordDuration || "",
+			},
 
 			onlyLyric[currentLineIndex] = onlyLyric[currentLineIndex].replace(
 				bracketsRegex,

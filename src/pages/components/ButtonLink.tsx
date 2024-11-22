@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Definición de tipos para las ubicaciones y el estado
@@ -11,7 +12,7 @@ type To = Path & {
 	};
 };
 
-const ButtonLink: React.FC<{
+const ButtonLink: FC<{
 	children: any;
 	pathname: string;
 	from: string;

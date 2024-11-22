@@ -1,8 +1,7 @@
-import { produce } from "immer";
-import { TAuthorDB, TAuthorId, TAuthorListDB } from "./types";
-import { TFetchStatus, FETCH_STATUS } from "../../utils/types";
+import { TAuthorDB, TAuthorListDB } from "./types.d";
+import { TFetchStatus, FETCH_STATUS } from "../../utils/types.d";
 import { valid } from "../../utils/generalUtils";
-import { types } from "./actions";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const defaultAuthor: TAuthorDB = {
 	id: "",
@@ -29,101 +28,59 @@ const initialState: TAuthorState = {
 	author: defaultAuthor,
 };
 
-export type TAuthorActionType = (typeof types)[keyof typeof types];
+const authorSlice = createSlice({
+	name: 'author',
+	initialState,
+	reducers: {
+		resetAuthorStatus: (state) => {
+			state.authorStatus = FETCH_STATUS.INITIAL;
+			state.authorError = null;
+		},
+		setAuthorList: (state, action: PayloadAction<{authorList: TAuthorState['authorList'], authorStatus: TAuthorState['authorStatus']}>) => {
+			state.authorList = valid(action.payload?.authorList, 'setAuthorList');
+			state.authorStatus = valid(action.payload?.authorStatus, 'setAuthorList');
+		},
+		setAuthorListStatus: (state, action: PayloadAction<{authorError: TAuthorState['authorError'], authorStatus: TAuthorState['authorStatus']}>) => {
+			state.authorError = valid(action.payload?.authorError, 'setAuthorListStatus');
+			state.authorStatus = valid(action.payload?.authorStatus, 'setAuthorListStatus');
+		},
+		setAuthor: (state, action: PayloadAction<{author: TAuthorState['author'], authorStatus: TAuthorState['authorStatus']}>) => {
+			state.author = valid(action.payload?.author, 'setAuthor');
+			state.authorStatus = valid(action.payload?.authorStatus, 'setAuthor');
+		},
+		setAuthorStatus: (state, action: PayloadAction<{authorError: TAuthorState['authorError'], authorStatus: TAuthorState['authorStatus']}>) => {
+			state.authorError = valid(action.payload?.authorError, 'setAuthorStatus');
+			state.authorStatus = valid(action.payload?.authorStatus, 'setAuthorStatus');
+		},
+		createAuthor: (state, action: PayloadAction<{authorCreated: TAuthorState['author']}>) => {
+			let authorCreated = valid(action.payload?.authorCreated, 'createAuthor');
+			state.authorList[authorCreated.id] = authorCreated;
+			state.author = authorCreated;
+			state.authorStatus = FETCH_STATUS.SUCCESS;	
+		},
+		editAuthor: (state, action: PayloadAction<{authorEdited: TAuthorState['author']}>) => {
+			let authorEdited = valid(action.payload?.authorEdited, 'editAuthor');
+			state.authorList[authorEdited.id] = authorEdited;
+			state.author = authorEdited;
+			state.authorStatus = FETCH_STATUS.SUCCESS;	
+		},
+		deleteAuthor: (state, action: PayloadAction<{authorDeletedId: TAuthorDB['id']}>) => {
+			let authorDeletedId = valid(action.payload?.authorDeletedId, 'deleteAuthor');
+			delete state.authorList[authorDeletedId];
+			state.author = defaultAuthor;
+			state.authorStatus = FETCH_STATUS.SUCCESS;
+		},
+	}
+});
 
-export type TAuthorActionPayload = Partial<TAuthorState> & {
-	authorCreated?: TAuthorDB;
-	authorEdited?: TAuthorDB;
-	authorDeletedId?: TAuthorId;
-};
-
-export type TAuthorAction = {
-	type: TAuthorActionType;
-	payload?: TAuthorActionPayload;
-};
-
-const AuthorReducer = (
-	state = initialState,
-	{ type, payload }: TAuthorAction
-) => {
-	return produce(state, (newState: TAuthorState): void => {
-		if (type === types.RESET_AUTHOR_STATUS) {
-			newState.authorStatus = FETCH_STATUS.INITIAL;
-			newState.authorError = null;
-		}
-
-		if (type === types.SET_AUTHOR_LIST) {
-			newState.authorList = valid(payload?.authorList, type);
-			newState.authorStatus = valid(payload?.authorStatus, type);
-		}
-		if (type === types.SET_AUTHOR_LIST_STATUS) {
-			newState.authorStatus = valid(payload?.authorStatus, type);
-			newState.authorError = valid(payload?.authorError, type);
-		}
-		if (type === types.SET_AUTHOR) {
-			newState.author = valid(payload?.author, type);
-			newState.authorStatus = valid(payload?.authorStatus, type);
-		}
-		if (type === types.SET_AUTHOR_STATUS) {
-			newState.authorStatus = valid(payload?.authorStatus, type);
-			newState.authorError = valid(payload?.authorError, type);
-		}
-
-		if (type === types.CREATE_AUTHOR) {
-			let authorCreated = valid(payload?.authorCreated, type);
-			newState.authorList[authorCreated.id] = authorCreated;
-			newState.author = authorCreated;
-			newState.authorStatus = FETCH_STATUS.SUCCESS;
-		}
-		if (type === types.EDIT_AUTHOR) {
-			let authorEdited = valid(payload?.authorEdited, type);
-			newState.authorList[authorEdited.id] = authorEdited;
-			newState.author = authorEdited;
-			newState.authorStatus = FETCH_STATUS.SUCCESS;
-		}
-		if (type === types.DELETE_AUTHOR) {
-			let authorDeletedId = valid(payload?.authorDeletedId, type);
-			delete newState.authorList[authorDeletedId];
-			newState.author = defaultAuthor;
-			newState.authorStatus = FETCH_STATUS.SUCCESS;
-		}
-	});
-};
-
-type TAuthorActionPayloadStatus = {
-	authorStatus: TAuthorActionPayload["authorStatus"];
-	authorError: TAuthorActionPayload["authorError"];
-};
-// export type TAuthorDispatch = Dispatch<TAuthorActionPayload>;
-export type TAuthorSelectedActionPayload = {
-	[types.RESET_AUTHOR_STATUS]: undefined;
-
-	[types.SET_AUTHOR_LIST]: {
-		authorList: TAuthorActionPayload["authorList"];
-		authorStatus: TAuthorActionPayload["authorStatus"];
-	};
-	[types.SET_AUTHOR_LIST_STATUS]: TAuthorActionPayloadStatus;
-
-	[types.SET_AUTHOR]: {
-		author: TAuthorActionPayload["author"];
-		authorStatus: TAuthorActionPayload["authorStatus"];
-	};
-	[types.SET_AUTHOR_STATUS]: TAuthorActionPayloadStatus;
-
-	[types.CREATE_AUTHOR]: {
-		authorCreated: TAuthorActionPayload["authorCreated"];
-	};
-	[types.CREATE_AUTHOR_STATUS]: TAuthorActionPayloadStatus;
-
-	[types.EDIT_AUTHOR]: {
-		authorEdited: TAuthorActionPayload["authorEdited"];
-	};
-	[types.EDIT_AUTHOR_STATUS]: TAuthorActionPayloadStatus;
-
-	[types.DELETE_AUTHOR]: {
-		authorDeletedId: TAuthorActionPayload["authorDeletedId"];
-	};
-	[types.DELETE_AUTHOR_STATUS]: TAuthorActionPayloadStatus;
-};
-
-export default AuthorReducer;
+export const { 
+	resetAuthorStatus,
+	setAuthorList,
+	setAuthorListStatus,
+	setAuthor,
+	setAuthorStatus,
+	createAuthor,
+	editAuthor,
+	deleteAuthor,
+} = authorSlice.actions;
+export default authorSlice.reducer;

@@ -1,7 +1,19 @@
 import M from "materialize-css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, MouseEvent } from "react";
 import styled from "styled-components";
 import { colors } from "../../../styles/styleUtils";
+
+export type TItem = {
+	value: string,
+	label: string,
+}
+
+type TSelectorModalProps = {
+	selectedItem: TItem,
+	setSelectedItem: (v: TItem) => void,
+	items: TItem[],
+	title?: string,
+}
 
 const SelectorModal = ({
 	selectedItem,
@@ -11,7 +23,7 @@ const SelectorModal = ({
 		{ value: "2", label: "B" },
 	],
 	title = "",
-}) => {
+}:TSelectorModalProps) => {
 	const [modalRef, setModalRef] = useState<M.Modal | null>(null);
 
 	useEffect(() => {
@@ -25,12 +37,12 @@ const SelectorModal = ({
 		};
 	}, []);
 
-	const handleSelectorClick = (event: React.MouseEvent): void => {
+	const handleSelectorClick = (event: MouseEvent): void => {
 		event.stopPropagation();
 		modalRef?.open();
 	};
 
-	const handleItemClick = (item) => {
+	const handleItemClick = (item: TItem): void => {
 		setSelectedItem(item);
 		modalRef?.close();
 	};

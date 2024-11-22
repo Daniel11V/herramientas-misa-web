@@ -2,11 +2,33 @@ import { useState } from "react";
 import { publishSong } from "../../../classes/song/actions";
 import M from "materialize-css";
 import { isAdminUser } from "../../../utils/generalUtils";
-import { useDispatch } from "../../../store";
+import { TSong } from "../../../classes/song/types.d";
+import { TUserGoogle } from "../../../classes/user/types.d";
+import { TMessageModalOpts } from "../../components/MessageModal";
+import { useAppDispatch } from "../../../store";
 
-export const usePublishSong = (song, user, setMessageModalOpts) => {
-	const dispatch = useDispatch();
-	const [isLoadingPublish, setIsLoading] = useState(false);
+type TEmailProps = {
+	SecureToken: string,
+	To: string,
+	From: string,
+	Headers: {
+		"Content-Type": string,
+	},
+	Subject: string,
+	Body: string,
+}
+
+declare global {
+	interface Window {
+	  Email: {
+		send: (p: TEmailProps) => Promise<string>
+	  }; // Cambia `any` por el tipo adecuado si lo conoces.
+	}
+  }
+
+export const usePublishSong = (song: TSong, user: TUserGoogle, setMessageModalOpts: (v: TMessageModalOpts) => void) => {
+	const dispatch = useAppDispatch();
+	const [isLoadingPublish, setIsLoading] = useState<boolean>(false);
 	const [errorPublish, setError] = useState(false);
 
 	const publishCurrentSong = () => {
@@ -18,10 +40,9 @@ export const usePublishSong = (song, user, setMessageModalOpts) => {
 			title: "Solicitud de publicación",
 			message:
 				"Se creará una solicitud para agregar tu canción dentro de nuestro cancionero publico! Y en unos días recibirá una respuesta al mail.",
-			onClose: () => {
-				setMessageModalOpts(null);
+			onCancel: () => {
+				setMessageModalOpts({});
 			},
-			onCancel: () => {},
 			onConfirm: () => {
 				if (isAdminUser(user.id)) {
 					publishCurrentSong();

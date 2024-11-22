@@ -6,15 +6,14 @@ import {
 	translateChords,
 	transposeChords,
 } from "../../../utils/lyricsAndChordsUtils";
-import { TsetFunc } from "../../../utils/types";
-import { TChordInLyric, TChordLang } from "../types";
+import { TChord, TChordInLyric, TChordLang, TChordString, TLetterIndex } from "../types.d";
 
 export const useFormattedLyric = (p: {
 	lyricWithChords?: string,
-	setLyricWithChords: TsetFunc<string>,
-	setLyricWithChordsEN: TsetFunc<string>,
-	userTone: string,
-	setUserTone: TsetFunc<string>,
+	setLyricWithChords: (l: string) => void,
+	setLyricWithChordsEN?: (l: string) => void,
+	userTone: null|TChordString,
+	setUserTone: (tone: TChordString) => void,          
 	userChordLang: TChordLang,
 	isEditable: boolean,
 	onlyInputText: boolean,
@@ -32,16 +31,16 @@ export const useFormattedLyric = (p: {
 	// const [isLoadingLyric, setIsLoading] = useState(false);
 	// const [errorLyric, setError] = useState(false);
 
-	const [lastChordLang, setLastChordLang] = useState(null);
+	const [lastChordLang, setLastChordLang] = useState<TChordLang|null>(null);
 
 	const [chords, setChords] = useState<TChordInLyric>({});
-	const [tone, setTone] = useState(null);
-	const [chordLang, setChordLang] = useState(null);
-	const [arrayLyric, setArrayLyric] = useState([]);
-	const [onlyLyric, setOnlyLyric] = useState("");
+	const [tone, setTone] = useState<TChordString|null>(null);
+	const [chordLang, setChordLang] = useState<TChordLang|null>(null);
+	const [arrayLyric, setArrayLyric] = useState<string[][][]>([]);
+	const [onlyLyric, setOnlyLyric] = useState<string>("");
 
 	const saveLyricWithChords = useCallback(
-		(lyricToSave: string, newOnlyLyric: string|null = null, newChords = null) => {
+		(lyricToSave: string|null, newOnlyLyric: string|null = null, newChords: TChordInLyric|null = null) => {
 			if (setLyricWithChords) {
 				setLyricWithChords(
 					lyricToSave ||
@@ -62,7 +61,7 @@ export const useFormattedLyric = (p: {
 	);
 
 	useEffect(() => {
-		if (!onlyInputText && !!lyricWithChords && !arrayLyric.length) {
+		if (!onlyInputText && !!lyricWithChords && !arrayLyric.length && userTone) {
 			// Por ahora que en la BBDD tengo acordes sin formatear se queda en Random, sino aca recibiria formateado
 			const {
 				newOnlyLyric,
@@ -102,7 +101,7 @@ export const useFormattedLyric = (p: {
 					newChords,
 					userTone,
 					chordToneFound,
-					chordLangFound
+					chordLangFound ?? undefined
 				);
 				setTone(userTone || chordToneFound);
 				const translatedChords = translateChords(
@@ -111,7 +110,7 @@ export const useFormattedLyric = (p: {
 					chordLangFound
 				);
 				setChordLang(userChordLang || chordLangFound);
-				setChords(translatedChords);
+				if (translatedChords) setChords(translatedChords);
 			} else {
 				setChords(newChords);
 				setTone(chordToneFound);
@@ -154,19 +153,16 @@ export const useFormattedLyric = (p: {
 	useEffect(() => {
 		if (!!userChordLang && userChordLang !== lastChordLang) {
 			setChords((lastChords) => {
-				const newCurrentChords = {};
+				const newCurrentChords: TChordInLyric = {};
 				for (const line in lastChords)
 					for (const chordIndex in lastChords[line]) {
-						newCurrentChords[line] = {
-							...(newCurrentChords[line] || {}),
-							[chordIndex]: {
-								...lastChords[line][chordIndex],
-								chord: translateChord(
-									lastChords[line][chordIndex].chord,
-									userChordLang
-								),
-							},
-						};
+						newCurrentChords[line][chordIndex] = {
+							...lastChords[line][chordIndex],
+							chord: translateChord(
+								lastChords[line][chordIndex].chord,
+								userChordLang
+							),
+						}
 					}
 
 				return newCurrentChords;
@@ -178,9 +174,7 @@ export const useFormattedLyric = (p: {
 
 	useEffect(() => {
 		if (!!tone && !!userTone && userTone !== tone) {
-			setChords((lastChords) =>
-				transposeChords(lastChords, userTone, tone, userChordLang)
-			);
+			setChords((lastChords) => transposeChords(lastChords, userTone, tone, userChordLang) ?? {});
 			setTone(userTone);
 		} else if (!userTone && !!tone) {
 			setUserTone(tone);
@@ -201,7 +195,7 @@ export const useFormattedLyric = (p: {
 	// 	else setIsEditable(false);
 	// }, [setChords]);
 
-	const addChord = (chordIndex, chord) => {
+	const addChord = (chordIndex: TLetterIndex, chord: TChord) => {
 		const newChords = { ...chords };
 		newChords[chordIndex[0]][chordIndex[1]] = chord;
 
@@ -209,7 +203,7 @@ export const useFormattedLyric = (p: {
 		saveLyricWithChords(null, null, newChords);
 	};
 
-	const removeChord = (chordIndex) => {
+	const removeChord = (chordIndex: TLetterIndex) => {
 		const newChords = { ...chords };
 		delete newChords[chordIndex[0]][chordIndex[1]];
 		if (!Object.keys(newChords[chordIndex[0]]).length)

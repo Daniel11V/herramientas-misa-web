@@ -1,6 +1,6 @@
 import store from "../../../store";
 import { setDatabaseItem } from "../../database/reducers";
-import { TPublicSongTitleDB, TPublicSongTitleListDB, TSong, TSongForm, TSongId } from "../types";
+import { TPublicSongTitleDB, TPublicSongTitleListDB, TSong, TSongId } from "../types.d";
 
 export const getPublicSongTitleListDB = async (): Promise<TPublicSongTitleListDB> => {
 
@@ -23,7 +23,7 @@ export const getPublicSongTitleDB = async (p: { songTitleId: TSongId }): Promise
 export const createPublicSongTitleDB = async (p:{ songTitleCreated: TPublicSongTitleDB }): Promise<TSongId> => {
     const { songTitleCreated } = p
     const newId = new Date().getTime().toString();
-    await store.dispatch(setDatabaseItem("publicSongTitleList", newId, songTitleCreated));
+    await store.dispatch(setDatabaseItem({category: "publicSongTitleList", id: newId, item: songTitleCreated}));
     const response = songTitleCreated;
 
     if (!response) throw new Error("Error fetching in createPublicSongTitleDB.");
@@ -33,6 +33,6 @@ export const createPublicSongTitleDB = async (p:{ songTitleCreated: TPublicSongT
 
 export const editPublicSongTitleDB = async (p:{ songTitleEdited: TSong }) => {
     const { songTitleEdited } = p;
-    await store.dispatch(setDatabaseItem("publicSongTitleList", songTitleEdited.id, songTitleEdited));
+    await store.dispatch(setDatabaseItem({category: "publicSongTitleList", id: songTitleEdited.id, item: songTitleEdited}));
     return;
 }

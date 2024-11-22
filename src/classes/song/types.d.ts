@@ -1,6 +1,7 @@
+import { TChordString } from "../../pages/songs/types.d";
 import { TypeError } from "../../utils/errors";
-import { type TAuthor } from "../author/types";
-import { TUserDB, TUserId } from "../user/types";
+import { type TAuthor } from "../author/types.d";
+import { TUserDB, TUserId } from "../user/types.d";
 
 export type TCreator = {
 	id: string;
@@ -45,7 +46,7 @@ export type TSong = {
 	topics?: Array<string>;
 	rating?: TRate[];
 	annotations?: string;
-	tone?: string;
+	tone?: TChordString;
 	pulse?: string;
 	tempo?: string;
 	lyric?: string;
@@ -60,7 +61,7 @@ export type TSongForm = {
 	labels: Array<string>;
 	topics?: Array<string>;
 	annotations?: string;
-	tone?: string;
+	tone?: TChordString;
 	pulse?: string;
 	tempo?: string;
 	lyric: string;

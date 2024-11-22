@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import "../../../styles/SongList.css";
 import { Collection, CollectionItem } from "../../../styles/styles";
-import { TRepertory, TRepertoryId } from "../../../classes/repertory/types";
+import { TRepertory, TRepertoryId } from "../../../classes/repertory/types.d";
 import { arrayIsEmpty } from "../../../utils/generalUtils";
+import { FC } from "react";
 
-const RepertoryList: React.FC<{
+const RepertoryList: FC<{
 	repertoryList: TRepertory[];
 	loading?: boolean;
 	error?: string;

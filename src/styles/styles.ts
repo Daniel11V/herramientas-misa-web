@@ -37,7 +37,7 @@ export const CollectionContent = styled.div`
 
 export const CollectionItem = styled.div.attrs((props) => ({
 	className: "collection-item " + (props.className || ""),
-}))<{ withCheck?: boolean }>`
+}))<{ $withCheck?: boolean }>`
 	color: #555 !important;
 	font-size: 14px;
 	display: flex !important;
@@ -59,7 +59,7 @@ export const CollectionItem = styled.div.attrs((props) => ({
 	}
 
 	${(props) =>
-		props.withCheck &&
+		props.$withCheck &&
 		css`
 			height: 42px !important;
 			padding: 0 0 0 20px !important;
@@ -79,7 +79,7 @@ export const CollectionItemLyric = styled.div`
 	padding-top: 4px;
 `;
 
-export const CollectionItemIcons = styled.div<{ withCheck: boolean }>`
+export const CollectionItemIcons = styled.div<{ $withCheck: boolean }>`
 	margin-top: 2px;
 	display: flex;
 
@@ -108,7 +108,7 @@ export const CollectionItemIcons = styled.div<{ withCheck: boolean }>`
 	}
 
 	${(props) =>
-		props.withCheck &&
+		props.$withCheck &&
 		css`
 			padding-top: 10px;
 			padding-right: 10px;
@@ -124,7 +124,7 @@ export const CollectionItemIcons = styled.div<{ withCheck: boolean }>`
 			}
 		`}
 `;
-export const PrivacyIcon = styled.div<{ withCheck?: boolean }>`
+export const PrivacyIcon = styled.div<{ $withCheck?: boolean }>`
 	position: relative;
 	margin-left: 10px;
 
@@ -134,7 +134,7 @@ export const PrivacyIcon = styled.div<{ withCheck?: boolean }>`
 	}
 `;
 
-export const LevelIcon = styled.div<{ withCheck?: boolean }>`
+export const LevelIcon = styled.div<{ $withCheck?: boolean }>`
 	> i {
 		color: ${colors.blue};
 	}

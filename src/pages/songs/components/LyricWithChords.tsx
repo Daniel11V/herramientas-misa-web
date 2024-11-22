@@ -1,23 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 
 import styled, { css } from "styled-components";
 import ChordSelector from "./ChordSelector";
 import { useFormattedLyric } from "../hooks/useFormattedLyric";
 import { SongFormLyric } from "./SongFormLyric";
-import { TsetFunc } from "../../../utils/types";
-import { TChord, TChordLang } from "../types";
+import { CHORD_LANGS, TChord, TChordLang, TChordString, TLetterIndex } from "../types.d";
 
 const LyricWithChords = (p: {
 	lyricWithChords?: string,
-	setLyricWithChords: TsetFunc<string>,
-	setLyricWithChordsEN: TsetFunc<string>,
-	userTone: string,
-	setUserTone?: TsetFunc<string>,
+	setLyricWithChords: (l: string) => void,
+	setLyricWithChordsEN?: (l: string) => void,
+	userTone: null|TChordString,
+	setUserTone?: (tone: TChordString) => void,
 	userChordLang: TChordLang,
 	showChords?: boolean,
 	isEditable?: boolean,
 	onlyInputText?: boolean,
-}) => {
+}) => { 
 	const {
 		lyricWithChords = "",
 		setLyricWithChords,
@@ -48,15 +47,15 @@ const LyricWithChords = (p: {
 		onlyInputText,
 	});
 
-	const [selectedLetter, setSelectedLetter] = useState([null, null]);
-	const [selectedChord, setSelectedChord] = useState({
+	const [selectedLetter, setSelectedLetter] = useState<TLetterIndex|null>(null);
+	const [selectedChord, setSelectedChord] = useState<TChord>({
 		chord: userChordLang === "es" ? "DO" : "C",
 		duration: "",
 	});
 	const defaultChord = chordLang === "es" ? "DO" : "C";
 
 	const handleClickWindow = () => {
-		setSelectedLetter([null, null]);
+		setSelectedLetter(null);
 	};
 
 	useEffect(() => {
@@ -68,34 +67,36 @@ const LyricWithChords = (p: {
 
 	const editSelectedChord = (newSelectedChord: TChord, alreadyHasChord: boolean) => {
 		console.log("ACA 2", { newSelectedChord, alreadyHasChord });
-		if (!!alreadyHasChord) {
+		if (!!alreadyHasChord && !!selectedLetter) {
 			addChord(selectedLetter, newSelectedChord);
 		}
 		setSelectedChord(newSelectedChord);
 	};
 
 	const handleAddChord = () => {
+		if (!selectedLetter) return
 		addChord(selectedLetter, selectedChord);
-		// setSelectedLetter([null, null]);
+		// setSelectedLetter(null);
 	};
 
 	const handleRemoveChord = () => {
+		if (!selectedLetter) return
 		removeChord(selectedLetter);
-		// setSelectedLetter([null, null]);
+		// setSelectedLetter(null);
 	};
 
-	const isLetterSelected = (i: number, k: number) =>
+	const isLetterSelected = (i: number, k: number) => !!selectedLetter && 
 		selectedLetter[0] === i && selectedLetter[1] === k;
 
 	const hasChord = (i: number, k: number) =>
 		showChords && !!chords?.[i] && (k >= 0 ? !!chords[i][k]?.chord : true);
 
-	const handleLetterClick = (i, k, event: React.MouseEvent): void => {
+	const handleLetterClick = (i: number, k: number, event: MouseEvent): void => {
 		event.stopPropagation();
 
 		if (isEditable && !onlyInputText) {
 			if (isLetterSelected(i, k)) {
-				// setSelectedLetter([null, null]);
+				// setSelectedLetter(null);
 			} else {
 				setSelectedLetter([i, k]);
 				if (hasChord(i, k)) {
@@ -123,7 +124,7 @@ const LyricWithChords = (p: {
 		}
 	};
 
-	const handleArrowBtns = (event, i, k, direction) => {
+	const handleArrowBtns = (event: MouseEvent, i: number, k: number, direction: -1|1) => {
 		event.stopPropagation();
 
 		setSelectedLetter([i, k ? k + direction : k]);
@@ -139,7 +140,7 @@ const LyricWithChords = (p: {
 			</div>
 		);
 
-	const getRowCharIndex = (rowIndex, wordIndex, charIndex) => {
+	const getRowCharIndex = (rowIndex: number, wordIndex: number, charIndex: number) => {
 		let rowCharIndex = 0;
 		for (
 			let currentWordIndex = 0;
@@ -165,7 +166,7 @@ const LyricWithChords = (p: {
 									<Letter
 										key={charIndex}
 										isEditable={isEditable}
-										hasChord={hasChord(i)}
+										hasChord={hasChord(i, charIndex)}
 									>
 										{hasChord(i, charIndex) &&
 											!isLetterSelected(i, charIndex) && (
@@ -205,8 +206,10 @@ const LyricWithChords = (p: {
 														setSelectedChord={(v) =>
 															editSelectedChord(v, hasChord(i, charIndex))
 														}
-														chordLang={chordLang}
+														chordLang={chordLang || CHORD_LANGS.EN} // Send Default ChordLang
 														modalId="chord"
+														label=""
+														onlyChangeTone={false}
 													/>
 													<TooltipFooter>
 														<TooltipBtn

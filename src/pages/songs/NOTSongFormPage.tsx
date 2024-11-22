@@ -1,4 +1,5 @@
-import React from "react";
+// @ts-nocheck
+
 import { useParams } from "react-router-dom";
 // import axios from "../../axios";
 import SongFormDescription from "./components/SongFormDescription";

@@ -1,5 +1,5 @@
-import { TRate } from "../classes/song/types";
-import { TUserId } from "../classes/user/types";
+import { TRate } from "../classes/song/types.d";
+import { TUserId } from "../classes/user/types.d";
 import { TypeCreationError, UndefinedError } from "./errors";
 
 export const isAdminUser = (userId: TUserId): boolean => {

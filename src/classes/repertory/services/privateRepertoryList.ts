@@ -1,11 +1,11 @@
 import store from "../../../store";
 import { setDatabaseItem } from "../../database/reducers";
-import { TUserId } from "../../user/types";
+import { TUserId } from "../../user/types.d";
 import {
 	TPrivateRepertoryDB,
 	TPrivateRepertoryListDB,
 	TRepertoryId,
-} from "../types";
+} from "../types.d";
 
 export const getPrivateRepertoryListDB = async (p: {
 	userId: TUserId;
@@ -61,11 +61,11 @@ export const createPrivateRepertoryDB = async (p: {
 	if (!repertoryCreated) throw new Error("Invalid repertory ID.");
 
 	await store.dispatch(
-		setDatabaseItem(
-			"privateRepertoryList",
-			repertoryCreated.id,
-			repertoryCreated
-		)
+		setDatabaseItem({
+			category: "privateRepertoryList",
+			id: repertoryCreated.id,
+			item: repertoryCreated
+		})
 	);
 };
 

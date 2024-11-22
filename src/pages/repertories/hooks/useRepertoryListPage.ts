@@ -1,31 +1,30 @@
 import { useState, useEffect } from "react";
-import { setRepertoryListPageBackup } from "../../../classes/page/actions";
 import {
 	getRepertoryList,
-	resetRepertoryActionStatus,
-	setRepertoryListStatus,
 } from "../../../classes/repertory/actions";
 import { MAX_RETRYS } from "../../../configs";
-import { FETCH_STATUS, SECURITY_STATUS } from "../../../utils/types";
+import { FETCH_STATUS, SECURITY_STATUS } from "../../../utils/types.d";
 import { arrayIsEmpty } from "../../../utils/generalUtils";
-import { TRepertory } from "../../../classes/repertory/types";
-import { TUserId } from "../../../classes/user/types";
-import { useAppSelector } from "../../../store";
-import { useDispatch } from "react-redux";
+import { TRepertory } from "../../../classes/repertory/types.d";
+import { TUserId } from "../../../classes/user/types.d";
+import { useSelector } from "react-redux";
+import { TRootState, useAppDispatch } from "../../../store";
+import { resetRepertoryActionStatus, setRepertoryListStatus } from "../../../classes/repertory/reducers";
+import { setRepertoryListPageBackup } from "../../../classes/page/reducers";
 
 export const useRepertoryListPage = () => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
-	const userId = useAppSelector((state) => state.user.google.id);
+	const userId = useSelector((state: TRootState) => state.user.google.id);
 	const {
 		repertoryList,
 		repertoryListStatus,
 		repertoryListUserId,
 		repertoryActionStatus,
 		repertoryError,
-	} = useAppSelector((state) => state.repertory);
+	} = useSelector((state: TRootState) => state.repertory);
 
-	const { repertoryListPageBackup } = useAppSelector((state) => state.page);
+	const repertoryListPageBackup = useSelector((state: TRootState) => state.page.repertoryListPageBackup);
 	const { repertoryList: repertoryListBackup } = repertoryListPageBackup;
 
 	type TStep =
@@ -80,9 +79,9 @@ export const useRepertoryListPage = () => {
 		if (repertoryListStatus === SECURITY_STATUS.SHOULD_UPDATE) {
 			setStatus(steps.WITH_REPERTORY_LIST_1);
 			dispatch(
-				setRepertoryListStatus(
-					repertoryListUserId ? SECURITY_STATUS.PRIVATE : SECURITY_STATUS.PUBLIC
-				)
+				setRepertoryListStatus({
+					repertoryListStatus: repertoryListUserId ? SECURITY_STATUS.PRIVATE : SECURITY_STATUS.PUBLIC
+				})
 			);
 		} else if (userId && repertoryListUserId !== userId) {
 			setStatus(steps.FETCH_REPERTORY_LIST_1, { userId });
@@ -110,7 +109,7 @@ export const useRepertoryListPage = () => {
 			if (repertoryActionStatus === FETCH_STATUS.INITIAL) {
 				const { onlyAddPrivates, userId } = status.opts;
 				if (onlyAddPrivates && userId) {
-					dispatch(getRepertoryList({ userId, onlyAddPrivates }));
+					dispatch(getRepertoryList({ userId: 's', onlyAddPrivates: false }));
 					setRetrys(0);
 				}
 			} else if (repertoryActionStatus === FETCH_STATUS.SUCCESS) {
@@ -143,7 +142,7 @@ export const useRepertoryListPage = () => {
 			setFinalRepertoryList(currentRepertoryList);
 			if (!status.opts.isSameBackup && retrys !== MAX_RETRYS) {
 				dispatch(
-					setRepertoryListPageBackup({ repertoryList: currentRepertoryList })
+					setRepertoryListPageBackup({repertoryListPageBackup: { repertoryList: currentRepertoryList }})
 				);
 			}
 			setLoading(false);

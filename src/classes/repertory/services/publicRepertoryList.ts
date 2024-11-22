@@ -1,6 +1,6 @@
 import store from "../../../store";
-import { setDatabaseItem } from "../../database/actions";
-import { TPublicRepertoryDB, TRepertoryId } from "../types";
+import { setDatabaseItem } from "../../database/reducers";
+import { TPublicRepertoryDB, TRepertoryId } from "../types.d";
 
 export const getPublicRepertoryListDB = async () => {
 	const repertoryList = store.getState().database.publicRepertoryList;
@@ -31,11 +31,11 @@ export const createPublicRepertoryDB = async (p: {
 	if (!repertoryCreated) throw new Error("Invalid repertory ID.");
 
 	await store.dispatch(
-		setDatabaseItem (
-			"publicRepertoryList",
-			repertoryCreated.id,
-			repertoryCreated
-		)
+		setDatabaseItem({
+			category: "publicRepertoryList",
+			id: repertoryCreated.id,
+			item: repertoryCreated
+		})
 	);
 };
 

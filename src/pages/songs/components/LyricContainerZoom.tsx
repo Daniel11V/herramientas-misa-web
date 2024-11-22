@@ -1,9 +1,9 @@
 import { useState, ReactNode } from "react";
 import styled, { css } from "styled-components";
 
-const LyricContainerZoom = (p: {initialZoomed: boolean, children: ReactNode}) => {
+const LyricContainerZoom = (p: {initialZoomed?: boolean, children: ReactNode}) => {
 	const {initialZoomed, children} = p;
-	const [hasZoom, setHasZoom] = useState(initialZoomed);
+	const [hasZoom, setHasZoom] = useState<boolean>(!!initialZoomed);
 
 	return (
 		<LyricContainerBox hasZoom={hasZoom}>

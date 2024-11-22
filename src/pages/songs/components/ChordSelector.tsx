@@ -2,10 +2,11 @@
 import { allChordsOptions } from "../../../data/allChords";
 import ModalSelector from "./ModalSelector";
 import styled from "styled-components";
-import { TChord, TChordLang, TChordString } from "../types";
-import { TsetFunc } from "../../../utils/types";
+import { TChord, TChordLang, TChordString } from "../types.d";
+import { TsetFunc } from "../../../utils/types.d";
+import { FC } from "react";
 
-const ChordSelector: React.FC<{
+const ChordSelector: FC<{
 	selectedChord: TChord;
 	setSelectedChord: (chord: TChord) => void;
 	chordLang: TChordLang;

@@ -1,5 +1,25 @@
 import styled from "styled-components";
-import SelectorModal from "./SelectorModal";
+import SelectorModal, { TItem } from "./SelectorModal";
+import { ChangeEvent } from "react";
+import { TSong } from "../../../classes/song/types.d";
+
+export type TAuthorForm = {
+	name?: string
+	email?: string
+	photoUrl?: string
+}
+
+type TSongFormDescriptionProps = {
+	author: TItem,
+	setAuthor: (v: TItem) => void,
+	authorItems: TItem[],
+	authorForm: TAuthorForm,
+	setAuthorField: (field:string, value?:string) => void,
+	title: TSong["title"],
+	setTitle: (v?:TSong["title"]) => void,
+	annotations: TSong["annotations"],
+	setAnnotations: (v?:TSong["annotations"]) => void,
+}
 
 const SongFormDescription = ({
 	author,
@@ -11,7 +31,7 @@ const SongFormDescription = ({
 	setTitle,
 	annotations,
 	setAnnotations,
-}) => {
+}:TSongFormDescriptionProps) => {
 	return (
 		<>
 			<div className="row">
@@ -34,7 +54,7 @@ const SongFormDescription = ({
 							<input
 								id="authorName"
 								name="authorName"
-								onChange={(e) => setAuthorField("name", e.target.value)}
+								onChange={(e: ChangeEvent<HTMLInputElement>) => setAuthorField("name", e.target.value)}
 								type="text"
 								value={authorForm.name || ""}
 							/>
@@ -129,14 +149,14 @@ const AuthorPhotoField = styled.div.attrs({
 	}
 `;
 
-const AuthorPhotoUrl = styled.div<{ src: string }>`
+const AuthorPhotoUrl = styled.div<{ src?: string }>`
 	padding: 0 !important;
 	width: 50px !important;
 	height: 50px !important;
 	margin-left: 15px !important;
 	margin-top: -5px;
 	border-radius: 100%;
-	background-image: url(${(props) => props.src}),
+	background-image: url(${(props) => props.src ?? ""}),
 		url("https://cybergisxhub.cigi.illinois.edu/wp-content/uploads/2020/10/Portrait_Placeholder.png");
 	background-position: center;
 	background-repeat: no-repeat;

@@ -1,21 +1,21 @@
-import { produce } from "immer";
 import { testData } from "../../data/testData";
-import { TAuthorDB, TAuthorListDB } from "../author/types";
+import { TAuthorDB, TAuthorListDB } from "../author/types.d";
 import {
 	TPrivateSongLyricDB,
 	TPrivateSongTitleDB,
 	TPrivateSongTitleListDB,
 	TPublicSongLyricDB,
 	TPublicSongTitleDB,
-} from "../song/types";
+} from "../song/types.d";
 import {
 	TPrivateRepertoryDB,
 	TPrivateRepertoryListDB,
 	TPublicRepertoryDB,
 	TPublicRepertoryListDB,
-} from "../repertory/types";
-import { TUserDB, TUserListDB } from "../user/types";
+} from "../repertory/types.d";
+import { TUserDB, TUserListDB } from "../user/types.d";
 import { valid } from "../../utils/generalUtils";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export const types = {
 	SET_DATABASE: "SET_DATABASE",
@@ -49,36 +49,30 @@ export type TDatabaseItem =
 
 const initialState: TDatabaseState = { ...testData };
 
-export type TDatabaseAction = {
-	type: string;
-	payload?: Partial<TDatabaseState> & {
-		newDatabase?: TDatabaseState;
-		category?: TDatabaseCategory;
-		id?: string;
-		item?: TDatabaseItem;
-	};
-};
+const databaseSlice = createSlice({
+  name: 'database',
+  initialState,
+  reducers: {
+    setDatabase: (state, action: PayloadAction<{newDatabase: TDatabaseState}>) => {
+		state = valid(action.payload?.newDatabase, 'setDatabase');
+    },
+    setDatabaseItem: (state, action: PayloadAction<{category: TDatabaseCategory, id: string, item: TDatabaseItem}>) => {
+		let category = valid(action.payload?.category, 'setDatabaseItem');
+		let id = valid(action.payload?.id, 'setDatabaseItem');
+		let item = valid(action.payload?.item, 'setDatabaseItem');
+		state[category][id] = item;    
+	},
+    deleteDatabaseItem: (state, action: PayloadAction<{category: TDatabaseCategory, id: string}>) => {
+		let category = valid(action.payload?.category, 'deleteDatabaseItem');
+		let id = valid(action.payload?.id, 'deleteDatabaseItem');
+		delete state[category][id];
+	},
+  },
+});
 
-const DatabaseReducer = (
-	state = initialState,
-	{ type, payload }: TDatabaseAction
-) => {
-	return produce(state, (newState: TDatabaseState) => {
-		if (type === types.SET_DATABASE) {
-			newState = valid(payload?.newDatabase, type);
-		}
-		if (type === types.SET_DATABASE_ITEM) {
-			let category = valid(payload?.category, type);
-			let id = valid(payload?.id, type);
-			let item = valid(payload?.item, type);
-			newState[category][id] = item;
-		}
-		if (type === types.DELETE_DATABASE_ITEM) {
-			let category = valid(payload?.category, type);
-			let id = valid(payload?.id, type);
-			delete newState[category][id];
-		}
-	});
-};
-
-export default DatabaseReducer;
+export const { 
+	setDatabase,
+	setDatabaseItem,
+	deleteDatabaseItem,
+} = databaseSlice.actions;
+export default databaseSlice.reducer;

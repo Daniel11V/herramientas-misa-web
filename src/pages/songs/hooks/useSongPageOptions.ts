@@ -1,20 +1,22 @@
 import M from "materialize-css";
 import { useState } from "react";
-import { setSongPageOptions } from "../../../classes/user/actions";
 import { objsAreEqual } from "../../../utils/generalUtils";
-import { useDispatch } from "react-redux";
 import { TModalSelectorOpts } from "../components/ModalSelector";
-import { TChordLang } from "../types";
-import { useAppSelector } from "../../../store";
+import { TChordLang } from "../types.d";
+import { TRootState, useAppDispatch } from "../../../store";
+import { useSelector } from "react-redux";
+import { setUserSongPageOptions } from "../../../classes/user/reducers";
+
+export type TSongPageOptionsKeys = 'fontSize'|'showChords'|'chordLang'
 
 export const useSongPageOptions = () => {
-	const dispatch = useDispatch();
-	const { songPageOptions } = useAppSelector((state) => state.user.config);
+	const dispatch = useAppDispatch();
+	const songPageOptions = useSelector((state: TRootState) => state.user.config.songPageOptions);
 
 	const [areNewOptions, setAreNewOptions] = useState(false);
 	const [pageOptions, setPageOptions] = useState(songPageOptions);
 
-	const setPageOptionsField = (field: string, newVal: unknown) => {
+	const setPageOptionsField = (field: TSongPageOptionsKeys, newVal: unknown) => {
 		setPageOptions((lv) => {
 			if (lv[field] !== newVal) {
 				const newPageOptions = {
@@ -54,7 +56,7 @@ export const useSongPageOptions = () => {
 	]
 
 	const saveOptions = () => {
-		dispatch(setSongPageOptions(pageOptions));
+		dispatch(setUserSongPageOptions({songPageOptions: pageOptions}));
 		setAreNewOptions(false);
 		M.toast({ html: "Configuración Actualizada." });
 	};

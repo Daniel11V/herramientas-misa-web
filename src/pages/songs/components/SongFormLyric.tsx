@@ -1,12 +1,12 @@
 import M from "materialize-css";
-import { useCallback, useEffect } from "react";
+import { FC, useCallback, useEffect } from "react";
 
 interface Props {
 	lyric: string;
 	setLyric: (lyric: string) => void;
 }
 
-export const SongFormLyric: React.FC<Props> = ({ lyric, setLyric }) => {
+export const SongFormLyric: FC<Props> = ({ lyric, setLyric }) => {
 	const resizeForPreviousLyric = useCallback(() => {
 		if (lyric) {
 			const textarea = document.querySelector("#lyric");

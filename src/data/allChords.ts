@@ -1,4 +1,4 @@
-// import { TChordLang } from "../pages/songs/types";
+// import { TChordLang } from "../pages/songs/types.d";
 
 // type TAllChords = Record<TChordLang, {name: string; chords: string[];}[]>;
 
@@ -600,7 +600,10 @@ export const allChordsOptions2 = {
     }
 } as const;
 
-export const replaceBemols = {
+export const replaceBemols: {
+    es: Record<string, string>,
+    en: Record<string, string>,
+} = {
     es: {
         "REB": "DO#",
         "MIB": "RE#",

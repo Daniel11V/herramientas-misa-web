@@ -1,4 +1,14 @@
+import { TSong } from "../../../classes/song/types.d";
 import LabelsInput from "../../components/LabelsInput";
+
+type TSongFormExtraDetailsProps = {
+	labels: TSong["labels"],
+	setLabels: (lbs: TSong["labels"]) => void,
+	tempo?: TSong["tempo"],
+	setTempo: (v:TSong["tempo"]) => void,
+	pulse?: TSong["pulse"],
+	setPulse: (v:TSong["pulse"]) => void,
+}
 
 const SongFormExtraDetails = ({
 	labels,
@@ -7,7 +17,7 @@ const SongFormExtraDetails = ({
 	setTempo,
 	pulse,
 	setPulse,
-}) => {
+}:TSongFormExtraDetailsProps) => {
 	return (
 		<>
 			<div className="row">
@@ -46,7 +56,7 @@ const SongFormExtraDetails = ({
 				</label>
 			</div> */}
 			<div className="row">
-				<LabelsInput labels={labels} updateLabels={(lb) => setLabels(lb)} />
+				<LabelsInput labels={labels} updateLabels={setLabels} />
 			</div>
 		</>
 	);

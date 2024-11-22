@@ -1,5 +1,5 @@
 import { validBool, validString } from "../../utils/generalUtils";
-import { TRepertory } from "./types";
+import { TRepertory } from "./types.d";
 
 export const createTRepertory = ({
 	id,

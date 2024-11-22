@@ -1,4 +1,4 @@
-import { TChordLang } from "../../utils/types";
+import { TChordLang } from "../../utils/types.d";
 
 export type TUserId = string;
 

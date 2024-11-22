@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import M from "materialize-css";
 import axios from "../../axios";
-import SongList from "../songs/components/SongList";
 import fullLabels from "../../data/fullLabels";
+import SongCollection from "../components/SongCollection";
 
 const Suggestion = () => {
 	const [base, setBase] = useState("EvDom");
@@ -22,11 +22,12 @@ const Suggestion = () => {
 		}
 	}, []);
 
-	const searchSongs = async (e) => {
+	const searchSongs = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const res = await axios
 			.post("/api/suggestion", { base, input })
 			.catch((err) => console.error(err));
+		if(!res?.data) return
 		setTopSongs(res.data);
 		M.toast({ html: "Readings Updated" });
 		// fetchTopSongs();
@@ -86,8 +87,8 @@ const Suggestion = () => {
 									</tr>
 								</thead>
 							</table>
-							<SongList
-								songs={topSongs}
+							<SongCollection
+								songList={topSongs}
 								labelsStart={[moment]}
 								checking={true}
 							/>

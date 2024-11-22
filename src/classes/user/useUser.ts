@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
-import { setUserLoading, setDevice } from "./actions";
-import { useAppSelector } from "../../store";
-import { useDispatch } from "react-redux";
+import { setDevice, setUserLoading } from "./reducers";
+import { TRootState, useAppDispatch } from "../../store";
+import { useSelector } from "react-redux";
 
 export const useUser = () => {
-	const dispatch = useDispatch();
-	const { loading, error, isLogged, ...userData } = useAppSelector(
-		(state) => state.user
+	const dispatch = useAppDispatch();
+	const { loading, error, isLogged, ...userData } = useSelector(
+		(state: TRootState) => state.user
 	);
 
-	const [isFirstTime, setIsFirstTime] = useState(true);
+	const [isFirstLoad, setIsFirstLoad] = useState(true);
 
 	const getIsDesktop = (): boolean => {
 		// setIsDesktop(window.matchMedia("(min-width: 990px)").matches);
@@ -27,7 +27,7 @@ export const useUser = () => {
 	};
 
 	useEffect(() => {
-		if (isFirstTime) {
+		if (isFirstLoad) {
 			dispatch(setUserLoading(true));
 
 			window.addEventListener("resize", () => {
@@ -35,13 +35,13 @@ export const useUser = () => {
 			});
 			dispatch(setDevice(getIsDesktop()));
 
-			setIsFirstTime(false);
+			setIsFirstLoad(false);
 		}
 
 		return () => {
 			window.removeEventListener("resize", getIsDesktop);
 		};
-	}, [dispatch, isFirstTime]);
+	}, [dispatch, isFirstLoad]);
 
 	return { user: userData, loading, isLogged, error };
 };

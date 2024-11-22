@@ -1,11 +1,11 @@
 import store from "../../../store";
 import { deleteDatabaseItem, setDatabaseItem } from "../../database/reducers";
-import { TUserId } from "../../user/types";
+import { TUserId } from "../../user/types.d";
 import {
 	TPrivateSongTitleDB,
 	TPublicSongTitleDB,
 	TSongId,
-} from "../types";
+} from "../types.d";
 
 export const getPrivateSongTitleListDB = async (p: {
 	userId: string;
@@ -64,11 +64,11 @@ export const createPrivateSongTitleDB = async (p: {
 	const { songTitleCreated } = p;
 
 	await store.dispatch(
-		setDatabaseItem(
-			"privateSongTitleList",
-			songTitleCreated.id,
-			songTitleCreated
-		)
+		setDatabaseItem({
+			category: "privateSongTitleList",
+			id: songTitleCreated.id,
+			item: songTitleCreated
+		})
 	);
 };
 
@@ -77,13 +77,13 @@ export const editPrivateSongTitleDB = async (p: {
 }) => {
 	const { songTitleEdited } = p;
 	await store.dispatch(
-		setDatabaseItem("privateSongTitleList", songTitleEdited.id, songTitleEdited)
+		setDatabaseItem({category: "privateSongTitleList", id: songTitleEdited.id, item: songTitleEdited})
 	);
 	return;
 };
 
 export const deletePrivateSongTitleDB = async (p: { songTitleId: TSongId }) => {
 	const { songTitleId } = p;
-	await store.dispatch(deleteDatabaseItem("privateSongTitleList", songTitleId));
+	await store.dispatch(deleteDatabaseItem({category: "privateSongTitleList", id: songTitleId}));
 	return;
 };

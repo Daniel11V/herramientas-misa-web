@@ -1,5 +1,5 @@
-import { TCreator, TSong, TSongId } from "../song/types";
-import { TUserDB, TUserId } from "../user/types";
+import { TCreator, TSong, TSongId } from "../song/types.d";
+import { TUserDB, TUserId } from "../user/types.d";
 
 export type TRepertoryId = string;
 
@@ -19,11 +19,13 @@ export type TRepertory = {
 	creator: TCreator;
 	annotations?: string;
 	members?: Record<TUserId, TRepertoryMember>;
-	songSections: Array<{
-		name: string;
-		songs: TSongId[];
-	}>;
+	songSections: TSongSections;
 };
+
+export type TSongSections = Array<{
+	name: string;
+	songs: TSongId[];
+}>;
 
 export type TPublicRepertoryDB = Omit<TRepertory, "isPrivate">;
 
@@ -43,7 +45,20 @@ export type TRepertoryForm = Omit<TRepertory, "id" | "isPrivate">;
 
 export type TRepertoryList = Record<TRepertoryId, TRepertory>;
 
-export type TSongSections = Array<{
+export type TRepertoryTitles = {
+	id: TRepertoryId;
+	isPrivate: boolean;
+	title: string;
+	placeTitle: string;
+	placeUbication: string;
+	isMass: boolean;
+	creator: TCreator;
+	annotations?: string;
+	members?: Record<TUserId, TRepertoryMember>;
+	songSections: TSongSectionsTitle;
+};
+
+export type TSongSectionsTitle = Array<{
 	name: string;
 	songs: TSong[];
 }>;

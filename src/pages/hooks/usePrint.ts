@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import { errorMessage } from "../../utils/errors";
 
 export const usePrint = (pageTitle: string) => {
 	const [isLoadingPrint, setIsLoading] = useState(false);
 	const [errorPrint, setError] = useState<string | null>(null);
 
-	const handleClickPrint = (event: React.MouseEvent): void => {
+	const handleClickPrint = (event: MouseEvent): void => {
 		setIsLoading(true);
 		try {
 			event.stopPropagation();

@@ -4,15 +4,16 @@ import M from "materialize-css";
 import styled, { css } from "styled-components";
 import LoginLogoutBtn from "./components/LoginLogoutBtn";
 import { noSelectableText } from "../styles/styleUtils";
-import { useAppSelector } from "../store";
+import { useSelector } from "react-redux";
+import { TRootState } from "../store";
 
-const Navigation: React.FC = () => {
+const Navigation = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const [lastPage, setLastPage] = useState("");
-	const user = useAppSelector((state) => state.user.google);
-	const isDesktop = useAppSelector(
-		(state) => state.user.isDesktop
+	const [lastPage, setLastPage] = useState<string>("");
+	const user = useSelector((state: TRootState) => state.user.google);
+	const isDesktop = useSelector(
+		(state: TRootState) => state.user.isDesktop
 	);
 
 	useEffect(() => {

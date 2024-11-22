@@ -1,8 +1,8 @@
 import M from "materialize-css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FC, MouseEvent } from "react";
 import styled, { css } from "styled-components";
 import { arrayIsEmpty } from "../../../utils/generalUtils";
-import { TsetFunc } from "../../../utils/types";
+import { TsetFunc } from "../../../utils/types.d";
 
 export type TModalSelectorOpts = Array<{
 	type: string,
@@ -16,7 +16,7 @@ interface Props {
 	selectedItem: string,
 	setSelectedItem: TsetFunc<string>,
 	items: TModalSelectorOpts
-	label: string,
+	label?: string,
 	modalTitle: string,
 	hasCategories?: boolean,
 	modalId: string,
@@ -25,7 +25,7 @@ interface Props {
 	initialSelectedItemLabel?: string,
 }
 
-const ModalSelector: React.FC<Props> = ({
+const ModalSelector: FC<Props> = ({
 	selectedItem,
 	setSelectedItem,
 	items,
@@ -70,12 +70,12 @@ const ModalSelector: React.FC<Props> = ({
 		};
 	}, [modalInstanceId]);
 
-	const handleSelectorClick = (event: React.MouseEvent): void => {
+	const handleSelectorClick = (event: MouseEvent): void => {
 		event.stopPropagation();
 		modalInstance?.open();
 	};
 
-	const handleItemClick = (event: React.MouseEvent, itemValue: string): void => {
+	const handleItemClick = (event: MouseEvent, itemValue: string): void => {
 		event.stopPropagation();
 		setSelectedItem(itemValue);
 		modalInstance?.close();

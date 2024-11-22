@@ -2,13 +2,13 @@ import { Fragment } from "react";
 import LoginLogoutBtn from "../../layout/components/LoginLogoutBtn";
 import { useNavigate } from "react-router";
 import RepertoryList from "./components/RepertoryList";
-import { login } from "../../classes/user/actions";
 import { useRepertoryListPage } from "./hooks/useRepertoryListPage";
 import { Header } from "../../styles/styles";
-import { TUserGoogle } from "../../classes/user/types";
+import { TUserGoogle } from "../../classes/user/types.d";
 import ButtonLink from "../components/ButtonLink";
-import { useAppSelector } from "../../store";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { TRootState, useAppDispatch } from "../../store";
+import { login } from "../../classes/user/reducers";
 
 const RepertoryListPage = () => {
 	const {
@@ -17,11 +17,11 @@ const RepertoryListPage = () => {
 		error: errorRepertoryList,
 	} = useRepertoryListPage();
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
-	const isLogged = useAppSelector((state) => state.user.isLogged);
+	const dispatch = useAppDispatch();
+	const isLogged = useSelector((state: TRootState) => state.user.isLogged);
 
 	const loginAddSong = (userData: TUserGoogle) => {
-		dispatch(login(userData));
+		dispatch(login({googleInfo:userData}));
 		navigate("/create-repertory", { state: { from: "Repertorios" } });
 	};
 

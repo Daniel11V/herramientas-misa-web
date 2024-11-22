@@ -2,10 +2,8 @@
 // import { db } from "../../database/firebase"
 // import * as FileSystem from 'expo-file-system'
 // import { database } from "../../data/database.js";
-import { objsAreEqual } from "../../utils/generalUtils.js";
+import { arrayIsEmpty, getRating, objsAreEqual } from "../../utils/generalUtils.js";
 import { getLyricStart } from "../../utils/lyricsAndChordsUtils.js";
-import { TSecurityStatus } from "../../utils/types.js";
-import { setSongPageBackupSong } from "../page/actions.js";
 import {
 	createPrivateSongLyricDB,
 	deletePrivateSongLyricDB,
@@ -36,127 +34,247 @@ import {
 	TSong,
 	TSongForm,
 	TSongId,
+	TSongLevel,
+	TSongList,
 	TSongOptions,
-} from "./types.js";
-import { TUserId } from "../user/types.js";
-import { TDispatch, TStoreState } from "../../store.js";
+	TVersionGroupId,
+	TVersionGroups,
+} from "./types.d";
+import { TUserId } from "../user/types.d";
 import {
 	createTPrivateSongTitleDB,
 	createTPublicSongTitleDB,
 	createTSong,
 } from "./createTypes.js";
 import { errorMessage } from "../../utils/errors.js";
+import { setSongPageBackupSong } from "../page/reducers.js";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { TRootState } from "../../store.js";
+import { createSongFailure, createSongLoading, createSongSuccess, deleteSongFailure, deleteSongLoading, deleteSongSuccess, editSongFailure, editSongLoading, editSongSuccess, fetchSongFailure, getSongListFailure, getSongListLoading, getSongListSuccess, fetchSongLoading, fetchSongSuccess, publishSongFailure, publishSongLoading, publishSongSuccess } from "./reducers.js";
 
-export const types = {
-	RESET_SONG_REQUEST_STATUS: "RESET_SONG_REQUEST_STATUS",
+const groupBySongVersions = async (songList: TSong[], userId?: TUserId) => {
+	const versionGroups: TVersionGroups = {};
 
-	SET_SONG_LIST_STATUS: "SET_SONG_LIST_STATUS",
+	const mainLevel = (level: TSongLevel) =>
+		Object.keys(level || {}).reduce(
+			(newMainLevel, levelType) => newMainLevel + level[levelType],
+			0
+		);
 
-	FETCH_SONG_LIST: "FETCH_SONG_LIST",
-	FETCH_SONG_LIST_SUCCESS: "FETCH_SONG_LIST_SUCCESS",
-	FETCH_SONG_LIST_FAILURE: "FETCH_SONG_LIST_FAILURE",
+	const swapMoreRated = (newSongId: TSongId, versionGroupId: TVersionGroupId) => {
+		const lastMoreRatedSongId = versionGroups[versionGroupId].moreRated;
+		versionGroups[versionGroupId].moreRated = newSongId;
+		versionGroups[versionGroupId].versions.push(lastMoreRatedSongId);
+	};
 
-	SET_SONG_STATUS: "SET_SONG_STATUS",
+	songList.forEach((song) => {
+		const currentVersionGroup = versionGroups[song.versionGroupId]
+		if (currentVersionGroup) {
+			const currentSongVersion =
+				songList.find(s => s.id === currentVersionGroup.moreRated);
+			const currentMaxLevel =
+				currentVersionGroup.maxLevel || 0;
 
-	FETCH_SONG: "FETCH_SONG",
-	FETCH_SONG_SUCCESS: "FETCH_SONG_SUCCESS",
-	FETCH_SONG_FAILURE: "FETCH_SONG_FAILURE",
-
-	// FETCH_SONG_TITLE: "FETCH_SONG_TITLE",
-	// FETCH_SONG_TITLE_SUCCESS: "FETCH_SONG_TITLE_SUCCESS",
-	// FETCH_SONG_TITLE_FAILURE: "FETCH_SONG_TITLE_FAILURE",
-
-	CREATE_SONG: "CREATE_SONG",
-	CREATE_SONG_SUCCESS: "CREATE_SONG_SUCCESS",
-	CREATE_SONG_FAILURE: "CREATE_SONG_FAILURE",
-
-	EDIT_SONG: "EDIT_SONG",
-	EDIT_SONG_SUCCESS: "EDIT_SONG_SUCCESS",
-	EDIT_SONG_FAILURE: "EDIT_SONG_FAILURE",
-
-	PUBLISH_SONG: "PUBLISH_SONG",
-	PUBLISH_SONG_SUCCESS: "PUBLISH_SONG_SUCCESS",
-	PUBLISH_SONG_FAILURE: "PUBLISH_SONG_FAILURE",
-
-	DELETE_SONG: "DELETE_SONG",
-	DELETE_SONG_SUCCESS: "DELETE_SONG_SUCCESS",
-	DELETE_SONG_FAILURE: "DELETE_SONG_FAILURE",
-} as const;
-
-export const resetSongRequestStatus = () => ({
-	type: types.RESET_SONG_REQUEST_STATUS,
-});
-export const setSongListStatus = (songListStatus: TSecurityStatus) => ({
-	type: types.SET_SONG_LIST_STATUS,
-	payload: { songListStatus },
-});
-export const setSongStatus = (songStatus: TSecurityStatus) => ({
-	type: types.SET_SONG_LIST_STATUS,
-	payload: { songStatus },
-});
-
-// Thunks
-
-export const getSongList = (p: {
-	userId?: TUserId;
-	onlyAddPrivates?: boolean;
-}) => {
-	const { userId, onlyAddPrivates = false } = p;
-
-	return async (dispatch: TDispatch, getState: () => TStoreState) => {
-		try {
-			dispatch({
-				type: types.FETCH_SONG_LIST,
-			});
-			//////////////////////////////////////
-			let publicSongTitleList;
-			if (onlyAddPrivates) {
-				publicSongTitleList = getState().song.songList;
+			if (
+				song.creator.id === userId &&
+				mainLevel(song.level) > currentMaxLevel
+			) {
+				swapMoreRated(song.id, song.versionGroupId);
+				versionGroups[song.versionGroupId].maxLevel = mainLevel(
+					song.level
+				);
+			} else if (
+				getRating(song.rating) > getRating(currentSongVersion?.rating)
+			) {
+				swapMoreRated(song.id, song.versionGroupId);
 			} else {
-				publicSongTitleList = await getPublicSongTitleListDB();
+				versionGroups[song.versionGroupId].versions.push(song.id);
 			}
+		} else {
+			versionGroups[song.versionGroupId] = {
+				moreRated: song.id,
+				maxLevel: song.creator.id === userId ? mainLevel(song.level) : 0,
+				versions: [],
+			};
+		}
+	});
+	
+	return songList.filter(
+		(song) => versionGroups[song?.versionGroupId]?.moreRated === song.id
+	);
+}
+
+const sortAlphabetically = (songList: TSong[]) => songList.sort((a, b) => a.title.localeCompare(b.title));
+
+
+export const getSongList = createAsyncThunk<void,void,{ state: TRootState }>(
+	'song/getSongList', async (_, { getState, dispatch }) => {
+		try {
+			dispatch(getSongListLoading());
+			//////////////////////////////////////
+			const userId = getState().user.google.id
+			const publicSongTitleList = await getPublicSongTitleListDB();
+
 			const userPrivateSongTitleList = userId
 				? await getPrivateSongTitleListDB({
 						userId,
-				  })
+					})
 				: {};
 
-			const songList = {
-				...(publicSongTitleList || {}),
-				...(userPrivateSongTitleList || {}),
-			};
+			let songList: TSong[] = [
+				...Object.values(publicSongTitleList || {}),
+				...Object.values(userPrivateSongTitleList || {}),
+			];
 
+			if (songList.length > 1) {
+				songList = await groupBySongVersions(songList)
+				songList = sortAlphabetically(songList)
+			}
+			
 			//////////////////////////////////////
-			dispatch({
-				type: types.FETCH_SONG_LIST_SUCCESS,
-				payload: { songList, userId },
-			});
+			dispatch(getSongListSuccess({ songList, userId }))
 		} catch (error) {
 			console.warn(error);
-			dispatch({
-				type: types.FETCH_SONG_LIST_FAILURE,
-				payload: { error: errorMessage(error), userId },
-			});
+			// return rejectWithValue({error: `GetSongList Error ${error || ''}`, userId})
+			dispatch(getSongListFailure({ error: errorMessage(error) }))
 		}
-	};
-};
+		
+	}
+);
 
-export const getSong = (p: { userId: TUserId; songTitleId: TSongId }) => {
-	const { userId, songTitleId } = p;
-	return async (dispatch: TDispatch, getState: () => TStoreState) => {
+export const updateSongInSongList = createAsyncThunk<void,{song: TSong; userId?: TUserId;},{state: TRootState}>(
+	'song/getNewSongList',async ({ song, userId }, { getState, dispatch }) => {
+
 		try {
-			dispatch({
-				type: types.FETCH_SONG,
-			});
+			dispatch(getSongListLoading());
+			//////////////////////////////////////
+			let currentSongList = [...(getState().song.songList)]
+
+			const songIndex = currentSongList.findIndex( s => s.id === song.id );
+			if (songIndex) currentSongList.splice( songIndex, 1 );
+			currentSongList.push(song)
+			
+			if (currentSongList.length > 1) {
+				currentSongList = await groupBySongVersions(currentSongList)
+				currentSongList = sortAlphabetically(currentSongList)
+			}
+			
+			//////////////////////////////////////
+			dispatch(getSongListSuccess({ songList: currentSongList, userId }))
+		} catch (error) {
+			console.warn(error);
+			// return rejectWithValue({error: `GetSongList Error ${error || ''}`, userId})
+			dispatch(getSongListFailure({ error: errorMessage(error) }))
+		}
+		
+	}
+);
+
+// export const getSongList = createAsyncThunk<
+// 	void,
+// 	{ userId?: TUserId;	onlyAddPrivates?: boolean },
+// 	{ state: TRootState }>(
+// 	'song/getSongList',
+// 	async (
+// 		{ userId, onlyAddPrivates = false }, 
+// 		{ 
+// 			getState, 
+// 			dispatch, 
+// 			// rejectWithValue 
+// 		}
+// 	) => {
+
+// 		try {
+// 			dispatch(getSongListLoading());
+// 			//////////////////////////////////////
+// 			let publicSongTitleList;
+// 			if (onlyAddPrivates) {
+// 				publicSongTitleList = getState().song.songList;
+// 			} else {
+// 				publicSongTitleList = await getPublicSongTitleListDB();
+// 			}
+// 			const userPrivateSongTitleList = userId
+// 				? await getPrivateSongTitleListDB({
+// 						userId,
+// 					})
+// 				: {};
+
+// 			const songList: TSongList = {
+// 				...(publicSongTitleList || {}),
+// 				...(userPrivateSongTitleList || {}),
+// 			};
+
+// 			//////////////////////////////////////
+// 			dispatch(getSongListSuccess({ songList, userId }))
+// 		} catch (error) {
+// 			console.warn(error);
+// 			// return rejectWithValue({error: `GetSongList Error ${error || ''}`, userId})
+// 			dispatch(getSongListFailure({ error: errorMessage(error), userId }))
+// 		}
+		
+// 	}
+// );
+
+// Thunks
+// export const getSongList = (p: {
+// 	userId?: TUserId;
+// 	onlyAddPrivates?: boolean;
+// }) => {
+// 	const { userId, onlyAddPrivates = false } = p;
+
+// 	return async (dispatch: TDispatch, getState: () => TStoreState) => {
+// 		try {
+// 			dispatch({
+// 				type: types.FETCH_SONG_LIST,
+// 			});
+// 			//////////////////////////////////////
+// 			let publicSongTitleList;
+// 			if (onlyAddPrivates) {
+// 				publicSongTitleList = getState().song.songList;
+// 			} else {
+// 				publicSongTitleList = await getPublicSongTitleListDB();
+// 			}
+// 			const userPrivateSongTitleList = userId
+// 				? await getPrivateSongTitleListDB({
+// 						userId,
+// 				  })
+// 				: {};
+
+// 			const songList = {
+// 				...(publicSongTitleList || {}),
+// 				...(userPrivateSongTitleList || {}),
+// 			};
+
+// 			//////////////////////////////////////
+// 			dispatch({
+// 				type: types.FETCH_SONG_LIST_SUCCESS,
+// 				payload: { songList, userId },
+// 			});
+// 		} catch (error) {
+// 			console.warn(error);
+// 			dispatch({
+// 				type: types.FETCH_SONG_LIST_FAILURE,
+// 				payload: { error: errorMessage(error), userId },
+// 			});
+// 		}
+// 	};
+// };
+
+export const getSong = createAsyncThunk<void, 
+	{ userId: TUserId; songTitleId: TSongId },{ state: TRootState }>(
+		'song/getSong', async (
+		{ userId, songTitleId }, { getState, dispatch }
+	) => {
+		try {
+			dispatch(fetchSongLoading());
+
 			//////////////////////////////
 
-			let songTitle = getState().song.songList[songTitleId] || null;
-			if (!songTitle)
-				songTitle = await getPrivateSongTitleDB({
-					userId,
-					songTitleId,
-					hasInvitation: true,
-				});
+			let	songTitle: TSong = await getPrivateSongTitleDB({
+				userId,
+				songTitleId,
+				hasInvitation: true,
+			});
 			if (!songTitle) songTitle = await getPublicSongTitleDB({ songTitleId });
 			if (!songTitle) throw new Error("Song not found (Title).");
 
@@ -176,19 +294,17 @@ export const getSong = (p: { userId: TUserId; songTitleId: TSongId }) => {
 			const song = { ...songTitle, ...songLyric };
 
 			//////////////////////////////
-			dispatch({
-				type: types.FETCH_SONG_SUCCESS,
-				payload: { song, userId },
-			});
+			dispatch(fetchSongSuccess({ song, userId }))
+			
+			dispatch(updateSongInSongList({ song, userId }))
+			
 		} catch (error) {
 			console.warn(error);
-			dispatch({
-				type: types.FETCH_SONG_FAILURE,
-				payload: { error: errorMessage(error) },
-			});
+			dispatch(fetchSongFailure({ error: errorMessage(error) }))
 		}
-	};
-};
+	}
+);
+
 
 // export const getSongTitle = (p: { userId: TUserId; songTitleId: TSongId }) => {
 // 	const { userId, songTitleId } = p;
@@ -233,17 +349,16 @@ export const getSong = (p: { userId: TUserId; songTitleId: TSongId }) => {
 // 	};
 // };
 
-export const createSong = (p: { songCreated: TSongForm }) => {
-	const { songCreated } = p;
+export const createSong = createAsyncThunk<void, { songCreated: TSongForm }>(
+	'song/createSong',
+	async ({ songCreated }, { dispatch }) => {
 
-	// Siempre que se cree una canción por el momento se creará como privada y luego se podra publicar
-	// Primero se crea el Lyric y luego el Title, colocando acá el id del Lyric y si es publico o privado.
+		// Siempre que se cree una canción por el momento se creará como privada y luego se podra publicar
+		// Primero se crea el Lyric y luego el Title, colocando acá el id del Lyric y si es publico o privado.
 
-	return async (dispatch: TDispatch) => {
 		try {
-			dispatch({
-				type: types.CREATE_SONG,
-			});
+			dispatch(createSongLoading());
+
 			//////////////////////////////////////
 
 			const { lyric, ...songTitle } = songCreated;
@@ -288,31 +403,25 @@ export const createSong = (p: { songCreated: TSongForm }) => {
 			};
 
 			//////////////////////////////////////
-			dispatch({
-				type: types.CREATE_SONG_SUCCESS,
-				payload: { songCreated: newSongCreatedByDB },
-			});
+			dispatch(createSongSuccess({ songCreated: newSongCreatedByDB }))
 		} catch (error) {
 			console.warn(error);
-			dispatch({
-				type: types.CREATE_SONG_FAILURE,
-				payload: { error: errorMessage(error) },
-			});
+			dispatch(createSongFailure({ error: errorMessage(error) }))
 		}
-	};
-};
+	}
+);
 
-export const editSong = (p: { songEdited: TSong; saveAsPublic?: boolean }) => {
-	const { songEdited, saveAsPublic = false } = p;
+export const editSong = createAsyncThunk<void, 
+	{ songEdited: TSong; saveAsPublic?: boolean }>(
+		'song/editSong', async (
+		{ songEdited, saveAsPublic = false}, { dispatch }
+	) => {
 	// Siempre que se edite una canción publica (incluso si es propia)
 	// ... se creará una version privada privada que luego se podra publicar
 	// Si ya era privada simplemente se actualiza
-
-	return async (dispatch: TDispatch) => {
 		try {
-			dispatch({
-				type: types.EDIT_SONG,
-			});
+			dispatch(editSongLoading());
+
 			//////////////////////////////////////
 
 			const { lyric, privateAccess, ...songTitleEdited } = songEdited;
@@ -342,21 +451,18 @@ export const editSong = (p: { songEdited: TSong; saveAsPublic?: boolean }) => {
 			}
 
 			//////////////////////////////////////
-			dispatch({
-				type: types.EDIT_SONG_SUCCESS,
-				payload: { songEdited },
-			});
+			dispatch(editSongSuccess({ songEdited }))
 		} catch (error) {
 			console.warn(error);
-			dispatch({
-				type: types.EDIT_SONG_FAILURE,
-				payload: { error: errorMessage(error) },
-			});
+			dispatch(editSongFailure({ error: errorMessage(error) }))
 		}
-	};
-};
-export const saveSongOptions = () => {
-	return async (dispatch: TDispatch, getState: () => TStoreState) => {
+	}
+);
+	
+	
+export const saveSongOptions = createAsyncThunk<void, void, { state: TRootState }>(
+		'song/saveSongOptions', async (_, { getState, dispatch }
+	) => {
 		try {
 			const userId = getState().user.google.id;
 			const { lyric, ...songTitle } = getState().song.song;
@@ -388,32 +494,27 @@ export const saveSongOptions = () => {
 
 					const song = createTSong({ ...songTitleEdited, lyric });
 
-					dispatch({
-						type: types.EDIT_SONG_SUCCESS,
-						payload: { songEdited: song },
-					});
-					dispatch(setSongPageBackupSong(song));
+					dispatch(editSongSuccess({ songEdited: song }))
+					dispatch(setSongPageBackupSong({song}));
 				}
 			}
 
 			//////////////////////////////////////
 		} catch (error) {
 			console.warn(error);
-			dispatch({
-				type: types.EDIT_SONG_FAILURE,
-				payload: { error: errorMessage(error) },
-			});
+			// dispatch(editSongFailure({ error: errorMessage(error) }))
 		}
-	};
-};
+	}
+)
 
-export const publishSong = (p: { privateSongId: TSongId }) => {
-	const { privateSongId } = p;
-	return async (dispatch: TDispatch) => {
+export const publishSong = createAsyncThunk<void, 
+	{ privateSongId: TSongId }>(
+		'song/publishSong', async (
+		{ privateSongId }, { dispatch }
+	) => {
 		try {
-			dispatch({
-				type: types.PUBLISH_SONG,
-			});
+			dispatch(publishSongLoading());
+
 			//////////////////////////////////////
 
 			// Se copia el PrivateTitleSong y se pega en public
@@ -452,30 +553,22 @@ export const publishSong = (p: { privateSongId: TSongId }) => {
 			});
 
 			//////////////////////////////////////
-			dispatch({
-				type: types.PUBLISH_SONG_SUCCESS,
-				payload: { songCreated: newSongCreatedByDB },
-			});
+			dispatch(publishSongSuccess({ songCreated: newSongCreatedByDB }))
 		} catch (error) {
 			console.warn(error);
-			dispatch({
-				type: types.PUBLISH_SONG_FAILURE,
-				payload: { error: errorMessage(error) },
-			});
+			dispatch(publishSongFailure({ error: errorMessage(error) }))
 		}
-	};
-};
+	}
+)
 
-export const deleteSong = (p: {
-	songDeletedId: TSongId;
-	isPrivate?: boolean;
-}) => {
-	const { songDeletedId, isPrivate = false } = p;
-	return async (dispatch: TDispatch) => {
+export const deleteSong = createAsyncThunk<void, 
+	{ songDeletedId: TSongId; isPrivate?: boolean; }>(
+		'song/deleteSong', async (
+		{ songDeletedId, isPrivate = false}, { dispatch }
+	) => {
 		try {
-			dispatch({
-				type: types.DELETE_SONG,
-			});
+			dispatch(deleteSongLoading());
+
 			//////////////////////////////////////
 
 			if (isPrivate) {
@@ -487,16 +580,10 @@ export const deleteSong = (p: {
 			}
 
 			//////////////////////////////////////
-			dispatch({
-				type: types.DELETE_SONG_SUCCESS,
-				payload: { songDeletedId },
-			});
+			dispatch(deleteSongSuccess({ songDeletedId }))
 		} catch (error) {
 			console.warn(error);
-			dispatch({
-				type: types.DELETE_SONG_FAILURE,
-				payload: { error: errorMessage(error) },
-			});
+			dispatch(deleteSongFailure({ error: errorMessage(error) }))
 		}
-	};
-};
+	}
+)

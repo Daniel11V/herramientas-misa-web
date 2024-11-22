@@ -1,6 +1,6 @@
 import store from "../../../store";
 import { setDatabaseItem } from "../../database/reducers";
-import { TUserDB, TUserId } from "../types";
+import { TUserDB, TUserId } from "../types.d";
 
 export const getUserListDB = async (): Promise<
 	Record<TUserId, TUserDB>
@@ -34,7 +34,7 @@ export const createUserDB = async (p: {
 	if (!userCreated?.id) throw new Error("Invalid user ID.");
 
 	await store.dispatch(
-		setDatabaseItem("userList", userCreated.id, userCreated)
+		setDatabaseItem({category: "userList", id: userCreated.id, item: userCreated})
 	);
 };
 

@@ -1,6 +1,7 @@
-import { TsetFunc } from "../../../utils/types";
+import { FC, FormEventHandler } from "react";
+import { TsetFunc } from "../../../utils/types.d";
 
-const RepertoryFormDescription: React.FC<{
+const RepertoryFormDescription: FC<{
 	title?: string;
 	setTitle: TsetFunc<string>;
 	placeTitle?: string;
@@ -21,7 +22,7 @@ const RepertoryFormDescription: React.FC<{
 	setAnnotations,
 	setIsMass,
 }) => {
-	const handleChangeIsMass: React.FormEventHandler<HTMLLabelElement> = (
+	const handleChangeIsMass: FormEventHandler<HTMLLabelElement> = (
 		event
 	) => {
 		setIsMass((event.target as HTMLInputElement).value === "true");

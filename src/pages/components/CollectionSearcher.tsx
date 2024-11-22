@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import M from "materialize-css";
 import styled from "styled-components";
 import LabelsInput from "./LabelsInput";
 import { CollectionItem } from "../../styles/styles";
 import { colors } from "../../styles/styleUtils";
-import { TsetFunc } from "../../utils/types";
-import { TSong } from "../../classes/song/types";
+import { TsetFunc } from "../../utils/types.d";
+import { TSong } from "../../classes/song/types.d";
 
-export const CollectionSearcher: React.FC<{
+export const CollectionSearcher: FC<{
 	searchInput: string;
 	setSearchInput: TsetFunc<string>;
 	labels: TSong["labels"];
@@ -47,7 +47,7 @@ export const CollectionSearcher: React.FC<{
 	}, [showFilters, filterSelectors]);
 
 	return (
-		<CollectionSearcherStyle showFilters={showFilters}>
+		<CollectionSearcherStyle $showFilters={showFilters}>
 			<div>
 				<SearchIcon htmlFor="search-input" onClick={handleClickSearchLyric}>
 					<i className="material-icons">search</i>
@@ -95,13 +95,13 @@ const FilterBtn = styled.div`
 
 const CollectionSearcherStyle = styled(CollectionItem).attrs({
 	className: "nav-wrapper",
-})<{ showFilters: boolean }>`
+})<{ $showFilters: boolean }>`
 	padding: 0 !important;
 	padding-right: 0 !important;
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
 	border-bottom: ${(props) =>
-		props.showFilters ? "1px solid #e0e0e0" : "3px solid #1976d2"} !important;
+		props.$showFilters ? "1px solid #e0e0e0" : "3px solid #1976d2"} !important;
 	display: block !important;
 
 	> div {

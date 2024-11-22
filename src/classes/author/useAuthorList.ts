@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { getAuthorList } from "./actions";
-import { useAppSelector } from "../../store";
-import { FETCH_STATUS } from "../../utils/types";
-import { useDispatch } from "react-redux";
+import { TRootState, useAppDispatch } from "../../store";
+import { FETCH_STATUS } from "../../utils/types.d";
+import { useSelector } from "react-redux";
 
 export const useAuthorList = () => {
-	const dispatch = useDispatch();
-	const { authorList, authorStatus, authorError } = useAppSelector(
-		(state) => state.author
+	const dispatch = useAppDispatch();
+	const { authorList, authorStatus, authorError } = useSelector(
+		(state: TRootState) => state.author
 	);
 	const [isLoading, setIsLoading] = useState(false);
 

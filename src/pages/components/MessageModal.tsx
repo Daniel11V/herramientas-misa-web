@@ -1,13 +1,16 @@
 import M from "materialize-css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FC, MouseEvent } from "react";
 import styled from "styled-components";
 
-const MessageModal: React.FC<{
+export type TMessageModalOpts = {
 	title?: string;
 	message?: string;
 	onCancel?: () => void;
 	onConfirm?: () => void;
-}> = ({ title, message, onCancel, onConfirm }) => {
+}
+
+const MessageModal: FC<{opts: TMessageModalOpts}> = ({opts}) => {
+	const { title, message, onCancel, onConfirm } = opts
 	const [modalInstance, setModalInstance] = useState<M.Modal | null>(null);
 
 	useEffect(() => {
@@ -32,7 +35,7 @@ const MessageModal: React.FC<{
 		}
 	}, [title, message, modalInstance]);
 
-	const closeModal = (event: React.MouseEvent): void => {
+	const closeModal = (event: MouseEvent): void => {
 		event.stopPropagation();
 		modalInstance?.close();
 	};

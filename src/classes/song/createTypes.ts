@@ -5,8 +5,8 @@ import {
 	validRecord,
 	validString,
 } from "../../utils/generalUtils";
-import { TUserDB, TUserId } from "../user/types";
-import { TPrivateSongTitleDB, TPublicSongTitleDB, TSong } from "./types";
+import { TUserDB, TUserId } from "../user/types.d";
+import { TPrivateSongTitleDB, TPublicSongTitleDB, TSong } from "./types.d";
 
 export const createTSong = ({
 	id,

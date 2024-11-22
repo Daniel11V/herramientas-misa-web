@@ -48,7 +48,7 @@ const RepertoryPage = () => {
 			<Header>
 				<h4>{repertory.title}</h4>
 			</Header>
-			{songSections?.map(({ name, songs }) => (
+			{/* {songSections?.map(({ name, songs }) => (
 				<div key={name}>
 					<h6>{name}</h6>
 					<SongCollection
@@ -58,7 +58,7 @@ const RepertoryPage = () => {
 						pageName="Repertorio"
 					/>
 				</div>
-			))}
+			))} */}
 			{/* {repertory.creator?.name && (
 				<span style={{ fontStyle: "italic" }}>
 					Transcripción hecha por {repertory.creator.name}

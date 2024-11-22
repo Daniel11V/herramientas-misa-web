@@ -1,6 +1,6 @@
 import store from "../../../store";
-import { setDatabaseItem } from "../../database/actions";
-import { TAuthorDB, TAuthorId } from "../types";
+import { setDatabaseItem } from "../../database/reducers";
+import { TAuthorDB, TAuthorId } from "../types.d";
 
 export const getAuthorListDB = async (): Promise<
 	Record<TAuthorId, TAuthorDB>
@@ -34,7 +34,7 @@ export const createAuthorDB = async (p: {
 	if (!authorCreated?.id) throw new Error("Invalid author ID.");
 
 	await store.dispatch(
-		setDatabaseItem("authorList", authorCreated.id, authorCreated)
+		setDatabaseItem({category: "authorList", id: authorCreated.id, item: authorCreated})
 	);
 };
 

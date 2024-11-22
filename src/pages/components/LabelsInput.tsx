@@ -1,12 +1,11 @@
-import { useEffect } from "react";
+import { FC, useEffect } from "react";
 import M from "materialize-css";
 import fullLabels from "../../data/fullLabels";
-import { TSong } from "../../classes/song/types";
-import { TsetFunc } from "../../utils/types";
+import { TSong } from "../../classes/song/types.d";
 
-const LabelsInput: React.FC<{
+const LabelsInput: FC<{
 	labels: TSong["labels"];
-	updateLabels: TsetFunc<TSong["labels"]>;
+	updateLabels: (lbs: TSong["labels"]) => void;
 }> = ({ labels = [], updateLabels }) => {
 	useEffect(() => {
 		const elems = document.querySelectorAll("select");
@@ -74,7 +73,12 @@ const LabelsInput: React.FC<{
 							{type.ask}
 						</option>
 						{Object.keys(type.lbs).map((label, k) => (
-							<option key={k} className="label" value={label}>
+							<option 
+								key={k} 
+								className="label" 
+								value={label} 
+								// style={labels.includes(label) ? {fontWeight: '500', color: 'dodgerblue'} : {}}
+								>
 								{type.lbs[label]}
 							</option>
 						))}

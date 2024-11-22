@@ -1,29 +1,13 @@
-import { Dispatch, applyMiddleware, combineReducers, createStore } from "redux";
-
-import thunk from "redux-thunk";
-import { composeWithDevTools } from "redux-devtools-extension";
+// import { Dispatch, applyMiddleware, combineReducers, createStore } from "redux";
+import { configureStore } from "@reduxjs/toolkit";
 import DatabaseReducer from "./classes/database/reducers";
-import PageReducer, {
-	TPageActionType,
-	TPageSelectedActionPayload,
-} from "./classes/page/reducers";
-import UserReducer, {
-	TUserActionType,
-	TUserSelectedActionPayload,
-} from "./classes/user/reducers";
-import SongReducer, {
-	TSongActionType,
-	TSongSelectedActionPayload,
-} from "./classes/song/reducers";
-import AuthorReducer, {
-	TAuthorActionType,
-	TAuthorSelectedActionPayload,
-} from "./classes/author/reducers";
-import RepertoryReducer, {
-	TRepertoryActionType,
-	TRepertorySelectedActionPayload,
-} from "./classes/repertory/reducers";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import PageReducer from "./classes/page/reducers";
+import UserReducer from "./classes/user/reducers";
+import SongReducer from "./classes/song/reducers";
+import AuthorReducer from "./classes/author/reducers";
+import RepertoryReducer from "./classes/repertory/reducers";
+import { thunk } from "redux-thunk";
+import { useDispatch } from "react-redux";
 
 // https://typescript.hotexamples.com/examples/redux/-/combineReducers/typescript-combinereducers-function-examples.html
 // import { syncHistoryWithStore, routerReducer, routerMiddleware, push, replace } from 'react-router-redux';
@@ -56,21 +40,24 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 //     store.dispatch(replace(path));
 // };
 
-const RootReducer = combineReducers({
-	database: DatabaseReducer,
-	page: PageReducer,
-	user: UserReducer,
-	song: SongReducer,
-	author: AuthorReducer,
-	repertory: RepertoryReducer,
+// export type IRootState = ReturnType<typeof RootReducer>;
+const store = configureStore({
+	reducer: {
+		database: DatabaseReducer,
+		page: PageReducer,
+		user: UserReducer,
+		song: SongReducer,
+		author: AuthorReducer,
+		repertory: RepertoryReducer,
+	},
+	middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+	devTools: import.meta.env.VITE_ENVIRONMENT !== 'prod', // Activa devTools en modo desarrollo
 });
 
-// export type IRootState = ReturnType<typeof RootReducer>;
+export type TRootState = ReturnType<typeof store.getState>;
+export type TAppDispatch = typeof store.dispatch;
 
-const store = createStore(
-	RootReducer,
-	composeWithDevTools(applyMiddleware(thunk))
-);
+export const useAppDispatch: () => TAppDispatch = useDispatch;
 
 export default store;
 
@@ -83,33 +70,29 @@ export default store;
 // 	repertory: TRepertoryState;
 // };
 
-// Infer the `TStoreState` type from the store itself
-export type TStoreState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-// export type TDispatch = typeof store.dispatch<TStoreState>;
-// Use throughout your app instead of plain `useSelector`
-export const useAppSelector: TypedUseSelectorHook<TStoreState> = useSelector;
+// export type TStoreState = ReturnType<typeof store.getState>;
+// export const useAppSelector: TypedUseSelectorHook<TStoreState> = useSelector;
 
-export type TActionType =
-	| TAuthorActionType
-	| TPageActionType
-	| TRepertoryActionType
-	| TSongActionType
-	| TUserActionType;
+// export type TActionType =
+// 	| TAuthorActionType
+// 	| TPageActionType
+// 	| TRepertoryActionType
+// 	| TSongActionType
+// 	| TUserActionType;
 
-export type TSelectedActionPayload = TAuthorSelectedActionPayload &
-	TPageSelectedActionPayload &
-	TRepertorySelectedActionPayload &
-	TSongSelectedActionPayload &
-	TUserSelectedActionPayload;
+// export type TSelectedActionPayload = TAuthorSelectedActionPayload &
+// 	TPageSelectedActionPayload &
+// 	TRepertorySelectedActionPayload &
+// 	TSongSelectedActionPayload &
+// 	TUserSelectedActionPayload;
 
-type TSelectedAction<T extends TActionType> =
-	TSelectedActionPayload[T] extends undefined
-		? { type: T }
-		: { type: T; payload: TSelectedActionPayload[T] };
+// type TSelectedAction<T extends TActionType> =
+// 	TSelectedActionPayload[T] extends undefined
+// 		? { type: T }
+// 		: { type: T; payload: TSelectedActionPayload[T] };
 
-export type TDispatch = <T extends TActionType>(
-	action: TSelectedAction<T>
-) => Dispatch<TSelectedAction<T>>;
+// export type TDispatch = <T extends TActionType>(
+// 	action: TSelectedAction<T>
+// ) => Dispatch<TSelectedAction<T>>;
 
-export const useAppDispatch: () => TDispatch = useDispatch;
+// export const useAppDispatch: () => TDispatch = useDispatch;

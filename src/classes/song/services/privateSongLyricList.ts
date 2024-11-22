@@ -1,6 +1,6 @@
 import store from "../../../store";
 import { deleteDatabaseItem, setDatabaseItem } from "../../database/reducers";
-import { TPrivateSongLyricDB, TSongId } from "../types";
+import { TPrivateSongLyricDB, TSongId } from "../types.d";
 
 // export const getPrivateSongLyricListDB = async (p: {
 // 	songLyricId: string;
@@ -48,7 +48,7 @@ export const createPrivateSongLyricDB = async (p: {
 
 	const newId = new Date().getTime().toString();
 	await store.dispatch(
-		setDatabaseItem("privateSongLyricList", newId, { lyric })
+		setDatabaseItem({category: "privateSongLyricList", id: newId, item: { lyric }})
 	);
 
 	if (!newId) throw new Error("Error fetching in createPrivateSongLyricDB.");
@@ -62,7 +62,7 @@ export const editPrivateSongLyricDB = async (p: {
 }): Promise<void> => {
 	const { lyricId, lyric } = p;
 	await store.dispatch(
-		setDatabaseItem("privateSongLyricList", lyricId, { lyric })
+		setDatabaseItem({category: "privateSongLyricList", id: lyricId, item: { lyric }})
 	);
 	return;
 };
@@ -71,6 +71,6 @@ export const deletePrivateSongLyricDB = async (p: {
 	songLyricId: string;
 }): Promise<TSongId> => {
 	const { songLyricId } = p;
-	await store.dispatch(deleteDatabaseItem("privateSongLyricList", songLyricId));
+	await store.dispatch(deleteDatabaseItem({category: "privateSongLyricList", id: songLyricId}));
 	return songLyricId;
 };

@@ -1,6 +1,6 @@
 import store from "../../../store";
 import { setDatabaseItem } from "../../database/reducers";
-import { TPublicSongLyricDB, TSongId } from "../types";
+import { TPublicSongLyricDB, TSongId } from "../types.d";
 
 export const getPublicSongLyricDB = async (p: {
 	songLyricId: TSongId;
@@ -19,7 +19,7 @@ export const createPublicSongLyricDB = async (p: { lyric: string }): Promise<TSo
 	if (!lyric) throw new Error("Invalid lyric.");
 	const newId = new Date().getTime().toString();
 	await store.dispatch(
-		setDatabaseItem("publicSongLyricList", newId, { lyric })
+		setDatabaseItem({category: "publicSongLyricList", id: newId, item: { lyric }})
 	);
 	const response = { id: newId, lyric };
 
@@ -34,7 +34,7 @@ export const editPublicSongLyricDB = async (p: {
 }) => {
 	const { lyricId, lyric } = p;
 	await store.dispatch(
-		setDatabaseItem("publicSongLyricList", lyricId, { lyric })
+		setDatabaseItem({category: "publicSongLyricList", id: lyricId, item: { lyric }})
 	);
 	return;
 };

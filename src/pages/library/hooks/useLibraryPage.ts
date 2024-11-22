@@ -1,33 +1,32 @@
 import { useEffect, useState } from "react";
-import { setLibraryPageBackup } from "../../../classes/page/actions";
 import {
 	getSongList,
-	resetSongRequestStatus,
-	setSongListStatus,
 } from "../../../classes/song/actions";
-import { FETCH_STATUS, SECURITY_STATUS } from "../../../utils/types";
+import { FETCH_STATUS, SECURITY_STATUS } from "../../../utils/types.d";
 import {
 	arrayIsEmpty,
 	getRating,
 	objIsEmpty,
 } from "../../../utils/generalUtils";
-import { TSong, TSongId } from "../../../classes/song/types";
-import { TUserId } from "../../../classes/user/types";
-import { useAppSelector } from "../../../store";
-import { useDispatch } from "react-redux";
+import { TSong, TSongId } from "../../../classes/song/types.d";
+import { TUserId } from "../../../classes/user/types.d";
+import { TRootState, useAppDispatch } from "../../../store";
+import { useSelector } from "react-redux";
+import { resetSongRequestStatus, setSongListStatus } from "../../../classes/song/reducers";
+import { setLibraryPageBackup } from "../../../classes/page/reducers";
 
 export const useLibraryPage = () => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
-	const userId = useAppSelector((state) => state.user.google.id);
+	const userId = useSelector((state: TRootState) => state.user.google.id);
 	const {
 		songList,
 		songListStatus,
 		songListUserId,
 		songRequestStatus,
 		songError,
-	} = useAppSelector((state) => state.song);
-	const { libraryPageBackup } = useAppSelector((state) => state.page);
+	} = useSelector((state: TRootState) => state.song);
+	const libraryPageBackup = useSelector((state: TRootState) => state.page.libraryPageBackup);
 	const { songList: songListBackup } = libraryPageBackup;
 
 	type TStep =
@@ -79,9 +78,9 @@ export const useLibraryPage = () => {
 		} else if (songListStatus === SECURITY_STATUS.SHOULD_UPDATE) {
 			setStatus(steps.WITH_SONG_LIST_1);
 			dispatch(
-				setSongListStatus(
-					songListUserId ? SECURITY_STATUS.PRIVATE : SECURITY_STATUS.PUBLIC
-				)
+				setSongListStatus({
+					songListStatus: songListUserId ? SECURITY_STATUS.PRIVATE : SECURITY_STATUS.PUBLIC
+				})
 			);
 		} else if (userId && songListUserId !== userId) {
 			setStatus(steps.FETCH_SONG_LIST_1, { userId });
@@ -221,7 +220,7 @@ export const useLibraryPage = () => {
 			setFinalSongList(currentSongList);
 			if (!status.opts.isSameBackup) {
 				dispatch(
-					setLibraryPageBackup({ songList: currentSongList, repertoryList: [] })
+					setLibraryPageBackup({libraryPageBackup: { songList: currentSongList, repertoryList: [] }})
 				);
 			}
 			setIsLoading(false);

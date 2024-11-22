@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import M from "materialize-css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,12 +19,12 @@ import {
 	getDataFromRandomLyric,
 	getLyricStart,
 } from "../../../utils/lyricsAndChordsUtils";
-import { TSongId } from "../../../classes/song/types";
-import { useAppSelector } from "../../../store";
-import { useDispatch } from "react-redux";
+import { TSongId } from "../../../classes/song/types.d";
+import { TRootState, useAppDispatch } from "../../../store";
+import { useSelector } from "react-redux";
 
 export const useSongFormPage = (songId: TSongId) => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
 	const [songForm, setSongForm] = useState({
@@ -39,14 +41,14 @@ export const useSongFormPage = (songId: TSongId) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(false);
 
-	const userId = useAppSelector((state) => state.user?.google?.id);
-	const userName = useAppSelector((state) => state.user?.google?.name);
-	const { song, songRequestStatus, songError } = useAppSelector(
-		(state) => state.song
+	const userId = useSelector((state: TRootState) => state.user?.google?.id);
+	const userName = useSelector((state: TRootState) => state.user?.google?.name);
+	const { song, songRequestStatus, songError } = useSelector(
+		(state: TRootState) => state.song
 	);
 	const [retrys, setRetrys] = useState(0);
-	const { authorList, authorStatus, authorError } = useAppSelector(
-		(state) => state.author
+	const { authorList, authorStatus, authorError } = useSelector(
+		(state: TRootState) => state.author
 	);
 	const [authorItems, setAuthorItems] = useState([]);
 	const [authorForm, setAuthorForm] = useState({
@@ -73,7 +75,7 @@ export const useSongFormPage = (songId: TSongId) => {
     
     */
 
-	const setStatus = (newStatus) => {
+	const setStatus = (newStatus: string) => {
 		// console.log("ACA SONG_FORM_STATUS: ", newStatus);
 		setSongFormStatus(newStatus);
 	};
@@ -192,7 +194,7 @@ export const useSongFormPage = (songId: TSongId) => {
 		}
 	};
 
-	const setField = (field, value) => {
+	const setField = (field:string, value:string) => {
 		setSongForm((lastSongForm) => ({
 			...lastSongForm,
 			[field]: value,
@@ -227,7 +229,7 @@ export const useSongFormPage = (songId: TSongId) => {
 		setEditOnlyChords(!editOnlyChords);
 	};
 
-	const setAuthorField = (field, value) => {
+	const setAuthorField = (field: string, value) => {
 		setAuthorForm((lastAuthorForm) => ({
 			...lastAuthorForm,
 			[field]: value,

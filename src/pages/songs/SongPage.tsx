@@ -8,7 +8,7 @@ import styled from "styled-components";
 import ChordSelector from "./components/ChordSelector.tsx";
 import { useSongPage } from "./hooks/useSongPage.ts";
 import { colors, noSelectableText } from "../../styles/styleUtils.ts";
-import MessageModal from "../components/MessageModal.tsx";
+import MessageModal, { TMessageModalOpts } from "../components/MessageModal.tsx";
 import BottomSheet from "../components/BottomSheet.tsx";
 import { useSongPageOptions } from "./hooks/useSongPageOptions.ts";
 import ModalSelector from "./components/ModalSelector.tsx";
@@ -17,11 +17,13 @@ import LyricContainerZoom from "./components/LyricContainerZoom.tsx";
 import { usePublishSong } from "./hooks/usePublishSong.ts";
 import LabelsInput from "../components/LabelsInput.tsx";
 import { translateChord } from "../../utils/lyricsAndChordsUtils.ts";
-import { generalLevelOptions } from "../../classes/song/types";
-import { useAppSelector } from "../../store.ts";
-import { TsetFunc } from "../../utils/types";
+import { TsetFunc } from "../../utils/types.d";
+import { TChord, TChordString } from "./types.d";
+import { useSelector } from "react-redux";
+import { TRootState } from "../../store.ts";
+import { generalLevelOptions } from "../../classes/song/types.d";
 
-export const SongPage: React.FC = () => {
+export const SongPage = () => {
 	const navigate = useNavigate();
 	const { id } = useParams();
 	const {
@@ -53,9 +55,9 @@ export const SongPage: React.FC = () => {
 		saveOptions,
 	} = useSongPageOptions();
 
-	const user = useAppSelector((state) => state.user.google);
+	const user = useSelector((state: TRootState) => state.user.google);
 	const isCreator = user?.id === song?.creator?.id;
-	const [messageModalOpts, setMessageModalOpts] = useState(null);
+	const [messageModalOpts, setMessageModalOpts] = useState<null|TMessageModalOpts>(null);
 	const [openOptions, setOpenOptions] = useState(false);
 	const [editOnlyChords, setEditOnlyChords] = useState(false);
 	// const { handleClickPrint, isLoadingPrint, PagePrint } = usePrint();
@@ -75,7 +77,7 @@ export const SongPage: React.FC = () => {
 			document
 				.getElementById("authorName")
 				?.removeEventListener("input", (e) => {
-					editForm("author", e?.target?.value);
+					editForm("author", (e?.target as HTMLInputElement)?.value);
 				});
 		};
 	}, [editForm]);
@@ -87,7 +89,7 @@ export const SongPage: React.FC = () => {
 				M.textareaAutoResize(textarea);
 			}
 			document.getElementById("authorName")?.addEventListener("input", (e) => {
-				editForm("author", e?.target?.value);
+				editForm("author", (e?.target as HTMLInputElement)?.value);
 			});
 		}
 	}, [editingSong, editForm]);
@@ -97,10 +99,9 @@ export const SongPage: React.FC = () => {
 			title: "¿Esta seguro que desea eliminar esta canción?",
 			message:
 				"Esta acción no se puede deshacer y se eliminará para todos los usuarios.",
-			onClose: () => {
+			onCancel: () => {
 				setMessageModalOpts(null);
 			},
-			onCancel: () => {},
 			onConfirm: () => {
 				// await axios.delete(`/api/songs/${id}`).catch((err) => console.Page(err));
 				M.toast({ html: "Cancion borrada." });
@@ -110,8 +111,8 @@ export const SongPage: React.FC = () => {
 		});
 	};
 
-	const handleChangeTone = (newTone) => {
-		setTone(translateChord(newTone, "en", pageOptions.chordLang));
+	const handleChangeTone = (newChord: TChord) => {
+		setTone(translateChord(newChord.chord, "en", pageOptions.chordLang));
 	};
 
 	const handleSaveOptions = () => {
@@ -160,11 +161,14 @@ export const SongPage: React.FC = () => {
 							<ChordSelector
 								modalId="tone"
 								label="Tono: "
-								selectedChord={translateChord(
-									tone,
-									pageOptions.chordLang,
-									"en"
-								)}
+								selectedChord={{
+									chord: translateChord(
+										tone,
+										pageOptions.chordLang,
+										"en"
+									),
+									duration: ""
+								}}
 								setSelectedChord={handleChangeTone}
 								chordLang={pageOptions.chordLang}
 								onlyChangeTone
@@ -205,7 +209,7 @@ export const SongPage: React.FC = () => {
 					setLyricWithChords={(v) => editForm("lyric", v)}
 					userTone={tone}
 					setUserTone={setTone}
-					chordLang={pageOptions.chordLang}
+					userChordLang={pageOptions.chordLang}
 					showChords={pageOptions.showChords}
 					isEditable={false}
 				/>
@@ -227,8 +231,8 @@ export const SongPage: React.FC = () => {
 						modalId="generalLevel"
 						// label="Voz: "
 						modalTitle="Elegir mi nivel de progreso"
-						selectedItem={level?.general?.toString() || "0"}
-						setSelectedItem={(v) => setLevel("general", v)}
+						selectedItem={level?.general?.toString?.() || "0"}
+						setSelectedItem={(v) => setLevel("general", Number(v))}
 						items={generalLevelOptions}
 						textAlign="start"
 						selectorWidth="flex"
@@ -324,7 +328,7 @@ export const SongPage: React.FC = () => {
 				</label>
 			</div>
 			<LabelsInput
-				labels={songForm.labels}
+				labels={songForm.labels || []}
 				updateLabels={(lb) => editForm("labels", lb)}
 			/>
 			<div
@@ -342,7 +346,7 @@ export const SongPage: React.FC = () => {
 			<LyricWithChords
 				lyricWithChords={songForm.lyric}
 				setLyricWithChords={(v) => editForm("lyric", v)}
-				userTone={songForm?.tone}
+				userTone={songForm?.tone ?? null}
 				setUserTone={(v) => editForm("tone", v)}
 				userChordLang={pageOptions.chordLang}
 				isEditable
@@ -353,139 +357,141 @@ export const SongPage: React.FC = () => {
 	);
 
 	return (
-		<PageContainer fontSize={pageOptions.fontSize} id="to-print">
-			{!editingSong ? songVisualization() : songFormVisualization()}
-			<div
-				className="switch"
-				style={{
-					marginBottom: "30px",
-				}}
-			>
-				<label onChange={toogleEditBtn}>
-					<input type="checkbox" id="checkEdit" />
-					<span className="lever"></span>
-					<span style={{ color: "black" }}>
-						{editingSong ? "Desactivar edición" : "Activar edición"}
-					</span>
-				</label>
-			</div>
+		<div className="container">
+			<PageContainer fontSize={pageOptions.fontSize} id="to-print">
+				{!editingSong ? songVisualization() : songFormVisualization()}
+				<div
+					className="switch"
+					style={{
+						marginBottom: "30px",
+					}}
+				>
+					<label onChange={toogleEditBtn}>
+						<input type="checkbox" id="checkEdit" />
+						<span className="lever"></span>
+						<span style={{ color: "black" }}>
+							{editingSong ? "Desactivar edición" : "Activar edición"}
+						</span>
+					</label>
+				</div>
 
-			{!editingSong && (
-				<>
-					{(!!songEdited || !isCreator) && (
-						<SongButton
-							className="btn waves-effect waves-light blue darken-2"
-							onClick={handleClickSaveSong}
-							style={{ marginBottom: "15px" }}
-						>
-							{!isCreator && <i className="material-icons right">favorite</i>}
-							Guardar
-							{!isCreator ? " canción" : " cambios"}
-						</SongButton>
-					)}
-					{!isCreator && (
-						<p>
-							<i>(Te premite conservar los cambios y anotar tu progreso)</i>
-						</p>
-					)}
-					{isCreator && song?.isPrivate && (
-						<SongButton
-							className="btn waves-effect waves-light blue darken-2"
-							onClick={handleClickPublish}
-						>
-							<i className="material-icons right">publish</i>Publicar
-						</SongButton>
-					)}
-					{(isCreator || user.id === "111418653738749034139") && (
-						<SongButton
-							className="btn waves-effect waves-light blue darken-2"
-							onClick={handleDeleteBtn}
-						>
-							<i className={`material-icons ${"right"}`}>delete</i>Eliminar
-						</SongButton>
-					)}
-					{/* <SongButton
-						className="btn waves-effect waves-light blue darken-2"
-						onClick={handleClickPrint}
-					>
-						<i className="material-icons right">print</i>Imprimir
-					</SongButton> */}
-					<BottomSheet open={openOptions} setOpen={setOpenOptions} fullscreen>
-						<div>
-							<h5>Visualización</h5>
-							<div
-								className="switch"
-								style={{
-									marginTop: "10px",
-									marginBottom: "10px",
-									display: !!tone ? "block" : "none",
-								}}
+				{!editingSong && (
+					<>
+						{(!!songEdited || !isCreator) && (
+							<SongButton
+								className="btn waves-effect waves-light blue darken-2"
+								onClick={handleClickSaveSong}
+								style={{ marginBottom: "15px" }}
 							>
-								<label>
-									<input
-										type="checkbox"
-										id="checkAuto"
-										checked={pageOptions.showChords}
-										onChange={toggleShowChords}
-									/>
-									<span className="lever"></span>
-									<span style={{ color: "black" }}>Mostrar acordes</span>
-								</label>
-							</div>
-							{!!tone && !!pageOptions.showChords && (
-								<ModalSelector
-									modalId="chordLang"
-									label="Cifrado: "
-									modalTitle="Elegir Cifrado"
-									selectedItem={pageOptions.chordLang}
-									setSelectedItem={setChordLang as TsetFunc<string>}
-									items={chordLangOptions}
-									selectorWidth="115px"
-								/>
-							)}
-							<FontSizeSection>
-								Tamaño de letra:
-								<FontSizeInput>
-									<FontSizeButtonLeft
-										onClick={() =>
-											setFontSize(Number(pageOptions.fontSize) - 1)
-										}
-									>
-										keyboard_arrow_left
-									</FontSizeButtonLeft>
-									{pageOptions.fontSize}px
-									<FontSizeButtonRight
-										onClick={() =>
-											setFontSize(Number(pageOptions.fontSize) + 1)
-										}
-									>
-										keyboard_arrow_right
-									</FontSizeButtonRight>
-								</FontSizeInput>
-								{/* <input
-								type="range"
-								id="fontSize"
-								min="10"
-								max="25"
-								value={pageOptions.fontSize}
-								onChange={e => setFontSize(e.target.value)}
-							/> */}
-							</FontSizeSection>
-							{!!areNewOptions && (
-								<SongButton
-									className="btn waves-effect waves-light blue darken-2"
-									onClick={handleSaveOptions}
+								{!isCreator && <i className="material-icons right">favorite</i>}
+								Guardar
+								{!isCreator ? " canción" : " cambios"}
+							</SongButton>
+						)}
+						{!isCreator && (
+							<p>
+								<i>(Te premite conservar los cambios y anotar tu progreso)</i>
+							</p>
+						)}
+						{isCreator && song?.isPrivate && (
+							<SongButton
+								className="btn waves-effect waves-light blue darken-2"
+								onClick={handleClickPublish}
+							>
+								<i className="material-icons right">publish</i>Publicar
+							</SongButton>
+						)}
+						{(isCreator || user.id === "111418653738749034139") && (
+							<SongButton
+								className="btn waves-effect waves-light blue darken-2"
+								onClick={handleDeleteBtn}
+							>
+								<i className={`material-icons ${"right"}`}>delete</i>Eliminar
+							</SongButton>
+						)}
+						{/* <SongButton
+							className="btn waves-effect waves-light blue darken-2"
+							onClick={handleClickPrint}
+						>
+							<i className="material-icons right">print</i>Imprimir
+						</SongButton> */}
+						<BottomSheet open={openOptions} setOpen={setOpenOptions} fullscreen>
+							<div>
+								<h5>Visualización</h5>
+								<div
+									className="switch"
+									style={{
+										marginTop: "10px",
+										marginBottom: "10px",
+										display: !!tone ? "block" : "none",
+									}}
 								>
-									<i className="material-icons right">save</i>Guardar
-									configuración
-								</SongButton>
-							)}
-						</div>
-					</BottomSheet>
-					<MessageModal opts={messageModalOpts} />
-				</>
-			)}
-		</PageContainer>
+									<label>
+										<input
+											type="checkbox"
+											id="checkAuto"
+											checked={pageOptions.showChords}
+											onChange={toggleShowChords}
+										/>
+										<span className="lever"></span>
+										<span style={{ color: "black" }}>Mostrar acordes</span>
+									</label>
+								</div>
+								{!!tone && !!pageOptions.showChords && (
+									<ModalSelector
+										modalId="chordLang"
+										label="Cifrado: "
+										modalTitle="Elegir Cifrado"
+										selectedItem={pageOptions.chordLang}
+										setSelectedItem={setChordLang as TsetFunc<string>}
+										items={chordLangOptions}
+										selectorWidth="115px"
+									/>
+								)}
+								<FontSizeSection>
+									Tamaño de letra:
+									<FontSizeInput>
+										<FontSizeButtonLeft
+											onClick={() =>
+												setFontSize(Number(pageOptions.fontSize) - 1)
+											}
+										>
+											keyboard_arrow_left
+										</FontSizeButtonLeft>
+										{pageOptions.fontSize}px
+										<FontSizeButtonRight
+											onClick={() =>
+												setFontSize(Number(pageOptions.fontSize) + 1)
+											}
+										>
+											keyboard_arrow_right
+										</FontSizeButtonRight>
+									</FontSizeInput>
+									{/* <input
+									type="range"
+									id="fontSize"
+									min="10"
+									max="25"
+									value={pageOptions.fontSize}
+									onChange={e => setFontSize(e.target.value)}
+								/> */}
+								</FontSizeSection>
+								{!!areNewOptions && (
+									<SongButton
+										className="btn waves-effect waves-light blue darken-2"
+										onClick={handleSaveOptions}
+									>
+										<i className="material-icons right">save</i>Guardar
+										configuración
+									</SongButton>
+								)}
+							</div>
+						</BottomSheet>
+						<MessageModal opts={messageModalOpts || {}} />
+					</>
+				)}
+			</PageContainer>
+		</div>
 	);
 };
 
