@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
-import {
-	editSong as editSongAction,
-	getSong,
-} from "./actions";
+import { editSong as editSongAction, getSong } from "./actions";
 import { TSong, TSongForm, TSongId } from "./types.d";
-import { MAX_RETRYS } from "../../configs";
+import { MAX_RETRYS } from "../../utilities/configs";
 import { TUserId } from "../user/types.d";
 import { FETCH_STATUS, SECURITY_STATUS } from "../../utils/types.d";
 import { createTSong } from "./createTypes";
@@ -82,7 +79,7 @@ export const useSong = (p: {
 			if (!!songTitleId && !!songListBackup?.[songTitleId]) {
 				const selectedSong = songListBackup[songTitleId];
 				setCurrentSong(selectedSong);
-				dispatch(setSongPageBackupSong({song:selectedSong}));
+				dispatch(setSongPageBackupSong({ song: selectedSong }));
 				setStatus(steps.FINISHED);
 			} else {
 				setStatus(steps.FETCH_SONG_1, { userId, songTitleId });

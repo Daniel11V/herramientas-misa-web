@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
-import {
-	getRepertory,
-} from "../../../classes/repertory/actions";
-import { MAX_RETRYS } from "../../../configs";
+import { getRepertory } from "../../../classes/repertory/actions";
+import { MAX_RETRYS } from "../../../utilities/configs";
 import { FETCH_STATUS, SECURITY_STATUS } from "../../../utils/types.d";
 import {
 	TRepertory,
@@ -12,7 +10,10 @@ import {
 import { TUserId } from "../../../classes/user/types.d";
 import { TRootState, useAppDispatch } from "../../../store";
 import { useSelector } from "react-redux";
-import { resetRepertoryActionStatus, setRepertoryStatus } from "../../../classes/repertory/reducers";
+import {
+	resetRepertoryActionStatus,
+	setRepertoryStatus,
+} from "../../../classes/repertory/reducers";
 import { setRepertoryPageBackup } from "../../../classes/page/reducers";
 
 export const useRepertoryPage = (repertoryId?: TRepertoryId) => {
@@ -26,7 +27,9 @@ export const useRepertoryPage = (repertoryId?: TRepertoryId) => {
 		repertoryUserId,
 		repertoryActionStatus,
 	} = useSelector((state: TRootState) => state.repertory);
-	const repertoryPageBackup = useSelector((state: TRootState) => state.page.repertoryPageBackup);
+	const repertoryPageBackup = useSelector(
+		(state: TRootState) => state.page.repertoryPageBackup
+	);
 	const { repertoryList: repertoryListBackup } = repertoryPageBackup;
 
 	type TStep =
@@ -76,9 +79,12 @@ export const useRepertoryPage = (repertoryId?: TRepertoryId) => {
 		if (repertoryStatus === SECURITY_STATUS.SHOULD_UPDATE) {
 			setStatus(steps.WITH_REPERTORY_1);
 			dispatch(
-				setRepertoryStatus({ 
-					repertoryStatus: repertoryUserId ? SECURITY_STATUS.PRIVATE : SECURITY_STATUS.PUBLIC
-			}));
+				setRepertoryStatus({
+					repertoryStatus: repertoryUserId
+						? SECURITY_STATUS.PRIVATE
+						: SECURITY_STATUS.PUBLIC,
+				})
+			);
 		} else if (userId && repertoryUserId !== userId) {
 			setStatus(steps.FETCH_REPERTORY_1, { userId, repertoryId });
 		} else if (!userId && repertoryStatus === SECURITY_STATUS.PRIVATE) {
@@ -149,7 +155,7 @@ export const useRepertoryPage = (repertoryId?: TRepertoryId) => {
 								...repertoryListBackup,
 								[currentRepertory.id]: currentRepertory,
 							},
-						}
+						},
 					})
 				);
 			}

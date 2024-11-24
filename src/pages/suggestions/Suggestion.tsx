@@ -1,6 +1,6 @@
 import { useState, useEffect, FormEvent } from "react";
 import M from "materialize-css";
-import axios from "../../axios";
+import axios from "../../services/axios";
 import fullLabels from "../../data/fullLabels";
 import SongCollection from "../components/SongCollection";
 
@@ -27,7 +27,7 @@ const Suggestion = () => {
 		const res = await axios
 			.post("/api/suggestion", { base, input })
 			.catch((err) => console.error(err));
-		if(!res?.data) return
+		if (!res?.data) return;
 		setTopSongs(res.data);
 		M.toast({ html: "Readings Updated" });
 		// fetchTopSongs();

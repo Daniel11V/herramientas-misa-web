@@ -14,7 +14,7 @@ import {
 	getSong,
 	resetSongRequestStatus,
 } from "../../../classes/song/actions";
-import { MAX_RETRYS } from "../../../configs";
+import { MAX_RETRYS } from "../../../utilities/configs";
 import {
 	getDataFromRandomLyric,
 	getLyricStart,
@@ -194,7 +194,7 @@ export const useSongFormPage = (songId: TSongId) => {
 		}
 	};
 
-	const setField = (field:string, value:string) => {
+	const setField = (field: string, value: string) => {
 		setSongForm((lastSongForm) => ({
 			...lastSongForm,
 			[field]: value,

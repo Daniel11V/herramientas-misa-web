@@ -1,15 +1,26 @@
 import { useState, useEffect, startTransition, useMemo, useRef } from "react";
+import { getSongList } from "../../../classes/song/actions";
+import { MAX_RETRYS } from "../../../utilities/configs";
 import {
-	getSongList,
-} from "../../../classes/song/actions";
-import { MAX_RETRYS } from "../../../configs";
-import { FETCH_STATUS, SECURITY_STATUS, SONG_LIST_TYPE } from "../../../utils/types.d";
+	FETCH_STATUS,
+	SECURITY_STATUS,
+	SONG_LIST_TYPE,
+} from "../../../utils/types.d";
 import { arrayIsEmpty, getRating } from "../../../utils/generalUtils";
-import { TSong, TSongId, TSongLevel, TVersionGroupId, TVersionGroups } from "../../../classes/song/types.d";
+import {
+	TSong,
+	TSongId,
+	TSongLevel,
+	TVersionGroupId,
+	TVersionGroups,
+} from "../../../classes/song/types.d";
 import { TUserId } from "../../../classes/user/types.d";
 import { TRootState, useAppDispatch } from "../../../store";
 import { useSelector } from "react-redux";
-import { resetSongRequestStatus, setSongListStatus } from "../../../classes/song/reducers";
+import {
+	resetSongRequestStatus,
+	setSongListStatus,
+} from "../../../classes/song/reducers";
 import { setSongListPageBackup } from "../../../classes/page/reducers";
 
 export const useSongListPage = () => {
@@ -56,54 +67,61 @@ export const useSongListPage = () => {
 	const isLoadingGetSongList = useRef(false);
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [filteredSongList, setFilteredSongList] = useState<TSong[]>([])
+	const [filteredSongList, setFilteredSongList] = useState<TSong[]>([]);
 
-	console.log("ACA RERENDER", {isLoadingGetSongList, error, isLoading, filteredSongList})
-	console.log("ACA RERENDER2", {songList,
+	console.log("ACA RERENDER", {
+		isLoadingGetSongList,
+		error,
+		isLoading,
+		filteredSongList,
+	});
+	console.log("ACA RERENDER2", {
+		songList,
 		songListStatus,
 		songListType,
-		songListError})
-	
+		songListError,
+	});
+
 	// const setStatus = (statusStep: TStep, statusOpts = {}) => {
 	// 	setIsLoading(true);
 	// 	console.log("ACA SONG_LIST_STATUS: ", statusStep, statusOpts);
 	// 	setCurrentSongListStatus({ step: statusStep, opts: statusOpts });
 	// };
-	
+
 	useEffect(() => {
-		if (!isLoadingGetSongList) return
-		
+		if (!isLoadingGetSongList) return;
+
 		if (songListStatus === FETCH_STATUS.FAILURE) {
-			console.log("ACA SongListError", songListError)
-			setError(songListError)
-			isLoadingGetSongList.current = false
+			console.log("ACA SongListError", songListError);
+			setError(songListError);
+			isLoadingGetSongList.current = false;
 		}
 		if (songListStatus === FETCH_STATUS.SUCCESS) {
-			console.log("ACA SongList", songList)
-			setFilteredSongList(songList)
-			isLoadingGetSongList.current = false
-			setIsLoading(false)
+			console.log("ACA SongList", songList);
+			setFilteredSongList(songList);
+			isLoadingGetSongList.current = false;
+			setIsLoading(false);
 		}
-	}, [songList, songListError, isLoadingGetSongList])
-	
+	}, [songList, songListError, isLoadingGetSongList]);
+
 	// useEffect(() => {
 	// 	if (songListError) {
-			
+
 	// 	}
 	// }, [songListError])
-	
+
 	useEffect(() => {
 		const shouldUpdateSongList = (): boolean => {
-			if (songListType === SONG_LIST_TYPE.INITIAL) return true
-			if (songListType === SONG_LIST_TYPE.SHOULD_UPDATE) return true
-			if (songListType === SONG_LIST_TYPE.PUBLIC && userId) return true
-			if (songListType === SONG_LIST_TYPE.PRIVATE && !userId) return true
-			return false
-		}
-		
+			if (songListType === SONG_LIST_TYPE.INITIAL) return true;
+			if (songListType === SONG_LIST_TYPE.SHOULD_UPDATE) return true;
+			if (songListType === SONG_LIST_TYPE.PUBLIC && userId) return true;
+			if (songListType === SONG_LIST_TYPE.PRIVATE && !userId) return true;
+			return false;
+		};
+
 		if (shouldUpdateSongList()) {
-			setIsLoading(true)
-			isLoadingGetSongList.current = true
+			setIsLoading(true);
+			isLoadingGetSongList.current = true;
 			dispatch(getSongList());
 		}
 	}, [songListType, userId, dispatch]);
@@ -116,12 +134,12 @@ export const useSongListPage = () => {
 	// 			setRetrys(0);
 	// 		} else if (songRequestStatus === FETCH_STATUS.SUCCESS) {
 	// 			console.log("ACA getSongList Success")
-				
+
 	// 			setStatus(steps.WITH_SONG_LIST_1, { fromFetch: true });
 	// 			// dispatch(resetSongRequestStatus());
 	// 		} else if (songRequestStatus === FETCH_STATUS.FAILURE) {
 	// 			console.log("ACA getSongList Failure")
-				
+
 	// 			if (retrys === MAX_RETRYS) {
 	// 				setStatus(steps.FINISHED);
 	// 				dispatch(resetSongRequestStatus());
@@ -131,19 +149,19 @@ export const useSongListPage = () => {
 	// 			}
 	// 		}
 	// 	}
-	// 	/* 
-    //         Cancionero:
-    //         - Canciones de otros publicas
-    //         - Si hay varias versiones mostrar la mia publica o privada
-    //         - Mis canciones publicas (y privadas?)
-    //         - En codigo: publicSongTitles + privateSongTitles, dejando una por versiones
-    //         Mi Biblioteca:
-    //         - Mis canciones privadas y publicas
+	// 	/*
+	//         Cancionero:
+	//         - Canciones de otros publicas
+	//         - Si hay varias versiones mostrar la mia publica o privada
+	//         - Mis canciones publicas (y privadas?)
+	//         - En codigo: publicSongTitles + privateSongTitles, dejando una por versiones
+	//         Mi Biblioteca:
+	//         - Mis canciones privadas y publicas
 
-    //         Al colocar en Favoritas una publicSongTitle de otro:
-    //         - crea un privateSongTitle de esa que apunta al detalle de la publica, si 
-    //         se edita algo de Lyric se crea nueva Lyric en private
-    //     */
+	//         Al colocar en Favoritas una publicSongTitle de otro:
+	//         - crea un privateSongTitle de esa que apunta al detalle de la publica, si
+	//         se edita algo de Lyric se crea nueva Lyric en private
+	//     */
 	// }, [status.step, status.opts, songRequestStatus, retrys, dispatch]);
 
 	// useEffect(() => {
@@ -157,7 +175,7 @@ export const useSongListPage = () => {
 	// useEffect(() => {
 	// 	if (status.step === steps.FORMAT_BY_VERSION_GROUPS_2) {
 	// 		console.log("ACA status.step === steps.FORMAT_BY_VERSION_GROUPS_2")
-			
+
 	// 		if (!arrayIsEmpty(currentSongList)) {
 	// 			// FORMAT_BY_VERSION_GROUPS"
 	// 			const versionGroups: TVersionGroups = {};
@@ -228,12 +246,15 @@ export const useSongListPage = () => {
 	// 		setIsLoading(false);
 	// 	}
 	// }, [status, isLoading, currentSongList, retrys, dispatch]);
-	
-	const result = useMemo(() => ({
-		songList: filteredSongList,
-		loadingSongList: isLoading,
-		errorSongList: error,
-	}), [filteredSongList, isLoading, error]);
+
+	const result = useMemo(
+		() => ({
+			songList: filteredSongList,
+			loadingSongList: isLoading,
+			errorSongList: error,
+		}),
+		[filteredSongList, isLoading, error]
+	);
 
 	return result;
 };
